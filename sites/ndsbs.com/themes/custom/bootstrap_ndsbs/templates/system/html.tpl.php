@@ -45,9 +45,9 @@
 ?><!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="<?php print $language->language; ?>" dir="<?php print $language->dir; ?>"<?php print $rdf_namespaces; ?>>
 
-<head profile="<?php print $grddl_profile; ?>">
+<head profile="<?php print $grddl_profile; ?>" itemscope itemtype="http://schema.org/WebSite">
   <?php print $head; ?>
-  <title><?php print $head_title; ?></title>
+  <title itemprop="name"><?php print $head_title; ?></title>
   <?php print $styles; ?>
 </head>
 <body id="body" class="<?php print $classes; ?>" <?php print $attributes;?>>
@@ -69,5 +69,18 @@
   </div>
   Tel:<span itemprop="telephone">(800) 671-8589</span>
 </div>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "url": "https://www.ndsbs.com",
+  "logo": "https://www.ndsbs.com/<?php print drupal_get_path('theme', 'bootstrap_ndsbs'); ?>/logo.png",
+  "contactPoint": [{
+    "@type": "ContactPoint",
+    "telephone": "+1-800-671-8589",
+    "contactType": "customer service"
+  }]
+}
+</script>
 </body>
 </html>

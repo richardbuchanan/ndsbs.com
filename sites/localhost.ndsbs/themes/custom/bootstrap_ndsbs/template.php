@@ -998,6 +998,7 @@ function bootstrap_ndsbs_html_head_alter(&$head_elements) {
       'content' => 'SFy4_6Ra_aEpRwby2mY9BtBG-IAzJYtqADMr8cTEbpU',
     ),
   );
+  $head_elements['metatag_canonical']['#attributes']['itemprop'] = 'url';
 }
 
 function bootstrap_ndsbs_preprocess_payment(&$variables) {
