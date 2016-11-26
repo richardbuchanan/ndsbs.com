@@ -1,0 +1,503 @@
+<?php
+
+/**
+ * @file
+ * Module name ndsbs_creditcard_payment.module
+ * Finoit Technologies
+ * Developer krishna@finoit.com
+ * Allows developer to customize the site's functionality.
+ * Reference module to authnet.module
+ */
+
+/**
+ * Implements hook_theme().
+ */
+function ndsbs_creditcard_payment_theme($existing, $type, $theme, $path) {
+  return array(
+    'credit_card' => array(
+      'render element' => 'element',
+    ),
+    'input_group' => array(
+      'render element' => 'element',
+    ),
+  );
+}
+
+/**
+ * Implements hook_element_info().
+ */
+function ndsbs_creditcard_payment_element_info() {
+  $types['credit_card'] = array(
+    '#input' => TRUE,
+    '#size' => 25,
+    '#maxlength' => 16,
+    '#autocomplete_path' => FALSE,
+    '#theme' => 'credit_card',
+    '#theme_wrappers' => array('form_element'),
+  );
+
+  return $types;
+}
+
+/**
+ * Returns HTML for a credit card form element.
+ *
+ * @param $variables
+ *   An associative array containing:
+ *   - element: An associative array containing the properties of the element.
+ *     Properties used: #title, #value, #description, #size, #maxlength,
+ *     #required, #attributes.
+ *
+ * @ingroup themeable
+ */
+function theme_credit_card($variables) {
+  $element = $variables['element'];
+  $element['#attributes']['type'] = 'number';
+  $element['#attributes']['maxlength'] = '19';
+  element_set_attributes($element, array('id', 'name', 'value', 'size'));
+  _form_set_class($element, array('form-control', 'form-credit-card'));
+
+  $output = '<div class="input-group">';
+  $output .= '<input' . drupal_attributes($element['#attributes']) . ' />';
+  $output .= '<span class="input-group-addon"><i class="fa fa-credit-card"></i></span>';
+  $output .= '</div>';
+
+  return $output;
+}
+
+/**
+ * Implements hook_menu()
+ */
+function ndsbs_creditcard_payment_menu() {
+  $items = array();
+
+  $items['payment/creditcard'] = array(
+    'title' => 'Payment Capture',
+    'description' => 'Payment Capture.',
+    'access callback' => 'user_is_logged_in',
+    'page callback' => '_payment_creditcard',
+    'access arguments' => array('access content'),
+  );
+
+  $items['cart/empty'] = array(
+    'title' => 'Cart Empty',
+    'page callback' => 'ndsbs_creditcard_payment_empty_cart',
+    'access callback' => 'user_is_logged_in',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK
+  );
+
+  return $items;
+}
+
+/**
+ * Function _payment_creditcard() Defined to
+ * Capture the payment from client using
+ * authorize.net
+ *
+ */
+function _payment_creditcard() {
+  return drupal_get_form('credit_card_payment_form');
+}
+
+function ndsbs_creditcard_payment_empty_cart() {
+  if (isset($_SESSION['ndsbs_payment']['rush_amount'])) {
+    unset($_SESSION['ndsbs_payment']['rush_amount']);
+  }
+  delete_cart_items();
+  drupal_set_message('Your cart has been emptied.');
+  drupal_goto('user/payment');
+}
+
+/**
+ *  Implementation of credit_card_payment_form()
+ *  Function credit_card_payment_form() defined
+ *  To create the credit card form
+ */
+function credit_card_payment_form($form, &$form_state) {
+  $form['credit_card'] = array(
+    '#type' => 'select',
+    '#title' => t('Select Credit card'),
+    '#options' => array(
+      'AmEx' => t('American Express'),
+      'Discover' => t('Discover'),
+      'Maestro' => t('Maestro'),
+      'MasterCard' => t('MasterCard'),
+      'Visa' => t('Visa'),
+    ),
+    '#required' => TRUE
+  );
+  $form['card_number'] = array(
+    '#type' => 'credit_card',
+    '#title' => t('Card Number'),
+    '#required' => TRUE,
+    '#font-awesome-icon' => 'credit-card',
+  );
+  $form['expiration_month'] = array(
+    '#type' => 'select',
+    '#title' => t('Expiration Month'),
+    '#options' => array(
+      t('01') => t('01 - January'),
+      t('02') => t('02 - February'),
+      t('03') => t('03 - March'),
+      t('04') => t('04 - April'),
+      t('05') => t('05 - May'),
+      t('06') => t('06 - June'),
+      t('07') => t('07 - July'),
+      t('08') => t('08 - August'),
+      t('09') => t('09 - September'),
+      t('10') => t('10 - October'),
+      t('11') => t('11 - November'),
+      t('12') => t('12 - December'),
+    ),
+    '#required' => TRUE
+  );
+  $form['expiration_year'] = array(
+    '#type' => 'select',
+    '#title' => t('Expiration Year'),
+    '#options' => array(
+      t('16') => t('2016'),
+      t('17') => t('2017'),
+      t('18') => t('2018'),
+      t('19') => t('2019'),
+      t('20') => t('2020'),
+      t('21') => t('2021'),
+      t('22') => t('2022'),
+      t('23') => t('2023'),
+      t('24') => t('2024'),
+      t('25') => t('2025'),
+      t('26') => t('2026'),
+      t('27') => t('2027'),
+      t('28') => t('2028'),
+      t('29') => t('2029'),
+      t('30') => t('2030'),
+      t('31') => t('2031'),
+      t('32') => t('2032'),
+      t('33') => t('2033'),
+      t('34') => t('2034'),
+      t('35') => t('2035'),
+    ),
+    '#required' => TRUE
+  );
+  $form['cvv'] = array(
+    '#type' => 'textfield',
+    '#title' => t('CVC'),
+    '#size' => 6,
+    '#maxlength' => 4,
+    '#required' => TRUE
+  );
+  $form['#attached']['js'] = array(
+    drupal_get_path('theme', 'bootstrap_ndsbs') . '/js/creditcard.js' => array('type' => 'file')
+  );
+
+  $form['submit'] = array(
+    '#id' => 'credit_card_submit',
+    '#type' => 'submit',
+    '#value' => t('Submit payment')
+  );
+  return $form;
+}
+
+/**
+ *  Implementation of credit_card_payment_form_submit()
+ *  Function credit_card_payment_form_submit() defined
+ *  To submit the credit card form
+ */
+function credit_card_payment_form_submit(&$form, &$form_state) {
+  global $user;
+  $type = '';
+
+  //  Include the Authorize.net SDK library code.
+  authnet_sdk_include();
+
+  define('AUTHORIZENET_API_LOGIN_ID', variable_get('authnet_login_id', ''));
+  define('AUTHORIZENET_TRANSACTION_KEY', variable_get('authnet_transaction_key', ''));
+  define('AUTHORIZENET_CUSTOM_VALIDATION_MODE', variable_get('authnet_sandbox', ''));
+
+  //  Call the Authorize.net AIM integration method
+  $transaction = new AuthorizeNetAIM(AUTHORIZENET_API_LOGIN_ID, AUTHORIZENET_TRANSACTION_KEY);
+
+  if (AUTHORIZENET_CUSTOM_VALIDATION_MODE != 'testMode') {
+    $transaction->setSandbox(FALSE);
+  }
+  $transaction->setSandbox(FALSE);
+
+  // Cart Data START.
+  $tmp_tid_cost = array();
+  $data = get_cart_items();
+  $i = 1;
+
+  foreach ($data as $rec) {
+    if ($i == 1) {
+      //  Function call to chk that sub service is already purchased or not.
+      $data_subreport_term = check_user_purchased_subreport_term($rec->nid, 1, 1);
+      foreach ($data_subreport_term as $data_subreport) {
+        $sub_purchased_term[] = $data_subreport->termid;
+      }
+    }
+    $i++;
+
+    $term_data = taxonomy_term_load($rec->tid);
+
+    //  Amount Calculation START.
+    if ($rec->sub_report == 0) {
+      //  User is purchasing main report.
+      $custom_special_amount = get_special_assessment_custom_amount($rec->nid);
+
+      if ($custom_special_amount > 0) {
+        $service_amount_main_service = $custom_special_amount;
+      }
+      else {
+        $service_amount_main_service = $term_data->field_assessment_amount['und'][0]['value'];
+      }
+
+      $tmp_tid_cost[$rec->tid]['amount'] = $service_amount_main_service;
+      $tmp_tid_cost[$rec->tid]['sub_report'] = 0;
+      $type .= 'assessment';
+    }
+
+    else {
+      if (in_array($rec->tid, $sub_purchased_term)) {
+        $service_amount = 0;
+      }
+      else {
+        if ($term_data->vocabulary_machine_name == 'stateform_vocab') {
+          $service_amount = $term_data->field_stateformamount['und'][0]['value'];
+          //$type = 'stateform';
+        }
+        else {
+          //  User is purchasing sub report
+          $service_amount = $term_data->field_other_service_amount['und'][0]['value'];
+          //$type = 'letter';
+        }
+      }
+
+      $tmp_tid_cost[$rec->tid]['amount'] = $service_amount;
+      $tmp_tid_cost[$rec->tid]['sub_report'] = 1;
+
+      if ($term_data->vocabulary_machine_name == 'assessment') {
+        $main_report_id = $rec->tid;
+      }
+    }
+    $tmp_tid_cost[$rec->tid]['notary_amount'] = $rec->notary_amount;
+
+    $amount = $service_amount_main_service + $service_amount + $rec->notary_amount;
+    //  Amount Calculation END
+
+    $tid .= '-' . $rec->tid;
+    $nid = $rec->nid;
+    $express_mail = $rec->express_mail;
+    $shipping_info = $rec->shipping_address;
+  }
+
+  $trans_amount = $amount + $express_mail;
+  // Cart Data END.
+
+  // Get this from live data form
+  $invoice_num = $nid;
+  $term_num = $tid;
+  $payment_method = 'credit card';
+  $transaction->amount = $trans_amount + $_SESSION['ndsbs_payment']['rush_amount'];
+  $transaction->invoice_num = $invoice_num . $term_num;
+  $transaction->card_num = $form_state['values']['card_number'];
+  $transaction->exp_date = $form_state['values']['expiration_month'] . '/' . $form_state['values']['expiration_year'];
+  $transaction->card_code = $form_state['values']['cvv'];
+
+  //  Get the user information
+  $user_info = user_load($user->uid);
+  $transaction->cust_id = $user->uid;
+  $transaction->first_name = $user_info->field_first_name['und'][0]['value'];
+  $transaction->last_name = $user_info->field_last_name['und'][0]['value'];
+  $transaction->address = $user_info->field_address['und'][0]['value'];
+  $transaction->city = $user_info->field_city['und'][0]['value'];
+  $transaction->state = $user_info->field_state['und'][0]['value'];
+  $transaction->zip = $user_info->field_zip['und'][0]['value'];
+  $transaction->phone = $user_info->field_phone['und'][0]['value'];
+  $transaction->email = $user_info->mail;
+
+  $response = $transaction->authorizeAndCapture();
+
+  // Encode the authorize.net response in json encoded format
+  $response_data = json_encode($response);
+
+  if ($response->approved) {
+    $payment_status = 1;
+    //  Save Record into data base in case transaction is successful
+    $inserted_oid = save_transaction_data($invoice_num, 0, $user->uid, $trans_amount, $_SESSION['ndsbs_payment']['rush_amount'], $response->transaction_id, $response_data, $payment_status, $shipping_info, $payment_method, $express_mail);
+
+    save_transaction_terms($inserted_oid, $main_report_id, $tmp_tid_cost, $user->uid, $payment_status);
+
+    //  Empty the cart in case of order is placed
+    delete_cart_items();
+
+    // Display thank you message to the client.
+    drupal_set_message(t('Thank you for placing your order with New Directions Substance and Behavioral Service! Please complete your questionnaire below to begin your assessment.'));
+
+    // Get transaction ID from the users_transactions table in database.
+    $result = db_query('SELECT ut.order_id, ut.uid FROM {users_transactions} ut WHERE ut.uid = :uid', array(':uid' => $user->uid));
+
+    foreach ($result as $record) {
+      $transaction_id = $record->order_id;
+    }
+
+    // New redirect after making a payment.
+    drupal_goto('user/payment/confirmation');
+
+    // Old redirect after making payment.
+    // drupal_goto('questionnaire/start/' . $nid . '/trans/' . $transaction_id . '/termid/' . $rec->tid);
+  }
+  else {
+    $payment_status = 0;
+
+    //  Save Record into data base in case transaction is fail
+    $inserted_oid = save_transaction_data($invoice_num, 0, $user->uid, $trans_amount, $_SESSION['ndsbs_payment']['rush_amount'], $response->transaction_id, $response_data, $payment_status, $shipping_info, $payment_method, $express_mail);
+    save_transaction_terms($inserted_oid, $main_report_id, $tmp_tid_cost, $user->uid, $payment_status);
+
+    // Record log message.
+    watchdog('Authorize.net Custom API', 'Error Msg: ' . $response->response_reason_text);
+
+    // Create a form error.
+    ndsbs_creditcard_payment_error_response($response);
+  }
+}
+
+function ndsbs_creditcard_payment_error_response($response) {
+  $response_code = $response->response_code;
+
+  switch ($response_code) {
+    case '2':
+      ndsbs_creditcard_payment_error_response_code_declined($response);
+      break;
+
+    case '3':
+      ndsbs_creditcard_payment_error_response_code_processing_error($response);
+      break;
+
+    case '4':
+      ndsbs_creditcard_payment_error_response_code_held_for_review($response);
+      break;
+  }
+
+  $text = ' Transaction ID: ' . $response->transaction_id . ' Response reason code: ' . $response_code;
+
+  // Record the error in system log.
+  watchdog('Authorize.net', $response->response_reason_text . $text);
+}
+
+function ndsbs_creditcard_payment_error_response_code_declined($response) {
+  $response_reason_code = $response->response_reason_code;
+  global $user;
+
+  switch ($response_reason_code) {
+    case '27':
+    case '127':
+      $text = 'The billing address for this card does not match our records. Please update your address <a href="/user/' . $user->uid . '/edit?destination=user/payment">here.</a>';
+      break;
+
+    case '28':
+      $text = 'Sorry, but we currently do not accept ' . $response->card_type . '. Please use a different card.';
+      break;
+
+    case '37':
+    case '315':
+      $text = 'The credit card number is invalid. Please re-enter your card details or try another card.';
+      break;
+
+    case '316':
+      $text = 'The credit card expiration date is invalid. Please re-enter your card details or try another card.';
+      break;
+
+    case '317':
+      $text = 'The credit card has expired. Please try another card.';
+      break;
+
+    case '318':
+      $text = 'A duplicate transaction has been submitted. Please try again in 2 minutes.';
+      break;
+
+    default:
+      $text = 'Your payment was declined. Please try another card or call us at <a href="tel:6148887274">614-888-7274</a> for further assistance.';
+      break;
+  }
+
+  form_set_error('payment_declined', $text);
+}
+
+function ndsbs_creditcard_payment_error_response_code_processing_error($response) {
+  $response_reason_code = $response->response_reason_code;
+
+  switch ($response_reason_code) {
+    case '6':
+      $text = 'The credit card number is invalid. Please re-enter your card details or try another card.';
+      break;
+
+    case '7':
+      $text = 'The credit card expiration date is invalid. Please re-enter your card details or try another card.';
+      break;
+
+    case '8':
+      $text = 'The credit card has expired. Please try another card.';
+      break;
+
+    case '11':
+      $text = 'A duplicate transaction has been submitted. Please try again in 2 minutes.';
+      break;
+
+    case '17':
+      $text = 'Sorry, but we currently do not accept ' . $response->card_type . '. Please use a different card.';
+      break;
+
+    case '19':
+    case '20':
+    case '21':
+    case '22':
+    case '23':
+    case '25':
+    case '26':
+    case '57':
+    case '58':
+    case '59':
+    case '60':
+    case '61':
+    case '62':
+    case '63':
+      $text = 'An error occurred while processing your payment. Please try again in 5 minutes.';
+      break;
+
+    case '36':
+      $text = 'Authorization was approved, but the payment was not settled. Please call <a href="tel:6148887274">614-888-7274</a> for further assistance.';
+      break;
+
+    case '49':
+      $text = 'The transaction amount submitted was greater than the maximum amount your card issuer allows. Please try a different card or call <a href="tel:6148887274">614-888-7274</a> for further assistance.';
+      break;
+
+    case '78':
+      $text = 'The security code (CVC) is invalid. Please re-enter your card details or try another card.';
+      break;
+
+    case '128':
+      $text = 'This transaction cannot be processed. Your financial institution does not currently allow transactions for this account. Please call your financial institution to resolve this issue. You can also call us at <a href="tel:6148887274">614-888-7274</a> for further assistance.';
+      break;
+
+    default:
+      $text = 'There was an error processing your payment. Please call <a href="tel:6148887274">614-888-7274</a> for further assistance.';
+  }
+
+  form_set_error('payment_processing_error', $text);
+}
+
+function ndsbs_creditcard_payment_error_response_code_held_for_review($response) {
+  $response_reason_code = $response->response_reason_code;
+
+  switch ($response_reason_code) {
+    case '295':
+      $text = 'The amount of this request was only partially approved on the given prepaid card. Additional payments are required to complete the balance of this transaction. Please call <a href="tel:6148887274">614-888-7274</a> for further assistance.';
+      break;
+
+    default:
+      $text = 'Your payment was accepted but is currently being held for review. Please call <a href="tel:6148887274">614-888-7274</a> for further assistance.';
+  }
+
+  form_set_error('payment_held_for_review', $text);
+}

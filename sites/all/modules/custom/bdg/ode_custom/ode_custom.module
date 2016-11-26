@@ -1,0 +1,108 @@
+<?php
+
+/**
+ * Implements hook_form_alter().
+ * Sets the default text format to the fallback format
+ * to prevent wysiwyg module from breaking views ui text areas.
+ */
+function ode_custom_form_views_ui_config_item_form_alter(&$form, &$form_state) {
+  if ($form['options']['content']['#format'] != 'php_code') {
+    $form['options']['content']['#format'] = 'full_html';
+  }
+}
+
+/**
+ * Implements hook_admin_paths_alter().
+ * Forces the default theme to be used on user edit pages.
+ * Otherwise the admin theme would be used.
+ */
+function ode_custom_admin_paths_alter(&$paths) {
+  $paths['user/*/cancel'] = FALSE;
+  $paths['user/*/devel'] = FALSE;
+  $paths['user/*/devel/*'] = FALSE;
+  $paths['user/*/edit'] = FALSE;
+  $paths['user/*/edit/*'] = FALSE;
+}
+
+/**
+ * Custom function to return list of orders for certain user.
+ */
+function ode_verify_order($user, $order_status = 'completed') {
+  $query = db_select('uc_orders', 'uo');
+  $query->addField('uo', 'order_id');
+  $query->addJoin('LEFT', 'uc_order_products', 'p', 'p.order_id = uo.order_id');
+  $query->addField('p', 'nid');
+  $query->condition('order_status', $order_status);
+  $query->condition('uid', $user->uid);
+  $result = $query->execute()->fetchAll();
+  return $result;
+}
+
+/**
+ * Custom function to return questionnaires and draft status for a certain user.
+ */
+function ode_verify_questionnaire($user) {
+  $query = db_select('webform_submissions', 'ws');
+  $query->addField('ws', 'sid');
+  $query->addField('ws', 'is_draft');
+  $query->condition('uid', $user->uid);
+  $result = $query->execute()->fetchAll();
+  return $result;
+}
+
+/**
+ * Custom function to return an interview request for a certain user.
+ */
+function ode_verify_interview($user) {
+  $query = db_select('node', 'nd');
+  $query->addField('nd', 'nid');
+  $query->condition('type', 'interview_request');
+  $query->condition('uid', $user->uid);
+  $result = $query->execute()->fetchAll();
+  return $result;
+}
+
+/**
+ * Custom function to return the interview status for a certain user.
+ */
+function ode_verify_interview_status() {
+  $query = db_select('field_data_field_interview_status', 'int_status');
+  $query->addField('int_status', 'entity_id');
+  $query->addField('int_status', 'field_interview_status_tid');
+  $result = $query->execute()->fetchAll();
+  return $result;
+}
+
+/**
+ * Custom function to return necessary documents for a certain user.
+ */
+function ode_verify_necessary_docs($user) {
+  $query = db_select('node', 'nd');
+  $query->addField('nd', 'nid');
+  $query->condition('type', 'necessary_document');
+  $query->condition('uid', $user->uid);
+  $result = $query->execute()->fetchAll();
+  return $result;
+}
+
+/**
+ * Custom function to return the necessary document status for a certain user.
+ */
+function ode_verify_necessary_docs_status() {
+  $query = db_select('field_data_field_document_status', 'doc_status');
+  $query->addField('doc_status', 'entity_id');
+  $query->addField('doc_status', 'field_document_status_value');
+  $result = $query->execute()->fetchAll();
+  return $result;
+}
+
+/**
+ * Custom function to determine if a certain user was uploaded a client report.
+ */
+function ode_verify_client_report_client() {
+  $query = db_select('field_data_field_client_name', 'client_name');
+  $query->addField('client_name', 'entity_id');
+  $query->addField('client_name', 'field_client_name_target_id');
+  $result = $query->execute()->fetchAll();
+  return $result;
+}

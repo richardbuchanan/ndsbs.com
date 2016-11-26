@@ -1,0 +1,7 @@
+name = BDG NDSBS
+description = Custom module for added site functionality. Developed at <a href="http://buchanandesigngroup.com" target="_blank">Buchanan Design Group</a>.
+core = 7.x
+version = 7.x-1.x-dev
+package = Buchanan Design Group
+
+stylesheets[all][] = css/bdg.ndsbs.css

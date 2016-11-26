@@ -1,0 +1,5 @@
+name = ODE Customizations
+description = This module is used for basic customizations that do not make sense as their own module. Review ode_custom.module for what this module provides.
+version = 7.x-1.0
+core = 7.x
+package = Buchanan Design Group

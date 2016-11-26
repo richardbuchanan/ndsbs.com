@@ -1,0 +1,797 @@
+<?php
+
+/**
+ * @file
+ * Custom module for ndsbs.com.
+ *
+ * This module allows us to have functions available throughout the Drupal
+ * backend. This is helpful when we need to call the functions from pages
+ * where the NDSBS theme is not used.
+ *
+ * This module and any files included with it are confidential and intended
+ * solely for Directions Counseling Group, Inc. and New Directions Substance and
+ * Behavioral Services staff/developers. If you have received these files in
+ * error please notify the main developer,
+ * richard_buchanan@buchanandesigngroup.com. If you are not the intended
+ * recipient you are notified that disclosing, copying, distributing or taking
+ * any action in reliance on the contents of this information is strictly
+ * prohibited and offenders will be prosecuted to the fullest extent of the law.
+ */
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function bdg_ndsbs_preprocess_textfield(&$variables) {
+  global $user;
+  $name = isset($variables['element']['#field_name']) ? $variables['element']['#field_name'] : '';
+
+  if (($name == 'field_phone' || $name == 'field_second_phone')) {
+    $variables['theme_hook_suggestions'][] = 'textfield__phone';
+  }
+  if ($name == 'field_first_name' || $name == 'field_last_name') {
+    $variables['element']['#default_value'] = '';
+    $variables['element']['#value'] = '';
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function bdg_ndsbs_questionnaire_theme() {
+  $items = array();
+  $items['questionnaire_start'] = array(
+    'render element' => 'form',
+    'template' => 'questionnaire_start',
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ *
+ * Define user permissions.
+ * This hook can supply permissions that the module defines, so that they can be
+ * selected on the user permissions page and used to grant or restrict access to
+ * actions the module performs.
+ *
+ * Permissions are checked using user_access().
+ *
+ * @see page_example.module
+ */
+function bdg_ndsbs_permission() {
+  return array(
+    'view therapist reports' => array(
+      'title' => t('View therapist reports'),
+      'description' => t('Allows users to view the custom therapist reports.'),
+    ),
+    'delete necessary documents' => array(
+      'title' => t('Delete necessary documents'),
+      'description' => t("Allows users to delete clients' necessary documents."),
+    ),
+    'manage staff accounts' => array(
+      'title' => t('Manage staff accounts'),
+      'description' => t('Allows users to manage accounts for staff members.'),
+    ),
+    'manage assessments' => array(
+      'title' => t('Manage assessments'),
+      'description' => t('Allows users to manage assessments.'),
+    ),
+    'manage testimonial statuses' => array(
+      'title' => t('Manage testimonial statuses'),
+      'description' => t('Allows users to manage whether a testimonial is displayed on the public testimonials page.'),
+    ),
+    'edit testimonial user name' => array(
+      'title' => t('Edit testimonial user name'),
+      'description' => t('Allows users to use their user name/initials, or a fictitious name/initials.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function bdg_ndsbs_menu() {
+  global $user, $base_url;
+  $items = array();
+
+  $items['admin/config/development/bdg-developer-modules'] = array(
+    'title' => 'Developer modules',
+    'description' => 'Disable/enable developer modules.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('bdg_ndsbs_developer_modules'),
+    'access arguments' => array('administer bdg admin paths settings'),
+    'access callback' => TRUE,
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['questionnaire/start/trans'] = array(
+    'title'           => 'My Assessment',
+    'description'     => 'Client\'s assessment',
+    'access callback' => 'user_is_logged_in',
+    'page callback'   => '_start_assessment_questionnaire',
+    'access arguments' => array('access content'),
+    'menu_name' => 'menu-client-navigation',
+  );
+
+  $items['state-map'] = array(
+    'title'           => 'Check My State',
+    'page callback'   => '_check_my_state',
+    'access arguments' => array('access content'),
+  );
+
+  $items['admin/MilEUGKz7QMDL7QfA1q0'] = array(
+    'title' => 'Try me first',
+    'page callback' => '_common_tasks',
+    'access arguments' => array('access dashboard'),
+  );
+
+  return $items;
+}
+
+function _common_tasks() {
+  module_disable(array('devel_themer'), TRUE);
+  drupal_flush_all_caches();
+  drupal_cron_run();
+  drupal_goto('admin/dashboard');
+}
+
+/**
+ * Callback for redirection to admin dashboard.
+ */
+function _bdg_ndsbs_redirect_all_assessment() {
+  drupal_goto('admin/dashboard');
+}
+
+/**
+ * Implements hook_exit().
+ *
+ * @see drupal_serve_page_from_cache()
+ */
+function bdg_ndsbs_exit($destination = NULL) {
+  if (drupal_page_is_cacheable()) {
+    $max_age = variable_get('page_cache_maximum_age');
+    drupal_add_http_header('Cache-Control', 'public, max-age=' . $max_age);
+  }
+}
+
+/**
+ * Implements hook_node_update().
+ */
+function bdg_ndsbs_node_update($node) {
+  menu_cache_clear_all();
+
+  if ($node->type == 'assessment') {
+    $loaded_node = node_load($node->nid, NULL, TRUE);
+    $cost = $loaded_node->field_primary_service_amount['und'][0]['value'];
+
+    if (isset($node->field_primary_service['und'][0]['tid'])) {
+      $term = taxonomy_term_load($node->field_primary_service['und'][0]['tid']);
+      $term->field_assessment_amount['und'][0]['value'] = $cost;
+      taxonomy_term_save($term);
+    }
+  }
+}
+
+/**
+ * Wrapper function for drupal_mail() to avoid extraneous code.
+ *
+ * @param string $from
+ *   The email account message is from.
+ * @param string $to
+ *   The email account message is to.
+ * @param string $subject
+ *   The subject line of the message.
+ * @param string $message
+ *   Message to send.
+ *
+ * @return bool
+ *   Returns whether the email was successfully sent.
+ *
+ * @throws \Exception
+ */
+function bdg_ndsbs_drupal_mail($from = 'default_from', $to = 'default_to', $subject, $message, $alert) {
+  if ($from == 'default_from') {
+    $from = variable_get('system_mail', 'info@ndsbs.com');
+  }
+  if ($to == 'default_to') {
+    $to = variable_get('system_mail', 'info@ndsbs.com');
+  }
+
+  $message = array(
+    'id' => 'bdg_ndsbs_special_invoice_request',
+    'module' => 'bdg_ndsbs',
+    'key' => 'special_invoice',
+    'to' => $to,
+    'from' => $from,
+    'subject' => $subject,
+    'body' => array($message),
+    'headers' => array(
+      'From' => $from,
+      'Sender' => $from,
+      'Return-Path' => $from,
+    ),
+  );
+
+  $system = drupal_mail_system('bdg_ndsbs_', microtime());
+  $message = $system->format($message);
+
+  if ($system->mail($message)) {
+    watchdog('mail', 'Special invoice request (from %from to %to) successfully sent.', array('%from' => $message['from'], '%to' => $message['to']), WATCHDOG_INFO);
+    drupal_set_message(t('@alert', array('@alert' => $alert)), 'status');
+    return TRUE;
+  }
+  else {
+    watchdog('mail', 'Error sending e-mail (from %from to %to). Called from bdg_ndsbs.module => bdg_ndsbs_drupal_mail: line 162', array('%from' => $message['from'], '%to' => $message['to']), WATCHDOG_ERROR);
+    drupal_set_message(t('Unable to send e-mail. Contact the site administrator if the problem persists.'), 'error');
+    return FALSE;
+  }
+}
+
+/**
+ * Function _list_all_assessment() define to call the theme.
+ */
+function _start_assessment_questionnaire() {
+  global $base_url, $user;
+  $assessment_url = is_array(get_purchased_questionnaire_assessment_list_leftpanel()) ? bdg_ndsbs_get_steps_page() : $base_url . '/view/assessment/status';
+  if (in_array('client', $user->roles) &&
+    !in_array('therapist', $user->roles) &&
+    !in_array('staff admin', $user->roles) &&
+    !in_array('developer', $user->roles) &&
+    !in_array('super admin', $user->roles)) {
+    drupal_goto($assessment_url);
+  }
+  elseif (in_array('client', $user->roles)) {
+    drupal_goto($assessment_url);
+  }
+  return theme('questionnaire_start');
+}
+
+/**
+ * Function _check_my_state() define to call the theme.
+ */
+function _check_my_state() {
+  $block = module_invoke('bdg_ndsbs', 'block_view', 'ndsbs_interactive_map');
+  $map = render($block['content']);
+  return $map;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function bdg_ndsbs_form_staff_profile_node_form_alter(&$form, &$form_state, $form_id) {
+  $form['actions']['submit']['#submit'][] = 'bdg_ndsbs_staff_profile_node_form_submit';
+}
+
+/**
+ * Callback function when submitting a staff profile node.
+ */
+function bdg_ndsbs_staff_profile_node_form_submit() {
+  $core = array('cache', 'cache_bootstrap', 'cache_filter', 'cache_page');
+  $cache_tables = array_merge(module_invoke_all('flush_caches'), $core);
+  foreach ($cache_tables as $table) {
+    cache_clear_all('*', $table, TRUE);
+  }
+}
+
+/**
+ * Form constructor for enabling and disabling developer modules.
+ *
+ * @see bdg_ndsbs_menu()
+ * @see system_settings_form()
+ *
+ * @ingroup forms
+ */
+function bdg_ndsbs_developer_modules() {
+  $form = array();
+  $form['bdg_ndsbs_developer_modules_heading'] = array(
+    '#markup' => '<h1>Developer modules</h1>',
+  );
+  $form['bdg_ndsbs_developer_modules_description'] = array(
+    '#markup' => '<p class="help">Developer modules aid in site development. The devel module allows rebuilding the theme registry and creating temporary content. The devel_themer module gives insight into Drupal functions and content in the theming layer. From this form you can either enable or disable these two modules with one click of a button!</p>',
+  );
+
+  if (module_exists('devel')) {
+    $form['bdg_ndsbs_developer_modules_disable'] = array(
+      '#markup' => '<p style="color: green;">' . t('Developer modules are enabled.') . '</p>',
+    );
+    $form['submit'] = array(
+      '#type' => 'submit',
+      '#value' => 'Disable developer modules',
+    );
+  }
+  else {
+    $form['bdg_ndsbs_developer_modules_enable'] = array(
+      '#markup' => '<p style="color: red;">' . t('Developer modules are not enabled.') . '</p>',
+    );
+    $form['submit'] = array(
+      '#type' => 'submit',
+      '#value' => 'Enable developer modules',
+    );
+  }
+  return $form;
+}
+
+/**
+ * Callback function for the developer modules form.
+ */
+function bdg_ndsbs_developer_modules_submit($form, &$form_state) {
+  if (module_exists('devel')) {
+    module_disable(array(
+      'devel',
+      'devel_themer',
+    ));
+    drupal_set_message('The devel module has been disabled.');
+    drupal_set_message('The devel_themer module has been disabled.');
+  }
+  else {
+    module_enable(array(
+      'devel',
+      'devel_themer',
+    ));
+    drupal_set_message('The devel module has been enabled.');
+    drupal_set_message('The devel_themer module has been enabled.');
+  }
+}
+
+/**
+ * Directions Counseling's Auth.net login ID.
+ *
+ * We only need to change this once if we hook into the Auth.net API SDK.
+ */
+function anet_php_sdk_login_id() {
+  return '6rj3W6DH';
+}
+
+/**
+ * Directions Counseling's Auth.net transaction key.
+ *
+ * We only need to change this once if we hook into the Auth.net API SDK.
+ */
+function anet_php_sdk_transaction_key() {
+  return '6V76uy73Mdv8Sdjv';
+}
+
+/**
+ * Prints the client's transaction ID from the users_transactions table.
+ */
+function bdg_ndsbs_therapist_reports_trans_id($uid) {
+  print db_query('SELECT transaction_id FROM {users_transactions} WHERE uid = :uid', array(':uid' => $uid))->fetchField();
+}
+
+/**
+ * Prints the client's assessment title from the users_transactions table.
+ */
+function bdg_ndsbs_therapist_reports_service($uid) {
+  $nid = db_query('SELECT nid FROM {users_transactions} WHERE uid = :uid', array(':uid' => $uid))->fetchField();
+  $node = node_load($nid);
+
+  if (isset($node->field_assessment_title['und'])) {
+    print $node->field_assessment_title['und'][0]['value'];
+  }
+}
+
+/**
+ * Returns the client's assessment title from the users_transactions table.
+ */
+function bdg_ndsbs_therapist_reports_service_title($uid) {
+  $nid = db_query('SELECT n.nid FROM {users_transactions} n WHERE n.uid = :uid', array(':uid' => $uid));
+  foreach ($nid as $index => $result) {
+    if ($result->nid != '3965') {
+      $nid = $result->nid;
+    }
+  }
+  $node = node_load($nid);
+  if (isset($node->field_assessment_title['und'][0]['value'])) {
+    return $node->field_assessment_title['und'][0]['value'];
+  }
+  else {
+    return '';
+  }
+}
+
+/**
+ * Prints the client's order date from the users_transactions table.
+ */
+function bdg_ndsbs_therapist_reports_order_date($uid) {
+  $order_date = db_query('SELECT order_date FROM {users_transactions} WHERE uid = :uid', array(':uid' => $uid))->fetchField();
+  if (!empty($order_date)) {
+    print date('m/d/y', $order_date);
+  }
+}
+
+/**
+ * Prints the client's transaction amount from the users_transactions table.
+ */
+function bdg_ndsbs_therapist_reports_transaction_amount($uid) {
+  $cost = db_query('SELECT cost FROM {users_transactions} WHERE uid = :uid', array(':uid' => $uid))->fetchField();
+  $rush_cost = db_query('SELECT rush_cost FROM {users_transactions} WHERE uid = :uid', array(':uid' => $uid))->fetchField();
+  $output = '$' . number_format($cost + $rush_cost, 2);
+  print $output;
+}
+
+/**
+ * Prints the client's therapist from the users_transactions table.
+ */
+function bdg_ndsbs_therapist_reports_therapist_uid($uid) {
+  $therapist = db_query('SELECT therapist FROM {users_transactions} WHERE uid = :uid', array(':uid' => $uid))->fetchField();
+  print $therapist;
+}
+
+/**
+ * Prints the client's therapist from the users_transactions table.
+ */
+function bdg_ndsbs_therapist_reports_therapist($uid) {
+  $therapist = db_query('SELECT therapist FROM {users_transactions} WHERE uid = :uid', array(':uid' => $uid))->fetchField();
+  if (!empty($therapist)) {
+    $user_fields = user_load($therapist);
+    $first_name = isset($user_fields->field_first_name['und']) ? $user_fields->field_first_name['und'][0]['value'] : '';
+    $last_name = isset($user_fields->field_last_name['und']) ? $user_fields->field_last_name['und'][0]['value'] : '';
+
+    $name = array(
+      $first_name,
+      $last_name,
+    );
+
+    if (is_array($name)) {
+      print implode(' ', $name);
+    }
+  }
+}
+
+/**
+ * Prints the client's refund amount from the node table.
+ */
+function bdg_ndsbs_therapist_reports_refund_amount($uid) {
+  $nid = db_query('SELECT nid FROM {node} WHERE uid = :uid', array(':uid' => $uid))->fetchField();
+  $node = node_load($nid);
+  print $node->uid['und'][0]['value'];
+}
+
+/**
+ * Gets user roles.
+ */
+function __get_roles() {
+  global $user;
+  return $user->roles;
+}
+
+/**
+ * Gets whether user has super admin role.
+ */
+function bdg_ndsbs_roles_super_admin() {
+  global $user;
+
+  if (in_array('super admin', $user->roles)) {
+    return TRUE;
+  }
+  else {
+    return FALSE;
+  }
+}
+
+/**
+ * Gets whether user has developer role.
+ */
+function bdg_ndsbs_roles_developer() {
+  global $user;
+
+  if (in_array('developer', $user->roles)) {
+    return TRUE;
+  }
+  else {
+    return FALSE;
+  }
+}
+
+/**
+ * Gets whether user has staff admin role.
+ */
+function bdg_ndsbs_roles_staff_admin() {
+  global $user;
+
+  if (in_array('staff admin', $user->roles)) {
+    return TRUE;
+  }
+  else {
+    return FALSE;
+  }
+}
+
+/**
+ * Gets whether user has therapist role.
+ */
+function bdg_ndsbs_roles_therapist() {
+  global $user;
+
+  if (in_array('therapist', $user->roles)) {
+    return TRUE;
+  }
+  else {
+    return FALSE;
+  }
+}
+
+/**
+ * Gets whether user has any staff role role.
+ */
+function bdg_ndsbs_staff() {
+  $super_admin = bdg_ndsbs_roles_super_admin();
+  $developer = bdg_ndsbs_roles_developer();
+  $staff_admin = bdg_ndsbs_roles_staff_admin();
+  $therapist = bdg_ndsbs_roles_therapist();
+
+  if ($super_admin || $developer || $staff_admin || $therapist) {
+    return TRUE;
+  }
+
+  else {
+    return FALSE;
+  }
+}
+
+/**
+ * Gets assigned therapist.
+ */
+function bdg_ndsbs_assigned_therapist($uid) {
+  $therapist = db_query('SELECT therapist FROM {users_transactions} WHERE uid = :uid', array(':uid' => $uid))->fetchField();
+  if (!empty($therapist)) {
+    return $therapist;
+  }
+}
+
+/**
+ * Gets the steps the client is currently at.
+ */
+function bdg_ndsbs_get_steps_page() {
+  global $base_url, $user;
+  $client = isset($user->roles[6]);
+
+  if (isset($_SESSION['COMPLETE_MY_QUESTIONNAIRE'])) {
+    $get_assessment_id = explode('/', $_SESSION['COMPLETE_MY_QUESTIONNAIRE']);
+    $transid_selected = $get_assessment_id[4];
+  }
+
+  $data_left_asment = get_purchased_questionnaire_assessment_list_leftpanel();
+
+  foreach ($data_left_asment as $key => $item) {
+    if ($item['assessment_node_id'] == '3965') {
+      unset($data_left_asment[$key]);
+    }
+  }
+
+  $assmnt_purchase_staus = 0;
+
+  if (user_is_logged_in()) {
+    if (get_purchased_questionnaire_assessment_list_leftpanel()) {
+      foreach ($data_left_asment as $dataleft_asment) {
+        $assmnt_purchase_staus = 1;
+
+        if (isset($dataleft_asment['assessment_node_id'])) {
+          return $base_url . '/questionnaire/start/' . $dataleft_asment['assessment_node_id'] . '/trans/' . $dataleft_asment['transaction_id'] . '/termid/' . $dataleft_asment['term_id'];
+        }
+        else {
+          return $base_url . '/view/assessment/status';
+        }
+      }
+    }
+    else {
+      return $base_url . '/view/assessment/status';
+    }
+  }
+  else {
+    return 'anonymous-user';
+  }
+}
+
+/**
+ * Gets steps page user is currently on without a base url.
+ */
+function bdg_ndsbs_get_steps_page_no_base_url() {
+  global $user;
+  $client = isset($user->roles[6]);
+
+  if (isset($_SESSION['COMPLETE_MY_QUESTIONNAIRE'])) {
+    $get_assessment_id = explode('/', $_SESSION['COMPLETE_MY_QUESTIONNAIRE']);
+    $transid_selected = $get_assessment_id[4];
+  }
+
+  $data_left_asment = get_purchased_questionnaire_assessment_list_leftpanel();
+
+  foreach ($data_left_asment as $key => $item) {
+    if ($item['assessment_node_id'] == '3965') {
+      unset($data_left_asment[$key]);
+    }
+  }
+
+  $assmnt_purchase_staus = 0;
+
+  if ($client) {
+    foreach ($data_left_asment as $dataleft_asment) {
+      $assmnt_purchase_staus = 1;
+
+      if (isset($dataleft_asment['assessment_node_id'])) {
+        return 'questionnaire/start/' . $dataleft_asment['assessment_node_id'] . '/trans/' . $dataleft_asment['transaction_id'] . '/termid/' . $dataleft_asment['term_id'];
+      }
+      else {
+        return 'view/assessment/status';
+      }
+    }
+  }
+  else {
+    return '0';
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function bdg_ndsbs_form_menu_edit_item_alter(&$form, &$form_state, $form_id) {
+  // Add a class field to the form so we can assign specific classes to each
+  // menu item.
+  // @see https://api.drupal.org/api/drupal/developer!topics!forms_api_reference.html/7
+  $form['link_class'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Link class'),
+    '#description' => 'The class to be used for this link, which will be added to the menu item for theming purposes. You can enter multiple classes, separating each with a space.',
+    '#weight' => 0.003,
+    '#default_value' => variable_get('link_class', ''),
+  );
+  $form['#validate'][] = 'bdg_ndsbs_menu_item_validate';
+  $form['#submit'][] = 'bdg_ndsbs_menu_item_submit';
+}
+
+/**
+ * Callback to validate menu items.
+ */
+function bdg_ndsbs_menu_item_validate($form, &$form_state) {
+  if ($error) {
+    form_set_error('link_class', 'test validation');
+  }
+}
+
+/**
+ * Callback when submitting menu items.
+ */
+function bdg_ndsbs_menu_item_submit($form, &$form_state) {
+  // Save the new value.
+  variable_set('link_class', $form_state['values']['link_class']);
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function bdg_ndsbs_block_info() {
+  $blocks = array();
+
+  // Create a copyright block.
+  $blocks['ndsbs_copyright'] = array(
+    'info' => t('NDSBS copyright'),
+  );
+
+  // Create a main menu block.
+  $blocks['ndsbs_main_menu'] = array(
+    'info' => t('NDSBS main menu'),
+  );
+
+  // Create interactive map block.
+  $blocks['ndsbs_interactive_map'] = array(
+    'info' => t('NDSBS Interactive Map'),
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function bdg_ndsbs_block_view($delta = '') {
+  global $_bdg_maps_states;
+  $block = array();
+
+  // Define the rendering of custom blocks.
+  switch ($delta) {
+    case 'ndsbs_copyright':
+      $block['subject'] = '';
+      $block['content'] = _ndsbs_copyright_content();
+      break;
+
+    case 'ndsbs_main_menu':
+      $block['subject'] = '';
+      $block['content'] = _ndsbs_main_menu_content();
+      break;
+
+    case 'ndsbs_interactive_map':
+      $line_one = array();
+      $line_two = array();
+      $line_three = array();
+      $line_four = array();
+
+      foreach ($_bdg_maps_states as $abbr => $state) {
+        $abbr_lower = strtolower($abbr);
+        $line_one[$abbr] = variable_get($abbr_lower . '_line_one');
+        $line_two[$abbr] = variable_get($abbr_lower . '_line_two');
+        $line_three[$abbr] = variable_get($abbr_lower . '_line_three');
+        $line_four[$abbr] = variable_get($abbr_lower . '_line_four');
+      }
+
+      $id = 'interactive-map';
+      $block['subject'] = '';
+      $block['content'] = array(
+        '#markup' => _ndsbs_interactive_map_content($id),
+        '#attached' => array(
+          'css' => array(),
+          'js' => array(
+            drupal_get_path('module', 'bdg_ndsbs') . '/us-map/lib/raphael.js',
+            drupal_get_path('module', 'bdg_ndsbs') . '/us-map/jquery.usmap.js',
+            drupal_add_js(array(
+              'bdg_ndsbs' => array(
+                'accepted' => $accepted,
+                'line_one' => $line_one,
+                'line_two' => $line_two,
+                'line_three' => $line_three,
+                'line_four' => $line_four,
+                'global_states' => $_bdg_maps_states,
+              ),
+            ),
+              array(
+                'type' => 'setting',
+              )
+            ),
+          ),
+        ),
+      );
+      break;
+  }
+
+  return $block;
+}
+
+/**
+ * Sets the copyright date and wording.
+ */
+function _ndsbs_copyright_content() {
+  $years = '&copy; 2008-' . date('Y');
+  $output = "<small>$years www.ndsbs.com, All rights reserved</small>";
+  return $output;
+}
+
+/**
+ * Outputs the main menu for the footer.
+ */
+function _ndsbs_main_menu_content() {
+  $tree = menu_tree_all_data(variable_get('menu_footer_menu_links_source', 'menu-footer-menu'), NULL, 2);
+  $menu = menu_tree_output($tree);
+  return drupal_render($menu);
+}
+
+/**
+ * Outputs the interactive map content.
+ */
+function _ndsbs_interactive_map_content($id) {
+  // @see https://newsignature.github.io/us-map
+  $output = '<div id="' . $id . '"></div>';
+  return $output;
+}
+
+/**
+ * Returns the age when given almost any English textual datetime PHP string.
+ *
+ * @param string $dob
+ *   The English textual datetime description to parse using strtotime().
+ * @param string $text
+ *   The text to include after the calculated age, such as " years old".
+ *
+ * @return string
+ *   Returns the calculated age, plus any additional text to append to the age.
+ */
+function get_age($dob, $text = '') {
+  return floor((time() - strtotime($dob)) / 31556926) . $text;
+}
+
+/**
+ * Creates a personal contact page for therapists.
+ */
+function bdg_ndsbs_personal_contact_form($account) {
+  module_load_include('inc', drupal_get_path('module', 'contact') . '/contact.pages');
+  return drupal_get_form('contact_personal_form', $account);
+}

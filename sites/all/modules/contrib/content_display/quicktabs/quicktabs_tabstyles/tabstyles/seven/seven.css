@@ -1,0 +1,80 @@
+/**
+ * Recreation of Seven theme's vertical-tabs.css for quicktabs.
+ */
+.quicktabs-wrapper.quicktabs-style-seven {
+  background: #fff url(images/fc.png) repeat-y 0 0; /* LTR */
+  border: 1px solid #ccc;
+  margin: 10px 0;
+  position: relative;
+}
+.quicktabs-wrapper.quicktabs-style-seven div.quicktabs-tabpage {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+.quicktabs-wrapper.quicktabs-style-seven ul.quicktabs-tabs {
+  border-bottom: 1px solid #ccc;
+  float: left; /* LTR */
+  font-size: 1em;
+  line-height: 1;
+  margin: 0 -100% -1px 0; /* LTR */
+  padding: 0;
+  width: 240px;
+}
+.quicktabs-wrapper.quicktabs-style-seven ul.quicktabs-tabs li {
+  list-style: none;
+  list-style-image: none;
+  margin: 0;
+}
+.quicktabs-wrapper.quicktabs-style-seven ul.quicktabs-tabs li a {
+  border-top: 1px solid #ccc;
+  color: #777;
+  display: block;
+  font-size: 0.923em;
+  font-weight: bold;
+  padding: 10px;
+}
+.quicktabs-wrapper.quicktabs-style-seven ul.quicktabs-tabs li.first a {
+  border-top: 0;
+}
+.quicktabs-wrapper.quicktabs-style-seven ul.quicktabs-tabs li a:hover,
+.quicktabs-wrapper.quicktabs-style-seven ul.quicktabs-tabs li a:focus {
+  background: #d5d5d5;
+  text-decoration: none;
+  outline: 0;
+}
+.quicktabs-wrapper.quicktabs-style-seven ul.quicktabs-tabs li.active a,
+.quicktabs-wrapper.quicktabs-style-seven ul.quicktabs-tabs li.active a:hover,
+.quicktabs-wrapper.quicktabs-style-seven ul.quicktabs-tabs li.active a:focus,
+.quicktabs-wrapper.quicktabs-style-seven ul.quicktabs-tabs li.active a:active {
+  background: #fff;
+  border-right-color: #fff; /* LTR */
+  border-top: 1px solid #ccc;
+  color: #0074bd;
+}
+.quicktabs-wrapper.quicktabs-style-seven ul.quicktabs-tabs li.first.active a,
+.quicktabs-wrapper.quicktabs-style-seven ul.quicktabs-tabs li.first.active a:hover {
+  border-top: 0;
+}
+.quicktabs-wrapper.quicktabs-style-seven .quicktabs_main {
+  margin: 0 0 0 265px; /* LTR */
+  padding: 10px 15px 10px 0; /* LTR */
+}
+.quicktabs-wrapper.quicktabs-style-seven .quicktabs-tabpage .block > div:first-child {
+  padding-top: 5px;
+}
+/**
+ * Prevent text inputs from overflowing when container is too narrow. "width" is
+ * applied to override hardcoded cols or size attributes and used in conjunction
+ * with "box-sizing" to prevent box model issues from occurring in most browsers.
+ */
+.quicktabs-wrapper.quicktabs-style-seven .form-type-textfield input {
+  width: 100%;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+* html .quicktabs-wrapper.quicktabs-style-seven .form-type-textfield,
+* html .quicktabs-wrapper.quicktabs-style-seven .form-textarea-wrapper {
+  width: 95%; /* IE6 */
+}

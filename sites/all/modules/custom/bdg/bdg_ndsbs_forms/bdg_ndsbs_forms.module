@@ -1,0 +1,14 @@
+<?php
+
+/**
+ * Implements hook_theme().
+ */
+function bdg_ndsbs_forms_theme($existing, $type, $theme, $path) {
+  return array(
+    'list_all_client' => array(
+      'render element' => 'form',
+      'path' => drupal_get_path('module', 'bdg_ndsbs_forms') . '/inc',
+      'template' => 'inc/bdg-ndsbs-forms.list-all-clients.inc',
+    ),
+  );
+}

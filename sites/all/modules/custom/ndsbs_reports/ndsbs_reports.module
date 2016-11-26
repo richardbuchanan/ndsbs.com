@@ -1,0 +1,2779 @@
+<?php
+/**
+ * @file
+ * Module name ndsbs_reports.module.
+ *
+ * Finoit Technologies
+ * Developer krishna@finoit.com
+ * Allows developer to customize the site's functionality.
+ */
+
+/**
+ * Implements hook_permission().
+ */
+function ndsbs_reports_permission() {
+  return array(
+    'view own therapist report' => array(
+      'title' => t('View own therapist report'),
+      'description' => t('Users with this permission may view their own therapist report.'),
+      'restrict access' => TRUE,
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function ndsbs_reports_menu() {
+  $items = array();
+
+  $items['user/report/request'] = array(
+    'title' => 'Request for Reports',
+    'description' => 'Request for Reports',
+    'access callback' => 'user_is_logged_in',
+    'page callback' => '_request_for_reports',
+    'access arguments' => array('access content'),
+  );
+  $items['reports/terminfo'] = array(
+    'title' => 'Reports',
+    'description' => 'Reports',
+    'access callback' => 'user_is_logged_in',
+    'page callback' => '_update_cart',
+    'access arguments' => array('access content'),
+  );
+  $items['report/cart/delete/cid/%'] = array(
+    'title' => 'Request for Reports',
+    'description' => 'Request for Reports',
+    'access callback' => 'user_is_logged_in',
+    'page callback' => 'delete_cart_items_reports',
+    'page arguments' => array(4),
+    'access arguments' => array('access content'),
+  );
+  $items['reports/saveaddress'] = array(
+    'title' => 'Shipping Address',
+    'description' => 'Shipping Address',
+    'access callback' => 'user_is_logged_in',
+    'page callback' => '_update_cart_shipping_address',
+    'access arguments' => array('access content'),
+  );
+  $items['users/view/reports'] = array(
+    'title' => 'Clients Reports',
+    'description' => 'Shipping Address',
+    'access callback' => 'request_permission',
+    'page callback' => '_view_clients_reports',
+    'access arguments' => array('access content'),
+  );
+  $items['save/paperwork/verification'] = array(
+    'title' => 'Save Paperwork',
+    'description' => 'Save Paperwork',
+    'access callback' => 'request_permission',
+    'page callback' => 'save_paperwork_verification_form',
+    'access arguments' => array('access content'),
+  );
+  $items['save/stateform/verification'] = array(
+    'title' => 'Save Stateform',
+    'description' => 'Save Stateform',
+    'access callback' => 'request_permission',
+    'page callback' => 'save_stateform_verification_form',
+    'access arguments' => array('access content'),
+  );
+  $items['save/assessmentform/verification'] = array(
+    'title' => 'Save Assessment',
+    'description' => 'Save Assessment',
+    'access callback' => 'request_permission',
+    'page callback' => 'save_assessment_verification_form',
+    'access arguments' => array('access content'),
+  );
+  $items['user/requested/reports'] = array(
+    'title' => 'Requested Reports',
+    'description' => 'Requested Reports',
+    'access callback' => 'user_is_logged_in',
+    'page callback' => '_user_requested_reports',
+    'access arguments' => array('access content'),
+  );
+  $items['all/other/reports'] = array(
+    'title' => 'All Other Documents',
+    'description' => 'All Other Documents',
+    'access callback' => 'request_permission',
+    'page callback' => '_user_all_other_reports',
+    'access arguments' => array('access content'),
+  );
+  $items['generate/user/report'] = array(
+    'title' => 'Generate Report',
+    'description' => 'Generate Report',
+    'access callback' => 'request_permission',
+    'page callback' => '_get_generate_user_report_form',
+    'access arguments' => array('access content'),
+  );
+  $items['generate/report/format'] = array(
+    'title' => 'Report Format',
+    'description' => 'Report Format',
+    'access callback' => 'request_permission',
+    'page callback' => '_get_user_report_format',
+    'access arguments' => array('access content'),
+  );
+  $items['download/report'] = array(
+    'title' => 'Download Report',
+    'description' => 'Download Report',
+    'page callback' => '_download_client_report',
+    'access arguments' => array('access content'),
+  );
+  $items['send/attachment'] = array(
+    'title' => 'Send Attachment',
+    'description' => 'Send Attachment',
+    'page callback' => 'ndsbs_reports_send_attachment_mail',
+    'access arguments' => array('access content'),
+  );
+  $items['user/expressmail'] = array(
+    'title' => 'Express Mail',
+    'description' => 'Express Mail',
+    'access callback' => 'user_is_logged_in',
+    'page callback' => 'overnight_express_mail',
+    'access arguments' => array('access content'),
+  );
+  $items['users/stateform/report'] = array(
+    'title' => 'User State Form List',
+    'description' => 'User State Form List',
+    'access callback' => 'request_permission',
+    'page callback' => '_users_stateform_report',
+    'access arguments' => array('access content'),
+  );
+  $items['users/other/report/orderid/%/oid/%'] = array(
+    'title' => 'User State Form List',
+    'description' => 'User State Form List',
+    'access callback' => 'request_permission',
+    'page callback' => '_users_other_report',
+    'access arguments' => array('access content'),
+  );
+  $items['generate/other/report'] = array(
+    'title' => 'Save Stateform',
+    'description' => 'Save Stateform',
+    'access callback' => 'request_permission',
+    'page callback' => 'generate_other_report',
+    'access arguments' => array('access content'),
+  );
+  $items['request/therapist-report/individual'] = array(
+    'title' => 'My Therapist Report',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('ndsbs_reports_therapist_report_individual'),
+    'access arguments' => array('view own therapist report'),
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function ndsbs_reports_theme() {
+  $items = array();
+
+  $items['request_for_reports'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'request_for_reports',
+  );
+  $items['clients_view_reports'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'clients_view_reports',
+  );
+  $items['user_requested_reports'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'user_requested_reports',
+  );
+  $items['user_all_other_reports'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'user_all_other_reports',
+  );
+  $items['generate_user_report_form'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'generate_user_report_form',
+  );
+  $items['user_report_format'] = array(
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'user_report_format',
+  );
+  $items['overnight_express_mail'] = array(
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'overnight_express_mail',
+  );
+  $items['report_format_node_form'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'report_format_node_form',
+  );
+  $items['users_stateform_report'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'users_stateform_report',
+  );
+  $items['users_other_report'] = array(
+    'variables' => array(),
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'users_other_report',
+  );
+
+  return $items;
+}
+
+/**
+ * Constructs a therapist report for the logged in therapist.
+ *
+ * Our menu maps this function to the path
+ * 'request/therapist-reports/list/beta'.
+ */
+function ndsbs_reports_therapist_report_individual() {
+  global $user;
+  $therapist_date_range = variable_get('therapist_transactions_' . $user->uid);
+  $date_range = $therapist_date_range ? $therapist_date_range : mktime(0, 0, 0, date('m'), 1, date('Y'));
+  $date_range_start = strtotime(date('Y-m-01', $date_range));
+  $date_range_end = strtotime(date('Y-m-t', $date_range));
+
+  $query = db_select('users_transactions', 'ut');
+  $options = array();
+
+  // Define the rows as an array.
+  $rows = array();
+
+  // Build the table header.
+  $header = array(
+    'client' => t('Client Details'),
+    'transaction' => t('Transaction Details'),
+    'order_date' => t('Order Date'),
+    'total' => t('Transaction Amount'),
+  );
+
+  $query->fields('ut', array(
+    'order_id',
+    'nid',
+    'uid',
+    'cost',
+    'rush_cost',
+    'payment_status',
+    'order_date',
+    'transaction_id',
+    'client_request',
+    'therapist',
+  ));
+
+  $records = $query->execute();
+
+  // Provide a default date in the format YYYY-MM-DD HH:MM:SS.
+  $default_date = date("Y-m-d H:i:s", $date_range);
+
+  $form['options'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Transaction options'),
+  );
+  $form['options']['transaction_dates'] = array(
+    '#type' => 'date_select',
+    '#title' => t('Change date range'),
+    '#title_display' => 'invisible',
+    '#default_value' => $default_date,
+    '#date_type' => DATE_DATETIME,
+    '#date_format' => 'M Y',
+    '#date_year_range' => '2013:0',
+    '#attributes' => array(
+      'class' => array('pull-left'),
+    ),
+    '#required' => TRUE,
+  );
+
+  $footer_cost = 0;
+  $footer_rush = 0;
+  $footer_refund = 0;
+
+  foreach ($records as $record) {
+    $access = $user->uid === $record->therapist;
+    $status = $record->payment_status;
+
+    // Only continue of the payment status was okay and the therapist has access
+    // to the record.
+    if ($status && $access) {
+      $order_date = $record->order_date;
+      $client_details = array();
+      $therapist_details = array();
+      $transaction_details = array();
+      $transaction_cost = array();
+
+      if ($order_date >= $date_range_start && $order_date <= $date_range_end) {
+        $has_refund = FALSE;
+        $refund_query = new EntityFieldQuery();
+        $entities = $refund_query->entityCondition('entity_type', 'node')
+          ->entityCondition('bundle', 'refund_payment')
+          ->propertyCondition('uid', $record->uid)
+          ->execute();
+        $nodes = node_load_multiple(array_keys($entities['node']));
+
+        foreach ($nodes as $node) {
+          if ($node->field_request_status['und'][0]['value']) {
+            $has_refund = TRUE;
+          }
+        }
+
+        // Create human-readable date.
+        $order_date = format_date($record->order_date, $type = 'custom', $format = 'F j, Y');
+
+        // Load the client's information into an array.
+        $client = user_load($record->uid);
+        $client_fn = ucfirst($client->field_first_name['und'][0]['value']);
+        $client_ln = ucfirst($client->field_last_name['und'][0]['value']);
+        $client_details[] = $client_fn . ' ' . $client_ln;
+        $client_details[] = $client->field_phone['und'][0]['value'];
+        $client_details[] = $client->mail;
+
+        // Load the client's assigned therapist information into an array.
+        $assigned_therapist = user_load($record->therapist);
+        $assigned_therapist_fn = ucfirst($assigned_therapist->field_first_name['und'][0]['value']);
+        $assigned_therapist_ln = ucfirst($assigned_therapist->field_last_name['und'][0]['value']);
+        $assigned_therapist_name = !empty($assigned_therapist_fn) ? $assigned_therapist_fn . ' ' . $assigned_therapist_ln : 'Unassigned';
+        $client_details[] = '<b>Therapist:</b> ' . $assigned_therapist_name;
+
+        // Load the transaction details into an array.
+        $assessment = node_load($record->nid);
+        $transaction_details[] = '<b>Transaction ID:</b> ' . $record->transaction_id;
+        $transaction_details[] = '<b>Service:</b> ' . $assessment->title;
+
+        if ($has_refund) {
+          $transaction_details[] = '<span class="text-danger"><b>SERVICE REFUNDED</b></span>';
+        }
+
+        // Load the transaction amounts.
+        $refund_cost = 0;
+        $rush_class = $record->rush_cost > 0 ? ' text-success' : '';
+        $transaction_cost[] = '<span class="pull-left"><b>Assessment:</b></span><span class="pull-right">$' . $record->cost . '</span>';
+        $transaction_cost[] = '<span class="pull-left' . $rush_class . '"><b>Rush service:</b></span><span class="pull-right' . $rush_class . '">$' . $record->rush_cost . '</span>';
+
+        $total_cost = $record->cost + $record->rush_cost;
+
+        if ($has_refund) {
+          $refund_cost = -$total_cost;
+        }
+
+        $total_cost = number_format($total_cost + $refund_cost, 2);
+        $refund_class = $refund_cost ? ' text-danger' : '';
+        $transaction_cost[] = '<span class="pull-left' . $refund_class . '"><b>Refund:</b></span><span class="pull-right' . $refund_class . '">$' . number_format($refund_cost, 2) . '</span>';
+        $transaction_cost[] = '<span class="pull-left"><b>Total:</b></span><span class="pull-right">$' . $total_cost . '</span>';
+
+        // Build the options for the current row.
+        $rows[$record->order_id] = array(
+          'client' => implode('<br>', $client_details),
+          'transaction' => implode('<br>', $transaction_details),
+          'order_date' => $order_date,
+          'total' => implode('<br>', $transaction_cost),
+        );
+
+        // Add totals to the footer.
+        $footer_cost = $footer_cost + $record->cost;
+        $footer_rush = $footer_rush + $record->rush_cost;
+        $footer_refund = $footer_refund + $refund_cost;
+      }
+    }
+  }
+
+  $form['options']['transaction_dates'] = array(
+    '#type' => 'date_select',
+    '#title' => t('Change date range'),
+    '#title_display' => 'invisible',
+    '#default_value' => $default_date,
+    '#date_type' => DATE_DATETIME,
+    '#date_format' => 'M Y',
+    '#date_year_range' => '2013:0',
+    '#attributes' => array(
+      'class' => array('pull-left'),
+    ),
+    '#required' => TRUE,
+  );
+  $form['options']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Update'),
+    '#submit' => array('therapist_report_individual_callback'),
+  );
+
+  // Only add a table footer if the rows are populated.
+  if ($rows) {
+    // Format the table footer.
+    $footer_totals = array(
+      'cost' => '<div class="text-success"><span class="pull-left"><b>Assessments:</b></span><span class="pull-right">$' . number_format($footer_cost, 2) . '</span></div>',
+      'rush' => '<div class="text-success"><span class="pull-left"><b>Rush services:</b></span><span class="pull-right">$' . number_format($footer_rush, 2) . '</span></div>',
+      'refund' => '<div class="text-danger"><span class="pull-left"><b>Refunds:</b></span><span class="pull-right">$' . number_format($footer_refund, 2) . '</span></div>',
+      'total' => '<div class="text-success"><span class="pull-left"><b>Monthly total:</b></span><span class="pull-right">$' . number_format($footer_cost + $footer_rush + $footer_refund, 2) . '</span></div>',
+    );
+
+    // Drupal 7 does not have a way to add the table footer as a tfoot element.
+    // So we add a new row to the bottom of the table to act as the footer.
+    $rows['tfoot'] = array(
+      'data' => array(
+        array(
+          'data' => '',
+          'colspan' => 3,
+        ),
+        implode('<br>', $footer_totals),
+      ),
+    );
+  }
+
+  // Build the table to add to the form.
+  $form['transactions'] = array(
+    '#type' => 'table',
+    '#header' => $header,
+    '#rows' => $rows,
+    '#caption' => '<h3>' . date('F Y', $date_range_start) . ' Transactions</h3>',
+    '#empty' => t('No transactions available.'),
+  );
+
+  $form['#attributes']['class'][] = 'therapist-reports-form';
+  return $form;
+}
+
+/**
+ * Therapist report callback (individual).
+ *
+ * @param array $form
+ *   Nested array of form elements that comprise the form.
+ * @param array $form_state
+ *   A keyed array containing the current state of the form.
+ *
+ * @return array
+ *   Returns form elements to be rendered by Drupal.
+ */
+function therapist_report_individual_callback($form, $form_state) {
+  global $user;
+  $therapist_date_range = 'therapist_transactions_' . $user->uid;
+
+  // The form has already been submitted and updated. We can return the replaced
+  // item as it is.
+  $month = $form_state['complete form']['options']['transaction_dates']['#value']['month'];
+  $year = $form_state['complete form']['options']['transaction_dates']['#value']['year'];
+  variable_set($therapist_date_range, mktime(0, 0, 0, $month, 1, $year));
+  return $form;
+}
+
+/**
+ * Constructs a therapist report for all therapists.
+ */
+function ndsbs_reports_therapist_reports() {
+  global $user;
+  $therapist_date_range = variable_get('therapist_transactions_all_dates_' . $user->uid);
+  $filter_therapist = variable_get('therapist_transactions_all_therapist_' . $user->uid);
+  $date_range = $therapist_date_range ? $therapist_date_range : mktime(0, 0, 0, date('m'), 1, date('Y'));
+  $date_range_start = strtotime(date('Y-m-01', $date_range));
+  $date_range_end = strtotime(date('Y-m-t', $date_range));
+
+  $query = db_select('users_transactions', 'ut');
+  $options = array();
+
+  // Define the rows as an array.
+  $rows = array();
+
+  // Build the table header.
+  $header = array(
+    'client' => t('Client Details'),
+    'transaction' => t('Transaction Details'),
+    'order_date' => t('Order Date'),
+    'total' => t('Transaction Amount'),
+  );
+
+  $query->fields('ut', array(
+    'order_id',
+    'nid',
+    'uid',
+    'cost',
+    'rush_cost',
+    'payment_status',
+    'order_date',
+    'transaction_id',
+    'client_request',
+    'therapist',
+  ));
+
+  $records = $query->execute();
+
+  // Provide a default date in the format YYYY-MM-DD HH:MM:SS.
+  $default_date = date("Y-m-d H:i:s", $date_range);
+
+  $form['options'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Transaction options'),
+  );
+  $form['options']['transaction_dates'] = array(
+    '#type' => 'date_select',
+    '#title' => t('Change date range'),
+    '#title_display' => 'invisible',
+    '#default_value' => $default_date,
+    '#date_type' => DATE_DATETIME,
+    '#date_format' => 'M Y',
+    '#date_year_range' => '2013:0',
+    '#attributes' => array(
+      'class' => array('pull-left'),
+    ),
+    '#required' => TRUE,
+  );
+
+  $footer_cost = 0;
+  $footer_rush = 0;
+  $footer_refund = 0;
+
+  foreach ($records as $record) {
+    $access = $user->uid === $record->therapist;
+    $status = $record->payment_status;
+
+    // Only continue of the payment status was okay and the therapist has access
+    // to the record.
+    if ($status && (!$filter_therapist || $record->therapist == $filter_therapist)) {
+      $order_date = $record->order_date;
+      $client_details = array();
+      $therapist_details = array();
+      $transaction_details = array();
+      $transaction_cost = array();
+
+      if ($order_date >= $date_range_start && $order_date <= $date_range_end) {
+        $has_refund = FALSE;
+        $refund_query = new EntityFieldQuery();
+        $entities = $refund_query->entityCondition('entity_type', 'node')
+          ->entityCondition('bundle', 'refund_payment')
+          ->propertyCondition('uid', $record->uid)
+          ->execute();
+        $nodes = node_load_multiple(array_keys($entities['node']));
+
+        foreach ($nodes as $node) {
+          if ($node->field_request_status['und'][0]['value']) {
+            $has_refund = TRUE;
+          }
+        }
+
+        // Create human-readable date.
+        $order_date = format_date($record->order_date, $type = 'custom', $format = 'F j, Y');
+
+        // Load the client's information into an array.
+        $client = user_load($record->uid);
+        $client_fn = ucfirst($client->field_first_name['und'][0]['value']);
+        $client_ln = ucfirst($client->field_last_name['und'][0]['value']);
+        $client_details[] = $client_fn . ' ' . $client_ln;
+        $client_details[] = $client->field_phone['und'][0]['value'];
+        $client_details[] = $client->mail;
+
+        // Load the client's assigned therapist information into an array.
+        $assigned_therapist = user_load($record->therapist);
+        $assigned_therapist_fn = ucfirst($assigned_therapist->field_first_name['und'][0]['value']);
+        $assigned_therapist_ln = ucfirst($assigned_therapist->field_last_name['und'][0]['value']);
+        $assigned_therapist_name = !empty($assigned_therapist_fn) ? $assigned_therapist_fn . ' ' . $assigned_therapist_ln : 'Unassigned';
+        $client_details[] = '<b>Therapist:</b> ' . $assigned_therapist_name;
+
+        // Load the transaction details into an array.
+        $assessment = node_load($record->nid);
+        $transaction_details[] = '<b>Transaction ID:</b> ' . $record->transaction_id;
+        $transaction_details[] = '<b>Service:</b> ' . $assessment->title;
+
+        if ($has_refund) {
+          $transaction_details[] = '<span class="text-danger"><b>SERVICE REFUNDED</b></span>';
+        }
+
+        // Load the transaction amounts.
+        $refund_cost = 0;
+        $rush_class = $record->rush_cost > 0 ? ' text-success' : '';
+        $transaction_cost[] = '<span class="pull-left"><b>Assessment:</b></span><span class="pull-right">$' . $record->cost . '</span>';
+        $transaction_cost[] = '<span class="pull-left' . $rush_class . '"><b>Rush service:</b></span><span class="pull-right' . $rush_class . '">$' . $record->rush_cost . '</span>';
+
+        $total_cost = $record->cost + $record->rush_cost;
+
+        if ($has_refund) {
+          $refund_cost = -$total_cost;
+        }
+
+        $total_cost = number_format($total_cost + $refund_cost, 2);
+        $refund_class = $refund_cost ? ' text-danger' : '';
+        $transaction_cost[] = '<span class="pull-left' . $refund_class . '"><b>Refund:</b></span><span class="pull-right' . $refund_class . '">$' . number_format($refund_cost, 2) . '</span>';
+        $transaction_cost[] = '<span class="pull-left"><b>Total:</b></span><span class="pull-right">$' . $total_cost . '</span>';
+
+        // Build the options for the current row.
+        $rows[$record->order_id] = array(
+          'client' => implode('<br>', $client_details),
+          'transaction' => implode('<br>', $transaction_details),
+          'order_date' => $order_date,
+          'total' => implode('<br>', $transaction_cost),
+        );
+
+        // Add totals to the footer.
+        $footer_cost = $footer_cost + $record->cost;
+        $footer_rush = $footer_rush + $record->rush_cost;
+        $footer_refund = $footer_refund + $refund_cost;
+      }
+    }
+  }
+
+  // Construct a filter to show only the selected therapist.
+  $role = user_role_load_by_name('therapist');
+  $query = 'SELECT ur.uid FROM {users_roles} AS ur WHERE ur.rid = :rid';
+  $result = db_query($query, array(':rid' => $role->rid));
+  $uids = $result->fetchCol();
+  $therapists = user_load_multiple($uids);
+  $therapist_options = array('0' => 'All');
+
+  foreach ($therapists as $uid => $therapist) {
+    $first_name = $therapist->field_first_name['und'][0]['value'];
+    $last_name = $therapist->field_last_name['und'][0]['value'];
+    $therapist_options[$uid] = $first_name . ' ' . $last_name;
+  }
+
+  $form['options']['transaction_dates'] = array(
+    '#type' => 'date_select',
+    '#title' => t('Change date range'),
+    '#title_display' => 'invisible',
+    '#default_value' => $default_date,
+    '#date_type' => DATE_DATETIME,
+    '#date_format' => 'M Y',
+    '#date_year_range' => '2013:0',
+    '#attributes' => array(
+      'class' => array('pull-left'),
+    ),
+    '#required' => TRUE,
+  );
+  $form['options']['therapist_filter'] = array(
+    '#type' => 'select',
+    '#title' => t('Therapist'),
+    '#default_value' => $filter_therapist,
+    '#options' => $therapist_options,
+  );
+  $form['options']['actions'] = array('#type' => 'actions');
+  $form['options']['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Update'),
+    '#submit' => array('therapist_reports_callback'),
+  );
+  $form['options']['actions']['reset'] = array(
+    '#type' => 'submit',
+    '#value' => t('Reset'),
+    '#submit' => array('therapist_reports_callback'),
+  );
+
+  // Only add a table footer if the rows are populated.
+  if ($rows) {
+    // Format the table footer.
+    $footer_totals = array(
+      'cost' => '<div class="text-success"><span class="pull-left"><b>Assessments:</b></span><span class="pull-right">$' . number_format($footer_cost, 2) . '</span></div>',
+      'rush' => '<div class="text-success"><span class="pull-left"><b>Rush services:</b></span><span class="pull-right">$' . number_format($footer_rush, 2) . '</span></div>',
+      'refund' => '<div class="text-danger"><span class="pull-left"><b>Refunds:</b></span><span class="pull-right">$' . number_format($footer_refund, 2) . '</span></div>',
+      'total' => '<div class="text-success"><span class="pull-left"><b>Monthly total:</b></span><span class="pull-right">$' . number_format($footer_cost + $footer_rush + $footer_refund, 2) . '</span></div>',
+    );
+
+    // Drupal 7 does not have a way to add the table footer as a tfoot element.
+    // So we add a new row to the bottom of the table to act as the footer.
+    $rows['tfoot'] = array(
+      'data' => array(
+        array(
+          'data' => '',
+          'colspan' => 3,
+        ),
+        implode('<br>', $footer_totals),
+      ),
+    );
+  }
+
+  // Build the table to add to the form.
+  $form['transactions'] = array(
+    '#type' => 'table',
+    '#header' => $header,
+    '#rows' => $rows,
+    '#caption' => '<h3>' . date('F Y', $date_range_start) . ' Transactions</h3>',
+    '#empty' => t('No transactions available.'),
+  );
+
+  $form['#attributes']['class'][] = 'therapist-reports-form';
+  return $form;
+}
+
+/**
+ * Therapist reports callback.
+ *
+ * @param array $form
+ *   Nested array of form elements that comprise the form.
+ * @param array $form_state
+ *   A keyed array containing the current state of the form.
+ *
+ * @return array
+ *   Returns form elements to be rendered by Drupal.
+ */
+function therapist_reports_callback($form, $form_state) {
+  global $user;
+  $op = $_POST['op'];
+  $therapist_date_range = 'therapist_transactions_all_dates_' . $user->uid;
+
+  // The form has already been submitted and updated. We can return the replaced
+  // item as it is.
+  $month = $form_state['complete form']['options']['transaction_dates']['#value']['month'];
+  $year = $form_state['complete form']['options']['transaction_dates']['#value']['year'];
+  $therapist = $form_state['complete form']['options']['therapist_filter']['#value'];
+
+  if ($op == 'Reset') {
+    variable_set($therapist_date_range, mktime());
+    variable_set('therapist_transactions_all_therapist_' . $user->uid, 0);
+  }
+  else {
+    variable_set($therapist_date_range, mktime(0, 0, 0, $month, 1, $year));
+    variable_set('therapist_transactions_all_therapist_' . $user->uid, $therapist);
+  }
+
+  // Clear the block cache when a filter is changed.
+  if (module_exists('block')) {
+    cache_clear_all(NULL, 'cache_block');
+  }
+  cache_clear_all();
+
+  return $form;
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function ndsbs_reports_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'report_format_node_form') {
+    $user = user_load(arg(7));
+    $last_name = $user->field_last_name['und'][0]['value'];
+    $state = $user->field_state['und'][0]['value'];
+    $title = $last_name . ' ' . $state;
+    $form['title']['#default_value'] = $title;
+    $form['actions']['submit']['#submit'][] = 'ndsbs_reports_submit_callback';
+  }
+}
+
+/**
+ * Function ndsbs_reports_submit_callback().
+ */
+function ndsbs_reports_submit_callback(&$form, &$form_state) {
+  global $user;
+  $arg4 = arg(7);
+  $arg6 = arg(9);
+  $arg8 = arg(11);
+  $arg10 = arg(13);
+  $arg12 = arg(15);
+  $pdf_report_name = 'main_' . $arg4 . $arg6 . $arg8 . $arg12 . '_' . time() . '.pdf';
+
+  $custPath = 'public://reports/';
+
+  rename($custPath . $form['field_report_upload_pdf']['und'][0]['#file']->filename, $custPath . $pdf_report_name);
+
+  // Save record into database.
+  $field_options = array();
+  $field_options['main_report'] = $pdf_report_name;
+  $field_options['report_status'] = 1;
+  $field_options['updated_on'] = time();
+  $field_options['updated_by'] = $user->uid;
+
+  $result = db_update('users_transactions_data');
+  $result->fields($field_options);
+  $result->condition('id', $arg10, '=');
+  $result->execute();
+  drupal_set_message('Report generated successfully.');
+}
+
+/**
+ * Function ndsbs_reports_submit_callback_preview().
+ */
+function ndsbs_reports_submit_callback_preview(&$form, &$form_state) {
+  global $base_path, $user;
+  // Argument parameters.
+  $arg4 = arg(7);
+  $arg6 = arg(9);
+  $arg8 = arg(11);
+  $arg10 = arg(13);
+  $arg12 = arg(15);
+
+  $user_data = user_load($user->uid);
+  $use_my_sig = $form['field_use_my_signature']['und']['#value'];
+  if ($use_my_sig == 1) {
+    $signature = $user_data->field_upload_report_signature['und'][0]['uri'];
+  }
+  else {
+    $signature = $form['field_therapist_signature']['und'][0]['#file']->uri;
+  }
+
+  $therapist_info = user_load($user->uid);
+  $therapist_name = $therapist_info->field_first_name['und'][0]['value'] . ' ' . $therapist_info->field_last_name['und'][0]['value'];
+  $therapist_degree = $therapist_info->field_therapist_degree['und'][0]['value'];
+
+  $format_report = $form['body']['und'][0]['value']['#value'] . '<br /><br />';
+  $sign_var = '<img src="' . $signature . '" width="150" height="35">';
+  $format_report .= '<br /><br />';
+  $format_report .= 'Sincerely,';
+  $format_report .= '<br />';
+  $format_report .= $therapist_name . ', ' . $therapist_degree;
+  $format_report .= '<br />';
+  $format_report = $format_report . $sign_var;
+  $pdf = new MYCUSTOMPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, TRUE, 'UTF-8', FALSE);
+  $pdf->SetCreator(PDF_CREATOR);
+  $pdf->SetAuthor('NDSBS');
+  $pdf->SetTitle('NDSBS');
+  $pdf->SetSubject('NDSBS');
+  $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, '', '');
+  $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+  $pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+  $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+  $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+  $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+  $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+  $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+  $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+  $pdf->setFontSubsetting(TRUE);
+  $pdf->SetFont('freeserif', '', 12);
+  $pdf->AddPage();
+  $pdf->SetTextColor(0, 0, 0);
+  $pdf->writeHTML($format_report, TRUE, 0, TRUE, 0);
+  $pdf->lastPage();
+  $pdf_report_name = 'main_' . $arg4 . $arg6 . $arg8 . $arg12 . '_' . time() . '.pdf';
+  $pdf->Output($pdf_report_name, 'I');
+  $pdf->Close();
+  exit();
+}
+
+/**
+ * Implements _users_stateform_report_list().
+ */
+function _users_stateform_report() {
+  return theme('users_stateform_report');
+}
+
+/**
+ * Implements _request_for_reports().
+ */
+function _request_for_reports() {
+  return theme('request_for_reports');
+}
+
+/**
+ * Implements _user_requested_reports().
+ */
+function _user_requested_reports() {
+  return theme('user_requested_reports');
+}
+
+/**
+ * Implements _user_requested_reports().
+ */
+function _user_all_other_reports() {
+  return theme('user_all_other_reports');
+}
+
+/**
+ * Implements _get_user_report_format().
+ */
+function _get_user_report_format() {
+  return theme('user_report_format');
+}
+
+/**
+ * Implementation of overnight_express_mail().
+ */
+function overnight_express_mail() {
+  return theme('overnight_express_mail');
+}
+
+/**
+ * Function get_sub_reports_form().
+ */
+function get_sub_reports_form() {
+  return $output = drupal_get_form('get_sub_reports');
+}
+
+/**
+ * Function _users_other_report().
+ */
+function _users_other_report() {
+  return theme('users_other_report');
+}
+
+/**
+ * Function get_sub_reports().
+ */
+function get_sub_reports() {
+  global $user;
+  $payment_status = 1;
+  $reptype = drupal_get_query_parameters();
+  $reptype = $reptype['reptype'];
+  $service_dropdown = array();
+  $custom_dropdown = array();
+
+  if ($reptype == 'statefrm') {
+    $statefrm_data = get_users_not_paid_stateform();
+
+    $nid_array = array();
+    foreach ($statefrm_data as $data) {
+      $nid_array[] = $data->nid;
+    }
+    $result = node_load_multiple($nid_array);
+    $taxonomy_tree = taxonomy_get_tree(4);
+
+    foreach ($taxonomy_tree as $tdata) {
+      $term = taxonomy_term_load($tdata->tid);
+      $custom_dropdown[''] = '--Select--';
+
+      foreach ($result as $rdata) {
+        if ($rdata->field_state_form_title['und'][0]['value'] == $term->field_stateformtitle['und'][0]['value']) {
+          $service_dropdown[$rdata->nid] = $rdata->field_state_form_title['und'][0]['value'];
+          $custom_dropdown[$term->tid] = $term->field_stateformtitle['und'][0]['value'];
+        }
+      }
+    }
+
+    $form['type_stateform'] = array(
+      '#name' => 'type_stateform',
+      '#id' => 'type_stateform',
+      '#type' => 'hidden',
+      '#required' => FALSE,
+      '#title' => t('Type'),
+      '#value' => 'state',
+      '#default_value' => 'state',
+      '#attributes' => array('class' => array('select_box wd_250 mlr_12')),
+      '#prefix' => '<div class="request1">',
+    );
+  }
+  else {
+    $service_dropdown['356'] = 'Custom Letter';
+    $taxonomy_tree = taxonomy_get_tree(3);
+
+    foreach ($taxonomy_tree as $tdata) {
+      if ($tdata->tid <> 18 && $tdata->tid <> 19) {
+        $term = taxonomy_term_load($tdata->tid);
+        $custom_dropdown[''] = '--Select--';
+        $custom_dropdown[$term->tid] = $term->name;
+      }
+    }
+  }
+
+  $form['get_main_reports'] = array(
+    '#name' => 'get_main_reports',
+    '#id' => 'get_main_reports',
+    '#type' => 'select',
+    '#required' => FALSE,
+    '#title' => t('Original Service'),
+    '#options' => $service_dropdown,
+    '#default_value' => arg(3),
+    '#attributes' => array('class' => array('select_box wd_250 mlr_12')),
+    '#prefix' => '<div class="request1">',
+  );
+
+  $form['get_sub_reports'] = array(
+    '#name' => 'get_sub_reports',
+    '#id' => 'get_sub_reports',
+    '#type' => 'select',
+    '#required' => TRUE,
+    '#title' => t('Add Service'),
+    '#options' => $custom_dropdown,
+    '#default_value' => arg(3),
+    '#attributes' => array('class' => array('select_box wd_250 mlr_12')),
+    '#prefix' => '<div class="mt_10">',
+  );
+
+  $form['btn_add_to_List'] = array(
+    '#type' => 'submit',
+    '#name' => 'add_to_List',
+    '#id' => 'add_to_List',
+    '#value' => t('Add to List'),
+    '#attributes' => array('class' => array('brown_btn')),
+    '#suffix' => '</div>',
+  );
+
+  return $form;
+}
+
+/**
+ * Function get_sub_reports_submit() Implemeted.
+ */
+function get_sub_reports_submit(&$form, &$form_state) {
+  $tid = $form_state['values']['get_sub_reports'];
+  $type_stateform = $form_state['values']['type_stateform'];
+  $nid = $form_state['values']['get_main_reports'];
+  delete_cart_items_main_report();
+
+  if ($nid == '') {
+    $nid = arg(3);
+  }
+
+  if (arg(0) == 'user' && arg(1) == 'report' && arg(2) == 'request') {
+    if ($tid <> '') {
+      _save_cart_items($nid, $tid, 1);
+    }
+  }
+  else {
+    if ($tid <> '') {
+      _save_cart_items($nid, $tid, 0);
+    }
+  }
+
+  if ($type_stateform == 'state') {
+    $options = array('query' => array('reptype' => 'statefrm'));
+    drupal_goto('user/report/request/' . $nid, $options);
+  }
+  else {
+    drupal_goto('user/report/request/' . $nid);
+  }
+}
+
+/**
+ * Function _add_cart_items() Implemented to save the items into the cart.
+ */
+function _save_cart_items($nid, $tid, $sub_report = 0) {
+  global $user;
+
+  $queryinsert = db_insert('users_cart')->fields(array(
+    'uid' => $user->uid,
+    'nid' => $nid,
+    'tid' => $tid,
+    'sess_id' => session_id(),
+    'sub_report' => $sub_report,
+  ));
+  $queryinsert->execute();
+}
+
+/**
+ * Function get_saved_cart_items() Implemented to get the saved items.
+ */
+function get_saved_cart_items() {
+  global $user;
+  $query = db_select('users_cart', 'uc')
+    ->fields('uc', array(
+      'cid',
+      'nid',
+      'tid',
+      'notary_amount',
+      'shipping_address',
+      'sub_report',
+    ))
+    ->condition('uc.uid', $user->uid, '=')
+    ->condition('uc.sess_id', session_id(), '=');
+  $result = $query->execute();
+  $data = $result->fetchAll();
+  return $data;
+}
+
+/**
+ * Function _update_cart() implemented to update the cart.
+ */
+function _update_cart($node_id) {
+  $include_status = $_REQUEST['notary_status'];
+  $cart_id = $_REQUEST['cart_id'];
+  $service_amount = $_REQUEST['service_amount'];
+
+  if ($include_status == 1) {
+    $notary_amount = $_REQUEST['notary_amount'];
+  }
+  else {
+    $notary_amount = 0;
+  }
+
+  $query = db_update('users_cart')->fields(array(
+    'notary_amount' => $notary_amount,
+  ))->condition('cid', $cart_id, '=')->execute();
+
+  $cart_data = get_saved_cart_items();
+  $total_amount = 0;
+  $i = 0;
+  $sub_purchased_term = array();
+
+  foreach ($cart_data as $carddata) {
+    $term_data = taxonomy_term_load($carddata->tid);
+    if ($i == 0) {
+      $data_subreport_term = check_user_purchased_subreport_term($carddata->nid, 1, 1);
+      foreach ($data_subreport_term as $data_subreport) {
+        $sub_purchased_term[] = $data_subreport->termid;
+      }
+    }
+
+    if (in_array($carddata->tid, $sub_purchased_term)) {
+      $total_amount = $total_amount + $carddata->notary_amount;
+    }
+    else {
+      $total_amount = $total_amount + $term_data->field_other_service_amount['und'][0]['value'] + $carddata->notary_amount;
+    }
+    $i++;
+  }
+
+  $sub_total_amount = $service_amount + $notary_amount;
+  $json_arr = array('sub_total' => $sub_total_amount, 'total' => $total_amount);
+  print json_encode($json_arr);
+}
+
+/**
+ * Function delete_cart_items() Implemeted To delete the cart items.
+ */
+function delete_cart_items_reports($cid) {
+  $num_deleted = db_delete('users_cart')->condition('cid', $cid)->execute();
+  $reptype = drupal_get_query_parameters();
+  $reptype = $reptype['reptype'];
+  if ($reptype <> '') {
+    $options = array('query' => array('reptype' => 'statefrm'));
+  }
+  else {
+    $options = array();
+  }
+  drupal_goto('user/report/request/' . arg(6), $options);
+}
+
+/**
+ * Function defined to update the cart.
+ */
+function _update_cart_shipping_address() {
+  global $user;
+  $address = $_REQUEST['address'];
+  $shipping = $_REQUEST['shipping'];
+  if ($address <> '') {
+    if ($shipping == 1) {
+      $express_mail = 19;
+      $express_mail_data = taxonomy_term_load($express_mail);
+      $express_mail_amount = $express_mail_data->field_other_service_amount['und'][0]['value'];
+    }
+    else {
+      $express_mail_amount = 0;
+    }
+    $query = db_update('users_cart')
+      ->fields(array(
+        'shipping_address' => $address,
+        'express_mail' => $express_mail_amount,
+      ))
+      ->condition('uid', $user->uid, '=')
+      ->condition('sess_id', session_id(), '=')
+      ->execute();
+  }
+  print 'success';
+}
+
+/**
+ * Function _view_clients_reports().
+ *
+ * Implemented to See the users report by admin, staff admin, therapist.
+ */
+function _view_clients_reports() {
+  return theme('clients_view_reports');
+}
+
+/**
+ * Function get_client_paperwork_info() define.
+ *
+ * Function implemented from getting the paper work of the client. Depends on
+ * the user id of the client.
+ */
+function get_client_paperwork_info($uid, $tid) {
+  $type = 'paper_work';
+  $result = db_select('node', 'n')
+    ->fields('n', array('nid'))
+    ->condition('n.uid', $uid, '=')
+    ->condition('n.type', $type, '=')
+    ->orderBy('n.created', 'DESC');
+  $result->innerJoin('field_data_field_assessment', 'field_assessment', 'n.nid = field_assessment.entity_id');
+  $result->condition('field_assessment.bundle', $type, '=');
+  $result->condition('field_assessment.field_assessment_value', $tid, '=');
+  $excute = $result->execute();
+  $data = $excute->fetchAll();
+  return $data;
+}
+
+/**
+ * Function save_paperwork_verification_form() define.
+ *
+ * Function implemented to save the paperwork verification action performed by
+ * admin, SA, therapist.
+ */
+function save_paperwork_verification_form() {
+  global $user;
+  $postdata = $_REQUEST['postdata'];
+  $params = array();
+  parse_str($postdata, $params);
+
+  for ($i = 0; $i < $_REQUEST['total_count']; $i++) {
+    $nid = $_REQUEST['paper_work_node_id_' . $i];
+    $node = node_load($nid);
+    $node->field_paperwork_status['und'][0]['value'] = $_REQUEST['verification_status_' . $i];
+    $node->field_paperwork_note['und'][0]['value'] = $_REQUEST['paper_work_note_' . $i];
+    $node->field_paperwork_user_reference['und'][0]['value'] = $user->uid;
+    node_save($node);
+  }
+  if ($_FILES['new_doc']['name'] <> '') {
+    $data = array('pdf');
+    $file_explode = explode('.', $_FILES['new_doc']['name']);
+    $file_extension = $file_explode[1];
+
+    if (in_array($file_extension, $data)) {
+      $file_custom_name = 'notary_' . $_REQUEST['uid'] . '_' . time() . '.pdf';
+      if (!move_uploaded_file($_FILES['new_doc']['tmp_name'], 'public://reports/' . $file_custom_name)) {
+        echo "error";
+        form_set_error('new_doc', t('File not uploaded.'));
+      }
+      else {
+        $field_options['report_name'] = $file_custom_name;
+        $file_path = '/var/www/sites/all/default/files/reports/' . $file_custom_name;
+      }
+    }
+    else {
+      form_set_error('file_' . $i, t('Please upload only pdf file.'));
+    }
+  }
+
+  $node = (object) NULL;
+  $node = node_type_set_defaults();
+  $node->type = "paper_work";
+  $node->status = 1;
+  $node->promote = 1;
+  $node->sticky = 0;
+  $node->uid = $_REQUEST['uid'];
+  $node->created = strtotime("now");
+  $node->changed = strtotime("now");
+  $node->status = 1;
+  $node->comment = 0;
+  $node->promote = 0;
+  $node->moderate = 0;
+  $node->language = 'en';
+  $node->title = $_REQUEST['new_title'];
+  $node->field_title['und']['0']['value'] = $_REQUEST['new_title'];
+  $node->field_assessment['und'][0]['value'] = 'asd';
+  $node->field_paperwork_status['und'][0]['value'] = $_REQUEST['verification_status_new'];
+  $node->field_paperwork_note['und'][0]['value'] = $_REQUEST['new_note'];
+  $node->field_paperwork_user_reference['und'][0]['value'] = $user->uid;
+  node_save($node);
+  $node = node_load($node->nid);
+  $node->field_assessment['und'][0]['value'] = $_REQUEST['tid'];
+  node_save($node);
+  drupal_set_message("Record saved successfully.");
+  drupal_goto("users/view/reports/" . $_REQUEST['uid'] . "/tid/" . $_REQUEST['fiveid'] . "/nid/" . $_REQUEST['sevenid'] . "/transid/" . $_REQUEST['tid']);
+  print 'success';
+}
+
+/**
+ * Function delete_cart_items_main_report().
+ *
+ * Implemeted to delete the cart items in case user try to purchase both main
+ * reports and subreports at same time.
+ */
+function delete_cart_items_main_report() {
+  global $user;
+  $sess = session_id();
+  $taxonomy_tree = taxonomy_get_tree(3);
+  $term = array();
+
+  foreach ($taxonomy_tree as $tdata) {
+    $term[] = $tdata->tid;
+  }
+
+  $deleted_qry = db_delete('users_cart')
+    ->condition('uid', $user->uid)
+    ->condition('sess_id', $sess)
+    ->condition('tid', $term, 'NOT IN')
+    ->execute();
+}
+
+/**
+ * Function get_purchased_items().
+ *
+ * Function defined to get the users pruchased items from transaction table.
+ */
+function get_purchased_items($nid, $payment_status, $subreport) {
+  global $user;
+
+  $result = db_select('users_transactions', 'ut')
+    ->fields('ut', array(
+      'order_id',
+      'nid',
+      'tid',
+      'uid',
+      'cost',
+      'payment_status',
+      'payment_method',
+      'order_date',
+      'transaction_id',
+      'shipping_info',
+      'ip_address',
+      'transaction_action',
+      'action_by',
+      'reason',
+      'action_date',
+      'client_request',
+      'requested_on',
+    ))
+    ->condition('ut.payment_status', $payment_status, '=')
+    ->condition('ut.uid', $user->uid, '=')
+    ->condition('ut.nid', $nid, '=')
+    ->orderBy('ut.order_date', 'DESC');
+  $result->innerJoin('users_transactions_data', 'utd', 'ut.order_id = utd.oid');
+  $result->fields('utd', array(
+    'oid',
+    'termid',
+    'amount',
+    'notary_cost',
+    'sub_report',
+  ));
+  $result->condition('utd.sub_report', $subreport, '=');
+  $execute = $result->execute();
+  $date = $execute->fetchAll();
+
+  return $date;
+}
+
+/**
+ * Function empty_cart_all_data().
+ *
+ * Implemented if user places order from front end and directly request for
+ * report OR if user deletes argument from the url OR if users come from
+ * navigation.
+ */
+function empty_cart_all_data() {
+  global $user;
+  $delete_qry = db_delete('users_cart')
+    ->condition('uid', $user->uid)
+    ->condition('sess_id', session_id())
+    ->execute();
+}
+
+/**
+ * Function check_user_purchased_subreport_term().
+ *
+ * Implemented to get the purchased subreports terms only.
+ */
+function check_user_purchased_subreport_term($nid, $payment_status, $subreport) {
+  global $user;
+
+  $result = db_select('users_transactions', 'ut')
+    ->fields('ut', array(
+      'order_id',
+      'nid',
+      'tid',
+      'uid',
+      'cost',
+      'payment_status',
+      'payment_method',
+      'order_date',
+      'transaction_id',
+      'shipping_info',
+      'ip_address',
+      'transaction_action',
+      'action_by',
+      'reason',
+      'action_date',
+      'client_request',
+      'requested_on',
+    ))
+    ->condition('ut.payment_status', $payment_status, '=')
+    ->condition('ut.uid', $user->uid, '=')
+    ->condition('ut.nid', $nid, '=')
+    ->orderBy('ut.order_date', 'DESC');
+  $result->innerJoin('users_transactions_data', 'utd', 'ut.order_id = utd.oid');
+  $result->fields('utd', array(
+    'oid',
+    'termid',
+    'amount',
+    'notary_cost',
+    'sub_report',
+  ));
+  $result->condition('utd.sub_report', $subreport, '=');
+  $result->condition('utd.amount', NULL, 'IS NOT NULL');
+  $execute = $result->execute();
+  $data = $execute->fetchAll();
+
+  return $data;
+}
+
+/**
+ * Function get_main_reports_form() Implemented.
+ */
+function get_main_reports_form() {
+  return $output = drupal_get_form('get_main_reports');
+}
+
+/**
+ * Function get_sub_reports().
+ *
+ * Implemented to get the subroprots dropdown.
+ */
+function get_main_reports() {
+  // Get the users purchsed main report.
+  $payment_status = 1;
+  $transactio_data = get_user_transactions($payment_status);
+  $service_dropdown = array();
+
+  foreach ($transactio_data as $data) {
+    $node_info = node_load($data->nid);
+    $service_title = get_purchased_service_title($node_info, $data->termid);
+    $service_dropdown[''] = '--Main--';
+    $service_dropdown[$node_info->nid . '||' . $data->termid] = $service_title;
+  }
+  // Creating dropdown.
+  $form['get_main_reports'] = array(
+    '#name' => 'get_main_reports',
+    '#id' => 'get_main_reports',
+    '#type' => 'select',
+    '#title' => t('Original Service'),
+    '#options' => $service_dropdown,
+    '#default_value' => arg(3) . '||' . arg(5),
+    '#attributes' => array('class' => array('select_box wd_250 mlr_12')),
+    '#prefix' => '<div class="request3">',
+  );
+  $form['btn_get_details'] = array(
+    '#type' => 'submit',
+    '#name' => 'get_details',
+    '#id' => 'get_details',
+    '#value' => t('View My docs'),
+    '#attributes' => array('class' => array('brown_btn')),
+    '#suffix' => '</div>',
+  );
+
+  return $form;
+}
+
+/**
+ * Function get_main_reports_submit().
+ *
+ * Implemeted to submit the form.
+ */
+function get_main_reports_submit(&$form, &$form_state) {
+  $explode = explode('||', $form_state['values']['get_main_reports']);
+  $nid = $explode[0];
+  $main_tid = $explode[1];
+  drupal_goto('user/requested/reports/' . $nid . '/tid/' . $main_tid);
+}
+
+/**
+ * Function get_purchased_items_reports().
+ *
+ * Function defined to get the users pruchased items from transaction table.
+ */
+function get_purchased_items_reports($nid, $payment_status, $subreport, $tid) {
+  global $user;
+
+  // Field sub_report = 0 for main report and sub_report = 1 for sub report.
+  $result = db_select('users_transactions', 'ut')->fields('ut', array(
+    'order_id',
+    'nid',
+    'tid',
+    'uid',
+    'cost',
+    'payment_status',
+    'payment_method',
+    'order_date',
+    'transaction_id',
+    'shipping_info',
+    'express_mail',
+    'ip_address',
+    'transaction_action',
+    'action_by',
+    'reason',
+    'action_date',
+    'client_request',
+    'requested_on',
+  ))->condition('ut.payment_status', $payment_status, '=');
+
+  if ($user->roles[6] == 'client') {
+    // CHK made to Display the result for client only.
+    $result->condition('ut.uid', $user->uid, '=');
+    $result->condition('ut.nid', $nid, '=');
+  }
+
+  if ($user->roles[4] == 'therapist') {
+    // CHK made to Display the result for therapist only.
+    $result->condition('ut.therapist', $user->uid, '=');
+  }
+  $result->orderBy('ut.order_id', 'DESC');
+  $result->innerJoin('users_transactions_data', 'utd', 'ut.order_id = utd.oid');
+  $result->fields('utd', array(
+    'oid',
+    'termid',
+    'amount',
+    'notary_cost',
+    'sub_report',
+    'main_report_id',
+    'express_mail_status',
+    'notary_status',
+    'updated_on',
+    'updated_by',
+    'report_name',
+    'main_report',
+    'report_status',
+  ));
+  $result->condition('utd.sub_report', $subreport, '=');
+
+  if ($user->roles[6] == 'client') {
+    $result->condition('utd.termid', $tid, '=');
+  }
+
+  $execute = $result->execute();
+  $data = $execute->fetchAll();
+
+  return $data;
+}
+
+/**
+ * Function get_purchased_items_subreports().
+ *
+ * Function defined to get the users pruchased subreports items from transaction
+ * table.
+ */
+function get_purchased_items_subreports() {
+  global $user;
+
+  // Field sub_report = 0 for main report and sub_report = 1 for sub report.
+  $result = db_select('users_transactions', 'ut')->fields('ut', array(
+    'order_id',
+    'nid',
+    'tid',
+    'uid',
+    'cost',
+    'payment_status',
+    'payment_method',
+    'order_date',
+    'transaction_id',
+    'shipping_info',
+    'express_mail',
+    'ip_address',
+    'transaction_action',
+    'action_by',
+    'reason',
+    'action_date',
+    'client_request',
+    'requested_on',
+  ))->condition('ut.payment_status', 1, '=');
+  $result->condition('ut.uid', $user->uid, '=');
+  $result->condition('ut.nid', arg(3), '=');
+  $result->orderBy('ut.order_id', 'DESC');
+  $result->innerJoin('users_transactions_data', 'utd', 'ut.order_id = utd.oid');
+
+  $result->fields('utd', array(
+    'oid',
+    'termid',
+    'amount',
+    'notary_cost',
+    'sub_report',
+    'main_report_id',
+    'express_mail_status',
+    'notary_status',
+    'updated_on',
+    'updated_by',
+    'report_name',
+    'main_report',
+  ));
+
+  $execute = $result->execute();
+  $data = $execute->fetchAll();
+
+  return $data;
+}
+
+/**
+ * Function get_user_shipping_address_form().
+ *
+ * Implemented to rebder the shipping form.
+ */
+function get_user_shipping_address_form() {
+  return drupal_render(drupal_get_form('user_shipping_address_form'));
+}
+
+/**
+ * Function get_user_shipping_address().
+ *
+ * Implemented to get the user shipping form.
+ *
+ * @global type $user
+ */
+function user_shipping_address_form($form, &$form_state) {
+  global $user;
+  $user_information = user_load($user->uid);
+
+  // Custom form defined to get the shipping form.
+  $form['shipping_address_title'] = array(
+    '#type' => 'item',
+    '#title' => 'Shipping Address:',
+    // '#markup' => '<span></span>',.
+    '#prefix' => '<h2>',
+    '#suffix' => '</h2>',
+  );
+  $form['user_shipping_address'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Address'),
+    '#default_value' => $user_information->field_address['und'][0]['value'],
+    '#size' => 30,
+  );
+  $form['user_shipping_city'] = array(
+    '#type' => 'textfield',
+    '#title' => t('City'),
+    '#default_value' => $user_information->field_city['und'][0]['value'],
+    '#size' => 30,
+  );
+
+  // Get the dropdown field values.
+  $state_fields = field_info_fields();
+  $allowed_values = list_allowed_values($state_fields['field_state']);
+  $form['user_shipping_state'] = array(
+    '#type' => 'select',
+    '#title' => t('State'),
+    '#options' => $allowed_values,
+    '#default_value' => $user_information->field_state['und'][0]['value'],
+  );
+  $form['user_shipping_zip'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Zip'),
+    '#default_value' => $user_information->field_zip['und'][0]['value'],
+    '#size' => 30,
+  );
+  return $form;
+}
+
+/**
+ * Function get_subreports_of_mainreports().
+ *
+ * Function defined to get the users pruchased subreports based on the main
+ * reports.
+ */
+function get_subreports_basedon_mainreports($mid, $payment_status, $subreport) {
+  global $user;
+  // Field sub_report = 0 for main report and sub_report = 1 for sub report.
+  $result = db_select('users_transactions', 'ut')
+    ->fields('ut', array(
+      'order_id',
+      'nid',
+      'tid',
+      'uid',
+      'cost',
+      'payment_status',
+      'payment_method',
+      'order_date',
+      'transaction_id',
+      'shipping_info',
+      'express_mail',
+      'ip_address',
+      'transaction_action',
+      'action_by',
+      'reason',
+      'action_date',
+      'client_request',
+      'requested_on',
+    ))
+    ->condition('ut.nid', arg(3), '=')
+    ->condition('ut.payment_status', $payment_status, '=');
+  $result->orderBy('ut.order_id', 'DESC');
+  $result->innerJoin('users_transactions_data', 'utd', 'ut.order_id = utd.oid');
+  $result->fields('utd', array(
+    'id',
+    'oid',
+    'termid',
+    'amount',
+    'notary_cost',
+    'sub_report',
+    'main_report_id',
+    'report_status',
+  ));
+  $result->condition('utd.sub_report', $subreport, '=');
+  $execute = $result->execute();
+  $data = $execute->fetchAll();
+
+  return $data;
+}
+
+/**
+ * Function get_client_paperwork_info() define.
+ *
+ * Function implemented from getting the paper work of the client. Depends on
+ * the user id of the client.
+ */
+function get_client_stateform_info_report($uid, $tid) {
+  $type = 'state_form_request';
+  // Query to get the all node of paper work base on particular user.
+  $result = db_select('node', 'n')
+    ->fields('n', array('nid'))
+    ->condition('n.uid', $uid, '=')
+    ->condition('n.type', $type, '=')
+    ->orderBy('n.created', 'DESC');
+  $excute = $result->execute();
+  $data = $excute->fetchAll();
+  return $data;
+}
+
+/**
+ * Function save_stateform_verification_form() define.
+ *
+ * Function implemented to save the stateform verification. Action performed by
+ * admin, SA, therapist.
+ */
+function save_stateform_verification_form() {
+  global $user, $base_url;
+  // $postdata = $_REQUEST['postdata'];.
+  $params = array();
+  $params = $_POST;
+  // parse_str($postdata, $params);.
+  for ($i = 0; $i < $params['total_count']; $i++) {
+    $nid = $params['stateform_node_id_' . $i];
+    $node = node_load($nid);
+    if ($params['express_mail_status_' . $i] <> '') {
+      $node->field_express_mail_status['und'][0]['value'] = $params['express_mail_status_' . $i];
+    }
+    if ($params['notary_status_' . $i] <> '') {
+      $node->field_notary_status['und'][0]['value'] = $params['notary_status_' . $i];
+    }
+    $node->field_report_updated_on['und'][0]['value'] = time();
+    $node->field_report_updated_by['und'][0]['value'] = $user->uid;
+
+    if ($_FILES['file_' . $i]['name'] <> '') {
+      $data = array('pdf');
+      $file_explode = explode('.', $_FILES['file_' . $i]['name']);
+      $file_extension = $file_explode[1];
+
+      if (in_array($file_extension, $data)) {
+        $file_custom_name = 'statefrm_' . $params['uid'] . '_' . $params['statenid_' . $i] . '_' . time() . '.pdf';
+        if (!move_uploaded_file($_FILES['file_' . $i]['tmp_name'], 'public://reports/' . $file_custom_name)) {
+          form_set_error('file_' . $i, t('File not uploaded.'));
+        }
+        else {
+          $node->field_report_state_form['und'][0]['value'] = $file_custom_name;
+          $node->field_state_form_status['und'][0]['value'] = 1;
+        }
+      }
+      else {
+        drupal_set_message('Please upload only pdf file.');
+        drupal_goto($base_url . '/users/stateform/report/' . $params['uid'] . '/nid/' . $params['nid']);
+        // form_set_error('file_'.$i, t('Please upload only pdf file.'));.
+      }
+    }
+
+    node_save($node);
+  }
+  // Print 'success';.
+  drupal_set_message('Report generated successfully.');
+  drupal_goto($base_url . '/users/stateform/report/' . $params['uid'] . '/nid/' . $params['nid']);
+}
+
+/**
+ * Function save_assessment_verification_form() define.
+ *
+ * Function implemented to save the assessment verification. Action performed by
+ * admin, SA, therapist.
+ */
+function save_assessment_verification_form() {
+  global $user, $base_url;
+  $params = array();
+  $params = $_POST;
+
+  for ($i = 0; $i < $params['total_count']; $i++) {
+    $field_options = array();
+    $id = $params['assessment_oid_' . $i];
+    if ($params['express_mail_status_' . $i] <> '') {
+      $express_status = $params['express_mail_status_' . $i];
+      $field_options['express_mail_status'] = $express_status;
+    }
+    if ($params['notary_status_' . $i] <> '') {
+      $notary_status = $params['notary_status_' . $i];
+      $field_options['notary_status'] = $notary_status;
+    }
+
+    if ($_FILES['file_' . $i]['name'] <> '') {
+      $data = array('pdf');
+      $file_explode = explode('.', $_FILES['file_' . $i]['name']);
+      $file_extension = $file_explode[1];
+
+      if (in_array($file_extension, $data)) {
+        $file_custom_name = 'notary_' . $params['uid'] . '_' . $params['termid_' . $i] . '_' . time() . '.pdf';
+        if (!move_uploaded_file($_FILES['file_' . $i]['tmp_name'], 'public://reports/' . $file_custom_name)) {
+          form_set_error('file_' . $i, t('File not uploaded.'));
+        }
+        else {
+          $field_options['report_name'] = $file_custom_name;
+        }
+      }
+      else {
+        form_set_error('file_' . $i, t('Please upload only pdf file.'));
+      }
+    }
+
+    $field_options['updated_on'] = time();
+    $field_options['updated_by'] = $user->uid;
+
+    // Update the record into database.
+    $result = db_update('users_transactions_data');
+    $result->fields($field_options);
+    $result->condition('id', $id, '=');
+    $result->execute();
+  }
+  drupal_set_message('Report generated successfully.');
+  // Print 'success';.
+  drupal_goto($base_url . '/users/view/reports/' . $params['uid'] . '/tid/' . $params['tid'] . '/nid/' . $params['nid'] . '/tab/2');
+}
+
+/**
+ * Function update_stateform_payment_status_info_report() define.
+ *
+ * Function implemented for updating the payment status of the state form.
+ */
+function update_stateform_payment_status_info_report($uid, $tid, $statefrm_tid) {
+  $type = 'state_form_request';
+  $term_data = taxonomy_term_load($statefrm_tid);
+  $term_title = isset($term_data->field_stateformtitle) ? $term_data->field_stateformtitle['und'][0]['value'] : '';
+
+  // Query to get the all node of paper work base on particular user.
+  $result = db_select('node', 'n')
+    ->fields('n', array('nid'))
+    ->condition('n.uid', $uid, '=')
+    ->condition('n.type', $type, '=')
+    ->orderBy('n.created', 'DESC');
+  $result->innerJoin('field_data_field_state_form_title', 'statefrm', 'n.nid = statefrm.entity_id');
+  $result->condition('statefrm.bundle', $type, '=');
+  $result->condition('statefrm.field_state_form_title_value', $term_title, '=');
+  $excute = $result->execute();
+  $data = $excute->fetchAll();
+  return $data;
+}
+
+/**
+ * Function get_purchased_items_subreports()
+ *
+ * Function defined to get the users pruchased subreports items from transaction
+ * table.
+ */
+function get_purchased_items_subreports_report_section($nid, $payment_status, $subreport, $tid, $uid) {
+  // Field sub_report = 0 for main report and sub_report = 1 for sub report.
+  $result = db_select('users_transactions', 'ut')->fields('ut', array(
+    'order_id',
+    'nid',
+    'tid',
+    'uid',
+    'cost',
+    'payment_status',
+    'payment_method',
+    'order_date',
+    'transaction_id',
+    'shipping_info',
+    'express_mail',
+    'ip_address',
+    'transaction_action',
+    'action_by',
+    'reason',
+    'action_date',
+    'client_request',
+    'requested_on',
+  ))->condition('ut.payment_status', $payment_status, '=');
+  $result->condition('ut.uid', $uid, '=');
+  $result->condition('ut.nid', $nid, '=');
+  $result->orderBy('ut.order_id', 'DESC');
+  $result->innerJoin('users_transactions_data', 'utd', 'ut.order_id = utd.oid');
+  $result->fields('utd', array(
+    'id',
+    'oid',
+    'termid',
+    'amount',
+    'notary_cost',
+    'sub_report',
+    'main_report_id',
+    'express_mail_status',
+    'notary_status',
+    'updated_on',
+    'updated_by',
+    'report_name',
+    'main_report',
+  ));
+  $result->condition('utd.sub_report', $subreport, '=');
+  $result->condition('utd.main_report_id', $tid, '=');
+
+  $execute = $result->execute();
+  $data = $execute->fetchAll();
+
+  return $data;
+}
+
+/**
+ * Function get_purchased_items_reports()
+ *
+ * Function defined to get the users pruchased items from transaction table.
+ */
+function get_purchased_items_reports_section($nid, $payment_status, $subreport, $tid, $userid) {
+  global $user;
+
+  // Field sub_report = 0 for main report and sub_report = 1 for sub report.
+  $result = db_select('users_transactions', 'ut')->fields('ut', array(
+    'order_id',
+    'nid',
+    'tid',
+    'uid',
+    'cost',
+    'payment_status',
+    'payment_method',
+    'order_date',
+    'transaction_id',
+    'shipping_info',
+    'express_mail',
+    'ip_address',
+    'transaction_action',
+    'action_by',
+    'reason',
+    'action_date',
+    'client_request',
+    'requested_on',
+    'therapist',
+  ))->condition('ut.payment_status', $payment_status, '=');
+  // CHK made to Display the result for client only.
+  $result->condition('ut.uid', $userid, '=');
+  $result->condition('ut.nid', $nid, '=');
+  $result->orderBy('ut.order_id', 'DESC');
+
+  $result->innerJoin('users_transactions_data', 'utd', 'ut.order_id = utd.oid');
+  $result->fields('utd', array(
+    'id',
+    'oid',
+    'termid',
+    'amount',
+    'notary_cost',
+    'sub_report',
+    'main_report_id',
+    'express_mail_status',
+    'notary_status',
+    'updated_on',
+    'updated_by',
+    'report_name',
+    'main_report',
+  ));
+  $result->condition('utd.sub_report', $subreport, '=');
+
+  $result->condition('utd.termid', $tid, '=');
+
+  $execute = $result->execute();
+  $data = $execute->fetchAll();
+
+  return $data;
+}
+
+/**
+ * Hook_registry_files_alter().
+ *
+ * Implemented to include the FPDF library PATH for creating the custom pdf file
+ * for reports.
+ */
+function ndsbs_reports_registry_files_alter(&$files, $modules) {
+  $library_path = 'sites/all/libraries/tcpdf';
+  $files[$library_path . '/tcpdf.php'] = array(
+    'module' => 'ndsbs_reports',
+    'weight' => 0,
+  );
+  $files[$library_path . '/MYCUSTOMPDF.php'] = array(
+    'module' => 'ndsbs_reports',
+    'weight' => 0,
+  );
+}
+
+/**
+ * Function _generate_user_report().
+ *
+ * Implemeted for generating user report in pdf format.
+ */
+function _generate_user_report() {
+  $custom_path = 'sites/all/libraries/fpdf/';
+
+  $pdf = new FPDF_Protection();
+  // Assign Password of the client for PDF opening.
+  $pdf->SetProtection(array('print'), 'krishna');
+  $pdf->AddPage();
+  $pdf->SetFont('Arial');
+  $pdf->SetFontSize(10);
+  $pdf->SetFillColor(30, 144, 255);
+  $pdf->SetDrawColor(30, 144, 255);
+
+  $pdf->Image($custom_path . 'logo.png', 158, 8, 40, 15);
+  $pdf->Write(4, date("M d, Y") . '
+    Columbus, OH 43215
+    Re: Substance Abuse Assessment for  
+
+    Dear Mr. :
+
+    I performed a basic substance abuse assessment for _______ in reference to ___ pending reckless operation case. This assessment included the administration of: an AUDIT, a MAST, a depression screening, and a clinical interview. The following are my findings and recommendations:
+
+    Substance(s) of Concern:    
+    AUDIT: substance dependence = NEGATIVE; substance abuse = 
+    MAST: score= ___; indicates 
+    DSM/Other Substance Related Concerns: 
+    Depression/Anxiety Screening: 
+
+    Clinical Interview/Summary: 
+
+    DIAGNOSIS in reference to substances:  
+
+    Recommendations:  I have no further professional recommendations for __________ at this time. If she incurs any impaired driving charges in the future I recommend she seek additional evaluation. 
+
+    M__________ has signed a release to communicate the results of this assessment to you. Feel free to contact me should you have any questions about this assessment. 
+
+    Sincerely,
+
+
+
+    Brian Davis, LISW-S, SAP
+    cc: 
+
+            ');
+  // CONTENT HERE.
+  $pdf->Image($custom_path . 'sign.png', 7, 135, 30, 8);
+  $pdf->Output($custom_path . 'aaa.pdf');
+}
+
+/**
+ * Function _get_generate_user_report_form()
+ *
+ * Implemented to get the report custom form.
+ */
+function _get_generate_user_report_form() {
+  return drupal_get_form('generate_user_report_form');
+}
+
+/**
+ * Function generate_user_report_form()
+ *
+ * Implemented for creating report form.
+ */
+function generate_user_report_form($form, &$form_state) {
+  $report_dropdown = array();
+  // Query to get the report template.
+  $report_qry = db_select('users_reports_template', 'rt')
+    ->fields('rt', array('id', 'title', 'template'))
+    ->orderBy('id', 'DESC')
+    ->execute()
+    ->fetchAll();
+  foreach ($report_qry as $report_data) {
+    $report_dropdown[$report_data->id] = $report_data->title;
+  }
+
+  $form['report_title_cat'] = array(
+    '#type' => 'select',
+    '#required' => TRUE,
+    '#title' => t('Select Report'),
+    '#options' => $report_dropdown,
+    '#attributes' => array('class' => array('select_box')),
+    '#prefix' => '<div class="mt_10">',
+  );
+
+  $form['report_subject'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Report Subject'),
+    '#size' => 25,
+    '#maxlength' => 180,
+  );
+  $form['assessment_for'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Assessment For'),
+    '#size' => 25,
+    '#maxlength' => 180,
+  );
+  $form['reference_to'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Reference To'),
+    '#size' => 25,
+    '#maxlength' => 180,
+  );
+  $form['substance_dependence'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Substance Dependence'),
+    '#size' => 25,
+    '#maxlength' => 180,
+  );
+  $form['substance_abuse'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Substance Abuse'),
+    '#size' => 25,
+    '#maxlength' => 180,
+  );
+  $form['mast_score'] = array(
+    '#type' => 'textfield',
+    '#title' => t('MAST Score'),
+    '#size' => 25,
+    '#maxlength' => 180,
+  );
+  $form['recommendations_for'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Recommendations for'),
+    '#size' => 25,
+    '#maxlength' => 180,
+  );
+  $form['mname'] = array(
+    '#type' => 'textfield',
+    '#title' => t('M name'),
+    '#size' => 25,
+    '#maxlength' => 180,
+  );
+  $form['file'] = array(
+    '#type' => 'file',
+    '#title' => t('Signature'),
+    '#size' => 25,
+    '#description' => t('Upload a file, allowed extensions: png, size: (356x93)'),
+  );
+  $form['submit'] = array(
+    '#id' => 'generate_report',
+    '#type' => 'submit',
+    '#value' => t('Submit'),
+  );
+
+  return $form;
+}
+
+/**
+ * Function generate_user_report_form_validate()
+ *
+ * Implemeted to validate the form.
+ */
+function generate_user_report_form_validate($form, &$form_state) {
+  global $user;
+  $file = file_save_upload('file', array(
+    'file_validate_is_image' => array(),
+    'file_validate_extensions' => array('png'),
+    'file_validate_size' => array(20),
+    'public://' => 'public://',
+  ));
+  if ($file) {
+    if ($file = file_move($file, 'public://signature/' . $user->uid . '_' . time() . '.png')) {
+      $form_state['values']['file'] = $file;
+    }
+    else {
+      form_set_error('file', t('Failed to upload file.'));
+    }
+  }
+  else {
+    form_set_error('file', t('No file was uploaded.'));
+  }
+}
+
+/**
+ * Function generate_user_report_form_submit()
+ *
+ * Implemented to submit the report generation form.
+ */
+function generate_user_report_form_submit($form, &$form_state) {
+  // Here user is therapist, staff admin, superadmin.
+  global $user;
+  $report_title_cat = $form_state['values']['report_title_cat'];
+  $report_subject = $form_state['values']['report_subject'];
+  $assessment_for = $form_state['values']['assessment_for'];
+  $reference_to = $form_state['values']['reference_to'];
+  $substance_dependence = $form_state['values']['substance_dependence'];
+  $substance_abuse = $form_state['values']['substance_abuse'];
+  $mast_score = $form_state['values']['mast_score'];
+  $recommendations_for = $form_state['values']['recommendations_for'];
+  $mname = $form_state['values']['mname'];
+
+  // File Save START.
+  $file = $form_state['values']['file'];
+  unset($form_state['values']['file']);
+  $client_info = user_load(arg(4));
+  $client_name = $client_info->field_first_name['und'][0]['value'];
+  $client_mail = $client_info->mail;
+
+  $therapist_info = user_load($user->uid);
+  $therapist_name = $therapist_info->field_first_name['und'][0]['value'] . ' ' . $therapist_info->field_last_name['und'][0]['value'];
+  $therapist_degree = $therapist_info->field_therapist_degree['und'][0]['value'];
+
+  $date_assmnt = date("M d, Y");
+
+  // Report Formatting START.
+  $report = get_report_template($report_title_cat);
+  $format_report = str_replace('XX_TIME_XX', $date_assmnt, $report);
+  $format_report = str_replace('XX_REPORT_SUBJECT_XX', $report_subject, $format_report);
+  $format_report = str_replace('XX_USER_NAME_XX', $client_name, $format_report);
+  $format_report = str_replace('XX_ASSESSMENT_FOR_XX', $assessment_for, $format_report);
+  $format_report = str_replace('XX_REFERENCE_TO_XX', $reference_to, $format_report);
+  $format_report = str_replace('XX_SUBSTANCE_DEPENDENCE_XX', $substance_dependence, $format_report);
+  $format_report = str_replace('XX_SUBSTANCE_ABUSE_XX', $substance_abuse, $format_report);
+  $format_report = str_replace('XX_MAST_SCORE_XX', $mast_score, $format_report);
+  $format_report = str_replace('XX_RECOMMENDATIONS_FOR_XX', $recommendations_for, $format_report);
+  $format_report = str_replace('XX_M_XX', $mname, $format_report);
+  // Report Formatting END
+  // PDF GENERATION START.
+  $pdf = new PDF_HTML();
+  // Assign Password of the client for PDF opening.
+  $pdf->AddPage();
+  $pdf->SetFont('Arial');
+  $pdf->SetFontSize(10);
+  $pdf->SetFillColor(30, 144, 255);
+  $pdf->SetDrawColor(30, 144, 255);
+
+  $pdf->Image('public://signature/logo.png', 158, 8, 40, 15);
+
+  // CONTENT HERE.
+  $pdf->WriteHTML($format_report . $therapist_name . ', ' . $therapist_degree . '');
+  // CONTENT HERE.
+  $pdf->Image('public://signature/' . $file->filename, 12, 163, 30, 8);
+  // main_uid_tid_nid_time.pdf.
+  $pdf_report_name = 'main_' . arg(4) . '_' . arg(6) . '_' . arg(8) . '_' . arg(12) . '_' . time() . '.pdf';
+  $pdf->Output('public://reports/' . $pdf_report_name);
+  // PDF GENERATION END.
+  if (file_exists('public://reports/' . $pdf_report_name)) {
+    // Save record into database.
+    $field_options = array();
+    $field_options['main_report'] = $pdf_report_name;
+    $field_options['report_status'] = 1;
+    $field_options['updated_on'] = time();
+    $field_options['updated_by'] = $user->uid;
+
+    $result = db_update('users_transactions_data');
+    $result->fields($field_options);
+    $result->condition('id', arg(10), '=');
+    $result->execute();
+    drupal_set_message('Report generated successfully.');
+  }
+}
+
+/**
+ * Function get_report_template()
+ *
+ * Implemeted to get the report template for demo.
+ */
+function get_report_template($id) {
+  // Query to get the report template.
+  $report_qry = db_select('users_reports_template', 'rt')
+    ->fields('rt', array('id', 'title', 'template'))
+    ->condition('id', $id, '=')
+    ->orderBy('id', 'DESC')
+    ->execute()
+    ->fetchAll();
+  return $report_qry[0]->template;
+}
+
+/**
+ * Function _download_client_report()
+ *
+ * Implemented to display the download dialog to end user.
+ */
+function _download_client_report() {
+  $query_data = drupal_get_query_parameters();
+  // $filename       Denotes File path with File name.
+  $filename = $query_data['file_name_path'];
+
+  // Header defined to display the download window to client for PDF.
+  header("Pragma: public");
+  header("Expires: 0");
+  header("Pragma: no-cache");
+  header("Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0");
+  header("Content-Type: application/force-download");
+  header("Content-Type: application/octet-stream");
+  header("Content-Type: application/download");
+  header('Content-disposition: attachment; filename=' . basename($filename));
+  header("Content-Type: application/pdf");
+  header("Content-Transfer-Encoding: binary");
+  header('Content-Length: ' . filesize($filename));
+  @readfile($filename);
+  exit(0);
+}
+
+/**
+ * Function ndsbs_reports_send_attachment_mail()
+ *
+ * Implemented to send attachment in mail.
+ */
+function ndsbs_reports_send_attachment_mail() {
+  global $user, $base_url;
+  $query_data = drupal_get_query_parameters();
+
+  $file_name_path = $query_data['file_name_path'];
+  $file_name = $query_data['file_name'];
+  $report_nid = $query_data['report_nid'];
+  $report_tid = $query_data['report_tid'];
+
+  $user_information = user_load($user->uid);
+  $user_fname = $user_information->field_first_name['und'][0]['value'];
+
+  $module = 'ndsbs_reports';
+  $key = 'send_attachment_mail';
+
+  $to = $user_information->mail;
+  $language = 'en';
+  $file_content = file_get_contents($file_name_path);
+
+  $attachments = array(
+    'filecontent' => $file_content,
+    'filename' => $file_name,
+    'filemime' => 'application/pdf',
+  );
+
+  $message = drupal_mail($module, $key, $to, $language, $params = array(), $from = NULL, $send = FALSE);
+  // Creating the message body.
+  $message['subject'] = 'Please find the attachment doc';
+  $message['body'] = array();
+  $message['body'][] = 'Hi ' . $user_fname . '!!!';
+  $message['body'][] = 'Please find the report as attachment';
+
+  // Attachment added.
+  $message['params']['attachments'][] = $attachments;
+  // Retrieve the responsible implementation for this message.
+  $system = drupal_mail_system($module, $key);
+
+  // Format the message body.
+  $message = $system->format($message);
+
+  // Send e-mail.
+  $message['result'] = $system->mail($message);
+  if (!$message['result']) {
+    watchdog($module, 'Unable to send the email hook_send_attachment_mail', array(), WATCHDOG_NOTICE);
+  }
+  else {
+    // Print 'Mail sent';.
+    drupal_set_message('Email sent successfully');
+  }
+
+  drupal_goto($base_url . '/user/requested/reports/' . $report_nid);
+}
+
+/**
+ * Function change_user_shipping_address()
+ *
+ * Implemented to rebder the shipping form.
+ */
+function change_user_shipping_address() {
+  return drupal_render(drupal_get_form('change_user_shipping_address_form'));
+}
+
+/**
+ * Function change_user_shipping_address_form()
+ *
+ * Implemented to get the user shipping form.
+ */
+function change_user_shipping_address_form($form, &$form_state) {
+  global $user;
+  $user_information = user_load($user->uid);
+
+  // Custom form defined to get the shipping form.
+  $form['shipping_address_title'] = array(
+    '#type' => 'item',
+    '#title' => 'Please fill your Shipping Details',
+    '#prefix' => '<h2>',
+    '#suffix' => '</h2>',
+  );
+  $form['user_shipping_address'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Address'),
+    '#default_value' => $user_information->field_address['und'][0]['value'],
+    '#size' => 30,
+  );
+  $form['user_shipping_city'] = array(
+    '#type' => 'textfield',
+    '#title' => t('City'),
+    '#default_value' => $user_information->field_city['und'][0]['value'],
+    '#size' => 30,
+  );
+
+  // Get the dropdown field values.
+  $state_fields = field_info_fields();
+  $allowed_values = list_allowed_values($state_fields['field_state']);
+  $form['user_shipping_state'] = array(
+    '#type' => 'select',
+    '#title' => t('State'),
+    '#options' => $allowed_values,
+    '#default_value' => $user_information->field_state['und'][0]['value'],
+  );
+  $form['user_shipping_zip'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Zip'),
+    '#default_value' => $user_information->field_zip['und'][0]['value'],
+    '#size' => 30,
+  );
+
+  $form['submit'] = array(
+    '#id' => 'update_shipping',
+    '#type' => 'submit',
+    '#value' => t('Update'),
+    '#prefix' => '<div class="request2">',
+    '#suffix' => '</div>',
+  );
+
+  return $form;
+}
+
+/**
+ * Function change_user_shipping_address_form_submit()
+ *
+ * Implemented to save the form.
+ */
+function change_user_shipping_address_form_submit($form, &$form_state) {
+  global $user, $base_url;
+  $user_shipping_address = $form_state['values']['user_shipping_address'];
+  $user_shipping_city = $form_state['values']['user_shipping_city'];
+  $user_shipping_state = $form_state['values']['user_shipping_state'];
+  $user_shipping_zip = $form_state['values']['user_shipping_zip'];
+
+  $user = user_load($user->uid);
+  $user->field_address['und'][0]['value'] = $user_shipping_address;
+  $user->field_city['und'][0]['value'] = $user_shipping_city;
+  $user->field_state['und'][0]['value'] = $user_shipping_state;
+  $user->field_zip['und'][0]['value'] = $user_shipping_zip;
+  user_save($user);
+
+  drupal_set_message('Shipping information updated successfully');
+  drupal_goto($base_url . '/user/expressmail');
+}
+
+/**
+ * Function get_purchased_items_subreports()
+ *
+ * Function defined to get the users pruchased subreports items from transaction
+ * table.
+ */
+function get_purchased_items_subreports_report_section_trans($nid, $payment_status, $subreport, $tid, $uid, $transid) {
+  // Field sub_report = 0 for main report and sub_report = 1 for sub report.
+  $result = db_select('users_transactions', 'ut')->fields('ut', array(
+    'order_id',
+    'nid',
+    'tid',
+    'uid',
+    'cost',
+    'payment_status',
+    'payment_method',
+    'order_date',
+    'transaction_id',
+    'shipping_info',
+    'express_mail',
+    'ip_address',
+    'transaction_action',
+    'action_by',
+    'reason',
+    'action_date',
+    'client_request',
+    'requested_on',
+  ))->condition('ut.payment_status', $payment_status, '=');
+  $result->condition('ut.uid', $uid, '=');
+  $result->condition('ut.nid', $nid, '=');
+  $result->condition('ut.order_id', $transid, '=');
+  $result->orderBy('ut.order_id', 'DESC');
+  $result->innerJoin('users_transactions_data', 'utd', 'ut.order_id = utd.oid');
+  $result->fields('utd', array(
+    'id',
+    'oid',
+    'termid',
+    'amount',
+    'notary_cost',
+    'sub_report',
+    'main_report_id',
+    'express_mail_status',
+    'notary_status',
+    'updated_on',
+    'updated_by',
+    'report_name',
+    'main_report',
+  ));
+  $result->condition('utd.sub_report', $subreport, '=');
+  $result->condition('utd.main_report_id', $tid, '=');
+
+  $execute = $result->execute();
+  $data = $execute->fetchAll();
+
+  return $data;
+}
+
+/**
+ * Function get_purchased_items_reports()
+ *
+ * Function defined to get the users pruchased items from transaction table.
+ */
+function get_purchased_items_reports_section_trans($nid, $payment_status, $subreport, $tid, $userid, $transid) {
+  global $user;
+
+  // Field sub_report = 0 for main report and sub_report = 1 for sub report.
+  $result = db_select('users_transactions', 'ut')->fields('ut', array(
+    'order_id',
+    'nid',
+    'tid',
+    'uid',
+    'cost',
+    'payment_status',
+    'payment_method',
+    'order_date',
+    'transaction_id',
+    'shipping_info',
+    'express_mail',
+    'ip_address',
+    'transaction_action',
+    'action_by',
+    'reason',
+    'action_date',
+    'client_request',
+    'requested_on',
+    'therapist',
+  ))->condition('ut.payment_status', $payment_status, '=');
+  // CHK made to Display the result for client only.
+  $result->condition('ut.uid', $userid, '=');
+  $result->condition('ut.nid', $nid, '=');
+  $result->condition('ut.order_id', $transid, '=');
+  $result->orderBy('ut.order_id', 'DESC');
+  $result->innerJoin('users_transactions_data', 'utd', 'ut.order_id = utd.oid');
+  $result->fields('utd', array(
+    'id',
+    'oid',
+    'termid',
+    'amount',
+    'notary_cost',
+    'sub_report',
+    'main_report_id',
+    'express_mail_status',
+    'notary_status',
+    'updated_on',
+    'updated_by',
+    'report_name',
+    'main_report',
+  ));
+  $result->condition('utd.sub_report', $subreport, '=');
+
+  $result->condition('utd.termid', $tid, '=');
+
+  $execute = $result->execute();
+  $data = $execute->fetchAll();
+
+  return $data;
+}
+
+/**
+ * Function get_purchased_items_reports_trans()
+ *
+ * Function defined to get the users pruchased items from transaction table.
+ */
+function get_purchased_items_reports_trans($nid, $payment_status, $subreport, $tid, $transid) {
+  global $user;
+
+  // Field sub_report = 0 for main report and sub_report = 1 for sub report.
+  $result = db_select('users_transactions', 'ut')->fields('ut', array(
+    'order_id',
+    'nid',
+    'tid',
+    'uid',
+    'cost',
+    'payment_status',
+    'payment_method',
+    'order_date',
+    'transaction_id',
+    'shipping_info',
+    'express_mail',
+    'ip_address',
+    'transaction_action',
+    'action_by',
+    'reason',
+    'action_date',
+    'client_request',
+    'requested_on',
+  ))->condition('ut.payment_status', $payment_status, '=');
+
+  if ($user->roles[6] == 'client') {
+    // CHK made to Display the result for client only.
+    $result->condition('ut.uid', $user->uid, '=');
+    $result->condition('ut.nid', $nid, '=');
+    $result->condition('ut.order_id', $transid, '=');
+  }
+
+  if (isset($user->roles[4]) && $user->roles[4] == 'therapist') {
+    // CHK made to Display the result for therapist only.
+    $result->condition('ut.therapist', $user->uid, '=');
+  }
+  $result->orderBy('ut.order_id', 'DESC');
+  $result->innerJoin('users_transactions_data', 'utd', 'ut.order_id = utd.oid');
+  $result->fields('utd', array(
+    'oid',
+    'termid',
+    'amount',
+    'notary_cost',
+    'sub_report',
+    'main_report_id',
+    'express_mail_status',
+    'notary_status',
+    'updated_on',
+    'updated_by',
+    'report_name',
+    'main_report',
+    'report_status',
+  ));
+  $result->condition('utd.sub_report', $subreport, '=');
+
+  if ($user->roles[6] == 'client') {
+    $result->condition('utd.termid', $tid, '=');
+  }
+
+  $execute = $result->execute();
+  $data = $execute->fetchAll();
+
+  return $data;
+}
+
+/**
+ * Function get_users_not_paid_stateform()
+ *
+ * Implemented to get the users not paid stateform.
+ */
+function get_users_not_paid_stateform() {
+  global $user;
+  $type = 'state_form_request';
+
+  // Query to get the all node of paper work base on particular user.
+  $query = db_select('node', 'n')
+    ->fields('n', array('nid'))
+    ->condition('n.uid', $user->uid, '=')
+    ->condition('n.type', $type, '=')
+    ->orderBy('n.created', 'DESC');
+  $query->join('field_data_field_state_form_payment_status', 'fdsf', 'fdsf.entity_id = n.nid');
+  $query->condition('fdsf.field_state_form_payment_status_value', 0, '=');
+
+  $result = $query->execute();
+  $data = $result->fetchAll();
+  return $data;
+}
+
+/**
+ * Function get_express_mail_request()
+ */
+function get_express_mail_request($transid) {
+  $query = db_select('users_transactions', 'ut')->fields('ut', array(
+    'order_id',
+    'nid',
+    'tid',
+    'uid',
+    'cost',
+    'payment_status',
+    'payment_method',
+    'order_date',
+    'transaction_id',
+    'shipping_info',
+    'express_mail',
+    'ip_address',
+    'transaction_action',
+    'action_by',
+    'reason',
+    'action_date',
+    'client_request',
+    'requested_on',
+    'therapist',
+  ))->condition('ut.payment_status', 1, '=');
+  $query->condition('ut.order_id', $transid, '=');
+
+  $result = $query->execute();
+  $data = $result->fetchAll();
+  return $data;
+}
+
+/**
+ * Function get_subreports_of_mainreports()
+ *
+ * Function defined to get the users pruchased subreports based on the main
+ * reports.
+ */
+function get_others_report($order_id, $oid) {
+  global $user;
+  // Field sub_report = 0 for main report and sub_report = 1 for sub report.
+  $result = db_select('users_transactions', 'ut')
+    ->fields('ut', array(
+      'order_id',
+      'nid',
+      'tid',
+      'uid',
+      'cost',
+      'payment_status',
+      'payment_method',
+      'order_date',
+      'transaction_id',
+      'shipping_info',
+      'express_mail',
+      'ip_address',
+      'transaction_action',
+      'action_by',
+      'reason',
+      'action_date',
+      'client_request',
+      'requested_on',
+    ))
+    ->condition('ut.order_id', $order_id, '=')
+    ->condition('ut.payment_status', 1, '=');
+  if ($user->roles[4] == 'therapist') {
+    // CHK made to Display the result for therapist only.
+    $result->condition('ut.therapist', $user->uid, '=');
+  }
+  $result->orderBy('ut.order_id', 'DESC');
+  $result->innerJoin('users_transactions_data', 'utd', 'ut.order_id = utd.oid');
+  $result->fields('utd', array(
+    'id',
+    'oid',
+    'termid',
+    'amount',
+    'notary_cost',
+    'sub_report',
+    'main_report_id',
+    'report_status',
+    'updated_on',
+    'updated_by',
+    'main_report',
+  ));
+  $execute = $result->execute();
+  $data = $execute->fetchAll();
+
+  return $data;
+}
+
+/**
+ * Function implemeted generate_other_report()
+ *
+ * To save the report for others report.
+ */
+function generate_other_report() {
+  global $user, $base_url;
+  // $postdata = $_REQUEST['postdata'];.
+  $params = array();
+  $params = $_POST;
+  // parse_str($postdata, $params);.
+  if ($_FILES['file']['name'] <> '') {
+    $data = array('pdf');
+    $file_explode = explode('.', $_FILES['file']['name']);
+    $file_extension = $file_explode[1];
+
+    if (in_array($file_extension, $data)) {
+      $file_custom_name = 'other_' . time() . '.pdf';
+      if (!move_uploaded_file($_FILES['file']['tmp_name'], 'public://reports/' . $file_custom_name)) {
+        form_set_error('file', t('File not uploaded.'));
+      }
+      else {
+        // Save record into database.
+        $field_options = array();
+        $field_options['main_report'] = $file_custom_name;
+        $field_options['report_status'] = 1;
+        $field_options['updated_on'] = time();
+        $field_options['updated_by'] = $user->uid;
+
+        $result = db_update('users_transactions_data');
+        $result->fields($field_options);
+        $result->condition('id', $params['oid'], '=');
+        $result->execute();
+        drupal_set_message('Report generated successfully.');
+      }
+    }
+    else {
+      form_set_error('file', t('Please upload only pdf file.'));
+    }
+  }
+  drupal_goto($base_url . '/users/other/report/orderid/' . $params['orderid'] . '/oid/' . $params['oid']);
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function ndsbs_reports_block_info() {
+  $blocks = array();
+  $blocks['therapist_reports_all'] = array(
+    'info' => t('Therapist reports (All therapists)'),
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function ndsbs_reports_block_view($delta = '') {
+  $block = array();
+  switch ($delta) {
+    case 'therapist_reports_all':
+      $block['subject'] = 'Therapist reports';
+      $block['content'] = ndsbs_reports_therapist_reports_block_content();
+      break;
+  }
+  return $block;
+}
+
+/**
+ * Constructs a block to display the therapist reports form.
+ *
+ * @return array
+ *   Returns the therapist report form.
+ */
+function ndsbs_reports_therapist_reports_block_content() {
+  $form = drupal_get_form('ndsbs_reports_therapist_reports');
+  return $form;
+}

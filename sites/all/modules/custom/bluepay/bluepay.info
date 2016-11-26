@@ -1,0 +1,5 @@
+name = BluePay
+description = Implements BluePay payment services for use with Drupal.
+core = 7.x
+package = BluePay
+configure = admin/config/bluepay

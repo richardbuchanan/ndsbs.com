@@ -1,0 +1,12 @@
+/**
+ * Media Queries
+ */
+
+@media screen and (max-width: 1028px) {
+	.container_12 {
+		width: 98%;
+	}
+}
+
+@media screen and (max-width: 768px) {
+}

@@ -1,0 +1,1935 @@
+<?php
+/**
+ * @file
+ * Module name ndsbs_custom.module
+ * Finoit Technologies
+ * Developer krishna@finoit.com
+ * Allows developer to customize the site's functionality.
+ */
+
+/**
+ * Implements hook_entity_info_alter().
+ */
+function ndsbs_custom_entity_info_alter(&$info) {
+  //dpm($info);
+}
+
+
+/**
+ *  Implementation of hook_menu()
+ *  Function ndsbs_custom_menu() defined
+ *  Parameter no
+ */
+function ndsbs_custom_menu() {
+  $items = array();
+  $items['user/welcome'] = array(
+    'title' => 'Welcome',
+    'description' => 'Welcome page for registerd user.',
+    'access callback' => 'user_is_logged_in',
+    'page callback' => '_user_welcome_page',
+    'access arguments' => array('access content'),
+  );
+
+  $items['user/success_register'] = array(
+    'title' => 'Registration Successful',
+    'description' => 'Registration Successful.',
+    'page callback' => '_user_success_registration_page',
+    'access arguments' => array('access content'),
+  );
+
+  $items['data/error'] = array(
+    'title' => 'Data Error',
+    'description' => 'Malicious data.',
+    'page callback' => '_malicious_data_error',
+    'access arguments' => array('access content'),
+  );
+
+  //$items['staff'] = array(
+  //'title' => 'Staff',
+  //'description' => 'Staff.',
+  //'page callback' => 'drupal_get_form',
+  //'access callback' => TRUE,
+  //);
+
+  $items['user/paperwork/list'] = array(
+    'title' => 'Client Paperwork',
+    'description' => 'Client Paperwork list.',
+    'access callback' => 'user_is_logged_in',
+    'page callback' => '_client_paperwork_list',
+    'access arguments' => array('access content'),
+  );
+
+  $items['request/paperwork/list'] = array(
+    'title' => 'Client Paperwork',
+    'description' => 'List All Client Paperwork.',
+    'access callback' => 'request_permission',
+    'page callback' => '_list_all_client_paperwork',
+    'access arguments' => array('access content'),
+  );
+
+  $items['request/stateform/pendinginvoice'] = array(
+    'title' => 'Pending Invoices',
+    'description' => 'List All Pending Invoices.',
+    'access callback' => 'request_permission',
+    'page callback' => '_list_all_client_stateform_pendinginvoice',
+    'access arguments' => array('access content'),
+  );
+
+  $items['request/stateform/createinvoice/%'] = array(
+    'title' => 'Client Stateform',
+    'description' => 'List All Client Stateform.',
+    'access callback' => 'request_permission',
+    'page callback' => '_state_form_createinvoice',
+    'access arguments' => array('access content'),
+  );
+
+  $items['request/stateform/requestedinvoice'] = array(
+    'title' => 'Requested Invoices',
+    'description' => 'List All Requested Invoices.',
+    'access callback' => 'request_permission',
+    'page callback' => '_list_all_client_stateform_requestedinvoice',
+    'access arguments' => array('access content'),
+  );
+
+  $items['user/stateform/list'] = array(
+    'title' => 'Client Stateform',
+    'description' => 'Client Stateform list.',
+    'access callback' => 'user_is_logged_in',
+    'page callback' => '_client_stateform_list',
+    'access arguments' => array('access content'),
+  );
+
+  $items['user/clients/list'] = array(
+    'title' => 'All Clients',
+    'description' => 'List All Clients.',
+    'access callback' => 'request_permission',
+    'page callback' => '_list_all_client',
+    'access arguments' => array('access content'),
+  );
+
+  $items['request/counseling/list'] = array(
+    'title' => 'Counseling Request',
+    'description' => 'List All Counseling Request.',
+    'access callback' => 'request_permission',
+    'page callback' => '_list_all_client_counseling_request',
+    'access arguments' => array('access content'),
+  );
+
+  $items['request/counseling/update/%'] = array(
+    'title' => 'Update Counseling Request',
+    'description' => 'Update Counseling Request.',
+    'access callback' => 'request_permission',
+    'page callback' => '_update_counseling_request',
+    'page arguments' => array(3),
+    'access arguments' => array('access content'),
+  );
+
+  $items['request/paymentrefund/list'] = array(
+    'title' => 'Refund Requests',
+    'description' => 'List All Counseling Request.',
+    'access callback' => 'request_permission',
+    'page callback' => '_list_all_client_payment_refund_request',
+    'access arguments' => array('access content'),
+  );
+
+  $items['request/paymentrefund/update/%'] = array(
+    'title' => 'Update Counseling Request',
+    'description' => 'Update Counseling Request.',
+    'access callback' => 'request_permission',
+    'page callback' => '_update_request_payment_status',
+    'page arguments' => array(3),
+    'access arguments' => array('access content'),
+  );
+
+  $items['user/allrequest/list'] = array(
+    'title' => 'All Request',
+    'description' => 'All Request list.',
+    'access callback' => 'user_is_logged_in',
+    'page callback' => '_client_allrequest_list',
+    'access arguments' => array('access content'),
+  );
+
+  $items['request/thirdparty/list'] = array(
+    'title' => 'Third Party Requests',
+    'description' => 'List All Third Party Requests.',
+    'access callback' => 'request_permission',
+    'page callback' => '_list_all_thirdparty_request',
+    'access arguments' => array('access content'),
+  );
+
+  $items['request/thirdparty/update/%'] = array(
+    'title' => 'Update Third Party Request',
+    'description' => 'Update Third Party Request.',
+    'access callback' => 'request_permission',
+    'page callback' => '_update_third_party_request_status',
+    'page arguments' => array(3),
+    'access arguments' => array('access content'),
+  );
+
+  $items['request/thirdparty/download/%'] = array(
+    'title' => 'Update Third Party Request',
+    'description' => 'Update Third Party Request.',
+    'access callback' => 'request_permission',
+    'page callback' => '_download_third_party_request_doc',
+    'page arguments' => array(3),
+    'access arguments' => array('access content'),
+  );
+
+  $items['user/staff/list'] = array(
+    'title' => 'All Staff',
+    'description' => 'List All Staff.',
+    'access callback' => 'request_permission',
+    'page callback' => '_list_all_staff',
+    'access arguments' => array('access content'),
+  );
+
+  $items['user/change/status'] = array(
+    'title' => 'All Staff',
+    'description' => 'List All Staff.',
+    'access callback' => 'request_permission',
+    'page callback' => 'change_user_status',
+    'access arguments' => array('access content'),
+  );
+
+  $items['user/verification/document'] = array(
+    'title' => 'Necessary Documents',
+    'description' => 'List All Verification Document.',
+    'access callback' => 'request_permission',
+    'page callback' => '_user_list_verification_document',
+    'access arguments' => array('access content'),
+  );
+
+  $items['list/verification/document'] = array(
+    'title' => 'Verification Document',
+    'description' => 'List All Verification Document.',
+    'access callback' => 'user_is_logged_in',
+    'page callback' => '_list_verification_document',
+    'access arguments' => array('access content'),
+  );
+
+  $items['verify/document/nid/%/%'] = array(
+    'title' => 'verify Document',
+    'description' => 'verify Document.',
+    'access callback' => 'request_permission',
+    'page callback' => 'change_verification_document_status',
+    'access arguments' => array('access content'),
+  );
+
+  $items['view/assessment/status'] = array(
+    'title' => 'Assessment',
+    'description' => 'User Assessment.',
+    'access callback' => 'user_is_logged_in',
+    'page callback' => '_user_assessment_status',
+    'access arguments' => array('access content'),
+  );
+
+  return $items;
+}
+
+/**
+ *  Implementation of _user_welcome_page()
+ *  Function _user_welcome_page() defined
+ *  Display the welcome page to user
+ */
+function _user_welcome_page() {
+  return theme('user_welcome');
+}
+
+/**
+ *  Implementation of _user_welcome_page()
+ *  Function _user_welcome_page() defined
+ *  Display the welcome page to user
+ */
+function _user_assessment_status() {
+  return theme('user_assessment_status');
+}
+
+/**
+ *  Implementation of _user_success_registration_page()
+ *  Function _user_success_registration_page() defined
+ *  Display the success registration page to user
+ */
+function _user_success_registration_page() {
+  //  Logout user if by default he logs in    From registration page
+  global $user;
+  watchdog('user', 'Session closed for %name.', array('%name' => $user->name));
+
+  module_invoke_all('user_logout', $user);
+  // Destroy the current session, and reset $user to the anonymous user.
+  session_destroy();
+
+  return theme('user_success_register');
+}
+
+/**
+ *  Implementation of _malicious_data_error()
+ *  Function _malicious_data_error() defined
+ *  Display the error message page to user
+ */
+function _malicious_data_error() {
+  return theme('error_malicious_data');
+}
+
+/**
+ *  Implementation of hook_theme()
+ *  Function ndsbs_custom_theme() defined
+ *  Parameter no
+ */
+function ndsbs_custom_theme() {
+  $items = array();
+  $items['user_register_form'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'user_register_forms',
+    //'preprocess functions' => array(
+    //'ndsbs_preprocess_user_register_form'
+    //),
+  );
+  $items['user_welcome'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'user_welcome',
+  );
+  $items['user_success_register'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'user_success_register',
+  );
+  $items['error_malicious_data'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'error_malicious_data',
+  );
+  $items['user_pass'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'user_pass',
+  );
+  $items['user_login'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'user_login',
+  );
+  $items['user-profile'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'user-profile',
+  );
+  $items['user_profile_form'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'user_profile_form',
+  );
+
+  $items['paper_work_node_form'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'paper_work_node_form',
+  );
+
+  $items['client_paperwork_list'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'client_paperwork_list',
+  );
+
+  $items['list_all_client_paperwork'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'list_all_client_paperwork',
+  );
+
+  $items['list_all_client_stateform_invoice'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'list_all_client_stateform_invoice',
+  );
+
+  $items['list_all_client_stateform_invoice_requested'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'list_all_client_stateform_invoice_requested',
+  );
+
+  $items['state_form_request_node_form'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'state_form_request_node_form',
+  );
+
+  $items['client_stateform_list'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'client_stateform_list',
+  );
+
+  $items['list_all_client'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'list_all_client',
+  );
+
+  $items['list_all_client_counseling_request'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'list_all_client_counseling_request',
+  );
+
+  $items['counseling_request_node_form'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'counseling_request_node_form',
+  );
+
+  $items['appointment_preference_node_form'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'appointment_preference_node_form',
+  );
+
+  $items['refund_payment_node_form'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'refund_payment_node_form',
+  );
+
+  $items['list_all_client_payment_refund_request'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'list_all_client_payment_refund_request',
+  );
+
+  $items['client_allrequest_list'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'client_allrequest_list',
+  );
+
+  $items['list_all_thirdparty_request'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'list_all_thirdparty_request',
+  );
+
+  $items['third_party_request_node_form'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'third_party_request_node_form',
+  );
+
+  //  theme called for pages START
+  $items['page__about'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'page__about',
+  );
+
+  $items['page__faq'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'page__faq',
+  );
+
+  //$items['page__staff'] = array(
+  //'render element' => 'form',
+  //'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+  //'template' => 'page__staff',
+  //);
+
+  $items['page__tnc'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'page__tnc',
+  );
+
+  $items['page__sitemap'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'page__sitemap',
+  );
+
+  //$items['page__contact'] = array(
+  //'render element' => 'form',
+  //'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+  //'template' => 'page__contact',
+  //);
+
+  $items['page__courts'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'page__courts',
+  );
+
+  $items['page__employers'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'page__employers',
+  );
+
+  $items['page__our_services'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'page__our_services',
+  );
+
+  $items['page__professional_service'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'page__professional_service',
+  );
+
+  $items['page__online_services'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'page__online_services',
+  );
+
+  $items['page__inperson_services'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'page__inperson_services',
+  );
+
+  $items['page__professional_staff'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'page__professional_staff',
+  );
+
+  $items['page__choose_new_directions'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'page__choose_new_directions',
+  );
+
+  $items['page__map'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'page__map',
+  );
+
+  $items['page__hippa'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'page__hippa',
+  );
+
+  //  theme called for pages END
+  /*
+  $items['page_node_form'] = array(
+      'render element' => 'form',
+      'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+      'template' => 'page_node_form',
+  );
+  */
+  $items['list_all_staff'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'list_all_staff',
+  );
+
+  //$items['testimonials_node_form'] = array(
+  //'render element' => 'form',
+  //'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+  //'template' => 'testimonials_node_form',
+  //);
+
+  $items['important_document_node_form'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'important_document_node_form',
+  );
+
+  $items['account_verification_node_form'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'account_verification_node_form',
+  );
+
+  $items['user_list_verification_document'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'user_list_verification_document',
+  );
+
+  $items['list_verification_document'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'list_verification_document',
+  );
+
+  $items['page__testimonial'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'page__testimonial',
+  );
+
+  $items['user_assessment_status'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'user_assessment_status',
+  );
+
+  /*
+  $items['state_form_create_invoice'] = array(
+      'render element' => 'form',
+      'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+      'template' => 'state_form_create_invoice',
+  );
+  */
+
+  return $items;
+}
+
+/**
+ *  Implementation of hook_form_alter()
+ *  Function ndsbs_custom_form_alter() defined
+ *  Parameter no
+ */
+function ndsbs_custom_form_alter(&$form, &$form_state, $form_id) {
+  global $user;
+  if ($user->uid == '') {
+    //  Validation added for date of birth
+    if ($form_id == 'user_register_form') {
+      //$form['#attributes']['autocomplete'] = 'off';
+      $form['#validate'][] = 'ndsbs_custom_user_register_form_validate';
+      foreach ($form as $key => $value) {
+        if (is_array($value) && isset($value['#attributes'])) {
+          $form[$key]['#attributes']['autocomplete'] = 'off';
+        }
+      }
+    }
+  }
+
+//    if($form_id == 'refund_payment_node_form') {
+//        $form['#validate'][] = 'ndsbs_custom_payment_refund_change_values_validate';
+//        $form['#submit'][] = 'ndsbs_custom_payment_refund_change_values_submit';
+//    }
+
+  if ($form_id == 'appointment_preference_node_form') {
+    $form['#validate'][] = 'appointment_preference_date_validate';
+  }
+
+  //  Change the options and show only purchased items
+  if ($form_id == 'state_form_request_node_form') {
+    $form['field_stateform_assessment']['und']['#options'] = get_purchased_service_dropdown();
+  }
+
+  //  Change the options and show only purchased items
+  if ($form_id == 'refund_payment_node_form') {
+    $form['field_refund_for_service']['und']['#options'] = get_purchased_service_dropdown();
+  }
+
+  //  Change the options and show only purchased items
+  if ($form_id == 'paper_work_node_form') {
+    $form['field_assessment']['und']['#options'] = get_purchased_service_dropdown();
+  }
+
+  //  Change the options and show therapist
+  if ($form_id == 'state_form_request_node_form') {
+    $form['field_state_form_user_reference']['und']['#options'] = get_therapist_dropdown();
+  }
+
+  if ($form_id == 'counseling_request_node_form') {
+    $form['field_preferred_therapist']['und']['#options'] = get_therapist_dropdown();
+  }
+
+  if ($form_id == 'appointment_preference_node_form') {
+    $count = count($form['fgm_node_appointment_preference_form_group_appointment_group']['fields']['items']);
+    for ($i = 0; $i < $count; $i++) {
+      $form['fgm_node_appointment_preference_form_group_appointment_group']['fields']['items'][$i]['field_prefererred_therapist']['#options'] = get_therapist_dropdown();
+    }
+    //$form['fgm_node_appointment_preference_form_group_appointment_group']['fields']['items'][1]['field_prefererred_therapist']['#options'] = get_therapist_dropdown();
+    //print_r($form['fgm_node_appointment_preference_form_group_appointment_group']['fields']['items'][1]['field_prefererred_therapist']['und']['#options']);
+  }
+  //['#options']
+
+  //  Unset the password filed in case of update profile
+  if ($form_id == 'user_profile_form') {
+    unset($form['account']['pass']);
+  }
+
+  //  Validate the third party request form
+  if ($form_id == 'third_party_request_node_form') {
+    $form['#validate'][] = 'third_party_request_node_form_validate';
+  }
+
+}
+
+/**
+ *  Implementation of user registration custom validation function
+ *  Function _user_registration_custom_validation_callback() defined
+ */
+function ndsbs_custom_user_register_form_validate($form, &$form_state) {
+  //  Custom Validation added at registartion page
+  $pattern = '/^[a-zA-Z, s]{0,255}$/';
+
+
+  if ($form_state['values']['field_first_name']['und'][0]['value'] == 'First Name') {
+    $form_state['values']['field_first_name']['und'][0]['value'] = '';
+  }
+  if ($form_state['values']['field_middle_name']['und'][0]['value'] == 'Middle Name') {
+    $form_state['values']['field_middle_name']['und'][0]['value'] = '';
+  }
+  if ($form_state['values']['field_last_name']['und'][0]['value'] == 'Last Name') {
+    $form_state['values']['field_last_name']['und'][0]['value'] = '';
+  }
+
+  if (!preg_match($pattern, $form_state['values']['field_first_name']['und'][0]['value'])) {
+    form_set_error('First Name', t('First Name field can have characters only.'));
+  }
+  if ($form_state['values']['field_last_name']['und'][0]['value'] != '' && !preg_match($pattern, $form_state['values']['field_last_name']['und'][0]['value'])) {
+    form_set_error('Last Name', t('Last Name field can have characters only.'));
+  }
+  if ($form_state['values']['field_year']['und'][0]['value'] == '' || $form_state['values']['field_month']['und'][0]['value'] == '' || $form_state['values']['field_dobdate']['und'][0]['value'] == '') {
+    form_set_error('Gender', t('Please select your Date of birth.'));
+  }
+
+  $y = $form_state['values']['field_year']['und'][0]['value'];
+  $m = $form_state['values']['field_month']['und'][0]['value'];
+  $d = $form_state['values']['field_dobdate']['und'][0]['value'];
+  $age = (date("md", date("U", mktime(0, 0, 0, $m, $d, $y))) > date("md") ? ((date("Y") - $y) - 1) : (date("Y") - $y));
+  if ($age < 0) {
+    form_set_error('Age', t('Your age must be greater than or equal to 13.'));
+  }
+
+  if (!preg_match($pattern, $form_state['values']['field_first_name']['und'][0]['value'])) {
+    form_set_error('First Name', t('First Name field can have characters only.'));
+  }
+  if (!preg_match($pattern, $form_state['values']['field_city']['und'][0]['value'])) {
+    form_set_error('City', t('City field can have characters only.'));
+  }
+
+  $zip_pattern = '/^[A-Za-z0-9 ]{3,6}$/';
+  $zip_char_count = strlen($form_state['values']['field_zip']['und'][0]['value']);
+  if ($zip_char_count > 6) {
+    form_set_error('City', t('Zip code must not be greater the 6 character.'));
+  }
+  if (!preg_match($zip_pattern, $form_state['values']['field_zip']['und'][0]['value'])) {
+    form_set_error('City', t('Zip field can have characters and numbers only.'));
+  }
+
+  //  Assign role from front end registration.
+  $form_state['values']['roles'] = array('6' => '5');
+}
+
+/**
+ * Function third_party_request_node_form_validate() Implemented to
+ * Validate the third party request
+ */
+function third_party_request_node_form_validate($form, &$form_state) {
+//  Custom Validation added at registartion page
+  $pattern = '/^[a-zA-Z, s]{0,255}$/';
+
+  if (!preg_match($pattern, $form_state['values']['field_probation_officer_name']['und'][0]['value'])) {
+    form_set_error('Probation Officer Name', t('Probation officer name field can have characters only.'));
+  }
+  if (!valid_email_address($form_state['values']['field_probation_officer_email']['und'][0]['value'])) {
+    form_set_error('Email', t('The email address appears to be invalid.'));
+  }
+
+  $char_count = strlen($form_state['values']['field_probation_officer_phone']['und'][0]['value']);
+  if ($char_count > 15) {
+    form_set_error('City', t('Phone number should not be greater than 15 digit.'));
+  }
+}
+
+/**
+ *  Implementation of hook_nodeapi()
+ *  Function ndsbs_custom_nodeapi() defined
+ *  Parameter no
+ */
+/*
+function ndsbs_custom_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
+    if($form_id == 'user_register_form') {
+        $robotest = $_POST['robotest'];
+        if($robotest) {
+            drupal_goto('data/error');
+        }
+    }
+}
+*/
+
+/**
+ *  Implementation of hook_init()
+ *  Function ndsbs_custom_init() defined
+ *  Parameter no
+ */
+function ndsbs_custom_init() {
+  //error_reporting(0);
+}
+
+/**
+ *  Implementation of hook_user()
+ *  Function ndsbs_custom_user() defined
+ *  To notify user about changes made in user's profile by admin and staff admin
+ */
+function ndsbs_custom_user_update(&$edit, $account, $category) {
+  global $user;
+  //  Notify user if account modified by admin or staff admin
+  // echo $edit['field_special_user']['und'][0]['value']."hii";
+  if ((isset($user->roles[3]) && $user->roles[3] == 'super admin') ||
+    (isset($user->roles[5]) && $user->roles[5] == 'staff admin')
+  ) {
+    if ($edit['status'] != 0) {
+      //  The admin updated user profile
+
+      if ($edit['field_special_user']['und'][0]['value'] == 1) {
+        //  The admin updated user profile and assigned special status
+        ndsbs_custom_profile_update_notification_special($edit);
+
+      }
+      else {
+        //ndsbs_custom_profile_update_notification($edit);
+      }
+
+    }
+  }
+}
+
+/**
+ * Implementation of function ndsbs_custom_profile_update_notification()
+ * Parameter: user account info
+ * Desc: Save the record into the database with status 1
+ */
+function ndsbs_custom_profile_update_notification($edit) {
+  $module = 'ndsbs_custom';
+  $key = 'profile_update_notification';
+  $to = $edit['mail'];
+  $language = $edit['original']->language;
+
+  $message = drupal_mail($module, $key, $to, $language, $params = array(), $from = NULL, $send = FALSE);
+
+  //  Creating the message body
+  $message['subject'] = 'Account information updated at NDSBS';
+  $message['body'] = array();
+  $message['body'][] = 'Hello ' . $edit['field_first_name']['und'][0]['value'] . ' ' . $edit['field_last_name']['und'][0]['value'];
+  $message['body'][] = '<br /><br />Your account information has been updated by NDSBS. We have granted you special privileges so that you could purchase assessment as a special service.';
+  //  $message['body'][] = '<br /><br />Please go to your "My Account" section in NDSBS user backend and generate an invoice for the assessment you wish to purchase. Your primary account information is ';
+  $message['body'][] = '<br /><br />Your primary account information is ';
+  $message['body'][] = '<br /><br />First Name: ' . $edit['field_first_name']['und'][0]['value'];
+  $message['body'][] = '<br />Last Name: ' . $edit['field_last_name']['und'][0]['value'];
+  $message['body'][] = '<br />Gender: ' . $edit['field_gender']['und'][0]['value'];
+  $message['body'][] = '<br />Date of birth: ' . $edit['field_month']['und'][0]['value'] . '/' . $fnmae = $edit['field_dobdate']['und'][0]['value'] . '/' . $edit['field_year']['und'][0]['value'];
+  $message['body'][] = '<br />Phone: ' . $edit['field_phone']['und'][0]['value'];
+  $message['body'][] = '<br />Second Phone: ' . $edit['field_second_phone']['und'][0]['value'];
+  $message['body'][] = '<br />Address: ' . $edit['field_address']['und'][0]['value'];
+  $message['body'][] = '<br /><br />Please contact us directly at 614-888-7274 (9-5 EST) or email us at info@ndsbs.com if you have any question.';
+  $message['body'][] = '<br /><br />The New Directions Team.';
+  $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
+
+  /*
+   * Uncomment To show the previous information
+  $message['body'][] = '<b>Your previous information:</b>';
+  $message['body'][] = 'First Name: ' . $edit['original']->field_first_name['und'][0]['value'];
+  $message['body'][] = 'Last Name: ' . $edit['original']->field_last_name['und'][0]['value'];
+  $message['body'][] = 'Gender: ' . $edit['original']->field_gender['und'][0]['value'];
+  $message['body'][] = 'Date of birth: ' . $edit['original']->field_month['und'][0]['value'] . '/' . $fnmae = $edit['original']->field_dobdate['und'][0]['value'] . '/' . $edit['original']->field_year['und'][0]['value'];
+  $message['body'][] = 'Phone: ' . $edit['original']->field_phone['und'][0]['value'];
+  $message['body'][] = 'Second Phone: ' . $edit['original']->field_second_phone['und'][0]['value'];
+  $message['body'][] = 'Address: ' . $edit['original']->field_address['und'][0]['value'];
+  */
+
+  // Retrieve the responsible implementation for this message.
+  $system = drupal_mail_system($module, $key);
+
+  // Format the message body.
+  $message = $system->format($message);
+
+  // Send e-mail.
+  $message['result'] = $system->mail($message);
+  watchdog($module, 'Unable to send the email hook_profile_update_notification', array(), WATCHDOG_NOTICE);
+}
+
+
+function ndsbs_custom_profile_update_notification_special($edit) {
+  $module = 'ndsbs_custom';
+  $key = 'profile_update_notification';
+  $to = $edit['mail'];
+  $language = $edit['original']->language;
+
+  $message = drupal_mail($module, $key, $to, $language, $params = array(), $from = NULL, $send = FALSE);
+
+  //  Creating the message body
+  $message['subject'] = 'Special privileges granted at NDSBS';
+  $message['body'] = array();
+  $message['body'][] = 'Hello ' . $edit['field_first_name']['und'][0]['value'] . ' ' . $edit['field_last_name']['und'][0]['value'];
+  $message['body'][] = '<br /><br />We have assigned special privileges to your account for rush order or other special services. ';
+  $message['body'][] = '<br /><br />The next steps are:  first <a href="https://www.ndsbs.com/user/login">Log In</a> to your account; and second,<a href="https://www.ndsbs.com/user/special/assessment">click here</a> to request a payable email invoice for your service.';
+
+  $message['body'][] = '<br /><br />If you have any questions please contact us directly at 614-888-7274 (9-5 EST) or email us at info@ndsbs.com';
+  $message['body'][] = '<br /><br />The New Directions Team.';
+  $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
+
+
+  // Retrieve the responsible implementation for this message.
+  $system = drupal_mail_system($module, $key);
+
+  // Format the message body.
+  $message = $system->format($message);
+
+  // Send e-mail.
+  $message['result'] = $system->mail($message);
+  watchdog($module, 'Unable to send the email hook_profile_update_notification', array(), WATCHDOG_NOTICE);
+}
+
+/**
+ * Function _client_paperwork_list() define to call the theme
+ */
+function _client_paperwork_list() {
+  return theme('client_paperwork_list');
+}
+
+/**
+ * Function get_paperwork_info() define.
+ * function impleted from getting the paper work of the client
+ * Depends on the user id of the client
+ *
+ */
+function get_paperwork_info() {
+  global $user;
+  $type = 'paper_work';
+
+  //  Query to get the all node of paper work base on particular user
+  $result = db_select('node', 'n')
+    ->fields('n', array('nid'))
+    ->condition('n.uid', $user->uid, '=')
+    ->condition('n.type', $type, '=')
+    ->orderBy('n.created', 'DESC')
+    ->execute()
+    ->fetchAll();
+  return $result;
+}
+
+/**
+ * Function _list_all_client_paperwork() define to call the theme
+ */
+function _list_all_client_paperwork() {
+  return theme('list_all_client_paperwork');
+}
+
+/**
+ * Function _list_all_client_paperwork() define to call the theme
+ */
+function _list_all_staff() {
+  return theme('list_all_staff');
+}
+
+/**
+ * Function _user_list_verification_document() define to call the theme
+ */
+function _user_list_verification_document() {
+  return theme('user_list_verification_document');
+}
+
+/**
+ * Function _list_verification_document() define to call the theme
+ */
+function _list_verification_document() {
+  return theme('list_verification_document');
+}
+
+/**
+ * Function get_all_paperwork_request() define.
+ * function impleted from getting the paper work of the client
+ * Depends on the user id of the client
+ *
+ */
+function get_all_paperwork_request() {
+  $type = 'paper_work';
+  //  Query to get the all node of paper work base on particular user
+  $result = db_select('node', 'n')->extend('PagerDefault')
+    ->fields('n', array('nid'))
+    ->condition('n.type', $type, '=')
+    ->orderBy('n.created', 'DESC')
+    ->execute()
+    ->fetchAll();
+  return $result;
+}
+
+/**
+ * Function request_permission() define.
+ * function implemented for custom permission
+ * Only Super admin, Staff admin and therapist
+ * are allowed to access this menu or this page
+ */
+function request_permission() {
+  global $user;
+  if (in_array('super admin', $user->roles) || in_array('therapist', $user->roles) || in_array('staff admin', $user->roles)) {
+    return TRUE;
+  }
+  else {
+    return FALSE;
+  }
+}
+
+/**
+ * Function _list_all_client_stateform_pendinginvoice() define to call the theme
+ */
+function _list_all_client_stateform_pendinginvoice() {
+  return theme('list_all_client_stateform_invoice');
+}
+
+/**
+ * Function get_all_stateform_invoice() define.
+ * function impleted from getting the paper work of the client
+ * Depends on the user id of the client
+ *
+ */
+function get_all_stateform_invoice() {
+  $type = 'state_form_request';
+  //  Query to get the all node of paper work base on particular user
+  //  $result
+  $query = db_select('node', 'n')->extend('PagerDefault')
+    ->fields('n', array('nid'))
+    ->condition('n.type', $type, '=')
+    ->orderBy('n.created', 'DESC');
+  $query->join('field_data_field_invoice_created_by', 'invoice', 'invoice.entity_id = n.nid');
+  $query->condition('invoice.field_invoice_created_by_value', 0, '<=');
+  $result = $query->execute();
+  $data = $result->fetchAll();
+  return $data;
+}
+
+/**
+ * Function _state_form_create_invoice() define.
+ * function implemented for assign the amount to the state form
+ */
+function _state_form_createinvoice() {
+  //  return theme('state_form_create_invoice');
+  $output = '';
+  $output .= drupal_render(drupal_get_form('state_form_create_invoice'));
+  print $output;
+}
+
+/**
+ * Function state_form_create_invoice() defined to
+ * Create the Custom form
+ * @return string
+ */
+function state_form_create_invoice() {
+  /*
+  $custom_dropdown = array();
+  $taxonomy_tree = taxonomy_get_tree(3);
+
+  //  creating dropdown category values
+  foreach($taxonomy_tree as $tdata) {
+      if(in_array($tdata->tid, array(21, 22, 23, 24))) {
+          $term = taxonomy_term_load($tdata->tid);
+          $key = $term->tid . '||' . $term->field_other_service_amount['und'][0]['value'];
+          $custom_dropdown[''] = '--Select--';
+          $custom_dropdown[$key] = $term->name;
+      }
+  }
+
+  $nid_val = arg(3);
+  $node_data = node_load($nid_val);
+
+  $selected_value = $node_data->field_state_form_cat_id['und'][0]['value'] . '||' . $node_data->field_state_form_amount['und'][0]['value'];
+  */
+
+  //  creating dropdown category values
+  $form['invoice_amount'] = array(
+    //'#type' => 'select',
+    '#type' => 'textfield',
+    '#title' => t('Enter amount'),
+    '#required' => TRUE,
+    //'#default_value' => $selected_value,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit')
+  );
+  return $form;
+}
+
+/**
+ *  Validate the create invoice form
+ */
+function state_form_create_invoice_validate(&$form, &$form_state) {
+  if ($form_state['values']['invoice_amount'] == '') {
+    form_set_error('invoice_amount', t('Please select the stateform from the list.'));
+  }
+}
+
+/**
+ * Submit the create invoice form
+ */
+function state_form_create_invoice_submit(&$form, &$form_state) {
+  global $user;
+  $form_value = $form_state['values']['invoice_amount'];
+  $amount = $form_value;
+
+  $nid = arg(3);
+  $node = node_load($nid);
+
+  $node_title = $node->field_state_form_title['und'][0]['value'];
+  $node->field_state_form_amount['und'][0]['value'] = $amount;
+  $node->field_invoice_created_by['und'][0]['value'] = $user->uid;
+  $node->field_invoice_created_on['und'][0]['value'] = time();
+  node_save($node);
+
+  //  Function called to get the term id using title Reference NAT module used
+  $term_id_val = get_termid_by_custom_term_title($node_title);
+  //  Update the amount of taxonomy term
+  $termdata1 = taxonomy_term_load($term_id_val[0]->entity_id);
+
+  $termdata1->field_stateformamount['und'][0]['value'] = $amount;
+  $term_id = $termdata1->tid;
+  taxonomy_term_save($termdata1);
+
+  //  $termdata1 = taxonomy_term_load($term_id_val[0]->entity_id);
+  //  echo '<pre>';
+  //  print_r($termdata1);
+  //  echo '</pre>';
+
+  //  Send Email (Invoice to the customer)
+  ndsbs_custom_state_form_invoice_mail($nid, $term_id);
+
+  // Inform the user.
+  drupal_set_message(t('Information updated successfully.'));
+  echo '<script>window.opener.location.reload(true);window.close();</script>';
+  exit();
+}
+
+/**
+ * Function get_termid_by_custom_term_title() implemented to get the term id
+ * by useing the custom field of term name
+ *
+ * @returns term id if term title matched
+ */
+function get_termid_by_custom_term_title($term_title) {
+  $bundle = 'stateform_vocab';
+  $query = db_select('field_data_field_stateformtitle', 'f');
+  $query->fields('f', array('entity_id'))
+    ->condition('f.field_stateformtitle_value', $term_title, '=')
+    ->condition('f.bundle', $bundle, '=');
+  $result = $query->execute();
+  $data = $result->fetchAll();
+  return $data;
+}
+
+
+/**
+ * Function _list_all_client_stateform_requestedinvoice() define to call the theme
+ */
+function _list_all_client_stateform_requestedinvoice() {
+  return theme('list_all_client_stateform_invoice_requested');
+}
+
+/**
+ * Function get_all_stateform_invoice_requested() define.
+ * function implemented from getting the paper work of the client
+ * Depends on the user id of the client
+ *
+ */
+function get_all_stateform_invoice_requested() {
+  $type = 'state_form_request';
+  //  Query to get the all node of paper work base on particular user
+  $query = db_select('node', 'n')->extend('PagerDefault');
+  $query->fields('n', array('nid'))
+    ->condition('n.type', $type, '=')
+    ->orderBy('n.created', 'DESC');
+  $query->join('field_data_field_invoice_created_by', 'invoice', 'invoice.entity_id = n.nid');
+  $query->condition('invoice.field_invoice_created_by_value', 0, '>');
+  $result = $query->execute();
+  $data = $result->fetchAll();
+  return $data;
+}
+
+/**
+ * Implementation of function ndsbs_custom_state_form_invoice_mail()
+ * Parameter: user account info
+ * Desc: Save the record into the database with status 1
+ */
+function ndsbs_custom_state_form_invoice_mail($nid, $term_id) {
+  $node = node_load($nid);
+  $client_user = user_load($node->uid);
+
+  $term = taxonomy_term_load($term_id);
+  //$statefrm_name = $term->name;
+  $statefrm_name = $term->field_stateformtitle['und'][0]['value'];
+
+
+  $module = 'ndsbs_custom';
+  $key = 'state_form_invoice_mail';
+  $to = $client_user->mail;
+  $language = $client_user->language;
+
+  $message = drupal_mail($module, $key, $to, $language, $params = array(), $from = NULL, $send = FALSE);
+
+  //  Creating the message body
+  $message['subject'] = 'Requested Information of the State form Invoice';
+  $message['body'] = array();
+  $message['body'][] = 'Hi!!! ' . $client_user->field_first_name['und'][0]['value'];
+  $message['body'][] = 'Your request processed by ndsbs.';
+
+  foreach ($node->field_state_form_title['und'] as $statform_title) {
+    $message['body'][] = 'Stateform: ' . $statform_title['value'];
+  }
+
+  $message['body'][] = 'You need to pay for ' . $statefrm_name;
+  $message['body'][] = 'Price: $' . $node->field_state_form_amount['und'][0]['value'];
+
+  // Retrieve the responsible implementation for this message.
+  $system = drupal_mail_system($module, $key);
+
+  // Format the message body.
+  $message = $system->format($message);
+
+  // Send e-mail.
+  $message['result'] = $system->mail($message);
+  watchdog($module, 'Unable to send the email hook_state_form_invoice_mail', array(), WATCHDOG_NOTICE);
+}
+
+/**
+ * Function _client_paperwork_list() define to call the theme
+ */
+function _client_stateform_list() {
+  return theme('client_stateform_list');
+}
+
+/**
+ * Function get_stateform_info() define.
+ * function impleted from getting the paper work of the client
+ * Depends on the user id of the client
+ */
+function get_stateform_info() {
+  global $user;
+  $type = 'state_form_request';
+
+  //  Query to get the all node of paper work base on particular user
+  $result = db_select('node', 'n')
+    ->fields('n', array('nid'))
+    ->condition('n.uid', $user->uid, '=')
+    ->condition('n.type', $type, '=')
+    ->orderBy('n.created', 'DESC')
+    ->execute()
+    ->fetchAll();
+  return $result;
+}
+
+/**
+ * Function _list_all_client_stateform_requestedinvoice() define to call the theme
+ */
+function _list_all_client() {
+  return theme('list_all_client');
+}
+
+/**
+ * Function get_all_clients() define.
+ * function implemented for getting the client
+ */
+function get_all_clients() {
+  //  Query to get the all client
+  $query = db_select('users', 'u')->extend('PagerDefault');
+  $query->fields('u', array('uid'))
+    //->condition('u.status', 1, '=')
+    ->orderBy('u.created', 'DESC');
+  $query->join('users_roles', 'users_roles', 'users_roles.uid = u.uid');
+  $query->condition('users_roles.rid', 6, '=');
+  $result = $query->execute();
+  $data = $result->fetchAll();
+  return $data;
+}
+
+/**
+ * Function _list_all_client_counseling_request() define to call the theme
+ */
+function _list_all_client_counseling_request() {
+  return theme('list_all_client_counseling_request');
+}
+
+/**
+ * Function get_counseling_request_info() define.
+ * function implemented for getting the counseling request of the client
+ * Depends on the user id of the client
+ *
+ */
+function get_counseling_request_info() {
+  $type = 'counseling_request';
+
+  //  Query to get the all node of paper work base on particular user
+  $result = db_select('node', 'n')
+    ->fields('n', array('nid'))
+    ->condition('n.type', $type, '=')
+    ->orderBy('n.created', 'DESC')
+    ->execute()
+    ->fetchAll();
+  return $result;
+}
+
+/**
+ * Function used to update the Counseling Request
+ */
+function _update_counseling_request($nid) {
+  $qdata = drupal_get_query_parameters();
+  $destination = $qdata['destination'];
+
+  $node = node_load($nid);
+  $time = time();
+  $node->field_attempted_on['und'][0]['value'] = $time;
+  $node->changed = $time;
+
+  //  Save the node updated value
+  node_save($node);
+  drupal_set_message(t('Record Updated Successfully.'));
+  drupal_goto($destination);
+}
+
+/**
+ * Function _list_all_client_payment_refund_request() define to call the theme
+ */
+function _list_all_client_payment_refund_request() {
+  return theme('list_all_client_payment_refund_request');
+}
+
+/**
+ * Function get_payment_refund_request_info() define.
+ * function implemented for getting the payment refund of the client
+ * Depends on the user id of the client
+ *
+ */
+function get_payment_refund_request_info() {
+  $type = 'refund_payment';
+
+  //  Query to get the all node of paper work base on particular user
+  $result = db_select('node', 'n')->extend('PagerDefault')
+    ->fields('n', array('nid'))
+    ->condition('n.type', $type, '=')
+    ->orderBy('n.created', 'DESC')
+    ->execute()
+    ->fetchAll();
+  return $result;
+}
+
+/**
+ * Function used to update the Request payment status
+ */
+function _update_request_payment_status($nid) {
+  $node = node_load($nid);
+  $node->field_request_status['und'][0]['value'] = 1;
+  $node->changed = time();
+
+  //  Save the node updated value
+  node_save($node);
+  drupal_set_message(t('Record Updated Successfully.'));
+  drupal_goto('request/paymentrefund/list');
+}
+
+/**
+ * Function _client_allrequest_list() define to call the theme
+ */
+function _client_allrequest_list() {
+  return theme('client_allrequest_list');
+}
+
+/**
+ * Function get_client_all_request_info() define.
+ * function impleted from getting the paper work of the client
+ * Depends on the user id of the client
+ *
+ */
+function get_client_all_request_info() {
+  global $user;
+  $type = array(
+    'refund_payment',
+    'state_form_request',
+    'counseling_request',
+    'appointment_preference'
+  );
+
+  //  Query to get the all node of paper work base on particular user
+  $result = db_select('node', 'n')
+    ->fields('n', array('nid'))
+    ->condition('n.uid', $user->uid, '=')
+    ->condition('n.type', $type, 'IN')
+    ->orderBy('n.created', 'DESC')
+    ->execute()
+    ->fetchAll();
+  return $result;
+}
+
+/**
+ * Function get_user_purchased_services() defined
+ * Implemented to show the drop box at Payment Refund Page
+ */
+function get_user_purchased_services() {
+  $taxonomy_tree = taxonomy_get_tree(2);
+
+  //  creating dropdown category values
+  foreach ($taxonomy_tree as $tdata) {
+    $term = taxonomy_term_load($tdata->tid);
+    $key = $term->tid;
+    $custom_dropdown[''] = '--Select--';
+    $custom_dropdown[$key] = $term->name;
+  }
+
+  //  creating dropdown category values
+  $form['purchased_service'] = array(
+    '#name' => 'purchased_service',
+    '#type' => 'select',
+    '#title' => t('Select from list'),
+    '#required' => TRUE,
+    '#options' => $custom_dropdown,
+    '#default_value' => '',
+  );
+  return $form;
+}
+
+/**
+ * Function ndsbs_custom_payment_refund_change_values_submit() Defined
+ * Implemented to assign the updated value
+ */
+function ndsbs_custom_payment_refund_change_values_submit(&$form, &$form_state) {
+  $purchased_service = $_REQUEST['purchased_service'];
+  $form_state['values']['field_refund_for_service']['und'][0]['value'] = $purchased_service;
+}
+
+/**
+ * Function ndsbs_custom_payment_refund_change_values_submit() Defined
+ * Implemented to assign the updated value
+ */
+function ndsbs_custom_payment_refund_change_values_validate($form, &$form_state) {
+  if ($_REQUEST['purchased_service'] == '') {
+    form_set_error('Purchased Service', t('Please select a service.'));
+  }
+}
+
+/**
+ * Function _list_all_thirdparty_request() define to call the theme
+ */
+function _list_all_thirdparty_request() {
+  return theme('list_all_thirdparty_request');
+}
+
+/**
+ * Function get_all_thirdparty_request() define.
+ * function implemented for getting the third party request
+ */
+function get_all_thirdparty_request() {
+  $type = 'third_party_request';
+
+  //  Query to get the all node of paper work base on particular user
+  $result = db_select('node', 'n')->extend('PagerDefault')
+    ->fields('n', array('nid'))
+    ->condition('n.type', $type, '=')
+    ->orderBy('n.created', 'DESC')
+    ->execute()
+    ->fetchAll();
+  return $result;
+}
+
+/**
+ *  Function _update_third_party_request_status() defined to
+ *  change the status filed by user id
+ */
+function _update_third_party_request_status($nid) {
+  global $user;
+  $node = node_load($nid);
+
+  $node->field_status_changed_by['und'][0]['value'] = $user->uid;
+
+  //  Save the node updated value
+  node_save($node);
+  drupal_set_message(t('Record Updated Successfully.'));
+  drupal_goto('request/thirdparty/list');
+}
+
+/**
+ *  Function _download_third_party_request_doc() defined to
+ *  Download the thirdy party document
+ */
+function _download_third_party_request_doc($data) {
+  return;
+  //  Implement it for download a pdf using the save as popup window
+}
+
+/**
+ * Function get_all_staff() define.
+ * function implemented for getting the client
+ */
+function get_all_staff() {
+  //  Query to get the all client
+  $query = db_select('users', 'u')->extend('PagerDefault');
+  $query->fields('u', array('uid'))
+    //->condition('u.status', 1, '=')
+    ->orderBy('u.created', 'DESC');
+  $query->join('users_roles', 'users_roles', 'users_roles.uid = u.uid');
+  $query->condition('users_roles.rid', 6, '!=');
+  $query->condition('users_roles.rid', 1, '!=');
+  $result = $query->execute();
+  $data = $result->fetchAll();
+  return $data;
+}
+
+/**
+ * Function get_staff() Implemented to get the
+ * all staff of the ndsbs
+ */
+function get_staff() {
+  //  Query to get the all client
+  $query = db_select('users', 'u');
+  $query->fields('u', array('uid'))
+    ->condition('u.status', 1, '=')
+    ->orderBy('u.created', 'DESC');
+  $query->join('users_roles', 'users_roles', 'users_roles.uid = u.uid');
+  $query->condition('users_roles.rid', 4, '=');
+  $query->range(0, 6);
+  $result = $query->execute();
+  $data = $result->fetchAll();
+  return $data;
+}
+
+/**
+ * Function get_failed_requested_transaction() defined
+ * to get the users requested failed transaction
+ *
+ */
+function get_failed_requested_transaction() {
+  global $user;
+  //  Query to get the client requested failed transaction
+  $query = db_select('users_transactions', 'ut');
+  $query->fields('ut', array(
+    'order_id',
+    'uid',
+    'transaction_id',
+    'order_date',
+    'requested_on',
+    'action_date'
+  ))
+    ->condition('ut.payment_status', 0, '=')
+    ->condition('ut.client_request', 1, '=')
+    ->condition('ut.uid', $user->uid, '=')
+    ->orderBy('ut.order_date', 'DESC');
+  $result = $query->execute();
+  $data = $result->fetchAll();
+  return $data;
+}
+
+/**
+ * Function get_all_testimonial() implemented
+ * to get the all testimonials
+ */
+function get_all_testimonial() {
+  $type = 'testimonials';
+
+  //  Query to get the all node of paper work base on particular user
+  $result = db_select('node', 'n')
+    ->fields('n', array('nid'))
+    ->condition('n.type', $type, '=')
+    ->condition('n.type', $type, '=')
+    ->condition('n.status', 1, '=')
+    ->orderBy('n.created', 'DESC')
+    ->range(0, 1)
+    ->execute()
+    ->fetchAll();
+  return $result;
+}
+
+/**
+ *  Function appointment_preference_date_validate() implemented
+ *  to validate the data
+ */
+function appointment_preference_date_validate(&$form, &$form_state) {
+  $form_state['values']['fgm_node_appointment_preference_form_group_appointment_group']['fields']['items'];
+
+  foreach ($form_state['values']['fgm_node_appointment_preference_form_group_appointment_group']['fields']['items'] as $data) {
+    if ($data['field_appointment_date']['value'] <> '') {
+      $time_to = date('Y-m-d');
+      $time = strtotime($time_to);
+      $date_time = strtotime($data['field_appointment_date']['value']);
+      if ($date_time < $time) {
+        form_set_error('Date', t('Date must be today or future date.'));
+      }
+    }
+  }
+}
+
+/**
+ * Function get_purchased_service_dropdown() Implemented
+ * to get the purchased service dropdown
+ *
+ */
+function get_purchased_service_dropdown() {
+  $data = get_user_purchased_assessment();
+  $purchased_item = array();
+  $purchased_item['_none'] = '- None -';
+  foreach ($data as $data_info) {
+    $node_info = node_load($data_info->nid);
+
+    //  Function called to get the main service and sub service title
+    $service_title = get_mainservice_subservice_title($node_info, $data_info->termid);
+    $explode_title = explode('||', $service_title);
+    $main_title = $explode_title[0];
+    $sub_title = $explode_title[1];
+    if ($sub_title == 'NO') {
+      $title = $main_title;
+    }
+    else {
+      $title = $sub_title;
+    }
+    $purchased_item[$data_info->termid] = $title;
+  }
+  return $purchased_item;
+}
+
+/**
+ *  Function get_contact_form() defined
+ */
+function get_contact_form() {
+  return drupal_get_form('ndsbs_contact_form');
+}
+
+/**
+ *  Function assessment_confirmation_form() defined
+ *  to show the checknox of the confirm
+ */
+function ndsbs_contact_form() {
+  $form['contact_name'] = array(
+    '#title' => t('Name'),
+    '#type' => 'textfield',
+    '#required' => TRUE,
+    '#size' => 36,
+    '#maxlength' => 128,
+  );
+  $form['contact_email'] = array(
+    '#title' => t('Email'),
+    '#type' => 'textfield',
+    '#required' => TRUE,
+    '#size' => 36,
+    '#maxlength' => 255,
+  );
+  $form['contact_phone'] = array(
+    '#title' => t('Phone'),
+    '#type' => 'textfield',
+    '#required' => TRUE,
+    '#size' => 36,
+    '#maxlength' => 15,
+  );
+  $form['contact_message'] = array(
+    '#title' => t('Message'),
+    '#type' => 'textarea',
+    '#cols' => 80,
+    '#rows' => 5,
+    '#required' => TRUE,
+  );
+
+  //  Form submit button
+  $form['submit'] = array(
+    '#id' => 'contact_submit',
+    '#type' => 'submit',
+    '#value' => t('Submit'),
+  );
+  return $form;
+}
+
+/**
+ * Function ndsbs_contact_form_validate() is implemeted
+ * for form validation
+ *
+ * @param type $form
+ * @param type $form_state
+ */
+function ndsbs_contact_form_validate($form, &$form_state) {
+  global $base_url;
+  $error = 0;
+  //  Custom Validation added at registartion page
+  $pattern = '/^[a-zA-Z, s]{0,128}$/';
+  if (!preg_match($pattern, $form_state['values']['contact_name'])) {
+    form_set_error('Name', t('Name field can have characters only.'));
+    $error = 1;
+  }
+  if (!valid_email_address($form_state['values']['contact_email'])) {
+    form_set_error('Email', t('The email address appears to be invalid.'));
+    $error = 1;
+  }
+  if ($error == 1) {
+    drupal_goto($base_url . '/contact');
+  }
+}
+
+/**
+ *  Function implemented to submit the contact form
+ *
+ */
+function ndsbs_contact_form_submit($form, &$form_state) {
+  $contact_name = $form_state['values']['contact_name'];
+  $contact_email = $form_state['values']['contact_email'];
+  $contact_phone = $form_state['values']['contact_phone'];
+  $contact_message = $form_state['values']['contact_message'];
+  //  Send Email to ndsbs admin
+  ndsns_custom_contactus_email($contact_name, $contact_email, $contact_phone, $contact_message);
+}
+
+/**
+ * Function implemeted to send the contact us mail
+ *
+ * @param type $form_state
+ */
+function ndsns_custom_contactus_email($contact_name, $contact_email, $contact_phone, $contact_message) {
+  $to = 'info@ndsbs.com';     //  Set the admin email address
+  $module = 'ndsns_custom';
+  $key = 'contactus_email';
+  $language = $edit['original']->language;
+
+  $message = drupal_mail($module, $key, $to, $language, $params = array(), $from = NULL, $send = FALSE);
+
+  //  Creating the message body
+  $message['subject'] = 'Contact Us notification';
+  $message['body'] = array();
+  $message['body'][] = 'Hi!!!';
+  $message['body'][] = 'Name: ' . $contact_name;
+  $message['body'][] = 'Email: ' . $contact_email;
+  $message['body'][] = 'Phone: ' . $contact_phone;
+  $message['body'][] = $contact_message;
+
+  $message['headers']['Cc'] = 'brian@ndsbs.com';
+
+  // Retrieve the responsible implementation for this message.
+  $system = drupal_mail_system($module, $key);
+
+  // Format the message body.
+  $message = $system->format($message);
+
+  // Send e-mail.
+  $message['result'] = $system->mail($message);
+
+  ////////////////////////////////////////////////////////
+  $message1 = drupal_mail($module, $key, $contact_email, $language, $params = array(), $from = NULL, $send = FALSE);
+
+  //  Creating the message body
+  $message1['subject'] = 'Contact Us notification';
+  $message1['body'] = array();
+  $message1['body'][] = 'Hi!!!';
+  $message1['body'][] = 'Thank You for contacting us. We will get in touch with you shortly.';
+  $message1['body'][] = 'Name: ' . $contact_name;
+  $message1['body'][] = 'Email: ' . $contact_email;
+  $message1['body'][] = 'Phone: ' . $contact_phone;
+  $message1['body'][] = $contact_message;
+
+  // Retrieve the responsible implementation for this message.
+  $system = drupal_mail_system($module, $key);
+
+  // Format the message body.
+  $message1 = $system->format($message1);
+
+  // Send e-mail.
+  $message1['result'] = $system->mail($message1);
+  ////////////////////////////////////////////////////////
+
+  if (!$message['result']) {
+    watchdog($module, 'Unable to send the email hook_contactus_email', array(), WATCHDOG_NOTICE);
+  }
+  else {
+    drupal_set_message('Email Sent successfully.');
+  }
+}
+
+/**
+ * Function hook_css_alter() Implemeted to remove
+ * css at contact page it clashes with map css
+ *
+ * @param type $css
+ */
+function ndsbs_custom_css_alter(&$css) {
+  // Remove css file at contact us page.
+  if (arg(0) == 'node' && arg(1) == '164') {
+    unset($css[drupal_get_path('theme', 'ndsbs') . '/css/normalize.css']);
+    unset($css[drupal_get_path('theme', 'ndsbs') . '/css/layouts/fixed-width.css']);
+  }
+}
+
+/**
+ * Function get_therapist_dropdown() define.
+ * function implemented for getting the client
+ */
+function get_therapist_dropdown() {
+  //  Query to get the all client
+  $query = db_select('users', 'u');
+  $query->fields('u', array('uid'))
+    ->condition('u.status', 1, '=')
+    ->orderBy('u.created', 'DESC');
+  $query->join('users_roles', 'users_roles', 'users_roles.uid = u.uid');
+  $query->condition('users_roles.rid', 4, '=');
+  $result = $query->execute();
+  $data = $result->fetchAll();
+
+  $option_users = array();
+  $option_users[''] = '- Select -';
+  foreach ($data as $user_data) {
+    $user_info = user_load($user_data->uid);
+    $option_users[$user_data->uid] = $user_info->field_first_name['und'][0]['value'] . ' ' . $user_info->field_last_name['und'][0]['value'];
+  }
+  return $option_users;
+}
+
+/**
+ * Implements hook_node_insert() implemented to
+ * for assinging transaction id at run time
+ */
+function ndsbs_custom_node_insert($node) {
+  if ($node->type == 'counseling_request') {
+    $node->is_new = FALSE;  // THIS IS IMPORTANT
+
+    $get_assessment_id = explode('/', $_SESSION['COMPLETE_MY_QUESTIONNAIRE']);
+    $transid = $get_assessment_id[4];
+    //  Save the transaction id at run time
+    $node->field_assess_trans_id['und'][0]['value'] = $transid;
+    node_save($node);
+  }
+
+  if ($node->type == 'paper_work') {
+    $node->is_new = FALSE;  // THIS IS IMPORTANT
+    $get_assessment_id = explode('/', $_SESSION['COMPLETE_MY_QUESTIONNAIRE']);
+    $transid = $get_assessment_id[4];
+    //  Save the transaction id at run time
+    $node->field_assessment['und'][0]['value'] = $transid;
+    node_save($node);
+  }
+
+}
+
+/**
+ * Function get_counseling_request_info_transid() define.
+ * function implemented for getting the counseling request of the client
+ * Depends on the user id of the client
+ *
+ */
+function get_counseling_request_info_transid($tid) {
+  global $user;
+  $type = 'counseling_request';
+
+  //  Query to get the all node of paper work base on particular user
+  $query = db_select('node', 'n')
+    ->fields('n', array('nid'))
+    //->condition('n.uid', $user->uid, '=')
+    ->condition('n.type', $type, '=')
+    ->orderBy('n.created', 'DESC');
+  $query->join('field_data_field_assess_trans_id', 'fat', 'fat.entity_id = n.nid');
+  $query->condition('fat.field_assess_trans_id_value', $tid, '=');
+  $result = $query->execute();
+  $data = $result->fetchAll();
+  return $data;
+}
+
+/**
+ * Function get_paperwork_info_transid() define.
+ * function impleted from getting the paper work of the client
+ * Depends on the user id of the client
+ *
+ */
+function get_paperwork_info_transid($tid) {
+  global $user;
+  $type = 'paper_work';
+
+  //  Query to get the all node of paper work base on particular user
+  $query = db_select('node', 'n')
+    ->fields('n', array('nid'))
+    ->condition('n.uid', $user->uid, '=')
+    ->condition('n.type', $type, '=')
+    ->orderBy('n.created', 'DESC');
+  $query->join('field_data_field_assessment', 'fat', 'fat.entity_id = n.nid');
+  $query->condition('fat.field_assessment_value', $tid, '=');
+  $result = $query->execute();
+  $data = $result->fetchAll();
+  return $data;
+}
+
+/**
+ * Function users_important_documents() define.
+ * Depends on the user id of the client
+ *
+ * @return node id
+ */
+function users_important_documents() {
+  global $user;
+  $type = array('account_verification', 'important_document');
+
+  //  Query to get the all node of paper work base on particular user
+  $query = db_select('node', 'n')
+    ->fields('n', array('nid'))
+    ->condition('n.uid', $user->uid, '=')
+    ->condition('n.type', $type, 'IN')
+    ->orderBy('n.created', 'DESC');
+  $result = $query->execute();
+  $data = $result->fetchAll();
+  return $data;
+}
+
+/**
+ * Function get_all_impdoc_acc_verification_document() define.
+ * Depends on the user id of the client
+ *
+ * @return node id
+ */
+function get_all_impdoc_acc_verification_document() {
+  $type = array('account_verification', 'important_document');
+
+  //  Query to get the all node of paper work base on particular user
+  $query = db_select('node', 'n')
+    ->fields('n', array('nid'))
+    ->condition('n.type', $type, 'IN')
+    ->orderBy('n.created', 'DESC');
+  $result = $query->execute();
+  $data = $result->fetchAll();
+  return $data;
+}
+
+/**
+ * Function change_verification_document_status() implemented
+ * to change status of the verification document
+ *
+ */
+function change_verification_document_status() {
+  global $base_url;
+  $nid = arg(3);
+  $type = arg(4);
+  $status = arg(5);
+  $node = node_load($nid);
+
+  if ($type == 'acc') {
+    $node->field_acc_status['und'][0]['value'] = $status;
+  }
+  if ($type == 'imp') {
+    $node->field_imp_status['und'][0]['value'] = $status;
+  }
+  $node->changed = time();
+  node_save($node);
+
+  drupal_set_message('Status changed successfully.');
+  drupal_goto($base_url . '/user/verification/document');
+}
+
+/**
+ * Function get_all_testimonial() implemented
+ * to get the all testimonials
+ */
+function get_all_testimonial_list() {
+  $type = 'testimonials';
+
+  //  Query to get the all node of paper work base on particular user
+  $result = db_select('node', 'n')
+    ->fields('n', array('nid'))
+    ->condition('n.type', $type, '=')
+    ->condition('n.status', 1, '=')
+    ->orderBy('n.created', 'DESC')
+    ->execute()
+    ->fetchAll();
+  return $result;
+}
+
+/**
+ * Function chk_confirm_status() implemented
+ */
+function chk_confirm_status() {
+  global $user;
+  //  Query to get the all node of paper work base on particular user
+  $result = db_select('users_confirm', 'uc')
+    ->fields('uc', array('confirm_status'))
+    ->condition('uc.user_uid', $user->uid, '=')
+    ->execute()
+    ->fetchAll();
+  return $result;
+}

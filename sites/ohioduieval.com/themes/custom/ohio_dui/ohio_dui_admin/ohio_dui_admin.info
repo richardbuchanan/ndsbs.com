@@ -1,0 +1,25 @@
+; BASIC SETTINGS
+name = Ohio DUI Eval Admin
+description = Admin theme designed for <a href="http://ohioduieval.com/" target="_blank">Ohio DUI Eval</a> Drupal backend system by <a href="https://buchanandesigngroup.com/" target="_blank">Buchanan Design Group</a>. Styles have been inherited from the Ohio DUI Eval frontend theme.
+core = 7.x
+version = 7.x-1.0rc
+base theme = ohio_dui
+
+; CSS
+stylesheets[all][] = css/admin.styles.css
+
+; SCRIPTS
+scripts[] = js/custom.min.js
+;scripts[] = js/dynamic_position.js
+
+; FEATURES (intentionally blank)
+
+; Regions
+regions[header] = Header
+regions[main_menu] = Main Menu
+regions[user_menu] = User Menu
+regions[highlighted] = Highlighted
+regions[help] = Help
+regions[content] = Content
+regions[sidebar] = Sidebar
+regions[footer] = Footer

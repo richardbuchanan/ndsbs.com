@@ -1,0 +1,184 @@
+<?php
+
+global $_bdg_maps_states;
+
+$_bdg_maps_states = array(
+  'AL' => 'Alabama',
+  'AK' => 'Alaska',
+  'AZ' => 'Arizona',
+  'AR' => 'Arkansas',
+  'CA' => 'California',
+  'CO' => 'Colorado',
+  'CT' => 'Connecticut',
+  'DC' => 'District of Columbia',
+  'DE' => 'Delaware',
+  'FL' => 'Florida',
+  'GA' => 'Georgia',
+  'HI' => 'Hawaii',
+  'ID' => 'Idaho',
+  'IL' => 'Illinois',
+  'IN' => 'Indiana',
+  'IA' => 'Iowa',
+  'KS' => 'Kansas',
+  'KY' => 'Kentucky',
+  'LA' => 'Louisiana',
+  'ME' => 'Maine',
+  'MD' => 'Maryland',
+  'MA' => 'Massachusetts',
+  'MI' => 'Michigan',
+  'MN' => 'Minnesota',
+  'MS' => 'Mississippi',
+  'MO' => 'Missouri',
+  'MT' => 'Montana',
+  'NE' => 'Nebraska',
+  'NV' => 'Nevada',
+  'NH' => 'New Hampshire',
+  'NJ' => 'New Jersey',
+  'NM' => 'New Mexico',
+  'NY' => 'New York',
+  'NC' => 'North Carolina',
+  'ND' => 'North Dakota',
+  'OH' => 'Ohio',
+  'OK' => 'Oklahoma',
+  'OR' => 'Oregon',
+  'PA' => 'Pennsylvania',
+  'RI' => 'Rhode Island',
+  'SC' => 'South Carolina',
+  'SD' => 'South Dakota',
+  'TN' => 'Tennessee',
+  'TX' => 'Texas',
+  'UT' => 'Utah',
+  'VT' => 'Vermont',
+  'VA' => 'Virginia',
+  'WA' => 'Washington',
+  'WV' => 'West Virginia',
+  'WI' => 'Wisconsin',
+  'WY' => 'Wyoming',
+);
+
+/**
+ * Implements hook_help().
+ */
+function bdg_maps_help($path, $arg) {
+  $output = '';
+
+  switch ($path) {
+    case 'admin/help#bdg_maps':
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('The BDG Maps module is a simple and easy to use module to configure maps throughout the site.') . '</p>';
+      break;
+
+    case 'admin/config/user-interface/hover-maps':
+      $output .= '<p>' . t('The settings below allow you to configure how to display information for hover maps throughout the site. Each state has its own section, and each state must be configured for the information to display when hovering over that state on all hover maps. If an option for a state is not set, it will not be displayed on any hover maps.') . '</p>';
+      break;
+  }
+
+  return $output;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function bdg_maps_permission() {
+  $perm = array();
+  $perm['administer hover map settings'] = array(
+    'title' => t('Administer BDG Map settings'),
+  );
+
+  return $perm;
+}
+
+/**
+ * Implements hook_menu().
+ */
+function bdg_maps_menu() {
+  $items = array();
+
+  $items['admin/config/user-interface/hover-maps'] = array(
+    'title' => 'Hover map settings',
+    'description' => 'Configure hover map settings.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('bdg_maps_admin'),
+    'access arguments' => array('administer hover map settings'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+function bdg_maps_admin() {
+  global $_bdg_maps_states;
+  $form = array();
+
+  $options = array(
+    'courts' => t('Courts'),
+    'motor_vehicles' => t('Motor Vehicles'),
+    'in_office' => t('In-Office'),
+    'online' => t('Online')
+  );
+
+  foreach ($_bdg_maps_states as $abbr => $state) {
+    $abbr_lower = strtolower($abbr);
+
+    $form[$abbr_lower] = array(
+      '#type' => 'fieldset',
+      '#title' => t($state),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+      '#attributes' => array(
+        'class' => array(
+          'col-md-4',
+          'col-xs-12'
+        )
+      )
+    );
+
+    /*$form[$abbr_lower][$abbr_lower . '_accepted'] = array(
+      '#type' => 'checkboxes',
+      '#title' => 'Accepted by',
+      '#options' => drupal_map_assoc($options),
+      '#default_value' => variable_get($abbr_lower . '_accepted'),
+      '#description' => 'Select the available services accepted by this state.'
+    );
+
+    $form[$abbr_lower][$abbr_lower . '_motor_vehicle_abbr'] = array(
+      '#type' => 'textfield',
+      '#title' => 'Motor Vehicle Acronym',
+      '#default_value' => variable_get($abbr_lower . '_motor_vehicle_abbr'),
+      '#size' => 15,
+      '#description' => 'Enter the acronym for this state\'s motor vehicle department.'
+    );*/
+
+    $form[$abbr_lower][$abbr_lower . '_line_one'] = array(
+      '#type' => 'textfield',
+      '#title' => 'Line One',
+      '#default_value' => variable_get($abbr_lower . '_line_one'),
+    );
+
+    $form[$abbr_lower][$abbr_lower . '_line_two'] = array(
+      '#type' => 'textfield',
+      '#title' => 'Line Two',
+      '#default_value' => variable_get($abbr_lower . '_line_two'),
+    );
+
+    $form[$abbr_lower][$abbr_lower . '_line_three'] = array(
+      '#type' => 'textfield',
+      '#title' => 'Line Three',
+      '#default_value' => variable_get($abbr_lower . '_line_three'),
+    );
+
+    $form[$abbr_lower][$abbr_lower . '_line_four'] = array(
+      '#type' => 'textfield',
+      '#title' => 'Line Four',
+      '#default_value' => variable_get($abbr_lower . '_line_four'),
+    );
+  }
+
+  $form['#submit'][] = 'bdg_maps_admin_system_settings_form_submit';
+
+  return system_settings_form($form);
+}
+
+function bdg_maps_admin_system_settings_form_submit() {
+  drupal_clear_js_cache();
+}

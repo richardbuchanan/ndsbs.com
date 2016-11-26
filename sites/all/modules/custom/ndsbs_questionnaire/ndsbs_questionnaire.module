@@ -1,0 +1,2255 @@
+<?php
+/**
+ * @file
+ * Module name ndsbs_questionnaire.module.
+ *
+ * Finoit Technologies
+ * Developer krishna@finoit.com
+ * Allows developer to customize the site's functionality.
+ */
+
+/**
+ * Implements hook_menu().
+ *
+ * Function ndsbs_questionnaire_menu() defined.
+ */
+function ndsbs_questionnaire_menu() {
+  $items = array();
+  $items['user/questionnaire/%/trans/%'] = array(
+    'title' => 'Questionnaire',
+    'description' => 'User Questionnaire.',
+    'access callback' => 'user_is_logged_in',
+    'page callback' => 'get_assessment_questionnaire_form',
+    'access arguments' => array('access content'),
+  );
+
+  $items['admin/questionnaire/%/trans/%'] = array(
+    'title' => 'Questionnaire',
+    'description' => 'User Questionnaire.',
+    'access callback' => 'user_is_logged_in',
+    'page callback' => 'get_admin_assessment_questionnaire_form',
+    'access arguments' => array('access content'),
+  );
+
+  $items['questionnaire/start/%/trans/%'] = array(
+    'title' => 'Questionnaire',
+    'description' => 'User Questionnaire.',
+    'access callback' => 'user_is_logged_in',
+    'page callback' => '_assessment_questionnaire_start',
+    'access arguments' => array('access content'),
+  );
+
+  $items['user/expire/questionnaire'] = array(
+    'title' => 'Questionnaire',
+    'description' => 'User Questionnaire.',
+    'access callback' => 'user_is_logged_in',
+    'page callback' => '_questionnaire_session_expire',
+    'access arguments' => array('access content'),
+  );
+
+  $items['user/evaluation/questionnaire/%/trans/%'] = array(
+    'title' => 'Questionnaire',
+    'description' => 'User Questionnaire.',
+    'access callback' => 'user_is_logged_in',
+    'page callback' => '_questionnaire_for_evaluation',
+    'access arguments' => array('access content'),
+  );
+
+  $items['questionnaire/list/%/trans/%'] = array(
+    'title' => 'Questionnaire',
+    'description' => 'User Questionnaire.',
+    'access callback' => 'user_is_logged_in',
+    'page callback' => 'get_complete_questionnaire_single_page',
+    'access arguments' => array('access content'),
+  );
+
+  $items['questionnaire/preview/%/trans/1/uid/1'] = array(
+    'title' => 'Questionnaire',
+    'description' => 'User Questionnaire.',
+    'access callback' => 'user_is_logged_in',
+    'page callback' => 'get_preview_assessment_questionnaire_form',
+    'access arguments' => array('access content'),
+  );
+
+  $items['questionnaire/print'] = array(
+    'title' => 'Questionnaire Print',
+    'description' => 'User Questionnaire Print.',
+    'access callback' => 'request_permission',
+    'page callback' => '_print_questionnaire_list',
+    'access arguments' => array('access content'),
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_theme().
+ *
+ * Function ndsbs_questionnaire_theme() defined.
+ */
+function ndsbs_questionnaire_theme() {
+  $items = array();
+  $items['questionnaier_start'] = array(
+    'render element' => 'form',
+    'template' => 'questionnaier_start',
+  );
+  $items['assessment_questionnaire_form'] = array(
+    'render element' => 'form',
+    'template' => 'assessment_questionnaire_form',
+  );
+
+  $items['admin_assessment_questionnaire_form'] = array(
+    'render element' => 'form',
+    'template' => 'admin_assessment_questionnaire_form',
+  );
+
+  $items['questionnaire_for_evaluation'] = array(
+    'render element' => 'form',
+    'template' => 'questionnaire_for_evaluation',
+  );
+  $items['complete_questionnaire_single_form'] = array(
+    'render element' => 'form',
+    'template' => 'complete_questionnaire_single_form',
+  );
+  $items['preview_assessment_questionnaire_form'] = array(
+    'render element' => 'form',
+    'template' => 'preview_assessment_questionnaire_form',
+  );
+  $items['print_questionnaire_list'] = array(
+    'render element' => 'form',
+    'template' => 'print_questionnaire_list',
+  );
+
+  return $items;
+}
+
+/**
+ * Function _list_all_assessment() define to call the theme.
+ */
+function _assessment_questionnaire_start() {
+  return theme('questionnaier_start');
+}
+
+/**
+ * Function _questionnaire_for_evaluation() define to call the theme.
+ */
+function _questionnaire_for_evaluation() {
+  return theme('questionnaire_for_evaluation');
+}
+
+/**
+ * Function _questionnaire_for_evaluation() define to call the theme.
+ */
+function _print_questionnaire_list() {
+  print theme('print_questionnaire_list', array('html' => $html));
+}
+
+/**
+ * Function defined to get the question and answer from database.
+ */
+function assessment_question($assessment_id, $transid) {
+  $query = db_select('assessment_question', 'aq');
+  $query->fields('aq', array(
+    'qid',
+    'question',
+    'type',
+    'nid',
+    'other',
+    'qsequence',
+  ))
+    ->condition('nid', $assessment_id, '=')
+    ->condition('transaction_id', $transid, '=')
+    ->orderBy('qid', 'ASC');
+  $result = $query->execute();
+  $data = $result->fetchAll();
+  return $data;
+}
+
+/**
+ * Function defined to get the question and answer from database.
+ */
+function assessment_answer($qid) {
+  $query = db_select('assessment_answer', 'aa')
+    ->fields('aa', array('ansid', 'qid', 'answers'))
+    ->condition('qid', $qid, '=');
+  $result = $query->execute();
+  $ans_data = $result->fetchAll();
+  return $ans_data;
+}
+
+/**
+ * Function get_assessment_questionnaire_form() defined.
+ */
+function get_assessment_questionnaire_form() {
+  // Redirect the user if he comes directly at the Questionnaire page.
+  check_user_confirm_questionnaire();
+
+  // Call the Questionnaire Form.
+  return drupal_get_form('assessment_questionnaire_form');
+}
+
+/**
+ * Implements assessment_questionnaire_form()
+ *
+ * Function credit_card_payment_form() defined to create the credit card form.
+ */
+function assessment_questionnaire_form($form, &$form_state) {
+  global $user;
+  if ($user->roles[6] == 'client') {
+    $quest_user_id = $user->uid;
+  }
+  else {
+    $quest_user_id = arg(6);
+  }
+
+  $assessment_node_id = arg(2);
+  $transid = arg(4);
+
+  // Get the question from db.
+  $qlist = assessment_question($assessment_node_id, $transid);
+
+  $per_page = 1;
+  // Initialise the pager.
+  $current_page = pager_default_initialize(count($qlist), $per_page);
+
+  // Split your list into page sized chunks.
+  $chunks = array_chunk($qlist, $per_page, TRUE);
+
+  // Show the appropriate items from the list.
+  $data_question = $chunks[$current_page][$current_page]->question;
+  $question_num = $current_page + 1;
+
+  // Get the answer of the question from database.
+  $question_id = $chunks[$current_page][$current_page]->qid;
+  $question_sequesce = $chunks[$current_page][$current_page]->qsequence;
+  $question_type = $chunks[$current_page][$current_page]->type;
+  $question_other_option = $chunks[$current_page][$current_page]->other;
+
+  // Get the answer id of this question and after that get the answer.
+  $get_ans_id = db_select('assessment_result', 'ar')
+    ->fields('ar', array('answer_id', 'others_reason', 'short_answer_textarea'))
+    ->condition('uid', $quest_user_id, '=')
+    ->condition('assessment_nid', $assessment_node_id, '=')
+    ->condition('transid', $transid, '=')
+    ->condition('question_id', $question_id, '=');
+  $get_ans_id_result = $get_ans_id->execute();
+  $ans_id_data = $get_ans_id_result->fetchAll();
+
+  $short_answer = $ans_id_data[0]->short_answer_textarea;
+  $other_answer = $ans_id_data[0]->others_reason;
+
+  // Get answer from the db.
+  $data_answer = assessment_answer($question_id);
+
+  $form['question_list'] = array(
+    '#type' => 'textfield',
+    '#value' => count($qlist),
+  );
+
+  $form['question_title'] = array(
+    '#name' => 'question_name',
+    '#type' => 'item',
+    '#title' => $question_num . '. ' . $data_question,
+    '#markup' => '<span></span>',
+  );
+
+  // Function call to get the evaluation status.
+  $evaluation_status = get_evaluation_status($assessment_node_id, $transid);
+
+  $new_field_added = 1;
+
+  foreach ($data_answer as $answer_option) {
+    switch ($question_type) {
+      case 'checkbox':
+        $type = 'checkboxes';
+        $value[$answer_option->ansid] = $answer_option->answers;
+
+        if ($ans_id_data[0]->answer_id <> '') {
+          if ($evaluation_status == 1) {
+            $data_checked[$answer_option->ansid] = array('#disabled' => TRUE);
+            $set_text_box_disable = 1;
+            $set_dd_radio_disable = 1;
+          }
+        }
+
+        $explode_data = explode(',', $ans_id_data[0]->answer_id);
+        for ($i = 0; $i < count($explode_data); $i++) {
+          if ($explode_data[$i] == $answer_option->ansid) {
+            if ($evaluation_status == 1) {
+              $data_checked[$answer_option->ansid] = array(
+                '#attributes' => array(
+                  'disabled' => TRUE,
+                  'checked' => TRUE,
+                ),
+              );
+            }
+            else {
+              $data_checked[$answer_option->ansid] = array('#attributes' => array('checked' => TRUE));
+            }
+          }
+        }
+        break;
+
+      case 'radiobutton':
+        $type = 'radios';
+        $value[$answer_option->ansid] = $answer_option->answers;
+
+        if ($ans_id_data[0]->answer_id <> '') {
+          if ($evaluation_status == 1) {
+            $data_checked[$answer_option->ansid] = array('#disabled' => TRUE);
+            $set_text_box_disable = 1;
+            $set_dd_radio_disable = 1;
+          }
+        }
+
+        if ($ans_id_data[0]->answer_id == $answer_option->ansid) {
+          if ($evaluation_status == 1) {
+            $data_checked[$answer_option->ansid] = array(
+              '#attributes' => array(
+                'checked' => TRUE,
+                'disabled' => TRUE,
+              ),
+            );
+          }
+          else {
+            $data_checked[$answer_option->ansid] = array('#attributes' => array('checked' => TRUE));
+          }
+        }
+        break;
+
+      case 'textarea':
+        $type = 'textarea';
+        $value = array();
+        $form['textarea_ans_id'] = array(
+          '#type' => 'textfield',
+          '#value' => $answer_option->ansid,
+        );
+
+        if ($ans_id_data[0]->answer_id <> '') {
+          if ($evaluation_status == 1) {
+            $set_dd_radio_disable = 1;
+          }
+        }
+        break;
+
+      case 'dropdown':
+        $type = 'select';
+        $value[$answer_option->ansid] = $answer_option->answers;
+
+        if ($ans_id_data[0]->answer_id <> '') {
+          if ($evaluation_status == 1) {
+            $set_dd_radio_disable = 1;
+            $set_text_box_disable = 1;
+          }
+        }
+
+        if ($ans_id_data[0]->answer_id == $answer_option->ansid) {
+          $selected_data = $answer_option->ansid;
+        }
+        break;
+
+      case 'date':
+        $new_field_added = 0;
+
+        $form['month_year_ans_id'] = array(
+          '#type' => 'textfield',
+          '#value' => $answer_option->ansid,
+        );
+
+        $type = 'select';
+
+        for ($inci = 1980; $inci < 2020; $inci++) {
+          $value[$inci] = $inci;
+        }
+
+        $month_value[1] = 'Jan';
+        $month_value[2] = 'Feb';
+        $month_value[3] = 'Mar';
+        $month_value[4] = 'Apr';
+        $month_value[5] = 'May';
+        $month_value[6] = 'Jun';
+        $month_value[7] = 'Jul';
+        $month_value[8] = 'Aug';
+        $month_value[9] = 'Sep';
+        $month_value[10] = 'Oct';
+        $month_value[11] = 'Nov';
+        $month_value[12] = 'Dec';
+
+        if ($ans_id_data[0]->answer_id <> '') {
+          if ($evaluation_status == 1) {
+            $set_dd_radio_disable = 1;
+          }
+          $explode_month_year = explode('_', $short_answer);
+          $selected_month = $explode_month_year[0];
+          $selected_year = $explode_month_year[1];
+        }
+
+        $form['data_answer_month'] = array(
+          '#title' => t('Answer'),
+          '#type' => $type,
+          '#options' => $month_value,
+          '#required' => TRUE,
+          '#default_value' => $selected_month,
+          '#prefix' => '<span class="hide_ans">',
+          '#suffix' => '</span>',
+        );
+
+        $form['data_answer_year'] = array(
+          '#title' => t('Answer'),
+          '#type' => $type,
+          '#options' => $value,
+          '#required' => TRUE,
+          '#default_value' => $selected_year,
+          '#prefix' => '<span class="hide_ans">',
+          '#suffix' => '</span>',
+        );
+
+        if ($set_dd_radio_disable == 1) {
+          $form['data_answer_month']['#disabled'] = array(
+            '#disabled' => TRUE,
+          );
+          $form['data_answer_year']['#disabled'] = array(
+            '#disabled' => TRUE,
+          );
+        }
+
+        break;
+    }
+  }
+
+  // Create the item type based on the above options.
+  $form['data_question_id'] = array(
+    '#type' => 'textfield',
+    '#value' => $question_id,
+  );
+  $form['question_sequesce'] = array(
+    '#type' => 'textfield',
+    '#value' => $question_sequesce,
+  );
+
+  // Check made for this option will not be visible in case of date display.
+  if ($new_field_added == 1) {
+
+    // Create the item type based on the above options.
+    if ($type == 'textarea') {
+      $form['data_answer'] = array(
+        '#title' => t('Answer'),
+        '#type' => $type,
+        '#cols' => 80,
+        '#rows' => 5,
+        '#required' => TRUE,
+        '#default_value' => $short_answer,
+        '#prefix' => '<span class="hide_ans">',
+        '#suffix' => '</span>',
+      );
+    }
+    else {
+      $form['data_answer'] = array(
+        '#title' => t('Answer'),
+        '#type' => $type,
+        '#options' => $value,
+        '#required' => TRUE,
+        '#default_value' => $selected_data,
+        '#prefix' => '<span class="hide_ans">',
+        '#suffix' => '</span>',
+      );
+    }
+
+    // Loop used to show the items selected in CASE of EDIT.
+    foreach ($data_checked as $key => $value) {
+      $form['data_answer'][$key] = $value;
+    }
+    // Disable the DD option.
+    if ($set_dd_radio_disable == 1) {
+      $form['data_answer']['#disabled'] = array(
+        '#disabled' => TRUE,
+      );
+    }
+
+    // Show the option to fill the answer for other options.
+    if ($question_other_option <> '') {
+      $form['data_answer_other'] = array(
+        '#type' => 'textfield',
+        '#default_value' => $other_answer,
+      );
+    }
+    if ($set_text_box_disable == 1) {
+      $form['data_answer_other']['#disabled'] = array(
+        '#disabled' => TRUE,
+      );
+    }
+
+    if ($set_dd_radio_disable == 1) {
+      $form['view_questionnaire'] = array(
+        '#type' => 'textfield',
+        '#value' => '1',
+      );
+    }
+  }
+
+  // Set a token to whether the questionnaire is ready for evaluation.
+  $total_ass_questions = get_total_questions_numbers($assessment_id = arg(2), $transid = arg(4));
+  $total_attempted_questions = get_total_attempted_questions_numbers($assessment_id = arg(2), $transid = arg(4));
+  $validate_evaluation_status = ($question_num == $total_ass_questions) && ($question_num == $total_attempted_questions) ? 'ready' : 'not_ready';
+  $is_last_question = $question_num == $total_ass_questions;
+
+  $form['validate_evaluation_status'] = array(
+    '#type' => 'hidden',
+    '#value' => $validate_evaluation_status,
+    '#attributes' => array(
+      'data-is-last-question' => $is_last_question,
+    ),
+  );
+
+  if ($evaluation_status != 1) {
+    $submit_title = 'Save My Answer and Continue Questionnaire';
+
+    if ($is_last_question) {
+      $submit_title = 'Save My Answer and Review Questionnaire';
+    }
+
+    $form['submit'] = array(
+      '#id' => 'questionnair_submit',
+      '#type' => 'submit',
+      '#value' => t($submit_title),
+      '#attributes' => array(
+        'title' => t('Save answered questions so you can return later or continue to the next question.'),
+      ),
+    );
+  }
+
+  return $form;
+}
+
+/**
+ * Function ndsbs_questionnaire_assessment_questionnaire_form_submit().
+ *
+ * Defined to submit the questionnaire form.
+ */
+function assessment_questionnaire_form_submit($form, &$form_state) {
+  global $user, $base_url;
+
+  $assessment_nid = arg(2);
+  $transid = arg(4);
+  $page_num = $_REQUEST['page'];
+  $page_nxt = $page_num + 1;
+
+  $view_questionnaire = $form_state['values']['view_questionnaire'];
+  if ($view_questionnaire == 1) {
+    drupal_goto($base_url . '/user/questionnaire/' . $assessment_nid . '/trans/' . $transid, array(
+      // 'query' => array('page' => $page_nxt),
+      // 'absolute' => TRUE,
+    ));
+  }
+
+  $data_question_id = $form_state['values']['data_question_id'];
+  $data_question_sequesce = $form_state['values']['question_sequesce'];
+  $month_value = $form_state['values']['data_answer_month'];
+  $year_value = $form_state['values']['data_answer_year'];
+  $data_answer = $form_state['values']['data_answer'];
+
+  $answer_str = implode(',', $data_answer);
+  if ($answer_str <> '') {
+    $answer_save = $answer_str;
+  }
+  elseif ($month_value <> '' && $year_value <> '') {
+    $month_year_ans_id = $form_state['values']['month_year_ans_id'];
+    if ($month_year_ans_id <> '') {
+      $answer_save = $month_year_ans_id;
+      $save_textarea_input_val = $month_value . '_' . $year_value;
+    }
+  }
+  else {
+    $textarea_ans_id = $form_state['values']['textarea_ans_id'];
+    if ($textarea_ans_id <> '') {
+      $answer_save = $textarea_ans_id;
+      $save_textarea_input_val = $data_answer;
+    }
+    else {
+      $answer_save = $data_answer;
+    }
+  }
+
+  if ($form_state['values']['data_answer_other'] <> '') {
+    $data_answer_other = $form_state['values']['data_answer_other'];
+  }
+
+  $num_deleted = db_delete('assessment_result')
+    ->condition('uid', $user->uid)
+    ->condition('assessment_nid', $assessment_nid)
+    ->condition('question_id', $data_question_id)
+    ->condition('transid', $transid)
+    ->execute();
+
+  $data = db_insert('assessment_result')
+    ->fields(array(
+      'uid' => $user->uid,
+      'assessment_nid' => $assessment_nid,
+      'transid' => $transid,
+      'question_id' => $data_question_id,
+      'answer_id' => $answer_save,
+      'others_reason' => $data_answer_other,
+      'short_answer_textarea' => $save_textarea_input_val,
+      'qsequence' => $data_question_sequesce,
+    ))
+    ->execute();
+  if ($data) {
+    $timeconsumed_qry = db_update('assessment_qa_details')
+      ->fields(array('time_consumed' => time()))
+      ->condition('assessment_id', $assessment_nid, '=')
+      ->condition('transid', $transid, '=')
+      ->condition('user_id', $user->uid, '=')
+      ->execute();
+  }
+  else {
+    drupal_set_message('Answer Could not save, Please try again.');
+  }
+
+  $qlist = $form_state['values']['question_list'];
+  if ($page_nxt >= $qlist) {
+    // drupal_set_message('You have answered all questions.  Thank you! Please click the Submit All Answers for Evaluator Review button, then provide us with your preferred time to complete your interview. Someone from our support team will contact you to schedule.');
+
+    $form_state['redirect'] = url($base_url . '/user/questionnaire/' . $assessment_nid . '/trans/' . $transid, array(
+      'query' => array('page' => $page_num),
+      'absolute' => TRUE,
+    ));
+  }
+  else {
+    $form_state['redirect'] = url($base_url . '/user/questionnaire/' . $assessment_nid . '/trans/' . $transid, array(
+      'query' => array('page' => $page_nxt),
+      'absolute' => TRUE,
+    ));
+  }
+}
+
+/**
+ * Function get_assessment_confirmation_form().
+ */
+function get_assessment_confirmation_form() {
+  return drupal_get_form('assessment_confirmation_form');
+}
+
+/**
+ * Function assessment_confirmation_form()
+ *
+ * Defined to show the checknox of the confirm.
+ */
+function assessment_confirmation_form() {
+  $form['confirm_answer'] = array(
+    '#title' => t('If you are ready to start the questionnaire please select Confirm box first.'),
+    '#type' => 'checkboxes',
+    '#options' => array('1' => 'Confirm'),
+    '#required' => TRUE,
+  );
+  $form['submit'] = array(
+    '#id' => 'questionnair_cnfrm',
+    '#type' => 'submit',
+    '#value' => t('Start Questionnaire'),
+  );
+
+  return $form;
+}
+
+/**
+ * Function assessment_confirmation_form_submit()
+ *
+ * Defined for submit action of the form.
+ *
+ * @param type array $form
+ *   Form array.
+ * @param type array $form_state
+ *   Form state array.
+ */
+function assessment_confirmation_form_submit($form, &$form_state) {
+  global $user, $base_url;
+
+  $assessment_nid = arg(2);
+  $transid = arg(4);
+  $confirm_answer = $form_state['values']['confirm_answer'];
+
+  if ($confirm_answer[1] == 1) {
+    $query_select = db_select('assessment_qa_details', 'aqd')
+      ->fields('aqd', array('total_attempts'))
+      ->condition('assessment_id', $assessment_nid, '=')
+      ->condition('transid', $transid, '=')
+      ->condition('user_id', $user->uid, '=');
+    $select_execute = $query_select->execute();
+    $select_result = $select_execute->fetchAll();
+    $select_result_data = $select_result[0]->total_attempts;
+
+    if ($select_result_data <= 0) {
+      $query = db_insert('assessment_qa_details')
+        ->fields(array(
+          'assessment_id' => $assessment_nid,
+          'confirm_status' => $confirm_answer,
+          'total_attempts' => 1,
+          'total_time' => 5400,
+          'questionnaire_startime' => time(),
+          'user_id' => $user->uid,
+          'timestamp' => time(),
+          'transid' => $transid,
+        ))
+        ->execute();
+    }
+    else {
+      $query_update = db_update('assessment_qa_details')
+        ->fields(array(
+          'total_attempts' => $select_result_data + 1,
+          'questionnaire_startime' => time(),
+          'time_consumed' => time(),
+        ))
+        ->condition('assessment_id', $assessment_nid, '=')
+        ->condition('user_id', $user->uid, '=')
+        ->condition('transid', $transid, '=')
+        ->execute();
+    }
+
+    $form_state['redirect'] = url($base_url . '/user/questionnaire/' . $assessment_nid . '/trans/' . $transid);
+  }
+}
+
+/**
+ * Function check_user_confirm_questionnaire().
+ *
+ * Defined to check that user has confirmed.
+ */
+function check_user_confirm_questionnaire() {
+  global $user, $base_url;
+  $assessment_id = arg(2);
+  $transid = arg(4);
+
+  if ($user->roles[6] == 'client') {
+    $queryselect = db_select('assessment_qa_details', 'aqd')
+      ->fields('aqd', array('confirm_status'))
+      ->condition('assessment_id', $assessment_id, '=')
+      ->condition('transid', $transid, '=')
+      ->condition('user_id', $user->uid, '=');
+    $selectexecute = $queryselect->execute();
+    $selectresult = $selectexecute->fetchAssoc();
+    if ($selectresult['confirm_status'] != 1) {
+      drupal_goto($base_url . '/questionnaire/start/' . $assessment_id . '/trans/' . $transid);
+      $_SESSION['questionnaire_assessment_id'] = $assessment_id;
+      $_SESSION['questionnaire_transaction_id'] = $transid;
+    }
+    else {
+      return;
+    }
+  }
+  else {
+    return;
+  }
+}
+
+/**
+ * Function get_left_questionnaire_time() defined.
+ */
+function get_left_questionnaire_time() {
+  global $user;
+  $assessment_id = arg(2);
+  $transid = arg(4);
+  $queryselect = db_select('assessment_qa_details', 'aqd')
+    ->fields('aqd', array(
+      'time_consumed',
+      'questionnaire_startime',
+      'total_time',
+    ))
+    ->condition('assessment_id', $assessment_id, '=')
+    ->condition('transid', $transid, '=')
+    ->condition('user_id', $user->uid, '=');
+  $selectexecute = $queryselect->execute();
+  $selectresult = $selectexecute->fetchAssoc();
+
+  if ($selectresult['questionnaire_startime'] != '' && $selectresult['time_consumed'] != '') {
+    $left_time = $selectresult['total_time'] - ($selectresult['time_consumed'] - $selectresult['questionnaire_startime']);
+  }
+  else {
+    $left_time = $selectresult['total_time'];
+  }
+  return $left_time;
+}
+
+/**
+ * Implements _user_success_registration_page().
+ *
+ * Function _user_success_registration_page() defined.
+ * Display the success registration page to user.
+ */
+function user_logout_exceed_time_limit() {
+  global $user;
+  watchdog('user', 'Session closed for %name.', array('%name' => $user->name));
+
+  module_invoke_all('user_logout', $user);
+  // Destroy the current session, and reset $user to the anonymous user.
+  session_destroy();
+  drupal_goto('user/login');
+}
+
+/**
+ * Function get_total_questions_numbers()
+ *
+ * Defined to get the total numbers of questions.
+ */
+function get_total_questions_numbers($assessment_id, $transid) {
+  $queryselect = db_select('assessment_question', 'aq')
+    ->condition('transaction_id', $transid, '=')
+    ->condition('nid', $assessment_id, '=');
+  $queryselect->addExpression('COUNT(aq.qid)', 'total_count');
+
+  $selectexecute = $queryselect->execute();
+  $selectresult = $selectexecute->fetchAssoc();
+  $total_count = $selectresult['total_count'];
+  return $total_count;
+}
+
+/**
+ * Function get_total_attempted_times() defined.
+ */
+function get_total_attempted_times($assessment_id, $transaction_id = NULL) {
+  global $user;
+
+  // Catch the transaction id modified for creating the steps of assessment.
+  if ($transaction_id <> '') {
+    $transid = arg(4);
+  }
+  else {
+    $transid = $transaction_id;
+  }
+
+  $queryselect = db_select('assessment_qa_details', 'aqd')
+    ->fields('aqd', array('total_attempts', 'total_time', 'evaluation'))
+    ->condition('assessment_id', $assessment_id, '=')
+    ->condition('transid', $transid, '=')
+    ->condition('user_id', $user->uid, '=');
+  $selectexecute = $queryselect->execute();
+  $selectresult = $selectexecute->fetchAssoc();
+
+  return $selectresult;
+}
+
+/**
+ * Function _questionnaire_session_expire().
+ */
+function _questionnaire_session_expire() {
+  user_logout_exceed_time_limit();
+}
+
+/**
+ * Function questionnaire_custom_pager().
+ */
+function questionnaire_custom_pager($assessment_id) {
+  $transid = arg(4);
+  global $user, $base_url;
+  if ($user->roles[6] == 'client') {
+    $user_id = $user->uid;
+    $questionnaire_link = $base_url . '/user/questionnaire/' . $assessment_id . '/trans/' . $transid;
+  }
+  else {
+    // Link Used for admin, staff admin, therapist.
+    $user_id = arg(6);
+    $questionnaire_link = $base_url . '/user/questionnaire/' . $assessment_id . '/trans/' . $transid . '/uid/' . $user_id;
+  }
+
+  // Get the questionnaire total seauence.
+  $data_select = db_select('assessment_question', 'aq')
+    ->fields('aq', array('qsequence'))
+    ->condition('nid', $assessment_id, '=')
+    ->condition('transaction_id', $transid, '=')
+    ->orderBy('qid', 'ASC');
+  $data_excute = $data_select->execute();
+  $data_result = $data_excute->fetchAll();
+
+  // Get the attempted questions sequence.
+  $attempted_select = db_select('assessment_result', 'ar')
+    ->fields('ar', array('qsequence'))
+    ->condition('assessment_nid', $assessment_id, '=')
+    ->condition('transid', $transid, '=')
+    ->condition('uid', $user_id, '=')
+    ->orderBy('id', 'ASC');
+  $attempted_excute = $attempted_select->execute();
+  $attempted_result = $attempted_excute->fetchAll();
+
+  $attempted_sequence = array();
+  foreach ($attempted_result as $attempted) {
+    $attempted_sequence[] = $attempted->qsequence;
+  }
+
+  // Calculating last count and first count for hiding Next and Prev button
+  // respectivally.
+  $last_count = count($data_result);
+  $current_page = $_REQUEST['page'];
+
+  // Prev and Next param defined.
+  $prev = $current_page - 1;
+  $next = $current_page + 1;
+
+  $options_prev = array(
+    'query' => array('page' => $prev),
+    'attributes' => array(
+      'aria-label' => 'Previous',
+    ),
+  );
+  $options_next = array(
+    'query' => array('page' => $next),
+    'attributes' => array('class' => 'prevnxt'),
+  );
+
+  $output = '<nav><ul class="pagination">';
+
+  if ($prev > -1) {
+    $output .= '<li><a href="' . $questionnaire_link . '?page=' . $prev . '" aria-label="Previous" title="Previous page"><span aria-hidden="true">&laquo;</span></a></li>';
+  }
+
+  $start = 0;
+  $new_current_page = $current_page + 1;
+  if ($new_current_page < 4) {
+    $prev_dot = 0;
+    $next_dot = 9;
+    $start = 1;
+  }
+  elseif (($last_count - $new_current_page) < 4) {
+    $prev_dot = $last_count - 8;
+    $next_dot = $last_count;
+    $start = 2;
+  }
+  else {
+    $prev_dot = $new_current_page - 4;
+    if ($prev_dot == 0) {
+      $next_dot = $new_current_page + 5;
+      $start = 4;
+    }
+    elseif ($prev_dot == 1) {
+      $next_dot = $new_current_page + 4;
+      $start = 4;
+    }
+    else {
+      $start = 3;
+      $next_dot = $new_current_page + 4;
+      if ($next_dot == $last_count) {
+        $start = 2;
+      }
+    }
+  }
+
+  if ($start == 2 || $start == 3) {
+    $output .= '<li><span> ... </span></li>';
+  }
+  foreach ($data_result as $pager_data) {
+    $self_link = $pager_data->qsequence - 1;
+    if ($pager_data->qsequence >= $prev_dot && $pager_data->qsequence <= $next_dot) {
+      if (in_array($pager_data->qsequence, $attempted_sequence)) {
+        if ($self_link == $current_page) {
+          $class = 'active';
+        }
+        else {
+          $class = 'green';
+        }
+        $output .= '<li class="' . $class . '"><a href="' . $questionnaire_link . '?page=' . $self_link . '">' . $pager_data->qsequence . '</a></li>';
+      }
+      else {
+        if ($self_link == $current_page) {
+          $class = 'active';
+        }
+        else {
+          $class = 'red';
+        }
+        $output .= '<li class="' . $class . '"><a href="' . $questionnaire_link . '?page=' . $self_link . '">' . $pager_data->qsequence . '</a></li>';
+      }
+    }
+  }
+  if ($start == 1 || $start == 3 || $start == 4) {
+    $output .= '<li><span> ... </span></li>';
+  }
+
+  if ($last_count != $next && $next < $last_count) {
+
+    $output .= '<li><a href="' . $questionnaire_link . '?page=' . $next . '" aria-label="Next" title="Next page"><span aria-hidden="true">&raquo;</span></a></li>';
+  }
+
+  $output .= '</ul></nav>';
+
+  return $output;
+}
+
+/**
+ * Function questionnaire_submit_for_evaluation() implemented.
+ */
+function get_skipped_question_before_evaluation($assessment_id, $transid) {
+  global $user, $base_url;
+  $qlist = assessment_question_node_preview($assessment_id, $transid);
+  $destination = $_GET['q'] . '?page=' . $_GET['page'];
+  $destination = drupal_get_destination();
+
+  $output = '<div class="list-group">';
+
+  // Creating links for user and admin.
+  if ($user->roles[6] == 'client') {
+    $user_id = $user->uid;
+    $questionnaire_link = $base_url . '/user/questionnaire/' . $assessment_id . '/trans/' . $transid;
+    $questionnaire_prevnext_link = $base_url . '/user/evaluation/questionnaire/' . $assessment_id . '/trans/' . $transid;
+  }
+  else {
+    $user_id = arg(6);
+    $questionnaire_link = $base_url . '/user/questionnaire/' . $assessment_id . '/trans/' . $transid . '/uid/' . $user_id;
+    $questionnaire_prevnext_link = $base_url . '/user/evaluation/questionnaire/' . $assessment_id . '/trans/' . $transid . '/uid/' . $user_id;
+  }
+
+  // Get the attempted question's sequence.
+  $attempted_select = db_select('assessment_result', 'ar')
+    ->fields('ar', array('qsequence'))
+    ->condition('assessment_nid', $assessment_id, '=')
+    ->condition('transid', $transid, '=')
+    ->condition('uid', $user_id, '=')
+    ->orderBy('id', 'ASC');
+  $attempted_excute = $attempted_select->execute();
+  $attempted_result = $attempted_excute->fetchAll();
+
+  $attempted_sequence = array();
+
+  foreach ($attempted_result as $attempted) {
+    $attempted_sequence[] = $attempted->qsequence;
+  }
+
+  // Get the questionnaire total seauence.
+  $data_select = db_select('assessment_question', 'aq')
+    ->fields('aq', array('qsequence'))
+    ->condition('transaction_id', $transid, '=')
+    ->condition('nid', $assessment_id, '=');
+
+  if (count($attempted_sequence) > 0) {
+    $data_select->condition('qsequence', $attempted_sequence, 'NOT IN');
+  }
+
+  $data_select->orderBy('qid', 'ASC');
+  $data_excute = $data_select->execute();
+  $data_result = $data_excute->fetchAll();
+
+  foreach ($data_result as $key => $data) {
+    $question_number = $data->qsequence;
+    $question_text = $question_number . '. ' . $qlist[($data->qsequence - 1)]->question;
+    $question_url = 'user/questionnaire/' . $assessment_id . '/trans/' . $transid;
+    $question_link = l($question_text, $question_url, array(
+      'query' => array(
+        'page' => ($data->qsequence - 1),
+        drupal_get_destination(),
+      ),
+      'attributes' => array(
+        'class' => array('list-group-item'),
+      ),
+    ));
+    $output .= $question_link;
+  }
+
+  $output .= '</div>';
+  return $output;
+}
+
+/**
+ * Function save_questionnaire_for_evaluation() Implemented for
+ * save the questionnaire for evaluation
+ *
+ * @global type $user
+ */
+function save_questionnaire_for_evaluation($assessment_id) {
+  global $user;
+  $transid = arg(5);
+  $temp_question_id = array();
+  //  get attempted question id
+  $query_attempted = db_select('assessment_result', 'ar')
+    ->fields('ar', array('question_id'))
+    ->condition('uid', $user->uid, '=')
+    ->condition('transid', $transid, '=')
+    ->condition('assessment_nid', $assessment_id, '=');
+  $attempted_result = $query_attempted->execute();
+  $result_data = $attempted_result->fetchAll();
+
+  foreach ($result_data as $qdata) {
+    $temp_question_id[] = $qdata->question_id;
+  }
+
+  if (count($temp_question_id) > 0) {
+    $query = db_select('assessment_question', 'aq');
+    $query->fields('aq', array('qid', 'question', 'type', 'nid', 'other'))
+      ->condition('nid', $assessment_id, '=')
+      ->condition('transaction_id', $transid, '=')
+      ->condition('qid', $temp_question_id, 'NOT IN')
+      ->orderBy('qid', 'ASC');
+
+    $result = $query->execute();
+    $data = $result->fetchAll();
+
+    $count = count($data);
+    if ($count > 0) {
+      return FALSE;
+    }
+    else {
+      //  Chk user has already submitted the questionnaire for assessment
+      $db_select = db_select('assessment_qa_details', 'aqd')
+        ->fields('aqd', array('evaluation'))
+        ->condition('assessment_id', $assessment_id, '=')
+        ->condition('transid', $transid, '=')
+        ->condition('user_id', $user->uid, '=');
+      $qry_excute = $db_select->execute();
+      $qry_result = $qry_excute->fetchAssoc();
+      $evaluate_val = $qry_result['evaluation'];
+
+      if ($evaluate_val != 1) {
+        //  Update the database that User needs to submit the questionnaire for Evaluation
+        $query_update = db_update('assessment_qa_details')
+          ->fields(array('evaluation' => 1))
+          ->condition('assessment_id', $assessment_id, '=')
+          ->condition('transid', $transid, '=')
+          ->condition('user_id', $user->uid, '=')
+          ->execute();
+        drupal_set_message('Questionnaire successfully submitted for evaluation.');
+      }
+      else {
+        drupal_set_message('You have already submitted questionnaire for evaluation.');
+      }
+      return TRUE;
+    }
+  }
+  else {
+    return FALSE;
+  }
+}
+
+/**
+ * Function get_complete_questionnaire_single_page() implemented
+ * for custom function
+ *
+ * @return type
+ */
+function get_complete_questionnaire_single_page() {
+  return drupal_get_form('complete_questionnaire_single_form');
+}
+
+/**
+ * Function complete_questionnaire_single_page() implemented
+ * to show the user complete questionnaire at single page
+ *
+ */
+function complete_questionnaire_single_form($form, &$form_state) {
+  global $user, $base_url;
+  //  Questionnaire START
+  ////////////////////////////////////////////////////////////////////////////////
+  //  Assessment node id
+  $assessment_node_id = arg(2);
+  $transid = arg(4);
+
+  //  Get the question from db
+  $qlist = assessment_question($assessment_node_id, $transid);
+
+  $question_num = 0;
+  foreach ($qlist as $question_data) {
+    ////////////////////////////////////////////////////////////////////////////////
+    // Show the appropriate items from the list
+    $data_question = $question_data->question;
+    $question_num++;
+
+    //  Get the answer of the question from database
+    $question_id = $question_data->qid;
+    $question_sequesce = $question_data->qsequence;
+    $question_type = $question_data->type;
+    $question_other_option = $question_data->other;
+    ////////////////////////////////////////////////////////////////////////////////
+    //  Get answer from the db
+    $data_answer = assessment_answer($question_id);
+    //  Questionnaire END
+
+    $form['question_title_' . $question_num] = array(
+      '#name' => 'question_name',
+      '#type' => 'item',
+      '#title' => 'Q' . $question_num . '. ' . $data_question,
+      '#markup' => '<span></span>',
+    );
+
+    //  START
+    $new_field_added = 1;
+    $value = array();
+    foreach ($data_answer as $answer_option) {
+      switch ($question_type) {
+        case 'checkbox':
+          //  D7 Checkbox
+          $type = 'checkboxes';
+          $value[$answer_option->ansid] = $answer_option->answers;
+
+          break;
+        case 'radiobutton':
+          //  D7 Radio button
+          $type = 'radios';
+          $value[$answer_option->ansid] = $answer_option->answers;
+
+          break;
+        case 'textarea':
+          //  D7 textarea
+          $type = 'textarea';
+          $value = array();
+
+          break;
+        case 'dropdown':
+          //  D7 dropdown
+          $type = 'select';
+          $value[$answer_option->ansid] = $answer_option->answers;
+
+          break;
+        case 'date':
+          $new_field_added = 0;
+
+          $form['month_year_ans_id'] = array(
+            '#type' => 'textfield',
+            '#value' => $answer_option->ansid,
+          );
+
+          //  D7 dropdown
+          $type = 'select';
+
+          //  Creating year drop down option
+          for ($inci = 1980; $inci < 2020; $inci++) {
+            $value[$inci] = $inci;
+          }
+
+          //  Creating month drop down option
+          $month_value[1] = 'Jan';
+          $month_value[2] = 'Feb';
+          $month_value[3] = 'Mar';
+          $month_value[4] = 'Apr';
+          $month_value[5] = 'May';
+          $month_value[6] = 'Jun';
+          $month_value[7] = 'Jul';
+          $month_value[8] = 'Aug';
+          $month_value[9] = 'Sep';
+          $month_value[10] = 'Oct';
+          $month_value[11] = 'Nov';
+          $month_value[12] = 'Dec';
+
+          $form['data_answer_month_' . $question_num] = array(
+            '#title' => t('Answer'),
+            '#type' => $type,
+            '#options' => $month_value,
+            '#required' => TRUE,
+            '#prefix' => '<span class="hide_ans">',
+            '#suffix' => '</span>',
+          );
+
+          $form['data_answer_year_' . $question_num] = array(
+            '#title' => t('Answer'),
+            '#type' => $type,
+            '#options' => $value,
+            '#required' => TRUE,
+            '#prefix' => '<span class="hide_ans">',
+            '#suffix' => '</span>',
+          );
+
+          break;
+
+      }
+    }
+
+    if ($new_field_added == 1) {
+      //  Create the item type based on the above options
+      if ($type == 'textarea') {
+        $form['data_answer_' . $question_num] = array(
+          '#title' => t('Answer'),
+          '#type' => $type,
+          '#cols' => 80,
+          '#rows' => 5,
+          '#required' => TRUE,
+          '#prefix' => '<span class="hide_ans">',
+          '#suffix' => '</span>',
+        );
+      }
+      else {
+        $form['data_answer_' . $question_num] = array(
+          '#title' => t('Answer'),
+          '#type' => $type,
+          '#options' => $value,
+          '#required' => TRUE,
+          '#prefix' => '<span class="hide_ans">',
+          '#suffix' => '</span>',
+        );
+      }
+
+      //  loop used to show the items selected in CASE of EDIT
+      foreach ($data_checked as $key => $value) {
+        $form['data_answer_' . $question_num][$key] = $value;
+      }
+
+      //  OTHER OPTION FIELD  START
+      //  Show the option to fill the answer for other options
+      if ($question_other_option <> '') {
+        $form['data_answer_other_' . $question_num] = array(
+          '#type' => 'textfield',
+        );
+      }
+      //  OTHER OPTION FIELD END
+    }
+  }
+
+  return $form;
+}
+
+/**
+ * Function questionnaire_email_to_therapist() implemented
+ * to send the mail if client has completed the
+ * questionnaire and submitted submitted for evaluation
+ *
+ * @param $assessment_id
+ */
+function ndsbs_questionnaire_email_to_therapist($assessment_id) {
+  global $user, $base_url;
+  $transid = arg(5);
+  $module = 'ndsbs_questionnaire';
+  $key = 'email_to_therapist';
+  $superadmin_uid = 1;
+  //  Load the logged in user
+  $client = user_load($user->uid);
+
+  //  get the order information based on order id or transaction id
+  $order_data = get_transaction_info_orderid($transid);
+  //$therapist = user_load($order_data[0]->therapist);
+  $superadmin = user_load($superadmin_uid);
+  $to = $superadmin->mail . ', Stephen@directionscounseling.com';
+  //$to = 'brian@ndsbs.com';
+  $node_info = node_load($order_data[0]->nid);
+  $node_tid = $node_info->field_primary_service['und'][0]['tid'];
+
+  $language = $edit['original']->language;
+
+  $message = drupal_mail($module, $key, $to, $language, $params = array(), $from = NULL, $send = FALSE);
+
+  //  Creating the message body
+  $message['subject'] = 'Questionnaire completed notification';
+  $message['body'] = array();
+  $message['body'][] = 'Hi!!! ' . $therapist->field_first_name['und'][0]['value'];
+  $message['body'][] = '<br /><br /><b>User ' . $client->field_first_name['und'][0]['value'] . ' has completed the questionnaire. Please go to the link to check the questionnaire.</b>';
+  //$message['body'][] = l(t('Go to Questionnaire'), $base_url . '/user/questionnaire/'.$assessment_id.'/trans/'.$transid.'/uid/' . $user->uid);
+  $message['body'][] = l(t('Go to Client Tabs'), $base_url . '/users/view/reports/' . $user->uid . '/tid/' . $node_tid . '/nid/' . $order_data[0]->nid . '/transid/' . $transid);
+  // users/view/reports/387/tid/1/nid/271/transid/2116
+  $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
+  // Retrieve the responsible implementation for this message.
+  $system = drupal_mail_system($module, $key);
+
+  // Format the message body.
+  $message = $system->format($message);
+
+  // Send e-mail.
+  $message['result'] = $system->mail($message);
+  if (!$message['result']) {
+    watchdog($module, 'Unable to send the email hook_order_confirmation_mail', array(), WATCHDOG_NOTICE);
+  }
+}
+
+/**
+ * Function questionnaire_move() Implemeted to move questionnaire
+ * for question answer node table to question and answer table respectivaly
+ */
+function questionnaire_move() {
+  $assessment_nid = arg(2);
+  $transid = arg(4);
+
+  // Transfer Questionnaire from import (q_node and a_node To q and a respectivally)
+  $query_chk = db_select('assessment_question', 'assmnt')
+    ->fields('assmnt', array('transaction_id'))
+    ->condition('transaction_id', $transid, '=');
+  $chk_execute = $query_chk->execute();
+  $chk_result = $chk_execute->fetchAll();
+  $chk_result_data = $chk_result[0]->transaction_id;
+
+  if ($chk_result_data <= 0) {
+    // Build the SELECT query For Question.
+    $query = db_select('assessment_question_node', 'aqn');
+    // Add the fields we want.
+    $query->addField('aqn', 'qid');
+    $query->addField('aqn', 'question');
+    $query->addField('aqn', 'type');
+    $query->addField('aqn', 'nid');
+    $query->addField('aqn', 'other');
+    $query->addField('aqn', 'qsequence');
+    $query->addExpression($transid, 'transaction_id');
+    $query->condition('aqn.nid', $assessment_nid, '=');
+    // Perform the insert.
+    db_insert('assessment_question')
+      ->from($query)
+      ->execute();
+
+
+    // Build the SELECT query For Answer.
+    $query_answer = db_select('assessment_answer_node', 'aan');
+    // Join to the users table.
+    $query_answer->join('assessment_question_node', 'aqn', 'aqn.qid = aan.qid');
+    // Add the fields we want.
+    $query_answer->addField('aan', 'ansid');
+    $query_answer->addField('aan', 'qid');
+    $query_answer->addField('aan', 'answers');
+    $query_answer->addExpression($transid, 'transaction_id');
+    $query_answer->condition('aqn.nid', $assessment_nid, '=');
+    // Perform the insert.
+    db_insert('assessment_answer')
+      ->from($query_answer)
+      ->execute();
+  }
+}
+
+/**
+ *  Function get_assessment_questionnaire_form() defined
+ *
+ */
+function get_preview_assessment_questionnaire_form() {
+  //  Call the Questionnaire Form
+  return drupal_get_form('preview_assessment_questionnaire_form');
+}
+
+/**
+ *  Implementation of assessment_questionnaire_form()
+ *  Function credit_card_payment_form() defined
+ *  To create the credit card form
+ */
+function preview_assessment_questionnaire_form($form, &$form_state) {
+  $set_dd_radio_disable = 0;
+  $set_text_box_disable = 0;
+  $data_checked = array();
+  global $user;
+  if ($user->roles[6] == 'client') {
+    $quest_user_id = $user->uid;
+  }
+  else {
+    $quest_user_id = arg(6);
+  }
+  //  Questionnaire START
+  ////////////////////////////////////////////////////////////////////////////////
+  //  Assessment node id
+  $assessment_node_id = arg(2);
+  $transid = arg(4);
+  //  Get the question from db
+  $qlist = assessment_question_node_preview($assessment_node_id, $transid);
+
+  $per_page = 1;
+  // Initialise the pager
+  $current_page = pager_default_initialize(count($qlist), $per_page);
+
+  // Split your list into page sized chunks
+  $chunks = array_chunk($qlist, $per_page, TRUE);
+
+  ////////////////////////////////////////////////////////////////////////////////
+  // Show the appropriate items from the list
+  $data_question = $chunks[$current_page][$current_page]->question;
+  $question_num = $current_page + 1;
+
+  //  Get the answer of the question from database
+  $question_id = $chunks[$current_page][$current_page]->qid;
+  $question_sequesce = $chunks[$current_page][$current_page]->qsequence;
+  $question_type = $chunks[$current_page][$current_page]->type;
+  $question_other_option = $chunks[$current_page][$current_page]->other;
+  ////////////////////////////////////////////////////////////////////////////////
+  //  Get the answer id of this question and after that get the answer
+  $get_ans_id = db_select('assessment_result', 'ar')
+    ->fields('ar', array('answer_id', 'others_reason', 'short_answer_textarea'))
+    ->condition('uid', $quest_user_id, '=')
+    ->condition('assessment_nid', $assessment_node_id, '=')
+    //->condition('transid', $transid, '=')
+    ->condition('question_id', $question_id, '=');
+  $get_ans_id_result = $get_ans_id->execute();
+  $ans_id_data = $get_ans_id_result->fetchAll();
+
+  //$short_answer = $ans_id_data[0]->short_answer_textarea;
+  //$other_answer = $ans_id_data[0]->others_reason;
+  $short_answer = '';
+  $other_answer = '';
+  ////////////////////////////////////////////////////////////////////////////////
+
+  //  Get answer from the db
+  $data_answer = assessment_answer_node_preview($question_id);
+  //  Questionnaire END
+
+  $form['question_list'] = array(
+    '#type' => 'textfield',
+    '#value' => count($qlist),
+  );
+
+  $form['question_title'] = array(
+    '#name' => 'question_name',
+    '#type' => 'item',
+    '#title' => $question_num . '. ' . $data_question,
+    '#markup' => '<span></span>',
+  );
+
+  $new_field_added = 1;
+  //  START
+  foreach ($data_answer as $answer_option) {
+    switch ($question_type) {
+      case 'checkbox':
+        //  D7 Checkbox
+        $type = 'checkboxes';
+        $value[$answer_option->ansid] = $answer_option->answers;
+
+        //  Case Edit or client previews after answer given
+        if ($ans_id_data[0]->answer_id <> '') {
+          $data_checked[$answer_option->ansid] = array('#disabled' => TRUE,);
+          $set_text_box_disable = 1;
+          $set_dd_radio_disable = 1;
+        }
+
+        //  Defined to show the fields selected
+        $explode_data = explode(',', $ans_id_data[0]->answer_id);
+        for ($i = 0; $i < count($explode_data); $i++) {
+          if ($explode_data[$i] == $answer_option->ansid) {
+            $data_checked[$answer_option->ansid] = array(
+              '#attributes' => array(
+                'disabled' => TRUE,
+                'checked' => TRUE
+              )
+            );
+            //$data_checked[$answer_option->ansid] = array('#disabled' => TRUE,);
+          }
+        }
+
+        break;
+      case 'radiobutton':
+        //  D7 Radio button
+        $type = 'radios';
+        $value[$answer_option->ansid] = $answer_option->answers;
+
+        //  Case Edit or client previews after answer given
+        if ($ans_id_data[0]->answer_id <> '') {
+          $data_checked[$answer_option->ansid] = array('#disabled' => TRUE,);
+          $set_text_box_disable = 1;
+          $set_dd_radio_disable = 1;
+        }
+
+        //  Defined to show the fields selected
+        if ($ans_id_data[0]->answer_id == $answer_option->ansid) {
+          $data_checked[$answer_option->ansid] = array(
+            '#attributes' => array(
+              'checked' => TRUE,
+              'disabled' => TRUE
+            )
+          );
+          //$data_checked[$answer_option->ansid] = array('#disabled' => TRUE,);
+        }
+
+        break;
+      case 'textarea':
+        //  D7 textarea
+        $type = 'textarea';
+        $value = array();
+        $form['textarea_ans_id'] = array(
+          '#type' => 'textfield',
+          '#value' => $answer_option->ansid,
+        );
+
+        //  Case Edit or client previews after answer given
+        if ($ans_id_data[0]->answer_id <> '') {
+          $set_dd_radio_disable = 1;
+        }
+
+        break;
+      case 'dropdown':
+        //  D7 dropdown
+        $type = 'select';
+        $value[$answer_option->ansid] = $answer_option->answers;
+
+        //  Case Edit or client previews after answer given
+        if ($ans_id_data[0]->answer_id <> '') {
+          $set_dd_radio_disable = 1;
+          $set_text_box_disable = 1;
+        }
+
+        //  Defined to show the fields selected
+        if ($ans_id_data[0]->answer_id == $answer_option->ansid) {
+          //$data_checked[$answer_option->ansid] = array('#attributes' => array('selected' => 'true'));
+          //$data_checked[$answer_option->ansid] = array('#disabled' => TRUE,);
+          $selected_data = $answer_option->ansid;
+        }
+
+        break;
+      case 'date':
+        $new_field_added = 0;
+
+        $form['month_year_ans_id'] = array(
+          '#type' => 'textfield',
+          '#value' => $answer_option->ansid,
+        );
+
+        //  D7 dropdown
+        $type = 'select';
+
+        //  Creating year drop down option
+        for ($inci = 1980; $inci < 2020; $inci++) {
+          $value[$inci] = $inci;
+        }
+
+        //  Creating month drop down option
+        $month_value[1] = 'Jan';
+        $month_value[2] = 'Feb';
+        $month_value[3] = 'Mar';
+        $month_value[4] = 'Apr';
+        $month_value[5] = 'May';
+        $month_value[6] = 'Jun';
+        $month_value[7] = 'Jul';
+        $month_value[8] = 'Aug';
+        $month_value[9] = 'Sep';
+        $month_value[10] = 'Oct';
+        $month_value[11] = 'Nov';
+        $month_value[12] = 'Dec';
+
+        //  $ans_id_data[0]->answer_id <> ''
+        //  Defined to show the fields selected
+        if ($ans_id_data[0]->answer_id <> '') {
+          $set_dd_radio_disable = 1;
+          $explode_month_year = explode('_', $short_answer);
+          $selected_month = $explode_month_year[0];
+          $selected_year = $explode_month_year[1];
+        }
+
+        $form['data_answer_month'] = array(
+          '#title' => t('Answer'),
+          '#type' => $type,
+          '#options' => $month_value,
+          '#required' => TRUE,
+          '#default_value' => $selected_month,
+          //'#disabled' => true
+          '#prefix' => '<span class="hide_ans">',
+          '#suffix' => '</span>',
+        );
+
+        $form['data_answer_year'] = array(
+          '#title' => t('Answer'),
+          '#type' => $type,
+          '#options' => $value,
+          '#required' => TRUE,
+          '#default_value' => $selected_year,
+          //'#disabled' => true
+          '#prefix' => '<span class="hide_ans">',
+          '#suffix' => '</span>',
+        );
+
+        //  Disable the DD option
+        if ($set_dd_radio_disable == 1) {
+          $form['data_answer_month']['#disabled'] = array(
+            '#disabled' => TRUE,    //  To disable the answer
+          );
+          $form['data_answer_year']['#disabled'] = array(
+            '#disabled' => TRUE,    //  To disable the answer
+          );
+        }
+
+        break;
+    }
+  }
+
+  //  Create the item type based on the above options
+  $form['data_question_id'] = array(
+    '#type' => 'textfield',
+    '#value' => $question_id,
+  );
+  $form['question_sequesce'] = array(
+    '#type' => 'textfield',
+    '#value' => $question_sequesce,
+  );
+  if ($new_field_added == 1) {
+    //  Create the item type based on the above options
+    if ($type == 'textarea') {
+      $form['data_answer'] = array(
+        '#title' => t('Answer'),
+        '#type' => $type,
+        '#cols' => 80,
+        '#rows' => 5,
+        '#required' => TRUE,
+        //  '#disabled' => TRUE,    //  To disable the answer
+        //'#value' => $short_answer,
+        '#default_value' => $short_answer,
+        '#prefix' => '<span class="hide_ans">',
+        '#suffix' => '</span>',
+      );
+    }
+    else {
+      $form['data_answer'] = array(
+        '#title' => t('Answer'),
+        '#type' => $type,
+        '#options' => $value,
+        '#required' => TRUE,
+        '#default_value' => $selected_data,
+        //'#disabled' => true
+        '#prefix' => '<span class="hide_ans">',
+        '#suffix' => '</span>',
+      );
+    }
+
+    //  loop used to show the items selected in CASE of EDIT
+    foreach ($data_checked as $key => $value) {
+      $form['data_answer'][$key] = $value;
+    }
+    //  Disable the DD option
+    if ($set_dd_radio_disable == 1) {
+      $form['data_answer']['#disabled'] = array(
+        '#disabled' => TRUE,    //  To disable the answer
+      );
+      //  $form['data_answer']['#attributes']['readonly'] = 'readonly';
+    }
+
+    //  OTHER OPTION FIELD  START
+    //  Show the option to fill the answer for other options
+    if ($question_other_option <> '') {
+      $form['data_answer_other'] = array(
+        '#type' => 'textfield',
+        //'#value' => $other_answer,
+        '#default_value' => $other_answer,
+        //'#disabled' => true,    //  To disable the answer
+      );
+    }
+    if ($set_text_box_disable == 1) {
+      $form['data_answer_other']['#disabled'] = array(
+        '#disabled' => TRUE,    //  To disable the answer
+      );
+    }
+    //  OTHER OPTION FIELD END
+
+    if ($set_dd_radio_disable == 1) {
+      //  Hidden text filed defined
+      $form['view_questionnaire'] = array(
+        '#type' => 'textfield',
+        '#value' => '1',
+      );
+    }
+  }
+  //  Form submit button
+  $form['submit'] = array(
+    '#id' => 'questionnair_submit',
+    '#type' => 'submit',
+    '#value' => t('Submit & Next'),
+  );
+
+  return $form;
+}
+
+/**
+ * Function defined to get the question and answer from
+ * Database
+ *
+ */
+function assessment_question_node_preview($assessment_id, $transid) {
+  $query = db_select('assessment_question_node', 'aq');
+  $query->fields('aq', array(
+    'qid',
+    'question',
+    'type',
+    'nid',
+    'other',
+    'qsequence'
+  ))
+    ->condition('nid', $assessment_id, '=')
+    //->condition('transaction_id', $transid, '=')
+    ->orderBy('qid', 'ASC');
+  $result = $query->execute();
+  $data = $result->fetchAll();
+  return $data;
+}
+
+/**
+ * Function defined to get the question and answer from
+ * Database
+ *
+ */
+function assessment_answer_node_preview($qid) {
+  $query = db_select('assessment_answer_node', 'aa')
+    ->fields('aa', array('ansid', 'qid', 'answers'))
+    ->condition('qid', $qid, '=');
+  $result = $query->execute();
+  $ans_data = $result->fetchAll();
+  return $ans_data;
+}
+
+/**
+ * Function questionnaire_custom_pager() defined
+ * for implementing the custom pager
+ * @param type string $assessment_id
+ */
+function preview_questionnaire_custom_pager($assessment_id) {
+  $transid = arg(4);
+  global $user, $base_url;
+  if ((isset($user->roles[6]) && $user->roles[6]) == 'client' && !isset($user->roles[7])) {
+    $user_id = $user->uid;
+    $questionnaire_link = $base_url . '/questionnaire/preview/' . $assessment_id . '/trans/' . $transid;
+  }
+  else {
+    //  Link Used for admin, staff admin, therapist
+    $user_id = arg(6);
+    $questionnaire_link = $base_url . '/questionnaire/preview/' . $assessment_id . '/trans/' . $transid . '/uid/' . $user_id;
+  }
+
+  //  Get the questionnaire total seauence
+  $data_select = db_select('assessment_question_node', 'aq')
+    ->fields('aq', array('qsequence'))
+    ->condition('nid', $assessment_id, '=')
+    //->condition('transaction_id', $transid, '=')
+    ->orderBy('qid', 'ASC');
+  $data_excute = $data_select->execute();
+  $data_result = $data_excute->fetchAll();
+
+  //  Get the attempted questions sequence
+  $attempted_select = db_select('assessment_result', 'ar')
+    ->fields('ar', array('qsequence'))
+    ->condition('assessment_nid', $assessment_id, '=')
+    ->condition('transid', $transid, '=')
+    ->condition('uid', $user_id, '=')
+    ->orderBy('id', 'ASC');
+  $attempted_excute = $attempted_select->execute();
+  $attempted_result = $attempted_excute->fetchAll();
+
+  $attempted_sequence = array();
+  foreach ($attempted_result as $attempted) {
+    //$attempted_sequence[] = $attempted->qsequence;
+  }
+
+  //  Calculating last count and first count for hiding Next and Prev button respectivally
+  $last_count = count($data_result);
+  $current_page = $_REQUEST['page'];
+
+  //  Prev and Next param defined
+  $prev = $current_page - 1;
+  $next = $current_page + 1;
+
+  $options_prev = array(
+    'query' => array('page' => $prev + 9),
+    'attributes' => array(
+      'aria-label' => t('Previous'),
+    ),
+    'html' => TRUE,
+  );
+  $options_next = array(
+    'query' => array('page' => $next),
+    'attributes' => array(
+      'aria-label' => t('Next'),
+    ),
+    'html' => TRUE,
+  );
+
+  $output = '<nav><ul class="pagination">';
+
+  if ($prev > 7) {
+    $output .= '<li>' . l(t('<span aria-hidden="true">&laquo;</span>'), $questionnaire_link, $options_prev) . '</li>';
+  }
+
+  $start = 0;
+  $new_current_page = $current_page + 1;
+  if ($new_current_page < 4) {
+    //print 'FIRST';
+    $prev_dot = 0;
+    $next_dot = 9;
+    $start = 1;
+  }
+  elseif (($last_count - $new_current_page) < 4) {
+    //print 'SECOND';
+    $prev_dot = $last_count - 8;
+    $next_dot = $last_count;
+    $start = 2;
+  }
+  else {
+    //print 'THIRD';
+    $prev_dot = $new_current_page - 4;
+    if ($prev_dot == 0) {
+      $next_dot = $new_current_page + 5;
+      $start = 4;
+    }
+    elseif ($prev_dot == 1) {
+      $next_dot = $new_current_page + 4;
+      $start = 4;
+    }
+    else {
+      $start = 3;
+      $next_dot = $new_current_page + 4;
+      if ($next_dot == $last_count) {
+        $start = 2;
+      }
+    }
+  }
+
+  foreach ($data_result as $pager_data) {
+    $self_link = $pager_data->qsequence - 1;
+    $active_page = $current_page + 1;
+    $active = $active_page == $pager_data->qsequence ? 1 : 0;
+
+    if ($active) {
+      $class = ' class="active"';
+    }
+    else {
+      $class = '';
+    }
+
+    if ($pager_data->qsequence >= $prev_dot && $pager_data->qsequence <= $next_dot) {
+      if (in_array($pager_data->qsequence, $attempted_sequence)) {
+        //  Chk made for toggle the CSS for selected question and for attempted question
+        if ($self_link == $current_page) {
+          $options_in = array(
+            'query' => array('page' => $self_link),
+          );
+        }
+        else {
+          $options_in = array(
+            'query' => array('page' => $self_link),
+          );
+        }
+
+        if ($active) {
+          $output .= '<li class="active"><a>' . t($pager_data->qsequence) . ' <span class="sr-only">(current)</span></a></li>';
+        }
+        else {
+          $output .= '<li>' . l(t($pager_data->qsequence), $questionnaire_link, $options_in) . '</li>';
+        }
+      }
+      else {
+        //  Chk made for toggle the CSS for selected question and for attempted question
+        if ($self_link == $current_page) {
+          $options_in = array(
+            'query' => array('page' => $self_link),
+          );
+        }
+        else {
+          $options_in = array(
+            'query' => array('page' => $self_link),
+          );
+        }
+
+        if ($active) {
+          $output .= '<li class="active"><a>' . t($pager_data->qsequence) . ' <span class="sr-only">(current)</span></a></li>';
+        }
+        else {
+          $output .= '<li>' . l(t($pager_data->qsequence), $questionnaire_link, $options_in) . '</li>';
+        }
+      }
+    }
+    /////////////////////////////////
+  }
+
+  if ($last_count != $next && $next < $last_count) {
+    $output .= '<li>' . l(t('<span aria-hidden="true">&raquo;</span>'), $questionnaire_link, $options_next) . '</li>';
+  }
+
+  $output .= '</ul></nav>';
+
+  return $output;
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function ndsbs_questionnaire_preprocess_pager(&$variables) {
+  if (arg(0) == 'questionnaire' || arg(1) == 'questionnaire') {
+    $variables['theme_hook_suggestions'][] = 'pager__questionnaire';
+  }
+}
+
+/**
+ *  Added on Date 22-04-2013 by Krishna@finoit.com
+ *  Show the complete questionnaire in single view to admin
+ *
+ */
+
+/**
+ *  Function get_assessment_questionnaire_form() defined
+ *
+ */
+function get_admin_assessment_questionnaire_form() {
+  //  Call the Questionnaire Form
+  //return drupal_get_form('admin_assessment_questionnaire_form');
+
+  return theme('admin_assessment_questionnaire_form');
+}
+
+/**
+ *  Implementation of assessment_questionnaire_form()
+ *  To create the credit card form
+ */
+function admin_assessment_questionnaire_ques_ans_list() {
+  global $user;
+  if (isset($user->roles[6]) && $user->roles[6] == 'client' && !isset($user->roles[7])) {
+    $quest_user_id = $user->uid;
+  }
+  else {
+    $quest_user_id = arg(6);
+  }
+  //  Questionnaire START
+  ////////////////////////////////////////////////////////////////////////////////
+  //  Assessment node id
+  $assessment_node_id = arg(2);
+  $transid = arg(4);
+  //  Get the question from db
+  $qlist = assessment_question($assessment_node_id, $transid);
+
+  //    print '<pre>';
+  //    print_r($qlist);
+  //    print '</pre>';
+  //    die;
+
+  $current_page = 0;
+  $inc = 0;
+  $question_array = array();
+  foreach ($qlist as $qlist_data) {
+    ////////////////////////////////////////////////////////////////////////////////
+    // Show the appropriate items from the list
+    $data_question = $qlist_data->question;
+    $question_num = $current_page + 1;
+    $current_page++;
+
+    //  Get the answer of the question from database
+    $question_id = $qlist_data->qid;
+    $question_sequesce = $qlist_data->qsequence;
+    $question_type = $qlist_data->type;
+    $question_other_option = $qlist_data->other;
+    ////////////////////////////////////////////////////////////////////////////////
+    //  Get the answer id of this question and after that get the answer
+    $get_ans_id = db_select('assessment_result', 'ar')
+      ->fields('ar', array(
+        'answer_id',
+        'others_reason',
+        'short_answer_textarea'
+      ))
+      ->condition('uid', $quest_user_id, '=')
+      ->condition('assessment_nid', $assessment_node_id, '=')
+      ->condition('transid', $transid, '=')
+      ->condition('question_id', $question_id, '=');
+    $get_ans_id_result = $get_ans_id->execute();
+    $ans_id_data = $get_ans_id_result->fetchAll();
+
+    $new_ans_id_data = $ans_id_data[0]->answer_id;
+    $short_answer = $ans_id_data[0]->short_answer_textarea;
+    $other_answer = $ans_id_data[0]->others_reason;
+    ////////////////////////////////////////////////////////////////////////////////
+
+    //  Get answer from the db
+    //$data_answer = assessment_answer($question_id);
+    //  Questionnaire END
+
+    $question_array[$inc]['question'] = $question_num . '. ' . $data_question;
+
+    //  START
+    switch ($question_type) {
+      case 'checkbox':
+        $ans_data_str = $new_ans_id_data;
+        $explode_ans_data_str = explode(',', $ans_data_str);
+
+        $get_ans_id_value = db_select('assessment_answer', 'ar')
+          ->fields('ar', array('answers'))
+          ->condition('ar.ansid', $explode_ans_data_str, 'IN')
+          ->condition('ar.qid', $question_id, '=')
+          ->condition('ar.transaction_id', $transid, '=');
+        $get_ans_id_result_value = $get_ans_id_value->execute();
+        $ans_id_data_value = $get_ans_id_result_value->fetchAll();
+
+        //echo '<pre>';
+        //    print_r($ans_id_data_value);
+        //echo '</pre>';
+        //die;
+        for ($ainc = 0; $ainc < count($ans_id_data_value); $ainc++) {
+          $question_array[$inc]['answer'][$ainc] = $ans_id_data_value[$ainc]->answers;
+        }
+        $new_ainc = $ainc + 1;
+        $question_array[$inc]['answer'][$new_ainc] = $other_answer;
+        break;
+      case 'radiobutton':
+        if ($other_answer == '') {
+          $get_ans_id_value = db_select('assessment_answer', 'ar')
+            ->fields('ar', array('answers'))
+            ->condition('ansid', $new_ans_id_data, '=')
+            ->condition('qid', $question_id, '=')
+            ->condition('ar.transaction_id', $transid, '=');
+          $get_ans_id_result_value = $get_ans_id_value->execute();
+          $ans_id_data_value = $get_ans_id_result_value->fetchAll();
+
+          //echo '<pre>';
+          //print_r($ans_id_data_value);
+          //echo '</pre>';
+
+          for ($ainc = 0; $ainc < count($ans_id_data_value); $ainc++) {
+            $question_array[$inc]['answer'][$ainc] = $ans_id_data_value[$ainc]->answers;
+          }
+        }
+        else {
+          $question_array[$inc]['answer'][0] = $other_answer;
+        }
+        break;
+      case 'textarea':
+        $question_array[$inc]['answer'][0] = $short_answer;
+        break;
+      case 'dropdown':
+        $get_ans_id_value = db_select('assessment_answer', 'ar')
+          ->fields('ar', array('answers'))
+          ->condition('ansid', $new_ans_id_data, '=')
+          ->condition('qid', $question_id, '=')
+          ->condition('ar.transaction_id', $transid, '=');
+        $get_ans_id_result_value = $get_ans_id_value->execute();
+        $ans_id_data_value = $get_ans_id_result_value->fetchAll();
+
+//                    echo '<pre>';
+//                        print_r($ans_id_data_value);
+//                    echo '</pre>';
+
+        for ($ainc = 0; $ainc < count($ans_id_data_value); $ainc++) {
+          $question_array[$inc]['answer'][$ainc] = $ans_id_data_value[$ainc]->answers;
+        }
+        break;
+      case 'date':
+        if ($new_ans_id_data <> '') {
+          $explode_month_year = explode('_', $short_answer);
+          $selected_month = $explode_month_year[0];
+          $selected_year = $explode_month_year[1];
+          $question_array[$inc]['answer'][0] = $selected_month . '/' . $selected_year;
+        }
+        break;
+    }
+    $inc++;
+  }
+  return $question_array;
+}
+
+/**
+ * Function admin_assessment_questionnaire_form_submit() defined
+ * to submit the questionnaire form
+ */
+function admin_assessment_questionnaire_form_submit($form, &$form_state) {
+  global $user, $base_url;
+
+  $assessment_nid = arg(2);
+  $transid = arg(4);
+  $page_num = $_REQUEST['page'];
+  $page_nxt = $page_num + 1;
+
+  //  Custom Redirect defined START
+  $view_questionnaire = $form_state['values']['view_questionnaire'];
+  if ($view_questionnaire == 1) {
+    //  Redirect    to the next question
+    drupal_goto($base_url . '/user/questionnaire/' . $assessment_nid . '/trans/' . $transid, array(
+      'query' => array('page' => $page_nxt),
+      'absolute' => TRUE
+    ));
+  }
+  //  Custom Redirect defined END
+
+  //  Get the question id
+  $data_question_id = $form_state['values']['data_question_id'];
+  //  Get the question Sequence
+  $data_question_sequesce = $form_state['values']['question_sequesce'];
+
+  //  getting the month and year field values
+  $month_value = $form_state['values']['data_answer_month'];
+  $year_value = $form_state['values']['data_answer_year'];
+
+  //  Answer part processing
+  $data_answer = $form_state['values']['data_answer'];
+
+  $answer_str = join(',', $data_answer);      //  if answer is array the convert it into string
+  if ($answer_str <> '') {
+    $answer_save = $answer_str;
+  }
+  elseif ($month_value <> '' && $year_value <> '') {
+    //  Get the data: month and year value to set and save
+    $month_year_ans_id = $form_state['values']['month_year_ans_id'];
+    if ($month_year_ans_id <> '') {
+      $answer_save = $month_year_ans_id;        //  answer id
+      $save_textarea_input_val = $month_value . '_' . $year_value;    //  answer text
+    }
+  }
+  else {
+    //  Get input from textarea
+    $textarea_ans_id = $form_state['values']['textarea_ans_id'];
+    if ($textarea_ans_id <> '') {
+      $answer_save = $textarea_ans_id;        //  answer id
+      $save_textarea_input_val = $data_answer;    //  answer text
+    }
+    else {
+      $answer_save = $data_answer;
+    }
+  }
+
+  //  Get the input from other field
+  if ($form_state['values']['data_answer_other'] <> '') {
+    $data_answer_other = $form_state['values']['data_answer_other'];
+  }
+
+  //  Save records into database
+  $data = db_insert('assessment_result')
+    ->fields(array(
+      'uid' => $user->uid,
+      'assessment_nid' => $assessment_nid,
+      'transid' => $transid,
+      'question_id' => $data_question_id,
+      'answer_id' => $answer_save,
+      'others_reason' => $data_answer_other,
+      'short_answer_textarea' => $save_textarea_input_val,
+      'qsequence' => $data_question_sequesce,
+    ))
+    ->execute();
+  if ($data) {
+    //  Update the database for time consumned
+    $timeconsumed_qry = db_update('assessment_qa_details')
+      ->fields(array('time_consumed' => time()))
+      ->condition('assessment_id', $assessment_nid, '=')
+      ->condition('transid', $transid, '=')
+      ->condition('user_id', $user->uid, '=')
+      ->execute();
+    //drupal_set_message('Answer Save successfully.');
+  }
+  else {
+    drupal_set_message('Answer Could not save, Please try again.');
+  }
+
+  //  Stop question has been finished
+  $qlist = $form_state['values']['question_list'];
+  if ($page_nxt >= $qlist) {
+    // drupal_set_message('You have answered all questions.  Thank you! Please click the Submit All Answers for Evaluator Review button, then provide us with your preferred time to complete your interview. Someone from our support team will contact you to schedule.');
+
+    //  Redirect    to the next question
+    $form_state['redirect'] = url($base_url . '/user/questionnaire/' . $assessment_nid . '/trans/' . $transid, array(
+      'query' => array('page' => $page_num),
+      'absolute' => TRUE
+    ));
+    //return;
+  }
+  else {
+    //  Redirect    to the next question
+    $form_state['redirect'] = url($base_url . '/user/questionnaire/' . $assessment_nid . '/trans/' . $transid, array(
+      'query' => array('page' => $page_nxt),
+      'absolute' => TRUE
+    ));
+  }
+}
+
+/**
+ * Function get_total_questions_numbers() defined to
+ * get the total numbers of questions
+ *
+ * @param type $assessment_id
+ */
+function get_total_attempted_questions_numbers($assessment_id, $transid) {
+  $queryselect = db_select('assessment_result', 'aq')
+    ->condition('transid', $transid, '=')
+    ->condition('assessment_nid', $assessment_id, '=');
+  // Add the COUNT expression
+  $queryselect->addExpression('COUNT(aq.id)', 'total_count');
+
+  $selectexecute = $queryselect->execute();
+  $selectresult = $selectexecute->fetchAssoc();
+  $total_count = $selectresult['total_count'];
+  return $total_count;
+}
+
+
+/**
+ * Function get_evaluation_status() implemented to get the evaluation status
+ *
+ * @global type $user
+ * @param type $assessment_nid
+ * @param type $transid
+ */
+function get_evaluation_status($assessment_nid, $transid) {
+  global $user;
+  $query_select = db_select('assessment_qa_details', 'aqd')
+    ->fields('aqd', array('evaluation'))
+    ->condition('assessment_id', $assessment_nid, '=')
+    ->condition('transid', $transid, '=')
+    ->condition('user_id', $user->uid, '=');
+  $select_execute = $query_select->execute();
+  $select_result = $select_execute->fetchAll();
+  $select_result_data = $select_result[0]->evaluation;
+  return $select_result_data;
+}

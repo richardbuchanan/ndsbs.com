@@ -1,0 +1,661 @@
+/**
+ * @file
+ * styles.css
+ *
+ * Coeus Core Base Styles
+ * This stylesheet contains common selectors and elements found in a default
+ * Drupal installation.
+ *
+ * Font styles:
+ *   @see css/fonts.css 
+ * Fontface styles:
+ *   @see webfonts/custom.fonts.css
+ * 960 12-column grid styles:
+ *   @see css/960_12_col.css
+ * Media queries:
+ *   @see css/media-queries.css 
+ */
+
+/**
+ * HTML Basic Elements
+ */
+html {
+  overflow-y: scroll;
+}
+body {
+  background-color: rgba(255, 255, 255, 1);
+  width: 100%;
+}
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+body.adminimal-menu {
+  margin-top: 29px;
+}
+body.frame {
+  display: table;
+}
+h1, h2, h3, h4, h5, h6 {
+	margin: 0.8em 0;
+}
+p {
+	margin-bottom: 1.8em;
+}
+a {
+  color: rgba(6, 120, 190, 1);
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: underline;
+}
+blockquote {
+  margin: 0.8em 0;
+  color: rgba(140, 138, 138, 1.00);
+}
+ul {
+  list-style: none;
+  list-style-image: none;
+}
+li {
+  line-height: initial;
+	margin-bottom: .5em;
+}
+img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  margin: 1em 0;
+}
+label {
+  margin-bottom: 0.4em;
+}
+table {
+  width: 100%;
+}
+details,
+figcaption,
+figure,
+summary {
+  display: block;
+}
+input,
+select,
+textarea {
+  margin: 0 2px 6px;
+  padding: 4px;
+  color: rgba(68, 68, 68, 1);
+  border: 1px solid rgba(217, 217, 217, 1) !important;
+  border-top: 1px solid rgba(192, 192, 192, 1) !important;
+  box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+  border-radius: 2px;
+    -webkit-border-radius: 2px;
+}
+input:focus,
+select:focus,
+textarea:focus {
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+  	-webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(77, 144, 254, 1) !important;
+  outline: 0;
+}
+button,
+input[type="button"],
+input[type="reset"],
+input[type="submit"] {
+  cursor: pointer;
+  display: block;
+  padding: 4px 6px;
+  float: left;
+  margin: 9px 12px 7px 0;
+  line-height: 1.2em;
+  color: #444;
+  background-color: rgba(245, 245, 245, 1);
+  background-image: -webkit-linear-gradient(
+    top,
+    rgba(245, 245, 245, 1),
+    rgba(241, 241, 241, 1)
+  );
+  background-image: linear-gradient(
+    top,
+    rgba(245, 245, 245, 1),
+    rgba(241, 241, 241, 1)
+  );
+  border: 1px solid rgba(0,0,0,0.1);
+  box-shadow: none;
+  	-webkit-box-shadow: none;
+  border-radius: 2px;
+  	-webkit-border-radius: 2px;
+  	-webkit-appearance: button;
+}
+button:hover,
+input[type="button"]:hover,
+input[type="reset"]:hover,
+input[type="submit"]:hover {
+  background-color: rgba(229, 229, 229, 1);
+  background-image: -webkit-linear-gradient(
+    top,
+    rgba(229, 229, 229, 1),
+    rgba(225, 225, 225, 1)
+  );
+  background-image: linear-gradient(
+    top,
+    rgba(229, 229, 229, 1),
+    rgba(225, 225, 225, 1)
+  );
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+}
+#edit-actions {
+  display: inline-block;
+}
+
+/**
+ * Comment Styles
+ */
+#comments {
+  display: inline-block;
+}
+#comments h2.title {
+  font-size: 1.68em;
+  margin-bottom: 0;
+  border-bottom: 1px solid;
+}
+#comments .submitted .permalink {
+  display: none;
+}
+#comments ul.links.inline {
+  margin: 0;
+}
+  
+
+/**
+ * Menu Styles
+ */
+nav ul,
+nav ol {
+  list-style: none;
+  list-style-image: none;
+}
+ul.menu li {
+  margin: 0 0 0 1em;
+  padding: 0;
+}
+ul.primary {
+  margin: 1em 0;
+  padding: 0;
+}
+ul.primary li {
+  display: inline-block;
+  margin-bottom: 0;
+  margin-right: 12px;
+}
+ul.primary li a {
+	padding: 0.2em 1em;
+  margin-right: 0;
+  line-height: 21px;
+}
+ul.primary li a:hover {
+  color: rgba(51, 51, 51, 1);
+  text-decoration: none;
+}
+ul.inline,
+ul.links.inline {
+  display: inline;
+  padding-left: 0;
+  clear: left;
+  float: left;
+}
+
+/**
+ * Top Navigation Styles
+ */
+#top-nav {
+  height: 45px;
+  width: 100%;
+  border-bottom: 1px solid rgba(204, 204, 204, 1);
+  background-color: #f1f1f1;
+}
+#top-nav-wrapper {}
+#branding {
+  display: block;
+}
+#logo-figure {
+  margin: 0;
+  height: 100%;
+}
+#logo-figure a {
+  display: block;
+  height: 100%;
+}
+#logo-figure img {
+  margin: 0;
+  margin-top: 9px;
+}
+#navbar {}
+#navbar #main-nav {
+  float: left;
+}
+#navbar #main-menu {}
+#navbar #secondary-nav {
+  float: right;
+}
+#navbar #secondary-menu {}
+#navbar ul {
+  height: 45px;
+  margin: 0;
+  padding: 0;
+}
+#navbar ul li {
+  display: inline;
+  float: left;
+  margin-bottom: 0;
+  list-style: none;
+}
+#navbar ul li:hover {
+  background-color: rgba(241, 241, 241, 1);
+  cursor: pointer;
+}
+#navbar ul li a {
+  display: block;
+  line-height: 45px;
+  padding: 0 10px;
+}
+
+/** 
+ * Page Header Styles
+ */
+#page-header {
+  min-height: 50px;
+}
+#page-title-search {
+	margin: 1em 0 0;
+  padding-bottom: 1em;
+  width: 100%;
+  border-bottom: 3px solid #888;
+}#page-title-wrapper {}
+#page-title {
+	margin: 0.3em 0;
+	clear: both;
+}
+#search-block-wrapper {}
+#breadcrumb-wrapper {
+	width: 100%;
+	margin: 0;
+}
+#breadcrumb {
+  padding-top: 1em;
+}
+
+/**
+ * Highlights and Help Styles
+ */
+#highlights {
+  margin: 0.5em auto;
+}
+#site-messages {}
+#highlighted {}
+#help {}
+
+/**
+ * Content Styles
+ */
+#content-section {}
+main-content {} /* This is an anchor tag for accessibility. */
+#content-header {}
+#tabs {}
+#action-links {}
+#content {
+  margin-top: 1em;
+}
+#page-content {
+}
+#sidebar {
+	float: right;
+}
+#sections {
+  height: 100%;
+}
+
+/**
+ * Footer Styles
+ */
+#footer {
+}
+#footer-section {
+  padding: 1em 0;
+}
+#footer-section .footer-content {
+  margin: 0;
+}
+
+/**
+ * Sticky footer-bottom
+ */
+#main-container {
+  height: 100%;
+  width: 960px;
+  margin: 0 auto;
+}
+.content-row {
+  display: table-row;
+  height: 1px;
+  overflow: hidden;
+}
+.content-row.expand {
+  height: 100%;
+}
+
+/**
+ * Aside Styles
+ */
+aside ul {
+  margin: 0;
+  padding: 0;
+}
+aside ul.menu {
+  padding: 0 0 0.25em 1em;
+}
+
+/**
+ * User Login Block Styles
+ */
+#block-user-login input.form-text {
+  width: 75%;
+  min-width: 175px;
+}
+
+/**
+ * Search Block Styles
+ */
+#search-block-form .form-item {
+	float: left;
+	margin: 0;
+}
+#search-block-form .form-item input {
+	margin: 0;
+	padding: 4px 4px;
+}
+#search-block-form .form-actions {
+	margin: 0;
+}
+#search-block-form .form-actions input {
+	margin: 0;
+  float: right;
+}
+.text-format-wrapper .form-item,
+.text-format-wrapper .form-actions {
+  margin-top: 0;
+}
+ul.tips {
+  margin-left: 2em;
+  list-style: disc;
+}
+
+/**
+ * Table Styles
+ */
+td {
+  padding: 0;
+}
+td a {
+}
+.draggable a.tabledrag-handle {
+  margin-left: 0;
+  position: relative;
+  top: -1px;
+}
+th.active img {
+  width: auto;
+  border: none;
+  margin: 0 4px;
+}
+tr.odd:hover,
+tr.even:hover {
+  background-color: #ddd;
+}
+table.sticky-header {
+  background-color: #ccc;
+  z-index: 9999;
+}
+table.sticky-header > thead > tr > th {
+  padding: 0 10px;
+}
+
+/**
+ * Region styles
+ */
+.region-footer {
+  padding: 1em 0;
+}
+.region-sidebar {
+  padding: 1em;
+  border: 1px solid rgba(187, 187, 187, 1);
+  background-color: rgba(251, 251, 251, 1);
+}
+.region-sidebar h2 {
+  margin-top: 0;
+  margin-bottom: .5em;
+}
+
+/**
+ * Views Styles
+ */
+.view-display-id-default {
+  padding: 6px;
+}
+.views-table {
+  width: 100.0%;
+}
+.view-header #header-title {
+	margin: 0;
+}
+.views-row {
+	margin: 1em 0 0 !important;
+	padding: 0 0 1em !important;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+}
+.views-ui-dialog .form-buttons {
+  background-color: transparent;
+  padding: 5px 13px;
+  min-height: 45px;
+}
+.views-table thead tr {
+  background-color: rgba(68, 68, 68, 1);
+  border: 1px solid rgba(68, 68, 68, 1);
+  color: rgba(221, 221, 221, 1);
+}
+.views-table thead th {
+  width: 33%;
+  text-align: center;
+  border: 1px solid rgba(153, 153, 153, 1);
+  border-bottom: 3px solid rgba(187, 187, 187, 1);
+}
+  
+
+/**
+ * Book Styles
+ */
+.book-navigation {
+  margin-bottom: 1.385em;
+}
+.book-navigation .menu {
+  padding: 1em 0 0 1em;
+}
+label .form-required {
+  font-weight: normal;
+}
+
+/**
+ * Field Styles
+ */
+.field-type-taxonomy-term-reference .field-item {
+  float: left;
+  margin-right: 6px;
+}
+.field-type-taxonomy-term-reference .field-item:after {
+  content: ",";
+}
+
+/**
+ * Fieldset Styles
+ */
+fieldset.collapsible,
+fieldset.collapsed {
+	margin: 0 0 1em;
+	padding: 0;
+	border: none;
+}
+fieldset .prettyprinted {
+	max-width: 680px;
+	margin-top: 0;
+}
+.fieldset-legend {
+  margin-top: 0;
+}
+.fieldset-legend:hover {
+  text-decoration: none;
+}
+a.fieldset-title {
+	color: rgba(68, 68, 68, 1);
+}
+a.fieldset-title:hover {
+	color: rgba(68, 68, 68, 1);
+	text-decoration: none;
+}
+
+/**
+ * Submitted by Styles
+ */
+.submitted {
+	font-size: 1.1em;
+}
+
+/**
+ * Node Teaser Styles
+ */
+.node-teaser {
+  margin-bottom: 1em;
+  border-bottom: 1px solid;
+}
+.node-teaser h2 {
+  margin-bottom: 0;
+  font-family: 'Open Sans Regular', Arial, Helvetica, sans-serif;
+}
+.node-teaser h2 > a,
+.node-teaser .submitted a {
+  text-decoration: underline;
+}
+.node-teaser .submitted,
+.node-teaser .submitted a {
+  color: #008340;
+}
+.node-teaser p {
+  margin: 6px 0;
+}
+
+/**
+ * Syntax Highlighter Styles
+ */
+.syntaxhighlighter {
+  overflow: visible !important;
+  border: 1px solid rgba(0, 0, 0, .15) !important;
+}
+.syntaxhighlighter .toolbar {
+  visibility: hidden;
+}
+.syntaxhighlighter .gutter .line {
+  border-right: 3px solid #f0f0f0 !important;
+  background-color: #f0f0f0 !important;
+  color: #969696 !important;
+}
+.syntaxhighlighter table td.code .line {
+  padding: 4px !important;
+}
+.syntaxhighlighter table td.gutter .line {
+  padding: 4px 8px !important;
+}
+.syntaxhighlighter .keyword {
+  color: #0000ff !important;
+}
+.syntaxhighlighter .variable {
+  color: #0066ff !important;
+}
+.syntaxhighlighter .string {
+  color: #cc0000 !important;
+}
+.syntaxhighlighter .comments,
+.syntaxhighlighter .comments a {
+  color: #ff993a !important;
+}
+
+/**
+ * Admin Pages Styles
+ */
+.page-admin html.js fieldset.collapsed {
+  height: auto;
+}
+.page-admin .container_12 {
+  width: 95%;
+}
+.page-admin #top-nav,
+.page-admin #search-block-wrapper {
+  display: none;
+}
+.page-admin table {
+  width: 100%;
+}
+.page-admin table.system-status-report tr {
+  border-bottom: 1px solid rgba(204, 204, 204, 1);
+}
+.page-admin table.system-status-report tr.ok {
+  color: rgba(37, 91, 30, 1);
+  background-color: rgba(229, 255, 226, 1);
+}
+.page-admin table.system-status-report tr.info {
+  color: rgba(4, 15, 55, 1);
+  background-color: rgba(189, 251, 223, 1);
+}
+.page-admin table.system-status-report tr.warning {
+  color: rgba(132, 8, 64, 1);
+  background-color: rgba(255, 252, 229, 1);
+}
+.page-admin table.system-status-report tr.error {
+  color: rgba(140, 46, 11, 1);
+  background-color: rgba(254, 245, 241, 1);
+}
+.page-admin-structure-block table tr {
+  height: 40px;
+}
+.page-admin-structure-block table tr td {
+  padding-left: 1em;
+}
+.page-admin-structure-block table tr.draggable td {
+  background-color: rgba(0, 150, 255, .3);
+  border: 1px solid rgba(0, 150, 255, 1);
+  border-left: none;
+  border-right: none;
+}
+.page-admin-structure-block .region-title {
+  background-color: rgba(0, 0, 0, .1);
+}
+.admin-operations .ctools-button-processed {
+  background-color: transparent;
+}
+.admin-operations .ctools-button-processed .ctools-content ul {
+  margin: 0;
+  padding: 0;
+}
+.page-admin .system-themes-list-disabled .theme-selector {
+  opacity: 0.5;
+}
+.page-admin .system-themes-list-disabled .theme-selector:hover {
+  opacity: 1;
+}
+.page-admin #module-filter-submit input {
+  margin: 2em auto !important;
+  float: none;
+}

@@ -1,0 +1,93 @@
+/*--------------------------------------------------------------
+
+	* Filename:	forms.css
+	* Description:	All Layout CSS
+	* Version:	1.0 (14-Aug-2012) DD-MM-YYYY
+	* Website:	http://
+	* Author:	Finoit Technologies
+
+	== STRUCTURE: ==============================================
+
+
+	* Page Width:	960px
+	* Number of columns:	1
+
+--------------------------------------------------------------*/
+
+
+
+@charset "utf-8";
+
+input,select,textarea {
+	 color:#737373;
+}
+select {
+	margin: 0;
+	padding: 0;
+	border:  none;
+}
+
+.input_box1{
+	 background: #fff;
+	 width: 198px;
+	 padding: 5px 5px 5px 7px;
+	 border: 1px solid #c3c4c4;
+	 border-radius: 3px;
+	 -moz-border-radius: 3px;
+	 -webkit-border-radius: 3px;
+	 box-shadow: inset 2px 2px 2px 2px #ededed;
+	 -moz-box-shadow: inset 2px 2px 2px 2px #ededed;
+	 -webkit-box-shadow: inset 2px 2px 2px 2px #ededed;
+}
+.text_area1{
+	 background: #fff;
+	 resize: none;
+	 height: 78px;
+	 width: 398px;
+	 text-align: left;
+	 padding: 5px 5px 3px 5px;
+	 border: 1px solid #c3c4c4;
+	 border-radius: 3px;
+	 -moz-border-radius: 3px;
+	 -webkit-border-radius: 3px;
+	 box-shadow: inset 2px 2px 2px 2px #ededed;
+	 -moz-box-shadow: inset 2px 2px 2px 2px #ededed;
+	 -webkit-box-shadow: inset 2px 2px 2px 2px #ededed;
+}
+
+.select_box1{
+	 background: #fff;
+	 display: inline-block;
+	 padding: 5px 5px 3px 5px;
+	 border: 1px solid #c3c4c4;
+	 border-radius: 3px;
+	 -moz-border-radius: 3px;
+	 -webkit-border-radius: 3px;
+	 box-shadow: inset 2px 2px 2px 2px #ededed;
+	 -moz-box-shadow: inset 2px 2px 2px 2px #ededed;
+	 -webkit-box-shadow: inset 2px 2px 2px 2px #ededed;
+}
+.select_wd1 {
+	width: 200px;	
+}
+.select_wd2 {
+	width: 70px;	
+}
+
+.form_tbl1 {
+	width: 100%;
+	margin-bottom: 20px;	
+}
+.form_tbl1 td {
+	padding: 0 10px 10px 0;
+	vertical-align: top;
+}
+.form_tbl1 td label{
+	color: #525252;
+}
+.form_tbl1 td.label{
+	text-align: right;
+}
+.form_tbl1 td.adj {
+	width: 177px;
+}

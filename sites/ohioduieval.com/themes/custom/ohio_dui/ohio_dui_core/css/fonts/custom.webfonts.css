@@ -1,0 +1,22 @@
+/**
+ * @file custom.webfonts.css
+ *
+ * Custom webfont styles, added by Matt Simmons
+ */
+@font-face {
+  font-family: 'TypoSlabserif-Light';
+  src: url("TypoSlabserif-Light.eot");
+  src: url("TypoSlabserif-Light.eot#iefix") format("embedded-opentype"),
+    url("TypoSlabserif-Light.woff") format("woff"),
+    url("TypoSlabserif-Light.ttf") format("truetype"),
+    url("TypoSlabserif-Light.svg#TypoSlabserif-Light") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  @font-face {
+    font-family: 'TypoSlabserif-Light';
+    src: url("TypoSlabserif-Light.svg#TypoSlabserif-Light") format("svg");
+  }
+}

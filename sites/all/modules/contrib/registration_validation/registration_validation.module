@@ -1,0 +1,174 @@
+<?php
+/**
+ * @file
+ * Registration validation module.
+ *
+ * Create custom validation rules for new user registrations. For now we only
+ * have e-mail address domain blacklisting, but will continue to develop more
+ * functionality in the future.
+ */
+
+/**
+ * Implements hook_help().
+ */
+function registration_validation_help($path, $arg) {
+  switch ($path) {
+    // Main module help for the registration validation module.
+    case 'admin/help#registration_validation':
+      return '<p>' . t('Registration validation rules allow site administrators to configure how data should be validated when a new user creates an account using the user registration form. An example is blacklisting e-mail domains that are known to create spam registrations that slip by CAPTCHA modules, such as "username@drupaler.org" and "username@yandex.com". The rules added determine what the data entered in the form is validated against and further enhances the security and requirements new users must adhere to. The <a href="@validation">registration validation administration page</a> provides settings to create custom rules that should be validated during registration.', array('@validation' => url('admin/config/people/registration-validation'))) . '</p><p>' . t('This module is still in its early stages, but does provide functionality for blocking blacklisted e-mail domains. Some information on this can be found <a href="@drupalanswers" target="_blank">here</a> and <a href="@drupalorg" target="_blank">here</a>.', array('@drupalanswers' => url('http://drupal.stackexchange.com/questions/137827/spam-registrations-even-after-adding-domain-to-mollom-blacklist'), '@drupalorg' => url('https://www.drupal.org/node/2397911'))) . '</p>';
+
+    // Help block text for the registration validation system settings form.
+    case 'admin/config/people/registration-validation':
+      return '<p>' . t('This page provides custom rules that should be validated during registration.') . '</p>';
+  }
+}
+
+/**
+ * Implements hook_permission().
+ */
+function registration_validation_permission() {
+  return array(
+    'administer registration validation rules' => array(
+      'title' => t('Administer registration validation rules'),
+      'description' => t('Perform administration tasks for how data should be validated when a new user creates an account using the user registration form.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function registration_validation_menu() {
+  $items = array();
+
+  // Create a menu item in the administration menu under config/people to
+  // configure custom validation rules. registration_validation_admin() is our
+  // form builder for the system settings form.
+  $items['admin/config/people/registration-validation'] = array(
+    'title' => 'Registration validation',
+    'description' => 'Configure custom registration validation rules.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('registration_validation_admin'),
+    'access arguments' => array('administer registration validation rules'),
+    'file' => 'registration_validation_admin.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function registration_validation_form_alter(&$form, &$form_state, $form_id) {
+  // For now we just want the user registration form. Will continue to develop
+  // additional functionality, possibly including the user_account_form().
+  $user_forms = array(
+    'user_register_form',
+  );
+
+  if (in_array($form_id, $user_forms)) {
+    // Add a new validation handler to the form.
+    $form['#validate'][] = 'registration_validation_validate';
+  }
+}
+
+/**
+ * Form validation handler for user_register_form().
+ *
+ * Checks if the e-mail address domain is blacklisted.
+ * registration_validation_validate_domain() returns the custom error message
+ * from the settings page if the domain is blacklisted, or returns NULL if the
+ * domain is not blacklisted.
+ *
+ * The registration_validation_counter variable stores how many registrations
+ * have been blocked by this module. This is added to the status report page.
+ *
+ * @see user_register_form()
+ */
+function registration_validation_validate($form, &$form_state) {
+  // Check the e-mail domain against blacklisted domains.
+  if ($error = registration_validation_validate_domain($form_state['values']['mail'])) {
+    // Files an error on the mail element and provides an error message.
+    form_set_error('mail', $error);
+
+    // Log the error message to the watchdog table.
+    watchdog('registration_validation', $error, array(), WATCHDOG_NOTICE, NULL);
+
+    // Increment the validation counter.
+    variable_set('registration_validation_counter', variable_get('registration_validation_counter', 0) + 1);
+  }
+}
+
+/**
+ * Retrieves the e-mail address domain from a given e-mail address.
+ *
+ * @param string $mail
+ *   A string containing an e-mail address.
+ *
+ * @return string
+ *   Returns just the domain part of the given e-mail address. For example,
+ *   example.com.
+ */
+function registration_validation_get_domain($mail) {
+  // Some e-mail address domains have a three-part structure, such as
+  // @dept.school.edu. We need to know how many parts are in the e-mail domain.
+  if (strrpos($mail, '.') == strlen($mail) - 3) {
+    $num_parts = 3;
+  }
+  else {
+    $num_parts = 2;
+  }
+
+  // Here we separate the domain from the e-mail address, taking into account
+  // how many parts are in the domain name.
+  $domain = implode('.', array_slice(preg_split("/(\.|@)/", $mail), -$num_parts));
+
+  return strtolower($domain);
+}
+
+/**
+ * Validates the e-mail address against the blacklisted domains.
+ *
+ * @param string $mail
+ *   A string containing an e-mail address.
+ *
+ * @return null|string
+ *   Returns null if the e-mail address domain is not blacklisted, allowing the
+ *   user registration form to pass validation. Otherwise returns a string to
+ *   the system messages with a reason why the form did not validate.
+ */
+function registration_validation_validate_domain($mail) {
+  // Retrieve the e-mail address' domain from our get_domain() function.
+  $domain = registration_validation_get_domain($mail);
+  $patterns = variable_get('registration_validation_blacklisted_domains');
+  $regexps = &drupal_static(__FUNCTION__);
+
+  if (!isset($regexps[$patterns])) {
+    // Convert blacklisted domain settings to a regular expression.
+    // Therefore replace newlines with a logical.
+    $to_replace = array(
+      '/(\r\n?|\n)/', // newlines
+      '/\\\\\*/', // asterisks
+    );
+    $replacements = array(
+      '|',
+      '.*',
+    );
+
+    // Quote the regular expression characters.
+    $patterns_quoted = preg_quote($patterns, '/');
+
+    // Perform a regular expression search and replace from the patterns.
+    $regexps[$patterns] = '/^(' . preg_replace($to_replace, $replacements, $patterns_quoted) . ')$/';
+  }
+
+  // Perform a regular expression match of our patterns for the e-mail domain.
+  if (preg_match($regexps[$patterns], $domain)) {
+    // Retrieve the custom error message to display on the page.
+    $message = variable_get('registration_validation_blacklisted_domains_message');
+
+    // Return the message to inform user validation failed.
+    return t($message ? $message : 'The e-mail domain %domain has been blacklisted from registering. Please enter a different e-mail address.', array('%domain' => $domain));
+  }
+}

@@ -1,0 +1,1405 @@
+<?php
+/**
+ * @file
+ * Module name ndsbs_search.module
+ * Finoit Technologies
+ * Developer krishna@finoit.com
+ * Allows developer to customize the site's functionality.
+ */
+
+
+/**
+ *  Implementation of hook_menu()
+ *  Function ndsbs_custom_menu() defined
+ *  Parameter no
+ */
+function ndsbs_search_menu() {
+  $items = array();
+  /*
+  $items['user/change/password'] = array(
+      'title'           => 'Change Password',
+      'description'     => 'User change password page.',
+      'access callback' => 'user_is_logged_in',
+      'page callback'   => '_user_change_password_custom',
+      'access arguments' => array('access content'),
+  );
+  */
+  return $items;
+}
+
+/**
+ *  Implementation of hook_theme()
+ *  Function ndsbs_search_theme() defined
+ *  Parameter no
+ */
+function ndsbs_search_theme() {
+  $items = array();
+  /*
+  $items['user_change_password_form'] = array(
+      'render element' => 'form',
+      'template' => 'user_change_password_form',
+  );
+  */
+  return $items;
+}
+
+/**
+ *  Implementation of _user_change_password_custom()
+ *  Function _user_change_password_custom() defined
+ *  To change the user password
+ *  Parameter no
+ */
+function client_search() {
+  return drupal_render(drupal_get_form('user_client_search_form'));
+}
+
+/**
+ *  Implementation of user_client_search_form()
+ *  Function user_client_search_form() defined
+ *  To create the change password form
+ *  Parameter no
+ */
+function user_client_search_form($form, &$form_state) {
+  $custom_dropdown = array(
+    '' => 'All Fields',
+    'field_data_field_first_name.field_first_name_value' => 'First Name',
+    'field_data_field_last_name.field_last_name_value' => 'Last Name',
+    'u.mail' => 'email',
+    'field_data_field_phone.field_phone_value' => 'Phone',
+    'field_data_field_address.field_address_value' => 'Address',
+    'field_data_field_city.field_city_value' => 'City',
+    'field_data_field_state.field_state_value' => 'State'
+  );
+
+  // Textfield cor current password confirmation.
+  $form['search_by'] = array(
+    '#type' => 'select',
+    '#title' => t('Select from list:'),
+    '#options' => $custom_dropdown,
+    //'#default_value' => $selected_value,
+  );
+
+  $form['search_text'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Search:'),
+    '#default_value' => '',
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit')
+  );
+  return $form;
+}
+
+/**
+ * Function defined to
+ * Submit handler for ndsbs_search_user_client_search_form_submit().
+ */
+function user_client_search_form_submit(&$form, &$form_state) {
+  // Set up the edit array to pass to user_save()
+  $search_by = $form_state['values']['search_by'];
+  $search_text = $form_state['values']['search_text'];
+  if ($search_by <> '') {
+    $options = array(
+      'query' => array(
+        'search_by' => $search_by,
+        'search_text' => $search_text
+      )
+    );
+    drupal_goto('user/clients/list', $options);
+  }
+  else {
+    $options = array('query' => array('search_text' => $search_text));
+    drupal_goto('user/clients/list', $options);
+  }
+}
+
+/**
+ *  Function defined to get the all user Custom search Defined
+ *
+ */
+function get_all_clients_custom_search() {
+  $search_by = '';
+  $search_text = '';
+
+  if (isset($_REQUEST['search_by'])) {
+    $search_by = trim($_REQUEST['search_by']);
+  }
+  if (isset($_REQUEST['search_text'])) {
+    $search_text = trim($_REQUEST['search_text']);
+  }
+
+  //  Serach Query
+  $query = db_select('users', 'u')->extend('PagerDefault')
+    ->fields('u', array('uid'));
+  $query->innerJoin('users_roles', 'users_roles', 'u.uid = users_roles.uid');
+  $query->innerJoin('field_data_field_first_name', 'field_data_field_first_name', 'u.uid = field_data_field_first_name.entity_id');
+  $query->innerJoin('field_data_field_last_name', 'field_data_field_last_name', 'u.uid = field_data_field_last_name.entity_id');
+  $query->innerJoin('field_data_field_phone', 'field_data_field_phone', 'u.uid = field_data_field_phone.entity_id');
+  $query->innerJoin('field_data_field_address', 'field_data_field_address', 'u.uid = field_data_field_address.entity_id');
+  $query->innerJoin('field_data_field_city', 'field_data_field_city', 'u.uid = field_data_field_city.entity_id');
+  $query->innerJoin('field_data_field_state', 'field_data_field_state', 'u.uid = field_data_field_state.entity_id');
+  $query->innerJoin('field_data_field_zip', 'field_data_field_zip', 'u.uid = field_data_field_zip.entity_id');
+  //users_roles.rid
+  //$query->leftJoin('field_data_field_middle_name', 'field_data_field_middle_name', 'u.uid = field_data_field_middle_name.entity_id');
+  $query->condition('users_roles.rid', 6, '=');
+
+  if ($search_by <> '') {
+    //  $query->condition($search_by.'.'.$search_by, $search_text, '=');
+    $query->condition($search_by, '%' . db_like($search_text) . '%', 'LIKE');
+  }
+  else {
+    //$query->condition($search_by, $search_text, '=');
+    //  ->condition(db_or()->condition('field2', 5)->condition('field3', 6));
+    $query->condition(db_or()
+      ->condition('field_data_field_first_name.field_first_name_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_last_name.field_last_name_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('u.mail', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_phone.field_phone_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_address.field_address_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_city.field_city_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_state.field_state_value', '%' . db_like($search_text) . '%', 'LIKE')
+    );
+  }
+
+  $result = $query->execute();
+  $data = $result->fetchAll();
+  return $data;
+}
+
+/**
+ *  Implementation of search_assessment_client()
+ *  Function search_assessment_client() defined
+ *  To get the search form
+ *  Parameter no
+ */
+function search_assessment_client() {
+  return drupal_render(drupal_get_form('search_assessment_client_form'));
+}
+
+/**
+ *  Implementation of user_client_search_form()
+ *  Function user_client_search_form() defined
+ *  To create the change password form
+ *  Parameter no
+ */
+function search_assessment_client_form($form, &$form_state) {
+  $custom_dropdown = array(
+    '' => 'All Fields',
+    'field_data_field_first_name.field_first_name_value' => 'First Name',
+    'field_data_field_last_name.field_last_name_value' => 'Last Name',
+    'u.mail' => 'email',
+    'field_data_field_phone.field_phone_value' => 'Phone',
+    'field_data_field_address.field_address_value' => 'Address',
+    'field_data_field_city.field_city_value' => 'City',
+    'field_data_field_state.field_state_value' => 'State'
+  );
+
+  $asmnt_status = array(
+    'All Status' => 'All Status',
+    '1' => 'Completed',
+    '0' => 'Inprocess'
+  );
+
+  // Textfield cor current password confirmation.
+  $form['search_by'] = array(
+    '#type' => 'select',
+    '#options' => $custom_dropdown,
+  );
+
+  $form['search_text'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Search:'),
+  );
+
+  $form['asmnt_status'] = array(
+    '#type' => 'select',
+    '#options' => $asmnt_status,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit')
+  );
+  return $form;
+}
+
+/**
+ * Function defined to
+ * Submit handler for search_assessment_client_form_submit().
+ */
+function search_assessment_client_form_submit(&$form, &$form_state) {
+  global $base_url;
+  $asmnt_status = '';
+  $search_by = '';
+  $search_text = '';
+
+  if (isset($form_state['values']['asmnt_status'])) {
+    $asmnt_status = $form_state['values']['asmnt_status'];
+  }
+  if (isset($form_state['values']['search_by'])) {
+    $search_by = $form_state['values']['search_by'];
+  }
+  if (isset($form_state['values']['search_text'])) {
+    $search_text = $form_state['values']['search_text'];
+  }
+
+  $options = array(
+    'query' => array(
+      'assessment_status' => $asmnt_status,
+      'search_by' => $search_by,
+      'search_text' => $search_text
+    )
+  );
+  drupal_goto($base_url . '/all/assessment/users', $options);
+}
+
+/**
+ *  Function defined to get the all
+ *  Assessment users
+ *
+ */
+function get_all_assessment_clients_custom_search() {
+  if (isset($_REQUEST['assessment_status'])) {
+    $assessment_status = trim($_REQUEST['assessment_status']);
+  }
+  if (isset($_REQUEST['search_by'])) {
+    $search_by = trim($_REQUEST['search_by']);
+  }
+  if (isset($_REQUEST['search_text'])) {
+    $search_text = trim($_REQUEST['search_text']);
+  }
+
+  //  Serach Query
+  $query = db_select('users', 'u')->extend('PagerDefault')
+    ->fields('u', array('uid'));
+
+  $query->innerJoin('users_transactions', 'users_transactions', 'users_transactions.uid = u.uid');
+  $query->fields('users_transactions', array(
+    'order_id',
+    'nid',
+    'tid',
+    'uid',
+    'cost',
+    'payment_status',
+    'payment_method',
+    'order_date',
+    'transaction_id',
+    'shipping_info',
+    'ip_address',
+    'transaction_action',
+    'action_by',
+    'reason',
+    'action_date',
+    'client_request',
+    'requested_on',
+    'therapist'
+  ));
+
+  $query->innerJoin('users_transactions_data', 'users_transactions_data', 'users_transactions_data.oid = users_transactions.order_id');
+  $query->fields('users_transactions_data', array(
+    'oid',
+    'termid',
+    'amount',
+    'notary_cost',
+    'sub_report',
+    'main_report_id',
+    'express_mail_status',
+    'notary_status',
+    'updated_on',
+    'updated_by',
+    'report_name',
+    'main_report',
+    'report_status'
+  ));
+
+  $query->innerJoin('users_roles', 'users_roles', 'u.uid = users_roles.uid');
+  $query->leftJoin('field_data_field_first_name', 'field_data_field_first_name', 'u.uid = field_data_field_first_name.entity_id');
+  $query->leftJoin('field_data_field_last_name', 'field_data_field_last_name', 'u.uid = field_data_field_last_name.entity_id');
+  $query->leftJoin('field_data_field_phone', 'field_data_field_phone', 'u.uid = field_data_field_phone.entity_id');
+  $query->leftJoin('field_data_field_address', 'field_data_field_address', 'u.uid = field_data_field_address.entity_id');
+  $query->leftJoin('field_data_field_city', 'field_data_field_city', 'u.uid = field_data_field_city.entity_id');
+  $query->leftJoin('field_data_field_state', 'field_data_field_state', 'u.uid = field_data_field_state.entity_id');
+  $query->leftJoin('field_data_field_zip', 'field_data_field_zip', 'u.uid = field_data_field_zip.entity_id');
+
+  $query->condition('users_roles.rid', 6, '=');
+  $query->condition('users_transactions_data.sub_report', 0, '=');
+
+  if ($assessment_status <> '' && $assessment_status <> 'All Status') {
+    $query->condition('users_transactions_data.report_status', $assessment_status, '=');
+  }
+
+  if ($search_by <> '') {
+    $query->condition($search_by, '%' . db_like($search_text) . '%', 'LIKE');
+  }
+  else {
+    $query->condition(db_or()
+      ->condition('field_data_field_first_name.field_first_name_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_last_name.field_last_name_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('u.mail', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_phone.field_phone_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_address.field_address_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_city.field_city_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_state.field_state_value', '%' . db_like($search_text) . '%', 'LIKE')
+    );
+  }
+
+  $query->orderBy('users_transactions.order_date', 'DESC');
+  $result = $query->execute();
+  $data = $result->fetchAll();
+  return $data;
+}
+
+/**
+ *  Implementation of search_requested_stateform()
+ *  Function search_requested_stateform() defined
+ *  To get the search form
+ *  Parameter no
+ */
+function search_requested_stateform() {
+  return drupal_render(drupal_get_form('search_requested_stateform_form'));
+}
+
+/**
+ *  Implementation of search_requested_stateform_form()
+ *  Function search_requested_stateform_form() defined
+ *  Parameter no
+ */
+function search_requested_stateform_form($form, &$form_state) {
+  $custom_dropdown = array(
+    '' => 'All Fields',
+    'field_data_field_first_name.field_first_name_value' => 'First Name',
+    'field_data_field_last_name.field_last_name_value' => 'Last Name',
+    'u.mail' => 'email',
+    'field_data_field_phone.field_phone_value' => 'Phone',
+    'field_data_field_address.field_address_value' => 'Address',
+    'field_data_field_city.field_city_value' => 'City',
+    'field_data_field_state.field_state_value' => 'State'
+  );
+
+  $asmnt_status = array(
+    '' => 'All Status',
+    '1' => 'Completed',
+    '0' => 'Inprocess',
+    'Not Paid' => 'Not Paid'
+  );
+
+  // Textfield cor current password confirmation.
+  $form['search_by'] = array(
+    '#type' => 'select',
+    //'#title' => t('Select from list:'),
+    '#options' => $custom_dropdown,
+    //'#default_value' => $selected_value,
+  );
+
+  $form['search_text'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Search:'),
+    '#default_value' => $selected_value,
+  );
+
+  if (arg(2) <> 'pendinginvoice') {
+    $form['asmnt_status'] = array(
+      '#type' => 'select',
+      '#options' => $asmnt_status,
+    );
+  }
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit')
+  );
+  return $form;
+}
+
+/**
+ * Function defined to
+ * Submit handler for search_requested_stateform_form_submit().
+ */
+function search_requested_stateform_form_submit(&$form, &$form_state) {
+  global $base_url;
+
+  $asmnt_status = $form_state['values']['asmnt_status'];
+  $search_by = $form_state['values']['search_by'];
+  $search_text = $form_state['values']['search_text'];
+  $options = array(
+    'query' => array(
+      'assessment_status' => $asmnt_status,
+      'search_by' => $search_by,
+      'search_text' => $search_text
+    )
+  );
+  if (arg(2) == 'pendinginvoice') {
+    drupal_goto($base_url . '/request/stateform/pendinginvoice', $options);
+  }
+  else {
+    drupal_goto($base_url . '/request/stateform/requestedinvoice', $options);
+  }
+}
+
+/**
+ *  Function  get_requested_staeform_custom_search() Defined
+ *  to search into requested state form
+ */
+function get_requested_stateform_custom_search() {
+  $search_by = trim($_REQUEST['search_by']);
+  $search_text = trim($_REQUEST['search_text']);
+  $statefrm_status = trim($_REQUEST['assessment_status']);
+  $type = 'state_form_request';
+
+  //  Serach Query
+  $query = db_select('node', 'n')->extend('PagerDefault');
+  $query->fields('n', array('nid'));
+  $query->orderBy('n.created', 'DESC');
+  $query->leftJoin('field_data_field_invoice_created_by', 'invoice', 'invoice.entity_id = n.nid');
+  $query->leftJoin('field_data_field_state_form_status', 'field_data_field_state_form_status', 'field_data_field_state_form_status.entity_id = n.nid');
+  $query->leftJoin('field_data_field_state_form_payment_status', 'field_data_field_state_form_payment_status', 'field_data_field_state_form_payment_status.entity_id = n.nid');
+
+  $query->leftJoin('users', 'u', 'n.uid = u.uid');
+  $query->innerJoin('users_roles', 'users_roles', 'u.uid = users_roles.uid');
+  $query->innerJoin('field_data_field_first_name', 'field_data_field_first_name', 'u.uid = field_data_field_first_name.entity_id');
+  $query->leftJoin('field_data_field_phone', 'field_data_field_phone', 'u.uid = field_data_field_phone.entity_id');
+  $query->leftJoin('field_data_field_last_name', 'field_data_field_last_name', 'u.uid = field_data_field_last_name.entity_id');
+  $query->leftJoin('field_data_field_address', 'field_data_field_address', 'u.uid = field_data_field_address.entity_id');
+  $query->leftJoin('field_data_field_city', 'field_data_field_city', 'u.uid = field_data_field_city.entity_id');
+  $query->leftJoin('field_data_field_state', 'field_data_field_state', 'u.uid = field_data_field_state.entity_id');
+  $query->leftJoin('field_data_field_zip', 'field_data_field_zip', 'u.uid = field_data_field_zip.entity_id');
+
+  $query->condition('users_roles.rid', 6, '=');
+  $query->condition('n.type', $type, '=');
+
+  if (arg(2) == 'pendinginvoice') {
+    $query->condition('invoice.field_invoice_created_by_value', 0, '<=');
+  }
+  else {
+    $query->condition('invoice.field_invoice_created_by_value', 0, '>');
+  }
+
+  if ($statefrm_status <> '') {
+    if ($statefrm_status == 'Not Paid') {
+      $query->condition('field_data_field_state_form_payment_status.field_state_form_payment_status_value', 0, '=');
+    }
+    else {
+      if ($statefrm_status == 1) {
+        //  Mean client has paid and stateform report generated
+        $query->condition('field_data_field_state_form_status.field_state_form_status_value', $statefrm_status, '=');
+      }
+      else {
+        //  Mean client has paid but stateform report not generated
+        $query->condition('field_data_field_state_form_status.field_state_form_status_value', $statefrm_status, '=');
+        $query->condition('field_data_field_state_form_payment_status.field_state_form_payment_status_value', 1, '=');
+      }
+    }
+  }
+
+  if ($search_by <> '') {
+    $query->condition($search_by, '%' . db_like($search_text) . '%', 'LIKE');
+  }
+  elseif ($search_text <> '') {
+    $query->condition(db_or()
+      ->condition('field_data_field_first_name.field_first_name_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_last_name.field_last_name_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('u.mail', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_phone.field_phone_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_address.field_address_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_city.field_city_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_state.field_state_value', '%' . db_like($search_text) . '%', 'LIKE')
+    );
+  }
+
+  $result = $query->execute();
+  $data = $result->fetchAll();
+  return $data;
+}
+
+/**
+ *  Implementation of search_client_paperwork()
+ *  Function search_client_paperwork() defined
+ *  To get the search form
+ *  Parameter no
+ */
+function search_client_paperwork() {
+  return drupal_render(drupal_get_form('search_client_paperwork_form'));
+}
+
+/**
+ *  Implementation of search_client_paperwork_form()
+ *  Function search_client_paperwork_form() defined
+ *  Parameter no
+ */
+function search_client_paperwork_form($form, &$form_state) {
+  $custom_dropdown = array(
+    '' => 'All Fields',
+    'field_data_field_first_name.field_first_name_value' => 'First Name',
+    'field_data_field_last_name.field_last_name_value' => 'Last Name',
+    'u.mail' => 'email',
+    'field_data_field_phone.field_phone_value' => 'Phone',
+    'field_data_field_address.field_address_value' => 'Address',
+    'field_data_field_city.field_city_value' => 'City',
+    'field_data_field_state.field_state_value' => 'State'
+  );
+
+  $asmnt_status = array(
+    '' => 'All Status',
+    '1' => 'Verified',
+    '0' => 'Not Verified'
+  );
+
+  // Textfield cor current password confirmation.
+  $form['search_by'] = array(
+    '#type' => 'select',
+    //'#title' => t('Select from list:'),
+    '#options' => $custom_dropdown,
+    //'#default_value' => $selected_value,
+  );
+
+  $form['search_text'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Search:'),
+    '#default_value' => $selected_value,
+  );
+
+  $form['asmnt_status'] = array(
+    '#type' => 'select',
+    '#options' => $asmnt_status,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit')
+  );
+  return $form;
+}
+
+/**
+ * Function defined to
+ * Submit handler for search_client_paperwork_form_submit().
+ */
+function search_client_paperwork_form_submit(&$form, &$form_state) {
+  global $base_url;
+
+  $asmnt_status = $form_state['values']['asmnt_status'];
+  $search_by = $form_state['values']['search_by'];
+  $search_text = $form_state['values']['search_text'];
+  $options = array(
+    'query' => array(
+      'assessment_status' => $asmnt_status,
+      'search_by' => $search_by,
+      'search_text' => $search_text
+    )
+  );
+
+  drupal_goto($base_url . '/request/paperwork/list', $options);
+}
+
+/**
+ *  Function  get_client_paperwork_custom_search() Defined
+ *  to search into requested state form
+ */
+function get_client_paperwork_custom_search() {
+  $search_by = trim($_REQUEST['search_by']);
+  $search_text = trim($_REQUEST['search_text']);
+  $paperwork_status = trim($_REQUEST['assessment_status']);
+  $type = 'paper_work';
+
+  //  Serach Query
+  $query = db_select('node', 'n')->extend('PagerDefault');
+  $query->fields('n', array('nid'));
+  $query->orderBy('n.created', 'DESC');
+  $query->leftJoin('field_data_field_paperwork_status', 'field_data_field_paperwork_status', 'field_data_field_paperwork_status.entity_id = n.nid');
+
+  $query->leftJoin('users', 'u', 'n.uid = u.uid');
+  $query->innerJoin('users_roles', 'users_roles', 'u.uid = users_roles.uid');
+  $query->innerJoin('field_data_field_first_name', 'field_data_field_first_name', 'u.uid = field_data_field_first_name.entity_id');
+  $query->innerJoin('field_data_field_phone', 'field_data_field_phone', 'u.uid = field_data_field_phone.entity_id');
+  $query->leftJoin('field_data_field_last_name', 'field_data_field_last_name', 'u.uid = field_data_field_last_name.entity_id');
+  $query->leftJoin('field_data_field_address', 'field_data_field_address', 'u.uid = field_data_field_address.entity_id');
+  $query->leftJoin('field_data_field_city', 'field_data_field_city', 'u.uid = field_data_field_city.entity_id');
+  $query->leftJoin('field_data_field_state', 'field_data_field_state', 'u.uid = field_data_field_state.entity_id');
+  $query->leftJoin('field_data_field_zip', 'field_data_field_zip', 'u.uid = field_data_field_zip.entity_id');
+
+  $query->condition('users_roles.rid', 6, '=');
+  $query->condition('n.type', $type, '=');
+
+  if ($paperwork_status <> '') {
+    $query->condition('field_data_field_paperwork_status.field_paperwork_status_value', $paperwork_status, '=');
+  }
+
+  if ($search_by <> '') {
+    $query->condition($search_by, '%' . db_like($search_text) . '%', 'LIKE');
+  }
+  else {
+    $query->condition(db_or()
+      ->condition('field_data_field_first_name.field_first_name_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_last_name.field_last_name_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('u.mail', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_phone.field_phone_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_address.field_address_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_city.field_city_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_state.field_state_value', '%' . db_like($search_text) . '%', 'LIKE')
+    );
+  }
+
+  $result = $query->execute();
+  $data = $result->fetchAll();
+  return $data;
+}
+
+/**
+ *  Implementation of search_assessment_client()
+ *  Function search_assessment_client() defined
+ *  To get the search form
+ *  Parameter no
+ */
+function search_transactions() {
+  return drupal_render(drupal_get_form('search_transactions_form'));
+}
+
+/**
+ *  Implementation of user_client_search_form()
+ *  Function user_client_search_form() defined
+ *  To create the change password form
+ *  Parameter no
+ */
+function search_transactions_form($form, &$form_state) {
+  $custom_dropdown = array(
+    '' => 'All Fields',
+    'field_data_field_first_name.field_first_name_value' => 'First Name',
+    'field_data_field_last_name.field_last_name_value' => 'Last Name',
+    'u.mail' => 'email',
+    'field_data_field_phone.field_phone_value' => 'Phone',
+    'field_data_field_address.field_address_value' => 'Address',
+    'field_data_field_city.field_city_value' => 'City',
+    'field_data_field_state.field_state_value' => 'State'
+  );
+
+  $asmnt_status = array(
+    '' => 'All Status',
+    '1' => 'Completed',
+    '0' => 'Failed'
+  );
+
+  // Textfield cor current password confirmation.
+  $form['search_by'] = array(
+    '#type' => 'select',
+    //'#title' => t('Select from list:'),
+    '#options' => $custom_dropdown,
+    //'#default_value' => $selected_value,
+  );
+
+  $form['search_text'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Search:'),
+    '#default_value' => $selected_value,
+  );
+
+  $form['asmnt_status'] = array(
+    '#type' => 'select',
+    '#options' => $asmnt_status,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit')
+  );
+  return $form;
+}
+
+/**
+ * Function defined to
+ * Submit handler for search_assessment_client_form_submit().
+ */
+function search_transactions_form_submit(&$form, &$form_state) {
+  global $base_url;
+  $asmnt_status = $form_state['values']['asmnt_status'];
+  $search_by = $form_state['values']['search_by'];
+  $search_text = $form_state['values']['search_text'];
+
+  $options = array(
+    'query' => array(
+      'assessment_status' => $asmnt_status,
+      'search_by' => $search_by,
+      'search_text' => $search_text
+    )
+  );
+
+  $arg_val = arg(3);
+  drupal_goto($base_url . '/all/transactions/list/' . $arg_val, $options);
+}
+
+/**
+ *  Function defined to get the all
+ *  Assessment users
+ *
+ */
+function get_all_transaction_custom_search() {
+  $assessment_status = trim($_REQUEST['assessment_status']);
+  $search_by = trim($_REQUEST['search_by']);
+  $search_text = trim($_REQUEST['search_text']);
+
+  //  Serach Query
+  //$query = db_select('users', 'u')->extend('PagerDefault')->fields('u', array('uid'));
+
+  $query = db_select('users_transactions', 'users_transactions')->extend('PagerDefault');
+  $query->fields('users_transactions', array(
+    'order_id',
+    'nid',
+    'tid',
+    'uid',
+    'cost',
+    'payment_status',
+    'payment_method',
+    'order_date',
+    'transaction_id',
+    'shipping_info',
+    'ip_address',
+    'transaction_action',
+    'action_by',
+    'reason',
+    'action_date',
+    'client_request',
+    'requested_on',
+    'therapist'
+  ));
+
+  $query->innerJoin('users_transactions_data', 'users_transactions_data', 'users_transactions_data.oid = users_transactions.order_id');
+  $query->fields('users_transactions_data', array(
+    'oid',
+    'termid',
+    'amount',
+    'notary_cost',
+    'sub_report',
+    'main_report_id',
+    'express_mail_status',
+    'notary_status',
+    'updated_on',
+    'updated_by',
+    'report_name',
+    'main_report',
+    'report_status'
+  ));
+
+  $query->innerJoin('users', 'u', 'u.uid = users_transactions.uid');
+  $query->innerJoin('users_roles', 'users_roles', 'u.uid = users_roles.uid');
+  $query->innerJoin('field_data_field_first_name', 'field_data_field_first_name', 'u.uid = field_data_field_first_name.entity_id');
+  $query->innerJoin('field_data_field_last_name', 'field_data_field_last_name', 'u.uid = field_data_field_last_name.entity_id');
+  $query->innerJoin('field_data_field_phone', 'field_data_field_phone', 'u.uid = field_data_field_phone.entity_id');
+  $query->leftJoin('field_data_field_address', 'field_data_field_address', 'u.uid = field_data_field_address.entity_id');
+  $query->leftJoin('field_data_field_city', 'field_data_field_city', 'u.uid = field_data_field_city.entity_id');
+  $query->leftJoin('field_data_field_state', 'field_data_field_state', 'u.uid = field_data_field_state.entity_id');
+  $query->leftJoin('field_data_field_zip', 'field_data_field_zip', 'u.uid = field_data_field_zip.entity_id');
+
+  $query->condition('users_roles.rid', 6, '=');
+  $query->condition('users_transactions_data.sub_report', 0, '=');
+
+  if ($assessment_status <> '') {
+    $query->condition('users_transactions.payment_status', $assessment_status, '=');
+  }
+  if ($search_by <> '') {
+    $query->condition($search_by, '%' . db_like($search_text) . '%', 'LIKE');
+  }
+  elseif ($search_text <> '') {
+    $query->condition(db_or()
+      ->condition('field_data_field_first_name.field_first_name_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_last_name.field_last_name_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('u.mail', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_phone.field_phone_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_address.field_address_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_city.field_city_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_state.field_state_value', '%' . db_like($search_text) . '%', 'LIKE')
+    );
+  }
+
+  $result = $query->execute();
+  $data = $result->fetchAll();
+  return $data;
+}
+
+/**
+ *  Implementation of search_client_paymentrefund()
+ *  Function search_client_paymentrefund() defined
+ *  To get the search form
+ *  Parameter no
+ */
+function search_client_paymentrefund() {
+  return drupal_render(drupal_get_form('search_client_paymentrefund_form'));
+}
+
+/**
+ *  Implementation of search_client_paymentrefund_form()
+ *  Function search_client_paymentrefund_form() defined
+ *  Parameter no
+ */
+function search_client_paymentrefund_form($form, &$form_state) {
+  $custom_dropdown = array(
+    '' => 'All Fields',
+    'field_data_field_first_name.field_first_name_value' => 'First Name',
+    'field_data_field_last_name.field_last_name_value' => 'Last Name',
+    'u.mail' => 'email',
+    'field_data_field_phone.field_phone_value' => 'Phone',
+    'field_data_field_address.field_address_value' => 'Address',
+    'field_data_field_city.field_city_value' => 'City',
+    'field_data_field_state.field_state_value' => 'State'
+  );
+
+  $asmnt_status = array('' => 'All Status', '0' => 'Open', '1' => 'Closed');
+
+  // Textfield cor current password confirmation.
+  $form['search_by'] = array(
+    '#type' => 'select',
+    //'#title' => t('Select from list:'),
+    '#options' => $custom_dropdown,
+    //'#default_value' => $selected_value,
+  );
+
+  $form['search_text'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Search:'),
+    '#default_value' => $selected_value,
+  );
+
+  $form['asmnt_status'] = array(
+    '#type' => 'select',
+    '#options' => $asmnt_status,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit')
+  );
+  return $form;
+}
+
+/**
+ * Function defined to
+ * Submit handler for search_client_paymentrefund_form_submit().
+ */
+function search_client_paymentrefund_form_submit(&$form, &$form_state) {
+  global $base_url;
+
+  $asmnt_status = $form_state['values']['asmnt_status'];
+  $search_by = $form_state['values']['search_by'];
+  $search_text = $form_state['values']['search_text'];
+  $options = array(
+    'query' => array(
+      'assessment_status' => $asmnt_status,
+      'search_by' => $search_by,
+      'search_text' => $search_text
+    )
+  );
+
+  drupal_goto($base_url . '/request/paymentrefund/list', $options);
+}
+
+/**
+ *  Function  get_client_paymentrefund_custom_search() Defined
+ *  to search into requested state form
+ */
+function get_client_paymentrefund_custom_search() {
+  $search_by = trim($_REQUEST['search_by']);
+  $search_text = trim($_REQUEST['search_text']);
+  $paperwork_status = trim($_REQUEST['assessment_status']);
+  $type = 'refund_payment';
+
+  //  Serach Query
+  $query = db_select('node', 'n')->extend('PagerDefault');
+  $query->fields('n', array('nid'));
+  $query->orderBy('n.created', 'DESC');
+  $query->leftJoin('field_data_field_request_status', 'field_data_field_request_status', 'field_data_field_request_status.entity_id = n.nid');
+
+  $query->leftJoin('users', 'u', 'n.uid = u.uid');
+  $query->innerJoin('users_roles', 'users_roles', 'u.uid = users_roles.uid');
+  $query->innerJoin('field_data_field_first_name', 'field_data_field_first_name', 'u.uid = field_data_field_first_name.entity_id');
+  $query->innerJoin('field_data_field_phone', 'field_data_field_phone', 'u.uid = field_data_field_phone.entity_id');
+  $query->leftJoin('field_data_field_last_name', 'field_data_field_last_name', 'u.uid = field_data_field_last_name.entity_id');
+  $query->leftJoin('field_data_field_address', 'field_data_field_address', 'u.uid = field_data_field_address.entity_id');
+  $query->leftJoin('field_data_field_city', 'field_data_field_city', 'u.uid = field_data_field_city.entity_id');
+  $query->leftJoin('field_data_field_state', 'field_data_field_state', 'u.uid = field_data_field_state.entity_id');
+  $query->leftJoin('field_data_field_zip', 'field_data_field_zip', 'u.uid = field_data_field_zip.entity_id');
+
+  $query->condition('users_roles.rid', 6, '=');
+  $query->condition('n.type', $type, '=');
+
+  if ($paperwork_status <> '') {
+    $query->condition('field_data_field_request_status.field_request_status_value', $paperwork_status, '=');
+  }
+
+  if ($search_by <> '') {
+    $query->condition($search_by, '%' . db_like($search_text) . '%', 'LIKE');
+  }
+  elseif ($search_text <> '') {
+    $query->condition(db_or()
+      ->condition('field_data_field_first_name.field_first_name_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_last_name.field_last_name_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('u.mail', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_phone.field_phone_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_address.field_address_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_city.field_city_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_state.field_state_value', '%' . db_like($search_text) . '%', 'LIKE')
+    );
+  }
+
+  $result = $query->execute();
+  $data = $result->fetchAll();
+  return $data;
+}
+
+/**
+ *  Implementation of search_failed_requested_transactions()
+ *  Function search_failed_requested_transactions() defined
+ *  To get the search form
+ *  Parameter no
+ */
+function search_failed_requested_transactions() {
+  return drupal_render(drupal_get_form('search_failed_requested_transactions_form'));
+}
+
+/**
+ *  Implementation of search_failed_requested_transactions_form()
+ *  Function search_failed_requested_transactions_form() defined
+ *  To create the change password form
+ *  Parameter no
+ */
+function search_failed_requested_transactions_form($form, &$form_state) {
+  $custom_dropdown = array(
+    '' => 'All Fields',
+    'field_data_field_first_name.field_first_name_value' => 'First Name',
+    'field_data_field_last_name.field_last_name_value' => 'Last Name',
+    'u.mail' => 'email',
+    'field_data_field_phone.field_phone_value' => 'Phone',
+    'field_data_field_address.field_address_value' => 'Address',
+    'field_data_field_city.field_city_value' => 'City',
+    'field_data_field_state.field_state_value' => 'State'
+  );
+
+  // Textfield cor current password confirmation.
+  $form['search_by'] = array(
+    '#type' => 'select',
+    //'#title' => t('Select from list:'),
+    '#options' => $custom_dropdown,
+    //'#default_value' => $selected_value,
+  );
+
+  $form['search_text'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Search:'),
+    '#default_value' => $selected_value,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit')
+  );
+  return $form;
+}
+
+/**
+ * Function defined to
+ * Submit handler for search_failed_requested_transactions_form_submit().
+ */
+function search_failed_requested_transactions_form_submit(&$form, &$form_state) {
+  global $base_url;
+  $search_by = $form_state['values']['search_by'];
+  $search_text = $form_state['values']['search_text'];
+
+  $options = array(
+    'query' => array(
+      'search_by' => $search_by,
+      'search_text' => $search_text
+    )
+  );
+
+  $arg_val = arg(3);
+  drupal_goto($base_url . '/all/failed/requested/transaction/' . $arg_val, $options);
+}
+
+/**
+ *  Function defined get_all_failed_requested_transaction_custom_search()
+ *  to get the all
+ *
+ */
+function get_all_failed_requested_transaction_custom_search() {
+  $search_by = trim($_REQUEST['search_by']);
+  $search_text = trim($_REQUEST['search_text']);
+
+  //  Serach Query
+  $query = db_select('users_transactions', 'users_transactions')->extend('PagerDefault');
+  $query->fields('users_transactions', array(
+    'order_id',
+    'nid',
+    'tid',
+    'uid',
+    'cost',
+    'payment_status',
+    'payment_method',
+    'order_date',
+    'transaction_id',
+    'shipping_info',
+    'ip_address',
+    'transaction_action',
+    'action_by',
+    'reason',
+    'action_date',
+    'client_request',
+    'requested_on',
+    'therapist'
+  ));
+
+  $query->innerJoin('users_transactions_data', 'users_transactions_data', 'users_transactions_data.oid = users_transactions.order_id');
+  $query->fields('users_transactions_data', array(
+    'oid',
+    'termid',
+    'amount',
+    'notary_cost',
+    'sub_report',
+    'main_report_id',
+    'express_mail_status',
+    'notary_status',
+    'updated_on',
+    'updated_by',
+    'report_name',
+    'main_report',
+    'report_status'
+  ));
+
+  $query->innerJoin('users', 'u', 'u.uid = users_transactions.uid');
+  $query->innerJoin('users_roles', 'users_roles', 'u.uid = users_roles.uid');
+  $query->innerJoin('field_data_field_first_name', 'field_data_field_first_name', 'u.uid = field_data_field_first_name.entity_id');
+  $query->innerJoin('field_data_field_last_name', 'field_data_field_last_name', 'u.uid = field_data_field_last_name.entity_id');
+  $query->innerJoin('field_data_field_phone', 'field_data_field_phone', 'u.uid = field_data_field_phone.entity_id');
+  $query->leftJoin('field_data_field_address', 'field_data_field_address', 'u.uid = field_data_field_address.entity_id');
+  $query->leftJoin('field_data_field_city', 'field_data_field_city', 'u.uid = field_data_field_city.entity_id');
+  $query->leftJoin('field_data_field_state', 'field_data_field_state', 'u.uid = field_data_field_state.entity_id');
+  $query->leftJoin('field_data_field_zip', 'field_data_field_zip', 'u.uid = field_data_field_zip.entity_id');
+
+  $query->condition('users_roles.rid', 6, '=');
+  $query->condition('users_transactions_data.sub_report', 0, '=');
+  $query->condition('users_transactions.payment_status', 0, '=');
+  $query->condition('users_transactions.client_request', 1, '=');
+
+  if ($search_by <> '') {
+    $query->condition($search_by, '%' . db_like($search_text) . '%', 'LIKE');
+  }
+  elseif ($search_text <> '') {
+    $query->condition(db_or()
+      ->condition('field_data_field_first_name.field_first_name_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_last_name.field_last_name_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('u.mail', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_phone.field_phone_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_address.field_address_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_city.field_city_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_state.field_state_value', '%' . db_like($search_text) . '%', 'LIKE')
+    );
+  }
+
+  $result = $query->execute();
+  $data = $result->fetchAll();
+  return $data;
+}
+
+/**
+ *  Implementation of search_third_party_request()
+ *  Function search_third_party_request() defined
+ *  To get the search form
+ *  Parameter no
+ */
+function search_third_party_request() {
+  return drupal_render(drupal_get_form('search_third_party_request_form'));
+}
+
+/**
+ *  Implementation of search_third_party_request_form()
+ *  Function search_third_party_request_form() defined
+ *  Parameter no
+ */
+function search_third_party_request_form($form, &$form_state) {
+  $custom_dropdown = array(
+    '' => 'All Fields',
+    'field_data_field_probation_officer_name.field_probation_officer_name_value' => 'Name',
+    'field_data_field_probation_officer_phone.field_probation_officer_phone_value' => 'Contact Phone',
+    'field_data_field_probation_officer_email.field_probation_officer_email_value' => 'Contact Email',
+  );
+
+  $asmnt_status = array('' => 'All Status', '1' => 'Closed', '0' => 'Pending');
+
+  $form['search_by'] = array(
+    '#type' => 'select',
+    '#options' => $custom_dropdown,
+  );
+
+  $form['search_text'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Search:'),
+  );
+
+  $form['asmnt_status'] = array(
+    '#type' => 'select',
+    '#options' => $asmnt_status,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit')
+  );
+  return $form;
+}
+
+/**
+ * Function defined to
+ * Submit handler for search_third_party_request_form_submit().
+ */
+function search_third_party_request_form_submit(&$form, &$form_state) {
+  global $base_url;
+
+  $asmnt_status = $form_state['values']['asmnt_status'];
+  $search_by = $form_state['values']['search_by'];
+  $search_text = $form_state['values']['search_text'];
+  $options = array(
+    'query' => array(
+      'assessment_status' => $asmnt_status,
+      'search_by' => $search_by,
+      'search_text' => $search_text
+    )
+  );
+
+  drupal_goto($base_url . '/request/thirdparty/list', $options);
+}
+
+/**
+ *  Function  get_third_party_request_custom_search() Defined
+ *  to search into requested state form
+ */
+function get_third_party_request_custom_search() {
+  $search_by = trim($_REQUEST['search_by']);
+  $search_text = trim($_REQUEST['search_text']);
+  $status = trim($_REQUEST['assessment_status']);
+  $type = 'third_party_request';
+
+  //  Serach Query
+  $query = db_select('node', 'n')->extend('PagerDefault');
+  $query->fields('n', array('nid'));
+  $query->orderBy('n.created', 'DESC');
+  $query->leftJoin('field_data_field_status_changed_by', 'field_data_field_status_changed_by', 'field_data_field_status_changed_by.entity_id = n.nid');
+  $query->leftJoin('field_data_field_probation_officer_name', 'field_data_field_probation_officer_name', 'field_data_field_probation_officer_name.entity_id = n.nid');
+  $query->leftJoin('field_data_field_probation_officer_email', 'field_data_field_probation_officer_email', 'field_data_field_probation_officer_email.entity_id = n.nid');
+  $query->leftJoin('field_data_field_probation_officer_phone', 'field_data_field_probation_officer_phone', 'field_data_field_probation_officer_phone.entity_id = n.nid');
+
+  $query->condition('n.type', $type, '=');
+
+  if ($status == 0) {
+    $query->condition('field_data_field_status_changed_by.field_status_changed_by_value', 0, '<=');
+  }
+  else {
+    $query->condition('field_data_field_status_changed_by.field_status_changed_by_value', 0, '>');
+  }
+
+  if ($search_by <> '') {
+    $query->condition($search_by, '%' . db_like($search_text) . '%', 'LIKE');
+  }
+  else {
+    $query->condition(db_or()
+      ->condition('field_data_field_probation_officer_name.field_probation_officer_name_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_probation_officer_email.field_probation_officer_email_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_probation_officer_phone.field_probation_officer_phone_value', '%' . db_like($search_text) . '%', 'LIKE')
+    );
+  }
+
+  $result = $query->execute();
+  $data = $result->fetchAll();
+  return $data;
+}
+
+/**
+ *  Implementation of search_all_other_services()
+ *  Function search_all_other_services() defined
+ *  To get the search form
+ *  Parameter no
+ */
+function search_all_other_services() {
+  drupal_set_title('All Other Documents');
+  return drupal_render(drupal_get_form('search_all_other_services_form'));
+}
+
+/**
+ *  Implementation of search_all_other_services_form()
+ *  Function search_all_other_services_form() defined
+ *  To create the change password form
+ *  Parameter no
+ */
+function search_all_other_services_form($form, &$form_state) {
+  $custom_dropdown = array(
+    '' => 'All Fields',
+    'field_data_field_first_name.field_first_name_value' => 'First Name',
+    'field_data_field_last_name.field_last_name_value' => 'Last Name',
+    'u.mail' => 'email',
+    'field_data_field_phone.field_phone_value' => 'Phone',
+    'field_data_field_address.field_address_value' => 'Address',
+    'field_data_field_city.field_city_value' => 'City',
+    'field_data_field_state.field_state_value' => 'State'
+  );
+
+  $asmnt_status = array(
+    '' => 'All Status',
+    '1' => 'Completed',
+    '0' => 'Pending'
+  );
+
+  //  Code for subreports
+  $taxonomy_tree = taxonomy_get_tree(3);
+  $report_by_options = array();
+  //  creating dropdown category values
+  foreach ($taxonomy_tree as $tdata) {
+    if ($tdata->tid <> 18 && $tdata->tid <> 19) {
+      $term = taxonomy_term_load($tdata->tid);
+      $report_by_options[''] = 'All Reports';
+      $report_by_options[$term->tid] = $term->name;
+    }
+  }
+
+  $form['report_by'] = array(
+    '#type' => 'select',
+    '#options' => $report_by_options,
+  );
+
+  $form['asmnt_status'] = array(
+    '#type' => 'select',
+    '#options' => $asmnt_status,
+  );
+
+  // Textfield cor current password confirmation.
+  $form['search_by'] = array(
+    '#type' => 'select',
+    //'#title' => t('Select from list:'),
+    '#options' => $custom_dropdown,
+    //'#default_value' => $selected_value,
+  );
+
+  $form['search_text'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Search:'),
+    '#default_value' => $selected_value,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit')
+  );
+  return $form;
+}
+
+/**
+ * Function defined to
+ * Submit handler for search_all_other_services_form_submit().
+ */
+function search_all_other_services_form_submit(&$form, &$form_state) {
+  global $base_url;
+  $report_by = $form_state['values']['report_by'];
+  $asmnt_status = $form_state['values']['asmnt_status'];
+  $search_by = $form_state['values']['search_by'];
+  $search_text = $form_state['values']['search_text'];
+
+  $options = array(
+    'query' => array(
+      'report_by' => $report_by,
+      'assessment_status' => $asmnt_status,
+      'search_by' => $search_by,
+      'search_text' => $search_text
+    )
+  );
+
+  $arg_val = arg(3);
+  drupal_goto($base_url . '/all/other/reports/' . $arg_val, $options);
+}
+
+/**
+ *  Function defined to get the all
+ *  Assessment users
+ */
+function get_all_other_reports_custom_search() {
+  $report_by = trim($_REQUEST['report_by']);
+  $assessment_status = trim($_REQUEST['assessment_status']);
+  $search_by = trim($_REQUEST['search_by']);
+  $search_text = trim($_REQUEST['search_text']);
+
+  //  Serach Query
+  $query = db_select('users_transactions', 'users_transactions')->extend('PagerDefault');
+  $query->fields('users_transactions', array(
+    'order_id',
+    'nid',
+    'tid',
+    'uid',
+    'cost',
+    'payment_status',
+    'payment_method',
+    'order_date',
+    'transaction_id',
+    'shipping_info',
+    'ip_address',
+    'transaction_action',
+    'action_by',
+    'reason',
+    'action_date',
+    'client_request',
+    'requested_on',
+    'therapist',
+    'express_mail'
+  ));
+
+  $query->innerJoin('users_transactions_data', 'users_transactions_data', 'users_transactions_data.oid = users_transactions.order_id');
+  $query->fields('users_transactions_data', array(
+    'oid',
+    'termid',
+    'amount',
+    'notary_cost',
+    'sub_report',
+    'main_report_id',
+    'express_mail_status',
+    'notary_status',
+    'updated_on',
+    'updated_by',
+    'report_name',
+    'main_report',
+    'report_status'
+  ));
+
+  $query->innerJoin('users', 'u', 'u.uid = users_transactions.uid');
+  $query->innerJoin('users_roles', 'users_roles', 'u.uid = users_roles.uid');
+  $query->leftJoin('field_data_field_first_name', 'field_data_field_first_name', 'u.uid = field_data_field_first_name.entity_id');
+  $query->leftJoin('field_data_field_last_name', 'field_data_field_last_name', 'u.uid = field_data_field_last_name.entity_id');
+  $query->leftJoin('field_data_field_phone', 'field_data_field_phone', 'u.uid = field_data_field_phone.entity_id');
+  $query->leftJoin('field_data_field_address', 'field_data_field_address', 'u.uid = field_data_field_address.entity_id');
+  $query->leftJoin('field_data_field_city', 'field_data_field_city', 'u.uid = field_data_field_city.entity_id');
+  $query->leftJoin('field_data_field_state', 'field_data_field_state', 'u.uid = field_data_field_state.entity_id');
+  $query->leftJoin('field_data_field_zip', 'field_data_field_zip', 'u.uid = field_data_field_zip.entity_id');
+
+  $query->condition('users_transactions.nid', 356, '=');
+  $query->condition('users_roles.rid', 6, '=');
+  $query->condition('users_transactions_data.sub_report', 1, '=');    //  1   for subreport       //  0   for mainreport
+  //$query->condition('users_transactions_data.termid', array(21, 22, 23, 24), 'NOT IN');
+
+  if ($assessment_status <> '') {
+    $query->condition('users_transactions_data.report_status', $assessment_status, '=');
+  }
+  if ($report_by <> '') {
+    $query->condition('users_transactions_data.termid', $report_by, '=');
+  }
+  if ($search_by <> '') {
+    $query->condition($search_by, '%' . db_like($search_text) . '%', 'LIKE');
+  }
+  elseif ($search_text <> '') {
+    $query->condition(db_or()
+      ->condition('field_data_field_first_name.field_first_name_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_last_name.field_last_name_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('u.mail', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_phone.field_phone_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_address.field_address_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_city.field_city_value', '%' . db_like($search_text) . '%', 'LIKE')
+      ->condition('field_data_field_state.field_state_value', '%' . db_like($search_text) . '%', 'LIKE')
+    );
+  }
+
+  $result = $query->execute();
+  $data = $result->fetchAll();
+  return $data;
+}

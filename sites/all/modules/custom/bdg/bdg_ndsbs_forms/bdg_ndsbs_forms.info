@@ -1,0 +1,5 @@
+name = BDG NDSBS Forms
+description = Handles custom forms for ndsbs.com.
+core = 7.x
+version = 7.x-1.x-dev
+package = Buchanan Design Group

@@ -1,0 +1,5 @@
+name = Registration validation
+description = Create custom validation rules for new user registrations.
+core = 7.x
+
+configure = admin/config/people/registration-validation

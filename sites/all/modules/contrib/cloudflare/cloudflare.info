@@ -1,0 +1,12 @@
+name = Cloudflare
+description = "Administer your Cloudflare account by reporting Threats and Spam."
+package = "Spam control"
+core = 7.x
+files[] = cloudflare.module
+configure = admin/config/people/cloudflare
+; Information added by drupal.org packaging script on 2012-08-30
+version = "7.x-1.0-beta2+0-dev"
+core = "7.x"
+project = "cloudflare"
+datestamp = "1346285445"
+

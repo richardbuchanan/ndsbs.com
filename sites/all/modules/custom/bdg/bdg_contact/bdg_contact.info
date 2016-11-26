@@ -1,0 +1,6 @@
+name = BDG Contact
+description = A custom contact module for NDSBS, which enables the use of both personal and site-wide contact forms. This replaces core's contact module, so please disable and uninstall the Contact module first.
+package = Buchanan Design Group
+version = 7.x-1.x-dev
+core = 7.x
+configure = admin/structure/bdg-contact

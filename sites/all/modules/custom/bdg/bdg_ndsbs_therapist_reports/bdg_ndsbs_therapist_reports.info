@@ -1,0 +1,7 @@
+name = Therapist Reports
+description = Provides report handling between users and therapists.
+core = 7.x
+version = 7.x-1.x-dev
+package = Buchanan Design Group
+dependencies[] = views
+files[] = includes/views/views_handler_field_dollar.inc

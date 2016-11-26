@@ -1,0 +1,309 @@
+<?php
+/**
+ * @file
+ * Module name ndsbs_user_confirm.module
+ * Finoit Technologies
+ * Developer krishna@finoit.com
+ * Allows developer to customize the site's functionality.
+ */
+
+
+/**
+ *  Implementation of hook_menu()
+ *  Function ndsbs_user_confirm_menu() defined
+ *  Parameter no
+ */
+function ndsbs_user_confirm_menu() {
+    $items = array();
+    $items['user/resend/confirmation'] = array(
+        'title'           => 'Welcome',
+        'description'     => 'Welcome page for registerd user.',
+        'access callback' => 'user_is_logged_in',
+        'page callback'   => 'ndsbs_user_resend_confirmation_page',
+        'access arguments' => array('access content'),
+    );
+    $items['user/resend/confirmationmail'] = array(
+        'title'           => 'Welcome',
+        'description'     => 'Welcome page for registerd user.',
+        'access callback' => 'user_is_logged_in',
+        'page callback'   => '_ndsbs_user_resend_confirmation',
+        'access arguments' => array('access content'),
+    );
+    return $items;
+}
+
+/**
+ *  Implementation of hook_menu_alter()
+ *  Function ndsbs_user_confirm_menu_alter() defined
+ *  Parameter no
+ */
+function ndsbs_user_confirm_menu_alter(&$items) {
+    $items['user/reset/%/%/%'] = array(
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('ndsbs_user_confirm_signup', 2, 3, 4),
+        'access callback' => TRUE,
+    );
+}
+
+/**
+ *  Implementation of hook_theme()
+ *  Function ndsbs_custom_theme() defined
+ *  Parameter no
+ */
+function ndsbs_user_confirm_theme() {
+    $items = array();
+    $items['user_resend_confirmation_link'] = array(
+        'render element' => 'form',
+        'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+        'template' => 'user_resend_confirmation_link',
+    );
+    return $items;
+}
+
+/**
+ * Drupal core function used "function user_pass_reset()"
+ * Customised as per NDSBS requirement
+ * 
+ */
+function ndsbs_user_confirm_signup($form, &$form_state, $uid, $timestamp, $hashed_pass, $action = NULL) {
+    global $user;
+
+    // When processing the one-time login link, we have to make sure that a user
+    // isn't already logged in.
+    //if ($user->uid) {
+    $icust = 0;
+    if($icust == 1) {
+        // The existing user is already logged in.
+        if ($user->uid == $uid) {
+            drupal_set_message(t('You are logged in as %user. <a href="!user_edit">Change your password.</a>', array('%user' => $user->name, '!user_edit' => url("user/$user->uid/edit"))));
+        }
+        // A different user is already logged in on the computer.
+        else {
+            $reset_link_account = user_load($uid);
+            if (!empty($reset_link_account)) {
+                drupal_set_message(t('Another user (%other_user) is already logged into the site on this computer, but you tried to use a one-time link for user %resetting_user. Please <a href="!logout">logout</a> and try using the link again.', array('%other_user' => $user->name, '%resetting_user' => $reset_link_account->name, '!logout' => url('user/logout'))));
+            } else {
+                // Invalid one-time link specifies an unknown user.
+                drupal_set_message(t('The one-time login link you clicked is invalid.'));
+            }
+        }
+        drupal_goto('user/' . $user->uid);
+    } else {
+        // Time out, in seconds, until login URL expires. Defaults to 24 hours =
+        // 86400 seconds.   //  Customized to 48 hours that is 172800 seconds
+        $timeout = variable_get('user_password_reset_timeout', 172800);
+        $current = REQUEST_TIME;
+        // Some redundant checks for extra security ?
+        $users = user_load_multiple(array($uid), array('status' => '1'));
+        if ($timestamp <= $current && $account = reset($users)) {
+            // No time out for first time login.
+            //if ($account->login && $current - $timestamp > $timeout) {
+            if ($current - $timestamp > $timeout) {
+                //  Custom CHK made by Krishna Kumar
+                $count_result = user_confirmed_account_check($user->uid);
+                if($count_result >= 1) {
+                    drupal_set_message(t('It seems that you are trying to verify an account which has been already verified and you are eligible to use all NDSBS services. <br />If you come across any issue then please drop us a mail to support@ndsbs.com or call at 614.888.7274. We are available to help you.'));
+                    drupal_goto('user/password/active');
+                } else {
+                    //drupal_set_message(t('Account Activation Link Has Expired.<br /><br />It seems that you are trying to use a account activation link which has expired. Please use the form below to request a new activation link. It will be sent to the email address with which you have registered.'));
+                    drupal_goto('user/password/expire');
+                }
+                //drupal_goto('user/password');
+            } elseif ($account->uid && $timestamp >= $account->login && $timestamp <= $current && $hashed_pass == user_pass_rehash($account->pass, $timestamp, $account->login)) {
+                // First stage is a confirmation form, then login
+                if ($action == 'login') {
+                    watchdog('user', 'User %name used one-time login link at time %timestamp.', array('%name' => $account->name, '%timestamp' => $timestamp));
+                    // Set the new user.
+                    $user = $account;
+                    // user_login_finalize() also updates the login timestamp of the
+                    // user, which invalidates further use of the one-time login link.
+                    user_login_finalize();
+
+                    //  Custom CHK made by Krishna Kumar
+                    $count_result = user_confirmed_account_check($user->uid);
+                    if($count_result >= 1) {
+                        drupal_set_message(t('It seems that you are trying to verify an account which has been already verified and you are eligible to use all NDSBS services. <br />If you come across any issue then please drop us a mail to support@ndsbs.com or call at 614.888.7274. We are available to help you.'));
+                    } else {
+                        //drupal_set_message(t('Account Activation Link Has Expired.<br /><br />It seems that you are trying to use a account activation link which has expired. Please use the form below to request a new activation link. It will be sent to the email address with which you have registered.'));
+                    }
+                    // Let the user's password be changed without the current password check.
+                    $token = drupal_hash_base64(drupal_random_bytes(55));
+                    $_SESSION['pass_reset_' . $user->uid] = $token;
+                    drupal_goto('user/' . $user->uid . '/edit', array('query' => array('pass-reset-token' => $token)));
+                } else {
+                    if(arg(5) == 'forgot') {
+                        //  Generate a unique link for password reset
+                        
+                        drupal_goto('user/reset/password/'.$account->uid.'/'.$timestamp.'/'.$hashed_pass);
+                    } else {
+                        
+                        //  modified on 17/09/2012
+                        $user = $account;
+                        user_login_finalize();
+
+                        //  custom function created to update the database
+                        _ndsbs_user_signup_confirmation($uid, $user);
+                        session_start();
+                        $_SESSION['user_verified'] = 'yes';
+                        //  After successfull confirmation redirect to custpom welcome page
+                        //  drupal_goto("user/reset/$uid/$timestamp/$hashed_pass/login");
+                        drupal_goto("user/welcome");
+                    }
+                }
+            } else {
+                //  Custom CHK made by Krishna Kumar
+                $count_result = user_confirmed_account_check($user->uid);
+                if($count_result >= 1) {
+                    drupal_set_message(t('It seems that you are trying to verify an account which has been already verified and you are eligible to use all NDSBS services. <br />If you come across any issue then please drop us a mail to support@ndsbs.com or call at 614.888.7274. We are available to help you.'));
+                    drupal_goto('user/password/active');
+                } else {
+                    //drupal_set_message(t('Account Activation Link Has Expired.<br /><br />It seems that you are trying to use a account activation link which has expired. Please use the form below to request a new activation link. It will be sent to the email address with which you have registered.'));\
+                    drupal_goto('user/password/expire');
+                }
+                //drupal_goto('user/password');
+            }
+        } else {
+            // Deny access, no more clues.
+            // Everything will be in the watchdog's URL for the administrator to check.
+            drupal_access_denied();
+        }
+    }
+}
+
+/**
+ * Implementation of function _ndsbs_user_signup_confirmation
+ * Parameter: user id
+ * Desc: Save the record into the database with status 1
+ */
+function _ndsbs_user_signup_confirmation($uid, $user) {
+//        ndsbs_user_confirm_welcome_message($user);
+
+    //  Function called to check that user has already confirmed their account or not
+    $count_result = user_confirmed_account_check($uid);
+    
+    //  If not confirmed then save into the database
+    if ($count_result != 1) {
+        //  SEND WELCOME MAIL AND REDIRECT TO WELCOME PAGE
+        //ndsbs_user_confirm_welcome_message($user);
+     
+        $data = db_insert('users_confirm')
+                        ->fields(array('user_uid' => $uid,
+                                    'ap_uid' => 1,
+                                    'confirm_status' => 1,
+                                ))
+                        ->execute();
+    }
+
+    return;
+}
+
+/**
+ * Implementation of function user_confirmed_account_check
+ * Parameter: user id
+ * Desc: To check that user has confirmed or verified his account or not
+ */
+function user_confirmed_account_check($uid) {
+    //  Check that user has already confirmed their account or not
+    $result = db_select('users_confirm', 'uc')
+                        ->fields('uc')
+                        ->condition('user_uid', $uid, '=')
+                        ->execute()
+                        ->fetchAll();
+    $count_result = count($result);
+    return $count_result;
+}
+
+/**
+ * Implementation of function ndsbs_user_confirm_welcome_message()
+ * Parameter: user id
+ * Desc: Save the record into the database with status 1
+ */
+function ndsbs_user_confirm_welcome_message($user) {
+    global $base_url;
+    $module = 'ndsbs_user_confirm';
+    $key = 'welcome_message';
+    $to = $user->mail;
+    $language = $user->language;
+    $message = drupal_mail($module, $key, $to, $language, $params = array(), $from = NULL, $send = FALSE);
+    
+    //  Creating the message body
+    $message['subject'] = 'Welcome to New Directions';
+    $message['body'] = array();
+    $message['body'][] = 'Welcome to New Directions <br /><br />';
+    $message['body'][] = 'Thanks for choosing us to assist with your assessment or counseling needs. We would like to be of assistance in any way we can and hope you have a positive and rewarding experience with our team.<br />';
+    $message['body'][] = 'You may contact us directly at 614-888-7274 (9-5 EST) or email us at info@ndsbs.com.<br />';
+    $message['body'][] = 'We look forward to serving you!<br />';
+    $message['body'][] = 'You may also review our <a href="'.$base_url.'/terms-of-service">Terms Of Services</a> and <a href="'.$base_url.'/hippa">Privacy Policy</a> here<br /><br />';
+    $message['body'][] = 'The New Directions Team';
+    $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
+
+    // Retrieve the responsible implementation for this message.
+    $system = drupal_mail_system($module, $key);
+ 
+    // Format the message body.
+    $message = $system->format($message);
+ 
+    // Send e-mail.
+    $message['result'] = $system->mail($message);
+    watchdog($module, 'Unable to send the email hook_welcome_message', array(), WATCHDOG_NOTICE);
+}
+
+/**
+ * Implementation of ndsbs_user_resend_confirmation_page() 
+ * function is used to return the theme
+ */
+function ndsbs_user_resend_confirmation_page() {
+    return theme('user_resend_confirmation_link');
+}
+
+/**
+ * Implementation of _ndsbs_user_resend_confirmation() 
+ * function is used to resend the confirmation email to user
+ */
+function _ndsbs_user_resend_confirmation() {
+    global $user;
+
+    //  Function called to check that user has already confirmed their account
+    $count_result = user_confirmed_account_check($user->uid);
+
+    if($count_result < 1) {
+        $account = user_load(array('uid' => $user->uid));
+        $op = 'password_reset';
+        //$cust_ndsbs_var = 1;
+        _user_mail_notify($op, $account, NULL, 1);
+        drupal_set_message('Confirmation email sent successfully.');
+        drupal_goto('user/resend/confirmation');
+    } else {
+        drupal_set_message('Your account is already confirmed and activated with NDSBS.');
+        drupal_goto('user/resend/confirmation/1');
+    }
+}
+
+/**
+ *  Implementation of hook_form_alter()
+ *  Function ndsbs_user_confirm_form_alter() defined
+ *  Parameter no
+ */
+function ndsbs_user_confirm_form_alter(&$form, $form_state, $form_id) {
+    if($form_id == 'user_login') {
+        $form['#submit'][] = 'ndsbs_user_confirm_user_login_form_submit';
+    }
+}
+
+/**
+ *  Function ndsbs_user_confirm_user_login_form_submit() defined
+ *  Redirect to user to the defined page if account is actvitated or not
+ */
+function ndsbs_user_confirm_user_login_form_submit($form, &$form_state) {
+    global $user;
+    $_SESSION['user_verified'] = '';
+    //  Function called to check that user has already confirmed their account
+    $count_result = user_confirmed_account_check($user->uid);
+    if($count_result < 1) {
+        //  Custom Session created To check that user has verified his account or not
+        $_SESSION['user_verified'] = 'no';
+        $form_state['redirect'] = 'user/resend/confirmation';
+    } else {
+        $form_state['redirect'] = 'user/';
+    }
+}

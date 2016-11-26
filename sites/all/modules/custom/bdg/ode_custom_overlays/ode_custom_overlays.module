@@ -1,0 +1,32 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+/*function ode_custom_overlays_menu() {
+  $items = array();
+  $items['user/%user/additional-information'] = array(
+     //'page callback'    => 'ode_custom_overlays_page',
+     'access arguments' => array('access content'),
+     'type'             => MENU_NORMAL_ITEM,
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_admin_paths_alter().
+ */
+function ode_custom_overlays_overlay_paths() {
+  $paths = array(
+    'user/*/additional-information' => TRUE
+  );
+  return $paths;
+}
+
+/**
+ * page callback
+ 
+ function ode_custom_overlays_page(){
+    $output = 'your page content';
+    return $output;
+}*/

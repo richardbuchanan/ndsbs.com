@@ -1,0 +1,18 @@
+name = Coeus Admin
+description = The Coeus Administration Theme extends the core Coeus theme for backend uses. This includes very minimized temlpates to remove unneeded/unwanted blocks and regions. Our goal is to make the admin interfance as easy to use as possible, with use of various color scheme to help differentiate sections in the backend.
+version = 7.x-1.0
+core = 7.x
+base theme = coeus
+
+; Stylesheets
+stylesheets[screen][] = css/reset.css
+stylesheets[screen][] = css/style.css
+
+; Contrib Module Admin Styles
+stylesheets[screen][] = css/contrib.css
+
+; Install and Maintenance Pages
+stylesheets[all][] = css/coeus_admin.css
+
+regions[content] = Content
+regions[help] = Help

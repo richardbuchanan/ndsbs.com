@@ -1,0 +1,6 @@
+name = BDG NDSBS Views
+description = Exposes custom tables to the Views module.
+dependencies[] = views
+package = Buchanan Design Group
+version = VERSION
+core = 7.x

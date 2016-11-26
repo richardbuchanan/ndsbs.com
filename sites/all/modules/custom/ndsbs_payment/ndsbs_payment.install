@@ -1,0 +1,9 @@
+<?php
+
+function ndsbs_payment_enable() {
+  // mailsystem_set(array('ndsbs_payment' =>'NDSBS_PaymentMailSystem'));
+}
+
+function ndsbs_payment_disable() {
+  // mailsystem_clear(array('ndsbs_payment' => 'NDSBS_PaymentMailSystem'));
+}

@@ -1,0 +1,181 @@
+<?php
+
+/**
+ * @file
+ * Module name ndsbs_paypal_payment.module
+ * Finoit Technologies
+ * Developer krishna@finoit.com
+ * Allows developer to customize the site's functionality.
+ * Reference module to paypal_api.module
+ */
+
+/**
+ *  Implementation of hook_menu()
+ *  Function ndsbs_paypal_payment_menu() defined
+ *  Parameter no
+ */
+function ndsbs_paypal_payment_menu() {
+    $items = array();
+    $items['payment/paypal'] = array(
+        'title' => 'Payment Testing',
+        'description' => 'Payment Testing.',
+        'page callback' => '_payment_testing',
+        'access arguments' => array('access content'),
+    );
+
+    $items['payment/success'] = array(
+        'title' => 'Payment Success',
+        'description' => 'Payment Received.',
+        'access callback' => 'user_is_logged_in',
+        'page callback' => '_paypal_payment_success',
+        'access arguments' => array('access content'),
+    );
+
+    $items['payment/error'] = array(
+        'title' => 'Payment Error',
+        'description' => 'Payment Error.',
+        'access callback' => 'user_is_logged_in',
+        'page callback' => '_paypal_payment_error',
+        'access arguments' => array('access content'),
+    );
+
+    return $items;
+}
+
+/**
+ *  Implementation of hook_theme()
+ *  Function ndsbs_paypal_payment_theme() defined
+ *  Parameter no
+ */
+function ndsbs_paypal_payment_theme() {
+    $items = array();
+    $items['paypal_payment_success'] = array(
+        'render element' => 'form',
+        'template' => 'paypal_payment_success',
+    );
+
+    $items['paypal_payment_error'] = array(
+        'render element' => 'form',
+        'template' => 'paypal_payment_error',
+    );
+    return $items;
+}
+
+/**
+ * Function get_paypal_button_for_payment() Implemented
+ * for getting the paypal button
+ */
+function get_paypal_button_for_payment($nid) {
+    require_once DRUPAL_ROOT . '/' . 'sites/all/modules/custom/paypal_api/paypal_api.pages.inc';
+    //  nid is passed as an argument two
+    print paypal_api_payment('instance', $nid);
+}
+
+/**
+ * Function _paypal_payment_success() implemented
+ */
+function _paypal_payment_success() {
+    return theme('paypal_payment_success');
+}
+
+/**
+ * Function _paypal_payment_error() implemented
+ */
+function _paypal_payment_error() {
+    return theme('paypal_payment_error');
+}
+
+/**
+ * hook_paypal_api_presale() Implemented
+ * Custom payment hook define to change the amount at run time
+ * This function will change the amount of the node
+ * Reference file for paypal is paypal_api.pages.inc    L:200
+ */
+function ndsbs_paypal_payment_paypal_api_presale($values, $op, $bundle, $nid) {
+    $shipping_info = '';
+    $data_term_str = '';
+    $main_report_id = '';
+    $tid = '';
+    //  Call a function here and get updated amount of the service
+    //  Shipping information and term id of the service
+    
+    $data = get_cart_items();
+    $i = 1;
+    /////////////////////////////////////////////////////////////////////07/01/2012
+    foreach($data as $rec) {
+        if($i == 1) {
+            //  Function call to chk that sub service is already purchased or not
+            $data_subreport_term = check_user_purchased_subreport_term($rec->nid, 1, 1);
+            foreach($data_subreport_term as $data_subreport) {
+                $sub_purchased_term[] = $data_subreport->termid;
+            }
+        }
+        $i++;
+        
+        $term_data = taxonomy_term_load($rec->tid);
+        
+        //  Amount Calculation START
+        if($rec->sub_report == 0) {
+            $custom_special_amount = get_special_assessment_custom_amount($rec->nid);
+            if($custom_special_amount > 0) {
+                $service_amount_main_service = $custom_special_amount;
+            } else {
+                $service_amount_main_service = $term_data->field_assessment_amount['und'][0]['value'];
+            }
+            //  User is purchasing main report
+            //$service_amount_main_service = $term_data->field_assessment_amount['und'][0]['value'];
+            $tmp_tid_cost[$rec->tid]['amount'] = $service_amount_main_service;
+            $tmp_tid_cost[$rec->tid]['sub_report'] = 0;
+        } else {
+            $node_load = node_load($rec->nid);
+            if($node_load->type != 'state_form_request') {
+                if(in_array($rec->tid, $sub_purchased_term)) {
+                    $service_amount = 0;
+                } else {
+                    //  User is purchasing sub report
+                    $service_amount = $term_data->field_other_service_amount['und'][0]['value'];
+                }
+
+                //  User is purchasing sub report
+                $tmp_tid_cost[$rec->tid]['amount'] = $service_amount;
+                $tmp_tid_cost[$rec->tid]['sub_report'] = 1;
+                if($term_data->vocabulary_machine_name == 'assessment') {
+                    $main_report_id = $rec->tid;
+                }
+            } else {
+                $service_amount = $node_load->field_state_form_amount['und'][0]['value'];
+            }
+        }
+        
+        $tmp_tid_cost[$rec->tid]['notary_amount'] = $rec->notary_amount;
+        $shipping_info = $rec->shipping_address;
+        
+        $amount = $amount + $service_amount_main_service + $service_amount + $rec->notary_amount;
+        //  Amount Calculation END
+
+        $tid .= '-' . $rec->tid;
+        $nid = $rec->nid;
+        $express_mail = $rec->express_mail;
+    }
+    /////////////////////////////////////////////////////////////////////07/01/2012
+    //$amount = get_purchased_service_amount($tid);
+    
+    //  Convert term id and cost array into string
+    $data_term_str = serialize($tmp_tid_cost);
+    
+    
+    //  Assign values to the paypal api
+    $values['amount'] = $amount + $express_mail;     // Here will be the current amount of the service
+    $values['custom'] = $shipping_info . '-||-' . $data_term_str . '-||-' . $main_report_id . '-||-' . $express_mail;
+    //$values['item_number'] = $nid . $tid;     //  Can not over ridden
+    
+    return $values;
+}
+
+/**
+ * Function is only for testing perpose
+ * 
+ */
+function _payment_testing() {
+    get_paypal_button_for_payment(155);
+}

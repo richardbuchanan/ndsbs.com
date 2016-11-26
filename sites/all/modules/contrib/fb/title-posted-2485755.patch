@@ -1,0 +1,13 @@
+diff --git a/fb_post.module b/fb_post.module
+index 849359e..a7b07d0 100644
+--- a/fb_post.module
++++ b/fb_post.module
+@@ -147,7 +147,7 @@ function fb_post_publish_node($options, $node) {
+       'message' => $options['message'],
+       'link' => $node_url,
+       'name' => $node->title,
+-      'description' => $node->title,
++      'description' => $node->summary,
+       'actions' => json_encode(array(
+                                  'name' => 'View More',
+                                  'link' => $node_url,

@@ -1,0 +1,397 @@
+<?php
+/**
+ * @file
+ * Module name ndsbs_assessment.module
+ * Finoit Technologies
+ * Developer krishna@finoit.com
+ * Allows developer to customize the site's functionality.
+ */
+
+
+/*
+ *  Implementation of hook_menu()
+ *  Function ndsbs_assessment_menu() defined
+ *  Parameter no
+ */
+function ndsbs_assessment_menu() {
+  $items = array();
+  $items['admin/all/assessment'] = array(
+    'title' => 'All Assessments',
+    'description' => 'List All Assessments.',
+    'access callback' => 'admin_request_permission',
+    'page callback' => '_list_all_assessment',
+    'access arguments' => array('access content'),
+  );
+
+  $items['assessment/getprice'] = array(
+    'title' => 'Get Assessment',
+    'description' => 'Get Assessment price.',
+    'access callback' => 'admin_request_permission',
+    'page callback' => '_get_assessment_price',
+    'access arguments' => array('access content'),
+  );
+
+  $items['otherservices/getprice'] = array(
+    'title' => 'Get Assessment',
+    'description' => 'Get Assessment price.',
+    'access callback' => 'admin_request_permission',
+    'page callback' => '_get_otherservice_price',
+    'access arguments' => array('access content'),
+  );
+
+  return $items;
+}
+
+/*
+ *  Implementation of hook_theme()
+ *  Function ndsbs_assessment_theme() defined
+ *  Parameter no
+ */
+function ndsbs_assessment_theme() {
+  $items = array();
+
+  $items['assessment_node_form'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'assessment_node_form',
+  );
+
+  $items['list_all_assessment'] = array(
+    'render element' => 'assessment_data',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'list_all_assessment',
+  );
+
+  $items['list_other_services'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'list_other_services',
+  );
+
+  $items['other_services_node_form'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'other_services_node_form',
+  );
+
+  //  Page added for assessment Start
+  $items['page__assessment'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'page__assessment',
+  );
+  //  Page added for assessment End
+
+  return $items;
+}
+
+/**
+ * Function admin_request_permission() define.
+ * function implemented for custom permission
+ * Only Super admin
+ * are allowed to access this menu or this page
+ */
+function admin_request_permission() {
+  global $user;
+  if (in_array('super admin', $user->roles)) {
+    return TRUE;
+  }
+  else {
+    return FALSE;
+  }
+}
+
+/**
+ * Function _list_all_assessment() define to call the theme
+ */
+function _list_all_assessment() {
+  return theme('list_all_assessment');
+}
+
+/**
+ * Function get_all_assessment() define.
+ * function implemented for getting the all assessment created by Super Admin
+ */
+function get_all_assessment() {
+  $type = 'assessment';
+
+  //  Query to get the all node of paper work base on particular user
+  $result = db_select('node', 'n')
+    ->fields('n', array('nid'))
+    ->condition('n.type', $type, '=');
+  $result->innerJoin('field_data_field_assessment_title', 'assessment_title', 'assessment_title.entity_id = n.nid');
+  $result->orderBy('assessment_title.field_assessment_title_value', 'ASC');
+  $excute = $result->execute();
+  $result = $excute->fetchAll();
+  return $result;
+}
+
+/**
+ * Function get_service_amount() define.
+ * function implemented for getting the Term information
+ */
+function get_service_amount($tid) {
+  $term = taxonomy_term_load($tid);
+  if (isset($term->field_assessment_amount['und'])) {
+    $amount = $term->field_assessment_amount['und'][0]['value'];
+    return $amount;
+  }
+}
+
+/**
+ * Function _get_assessment_price() define.
+ * function implemented for getting the Term information
+ */
+function _get_assessment_price() {
+  $postdata = $_REQUEST['postdata'];
+  print $amount = get_service_amount($postdata);
+}
+
+/**
+ * Function get_otherservice_amount() define.
+ * function implemented for getting the Term information
+ */
+function get_otherservice_amount($tid) {
+  $term = taxonomy_term_load($tid);
+  $amount = $term->field_other_service_amount['und'][0]['value'];
+  return $amount;
+}
+
+/**
+ * Function _get_otherservice_price() define.
+ * function implemented for getting the Term information
+ */
+function _get_otherservice_price() {
+  $postdata = $_REQUEST['postdata'];
+  print $amount = get_otherservice_amount($postdata);
+}
+
+/**
+ * Function get_assessment_information() define.
+ * function implemented for getting the all assessment created by Super Admin
+ */
+function get_assessment_information($assessment_title_id = NULL) {
+  if ($assessment_title_id == '') {
+    $nid = arg(3);
+  }
+  else {
+    $nid = $assessment_title_id;
+  }
+
+  $type = 'assessment';
+  //  Query to get the all node of paper work base on particular user
+  $result = db_select('node', 'n')
+    ->fields('n', array('nid'))
+    ->condition('n.type', $type, '=')
+    ->condition('n.nid', $nid, '=')
+    ->orderBy('n.created', 'DESC')
+    ->execute()
+    ->fetchAll();
+  return $result;
+}
+
+/**
+ * Function get_service_title() define.
+ * function implemented for getting the Term title
+ */
+function get_service_title($tid) {
+  $term = taxonomy_term_load($tid);
+  return $term->name;
+}
+
+/**
+ * Implements hook_node_insert() implemented to
+ * Import the csv for Questionnaire
+ */
+function ndsbs_assessment_node_insert($node) {
+  if ($node->type == 'assessment') {
+    //  First file will be uploaded into the database and at
+    //  Location --> \sites\default\files\questionnaire
+    $file_id = $node->field_upload_questionnaire['und'][0]['fid'];
+    if ($file_id <> '') {
+      $result = db_select('file_managed', 'f')
+        ->fields('f', array('filename', 'uri', 'filemime'))
+        ->condition('f.fid', $file_id, '=')
+        ->execute()
+        ->fetchAll();
+      foreach ($result as $file_info) {
+        $file_name = $file_info->uri;
+        //  Import csv file into the custom table with node id (Assessment)
+
+        if (($handle = fopen("$file_name", "r")) !== FALSE) {
+          $inc = 0;
+          while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+            $num = count($data);
+            if ($inc != 0) {
+              $tmpRecordData = trim($data[0]);
+              $tmpRecordData = str_replace('"', ' ', $tmpRecordData);
+              $question = $tmpRecordData;     //  Question
+              $answer = trim($data[1]);     //  Answer options
+              $type = trim($data[2]);     //  type
+              $other = trim($data[3]);     //  Other Title //  Question also having the short answer
+              if ($question <> '' && $type <> '') {
+                //  Insert records into the question table
+                $qry_question = db_insert('assessment_question_node')
+                  ->fields(array(
+                    'question' => $question,
+                    'type' => $type,
+                    'nid' => $node->nid,
+                    'other' => $other,
+                    'qsequence' => $inc
+                  ))
+                  ->execute();
+                $last_insert_qid = $qry_question;
+              }
+
+              if ($answer <> '') {
+                //  Explode the answers
+                $ans_arr = explode('||', $answer);
+                for ($i = 0; $i < count($ans_arr); $i++) {
+                  //  parse the data
+                  $answer_data = trim($ans_arr[$i]);
+                  if ($answer_data <> '') {
+                    //  Insert records into the answer table
+                    $qry_question = db_insert('assessment_answer_node')
+                      ->fields(array(
+                        'qid' => $last_insert_qid,
+                        'answers' => $answer_data
+                      ))
+                      ->execute();
+                  }
+                }
+              }
+              elseif ($last_insert_qid > 0) {
+                $qry_question = db_insert('assessment_answer_node')
+                  ->fields(array('qid' => $last_insert_qid, 'answers' => ''))
+                  ->execute();
+              }
+            }
+            $inc++;
+          }
+          fclose($handle);
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_node_update() implemented to
+ * Import the csv for Questionnaire
+ */
+function ndsbs_assessment_node_update($node) {
+  // pass TRUE in node_load() to get the non cached data
+  $node = node_load($node->nid, NULL, TRUE);
+  if ($node->type == 'assessment') {
+    //  First file will be uploaded into the database and at
+    $file_id = isset($node->field_upload_questionnaire['und']) ? $node->field_upload_questionnaire['und'][0]['fid'] : '';
+    if ($file_id <> '') {
+      //  First Delete the previous questions and answers then import again in case of UPDATE node
+      //  Query to delete
+      $args = array(':nid' => $node->nid);
+      db_query("DELETE q, a FROM {assessment_question_node} q INNER JOIN {assessment_answer_node} a ON q.qid = a.qid WHERE q.nid = :nid", $args);
+
+      $result = db_select('file_managed', 'f')
+        ->fields('f', array('filename', 'uri', 'filemime'))
+        ->condition('f.fid', $file_id, '=')
+        ->execute()
+        ->fetchAll();
+      foreach ($result as $file_info) {
+        $file_name = $file_info->uri;
+        //  Import csv file into the custom table with node id (Assessment)
+
+        if (($handle = fopen("$file_name", "r")) !== FALSE) {
+          $inc = 0;
+          while (($data = fgetcsv($handle, 0, ",")) !== FALSE) {
+            $num = count($data);
+            if ($inc != 0) {
+              $tmpRecordData = trim($data[0]);
+              $tmpRecordData = str_replace('"', ' ', $tmpRecordData);
+              $question = $tmpRecordData;     //  Question
+              $answer = trim($data[1]);     //  Answer options
+              $type = trim($data[2]);     //  type
+              $other = trim($data[3]);     //  Other Title //  Question also having the short answer
+
+              if ($question <> '' && $type <> '') {
+                //  Insert records into the question table
+                $fields = array(
+                  'question' => $question,
+                  'type' => $type,
+                  'nid' => $node->nid,
+                  'other' => $other,
+                  'qsequence' => $inc,
+                );
+                $qry_question = db_insert('assessment_question_node')
+                  ->fields($fields)
+                  ->execute();
+                $last_insert_qid = $qry_question;
+              }
+
+              if ($answer <> '') {
+                //  Explode the answers
+                $ans_arr = explode('||', $answer);
+                for ($i = 0; $i < count($ans_arr); $i++) {
+                  //  parse the data
+                  $answer_data = trim($ans_arr[$i]);
+                  if ($answer_data <> '') {
+                    //  Insert records into the answer table
+                    $qry_question = db_insert('assessment_answer_node')
+                      ->fields(array(
+                        'qid' => $last_insert_qid,
+                        'answers' => $answer_data
+                      ))
+                      ->execute();
+                  }
+                }
+              }
+              elseif ($last_insert_qid > 0) {
+                $qry_question = db_insert('assessment_answer_node')
+                  ->fields(array('qid' => $last_insert_qid, 'answers' => ''))
+                  ->execute();
+              }
+            }
+            $inc++;
+          }
+          fclose($handle);
+        }
+      }
+    }
+  }
+}
+
+function _payment_misc_services() {
+  return drupal_get_form('ndsbs_payment_misc_services_form');
+}
+
+function ndsbs_payment_misc_services_form($form, &$form_state) {
+  $_SESSION['misc_service_price'] = 0;
+  $form = array();
+  $node = node_load('3965');
+  $section_one = isset($node->field_asmentinfo_section_one['und']) ? $node->field_asmentinfo_section_one['und'][0]['value'] : '';
+  $section_two = isset($node->field_asmentinfo_section_two['und']) ? $node->field_asmentinfo_section_two['und'][0]['value'] : '';
+
+  $form['section_one'] = array(
+    '#markup' => $section_one,
+  );
+  $form['misc_service_price'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Miscellaneous Service Fee'),
+    '#default_value' => number_format($_SESSION['misc_service_price'], 2),
+    '#description' => t('Enter the Amount Quoted by Evaluator or Customer Service'),
+  );
+  $form['section_two'] = array(
+    '#markup' => $section_two,
+  );
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Purchase Now'),
+  );
+
+  return $form;
+}
+
+function ndsbs_payment_misc_services_form_submit($form, &$form_state) {
+  $service_price = $form_state['input']['misc_service_price'];
+  $_SESSION['misc_service_price'] = $service_price;
+  drupal_goto('user/cart/nid/3965/tid/50');
+}

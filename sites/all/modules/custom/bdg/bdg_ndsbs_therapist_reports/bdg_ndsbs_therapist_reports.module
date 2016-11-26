@@ -1,0 +1,27 @@
+<?php
+
+/**
+ * Implements hook_views_handlers().
+ */
+function bdg_ndsbs_therapist_reports_views_handlers() {
+  return array(
+    'info' => array(
+      'path' => drupal_get_path('module', 'bdg_ndsbs_therapist_reports') . '/includes/views',
+    ),
+    'handlers' => array(
+      'views_handler_field_dollar' => array(
+        'parent' => 'views_handler_field',
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function bdg_ndsbs_therapist_reports_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'bdg_ndsbs_therapist_reports') . '/includes/views',
+  );
+}

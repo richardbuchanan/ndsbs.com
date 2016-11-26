@@ -1,0 +1,140 @@
+<?php
+//  $Id: ode_questionnaire.install,v 1.8 2012/12/26 10:42:09 krishna@finoit.com, Finoit Technologies Exp$
+
+/**
+ * Implementation of hook_schema().
+ */
+function ode_questionnaire_schema() {
+    return array(
+    'assessment_qa_details' => array(
+      'description' => 'Stores QA details data.',
+      'fields'	=> array(
+        'id' => array(
+          'description' => 'Id Primary key.',
+          'type' => 'serial',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ),
+        'user_id' => array(
+          'description' => 'user id',
+          'type'     => 'int',
+    	  'default'	 => NULL
+    	  ),
+        'assessment_id' => array(
+          'description' => 'Assessment node id',
+          'type'     => 'int',
+          'default'	 => NULL
+        ),
+        'confirm_status' => array(
+          'type'     => 'int',
+          'length'	 => 5,
+          'size' => 'small',
+          'default'	 => NULL
+    	  ),
+        'total_attempts' => array(
+          'type'     => 'int',
+          'length'	 => 5,
+          'size' => 'small',
+          'default'	 => NULL
+    	  ),
+    	'total_time' => array(
+          'type'     => 'int',
+          'length'	 => 11,
+          'default'	 => NULL
+    	  ),
+        'time_consumed' => array(
+          'type'     => 'int',
+          'length'	 => 11,
+          'default'	 => NULL
+    	  ),
+        'questionnaire_startime' => array(
+          'description' => 'used for 1 hr completion chk',
+          'type'     => 'int',
+          'length'	 => 11,
+          'default'	 => NULL
+    	  ),
+        'timestamp' => array(
+          'description' => 'questionnaire attempted on mean first start',
+          'type'     => 'int',
+          'length'	 => 11,
+          'default'	 => NULL
+    	  ),
+        'evaluation' => array(
+          'description' => '1-submitted for evaluation',
+          'type'     => 'int',
+          'length'	 => 5,
+          'size' => 'small',
+          'default'	 => 0
+    	  ),
+    	),
+      'primary key'	=> array('id'),
+    ),
+    
+    //  Table second schema
+    'assessment_result' => array(
+      'description' => 'Stores result of the questionnaire given by the user.',
+      'fields'	=> array(
+        'id' => array(
+          'description' => 'Id Primary key.',
+          'type' => 'serial',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ),
+        'uid' => array(
+          'description' => 'user id',
+          'type'     => 'int',
+          'length'	 => 11,
+    	  'default'	 => NULL
+    	),
+        'assessment_nid' => array(
+          'description' => 'Assessment node id',
+          'type'     => 'int',
+          'length'	 => 11,
+          'default'	 => NULL
+        ),
+        'question_id' => array(
+          'type'     => 'int',
+          'length'	 => 11,
+          'default'	 => NULL
+    	  ),
+        'answer_id' => array(
+          'type'     => 'varchar',
+          'length'	 => 255,
+          'default'	 => NULL
+    	  ),
+    	'others_reason' => array(
+          'type'     => 'varchar',
+          'length'	 => 255,
+          'default'	 => NULL
+    	  ),
+        'short_answer_textarea' => array(
+          'type'     => 'text',
+          'default'	 => NULL
+    	  ),
+        'qsequence' => array(
+          'type'     => 'int',
+          'length'	 => 11,
+          'default'	 => NULL
+    	  ),
+    	),
+      'primary key'	=> array('id'),
+    ),
+
+  );
+}
+
+/**
+ * No need to use hook_install() for D7
+ * Implementation of hook_install()
+ */
+//function ode_questionnaire_install() {
+//    drupal_install_schema('ode_questionnaire');
+//}
+
+/**
+ * No need to use hook_uninstall() for D7
+ * Implementation of hook_uninstall().
+ */
+//function ode_questionnaire_uninstall() {
+//    drupal_uninstall_schema('ode_questionnaire');
+//}

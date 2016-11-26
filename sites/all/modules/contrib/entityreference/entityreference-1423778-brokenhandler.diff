@@ -1,0 +1,31 @@
+diff --git a/entityreference.module b/entityreference.module
+index 80191d7..d4fc90c 100644
+--- a/entityreference.module
++++ b/entityreference.module
+@@ -173,7 +173,12 @@ function _entityreference_get_behavior_handler($behavior) {
+     ctools_include('plugins');
+     $class = ctools_plugin_load_class('entityreference', 'behavior', $behavior, 'class');
+ 
+-    $class = class_exists($class) ? $class : 'EntityReference_BehaviorHandler_Broken';
++    // Ensure the class is available, setting it as broken if it isn't.
++    if (!class_exists($class)) {
++      include_once(dirname(__FILE__) . '/plugins/behavior/abstract.inc');
++      $class = 'EntityReference_BehaviorHandler_Broken';
++    }
++
+     $object_cache[$behavior] = new $class($behavior);
+   }
+ 
+diff --git a/plugins/selection/EntityReference_SelectionHandler_Generic.class.php b/plugins/selection/EntityReference_SelectionHandler_Generic.class.php
+index 902c55c..0dded11 100644
+--- a/plugins/selection/EntityReference_SelectionHandler_Generic.class.php
++++ b/plugins/selection/EntityReference_SelectionHandler_Generic.class.php
+@@ -17,6 +17,8 @@ public static function getInstance($field, $instance = NULL, $entity_type = NULL
+     // Check if the entity type does exist and has a base table.
+     $entity_info = entity_get_info($target_entity_type);
+     if (empty($entity_info['base table'])) {
++      // Make sure the EntityReference_SelectionHandler_Broken class is available.
++      include_once(dirname(__FILE__) . '/abstract.inc');
+       return EntityReference_SelectionHandler_Broken::getInstance($field, $instance);
+     }
+ 

@@ -1,0 +1,812 @@
+<?php
+
+/**
+ * @file
+ * Module name ndsbs_payment.module
+ * Finoit Technologies
+ * Developer krishna@finoit.com
+ * Allows developer to customize the site's functionality.
+ */
+
+/**
+ * Implements hook_mail().
+ */
+function ndsbs_payment_mail($key, &$message, $params) {
+  $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
+  $message['subject'] = $params['subject'];
+  $message['body'][] = $params['body'];
+  switch ($key) {
+    case 'order_confirmation':
+      break;
+  }
+}
+
+/**
+ * Implements hook_mail_alter().
+ */
+function ndsbs_payment_mail_alter(&$message) {
+  $message['from'] = $message['headers']['From'] = '"New Directions Substance and Behavioral Services" <info@ndsbs.com>';
+}
+
+/*
+ *  Implementation of hook_menu()
+ *  Function ndsbs_custom_menu() defined
+ *  Parameter no
+ */
+function ndsbs_payment_menu() {
+  $items = array();
+  $items['user/payment'] = array(
+    'title' => 'Payment',
+    'description' => 'Payment.',
+    'access callback' => 'user_is_logged_in',
+    'page callback' => '_user_payment',
+    'access arguments' => array('access content'),
+  );
+  $items['user/payment/confirmation'] = array(
+    'title' => 'Payment Confirmation',
+    'description' => 'Payment confirmation.',
+    'access callback' => 'user_is_logged_in',
+    'page callback' => '_user_payment_confirmation',
+    'access arguments' => array('access content'),
+  );
+
+  $items['user/cart/nid/%/tid/%'] = array(
+    'title' => 'User Cart',
+    'description' => 'User Cart',
+    'access callback' => 'user_is_logged_in',
+    'page callback' => '_add_cart_items',
+    'page arguments' => array(3, 5),
+    'access arguments' => array('access content'),
+  );
+
+  $items['user/special/assessment'] = array(
+    'title'           => 'Special Assessments',
+    'description'     => 'List All Special Assessments.',
+    'access callback' => 'user_is_logged_in',
+    'page callback'   => '_user_special_assessment',
+    'access arguments' => array('access content'),
+  );
+
+  $items['special/assessment/payment'] = array(
+    'title'           => 'Special Assessments Payment',
+    'description'     => 'Special Assessments Payment.',
+    'access callback' => 'user_is_logged_in',
+    'page callback'   => '_user_special_assessment_payment_request',
+    'access arguments' => array('access content'),
+  );
+
+  $items['request/assessment/invoice'] = array(
+    'title'           => 'Assessment Invoices',
+    'description'     => 'Create Assessment Invoices.',
+    'access callback' => 'request_permission',
+    'page callback'   => '_request_assessment_invoice',
+    'access arguments' => array('access content'),
+  );
+
+  $items['request/assessment/createinvoice/%/%/%'] = array(
+    'title'           => 'Assessment Invoice',
+    'description'     => 'Create Assessment Invoice.',
+    'access callback' => 'request_permission',
+    'page callback'   => '_assessment_form_createinvoice',
+    'access arguments' => array('access content'),
+  );
+
+  $items['transaction/edit/%/%'] = array(
+    'title' => 'Edit Transaction',
+    'description' => 'Edit transaction.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('transaction_edit_form'),
+    'access callback' => TRUE
+  );
+
+  return $items;
+}
+
+/*
+ *  Implementation of hook_theme()
+ *  Function ndsbs_custom_theme() defined
+ *  Parameter no
+ */
+function ndsbs_payment_theme($existing, $type, $theme, $path) {
+  $items = array();
+  $items['payment'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates/custom',
+    'template' => 'payment',
+  );
+  $items['user_special_assessment'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'user_special_assessment',
+  );
+  $items['user_special_assessment_payment'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'user_special_assessment_payment',
+  );
+  $items['request_assessment_invoice'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'request_assessment_invoice',
+  );
+  $items['payment_confirmation'] = array(
+    'variables' => array(),
+  );
+
+  return $items;
+}
+
+function _user_payment() {
+  $return = TRUE;
+  $cart_items = get_cart_items();
+  $account = user_load($cart_items[0]->uid);
+  $order = node_load($cart_items[0]->nid);
+  return drupal_get_form('bluepay_payment_form', $order);
+}
+
+function _user_payment_confirmation() {
+  return theme('payment_confirmation');
+}
+
+/**
+ * Implementation of _user_special_assessment()
+ *
+ */
+function _user_special_assessment() {
+  return theme('user_special_assessment');
+}
+
+/**
+ * Implementation of _user_special_assessment_payment_request()
+ *
+ */
+function _user_special_assessment_payment_request() {
+  return theme('user_special_assessment_payment');
+}
+
+/**
+ * Function _request_assessment_invoice() define to call the theme
+ */
+function _request_assessment_invoice() {
+  return theme('request_assessment_invoice');
+}
+
+/**
+ * Function save_transaction_data() Implemented
+ * To save the orders into db
+ */
+function save_transaction_data($nid, $term_num, $uid, $amount, $rush_amount, $txn_id, $transaction_data, $payment_status, $shipping_info, $payment_method, $express_mail) {
+  $queryinsert = db_insert('users_transactions')
+    ->fields(array(
+      'nid' => $nid,
+      'tid' => $term_num,
+      'uid' => $uid,
+      'cost' => $amount,
+      'rush_cost' => $rush_amount,
+      'payment_status' => $payment_status,
+      'payment_method' => $payment_method,
+      'order_date' => time(),
+      'transaction_id' => $txn_id,
+      'shipping_info' => $shipping_info,
+      'express_mail' => $express_mail,
+      'ip_address' => ip_address(),
+      'transaction_data' => $transaction_data,
+
+      'transaction_action' => '0',
+      'action_by' => '0',
+      'reason' => '',
+      'action_date' => '0',
+      'client_request' => '0',
+      'requested_on' => '0',
+    ));
+
+  $order_id = $queryinsert->execute();
+
+  //  Change the payment status in case of purchased special assessment
+  $field_options = array();
+  $field_options['payment_status'] = $payment_status;
+  $result = db_update('assessment_special_request');
+  $result->fields($field_options);
+  $result->condition('nid', $nid, '=');
+  $result->condition('request_by', $uid, '=');
+  $result->condition('session_id', session_id(), '=');
+  $result->execute();
+
+  // Send order confirmation to client's email.
+  ndsbs_payment_order_confirmation_mail($order_id, $nid, $uid, $amount, $payment_status, $payment_method, $shipping_info, $rush_amount);
+
+  // If this is a rush order, send rush notification to staff.
+  if ($rush_amount && $_SERVER['HTTP_HOST'] != 'dev.ndsbs.com') {
+    ndsbs_rush_order_notification_mail($order_id, $nid, $uid, $amount, $payment_status, $payment_method, $shipping_info, $rush_amount);
+  }
+
+  return $order_id;
+}
+
+function delete_transaction_data($uid, $txn_id, $transaction_data, $payment_status) {
+
+}
+
+/**
+ * Function implemented to save record in to transaction table
+ *
+ * @param type $oid
+ * @param type $term_tid_cost
+ */
+function save_transaction_terms($oid, $main_report_id, $term_tid_cost, $uid, $payment_status) {
+  foreach($term_tid_cost as $key => $value) {
+    db_insert('users_transactions_data')
+      ->fields(array('oid' => $oid, 'termid' => $key, 'amount' => $value['amount'], 'notary_cost' => $value['notary_amount'], 'sub_report' => $value['sub_report'], 'main_report_id' => $main_report_id))
+      ->execute();
+
+    //  Change the stateform payment status
+    //  Status of the stateform will depend on the main report term is and state for term id
+    $stateform = update_stateform_payment_status_info_report($uid, $main_report_id, $key);
+    foreach($stateform as $data) {
+      $node_data = node_load($data->nid);
+      $node_data->field_state_form_payment_status['und'][0]['value'] = $payment_status;
+      $node_data->field_state_form_transid['und'][0]['value'] = $oid;
+      node_save($node_data);
+    }
+  }
+  return;
+}
+
+/**
+ * Function rush_order_notification_mail() implemented to send the
+ * notification mail to info@ndsbs.com.
+ *
+ * @param int $order_id
+ * @param int $nid
+ * @param int $uid
+ * @param float $amount
+ * @param int $payment_status
+ * @param string $payment_method
+ * @param string $shipping_info
+ */
+function ndsbs_rush_order_notification_mail($order_id, $nid, $uid, $amount, $payment_status, $payment_method, $shipping_info, $rush_amount) {
+  $user_information = user_load($uid);
+  $node_information = node_load($nid);
+  $rush_total = $rush_amount;
+  $grand_total = $amount + $rush_total;
+
+  $message_text = '<div class="container" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding-right: 15px;padding-left: 15px;margin-right: auto;margin-left: auto;"><div class="row" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;margin-right: -15px;margin-left: -15px;"><div class="col-xs-12" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;float: left;width: 100%;"><div style="margin-bottom: 15px; width: 100%; text-align: center;"><a href="https://www.ndsbs.com" class="navbar-brand" title="NDSBS.com"><img src="https://www.ndsbs.com/sites/ndsbs.com/themes/custom/bootstrap_ndsbs/logo.png" alt="NDSBS" height="65"></a></div><h3 class="text-center" style="color: #a94442;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;orphans: 3;widows: 3;page-break-after: avoid;font-family: inherit;font-weight: 500;line-height: 1.1;margin-top: 20px;margin-bottom: 10px;font-size: 32px;text-align: center;">Rush Order Received</h3><h3 class="text-center" style="color: #82796f;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;orphans: 3;widows: 3;page-break-after: avoid;font-family: inherit;font-weight: 500;line-height: 1.1;margin-top: 20px;margin-bottom: 10px;font-size: 24px;text-align: center;">ORDER NUMBER: ' . $order_id . '</h3><div class="table-responsive" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;min-height: .01%;overflow-x: auto;"><table class="table table-striped" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;border-spacing: 0;border-collapse: collapse!important;background-color: transparent;width: 100%;max-width: 100%;margin-bottom: 0;"><thead style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;display: table-header-group;"><tr style="background-color: #82796f;color: #e7e7e7;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><th colspan="2" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;text-align: left;line-height: 1.42857143;vertical-align: bottom;border-top: 1px solid #ddd;border-bottom: 2px solid #ddd;white-space: nowrap;;">Order details</th></tr></thead><tbody style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;"><tr style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><td style="width: 25%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">User:</td><td style="width: 75%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">' . $user_information->mail . '</td></tr><tr style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><td style="width: 25%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">Service purchased:</td><td style="width: 75%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">' . $node_information->field_assessment_title['und'][0]['value'] . '</td></tr><tr style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><td style="width: 25%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">Assessment amount:</td><td style="width: 75%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">$' . number_format($amount, 2) . '</td></tr><tr style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><td style="width: 25%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">Rush amount:</td><td style="width: 75%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">$' . number_format($rush_amount, 2) . '</td></tr><tr style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><td style="width: 25%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">Order total:</td><td style="width: 75%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">$' . number_format($grand_total, 2) . '</td></tr></tbody></table></div><div class="table-responsive" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;min-height: .01%;overflow-x: auto;"><table class="table table-striped" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;border-spacing: 0;border-collapse: collapse!important;background-color: transparent;width: 100%;max-width: 100%;margin-bottom: 0;"><thead style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;display: table-header-group;"><tr style="background-color: #82796f;color: #e7e7e7;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><th colspan="2" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;text-align: left;line-height: 1.42857143;vertical-align: bottom;border-top: 1px solid #ddd;border-bottom: 2px solid #ddd;white-space: nowrap;">Billing details</th></tr></thead><tbody style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;"><tr style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><td style="width: 25%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">Name:</td><td style="width: 75%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">' . $user_information->field_first_name['und'][0]['value'] . ' ' . $user_information->field_last_name['und'][0]['value'] . '</td></tr><tr style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><td style="width: 25%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">Address:</td><td style="width: 75%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;"><address style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;margin-bottom: 20px;font-style: normal;line-height: 1.42857143;">' . $user_information->field_address['und'][0]['value'] . '<br style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;">' . $user_information->field_city['und'][0]['value'] . ', ' . $user_information->field_state['und'][0]['value'] . ' ' . $user_information->field_zip['und'][0]['value'] . '</address></td></tr></tbody></table></div></div></div></div>';
+
+  $default_from = variable_get('site_mail', ini_get('sendmail_from'));
+  $module = 'ndsbs_payment';
+  $key = 'rush_order_notification_mail';
+  $to = $default_from;
+  $language = $user_information->language;
+  //$message = drupal_mail($module, $key, $to, $language, $params = array(), $from = isset($from) ? $from : $default_from, $send = FALSE);
+
+  $params = array(
+    'subject' => t('Order Confirmation mail from NDSBS'),
+    'body' => $message_text
+  );
+
+  drupal_mail('ndsbs_payment', 'rush_order_notification_mail', $to, language_default(), $params);
+}
+
+/**
+ * Function order_confirmation_mail() implemented to send the
+ * confiramtion mail to user
+ * @param int $order_id
+ * @param int $nid
+ * @param int $uid
+ * @param float $amount
+ * @param int $payment_status
+ * @param string $payment_method
+ * @param string $shipping_info
+ */
+function ndsbs_payment_order_confirmation_mail($order_id, $nid, $uid, $amount, $payment_status, $payment_method, $shipping_info, $rush_amount) {
+  $user_information = user_load($uid);
+  $node_information = node_load($nid);
+  $grand_total = $amount + $rush_amount;
+
+  $message_text = '<div class="container" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding-right: 15px;padding-left: 15px;margin-right: auto;margin-left: auto;"><div class="row" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;margin-right: -15px;margin-left: -15px;"><div class="col-xs-12" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;float: left;width: 100%;"><div style="margin-bottom: 15px; width: 100%; text-align: center;"><a href="https://www.ndsbs.com" class="navbar-brand" title="NDSBS.com"><img src="https://www.ndsbs.com/sites/ndsbs.com/themes/custom/bootstrap_ndsbs/logo.png" alt="NDSBS" height="65"></a></div><h3 class="text-center" style="color: #82796f;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;orphans: 3;widows: 3;page-break-after: avoid;font-family: inherit;font-weight: 500;line-height: 1.1;margin-top: 20px;margin-bottom: 10px;font-size: 24px;text-align: center;">ORDER NUMBER: ' . $order_id . '</h3><div class="table-responsive" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;min-height: .01%;overflow-x: auto;"><table class="table table-striped" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;border-spacing: 0;border-collapse: collapse!important;background-color: transparent;width: 100%;max-width: 100%;margin-bottom: 0;"><thead style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;display: table-header-group;"><tr style="background-color: #82796f;color: #e7e7e7;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><th colspan="2" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;text-align: left;line-height: 1.42857143;vertical-align: bottom;border-top: 1px solid #ddd;border-bottom: 2px solid #ddd;white-space: nowrap;;">Order details</th></tr></thead><tbody style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;"><tr style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><td style="width: 25%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">User:</td><td style="width: 75%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">' . $user_information->mail . '</td></tr><tr style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><td style="width: 25%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">Service purchased:</td><td style="width: 75%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">' . $node_information->field_assessment_title['und'][0]['value'] . '</td></tr><tr style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><td style="width: 25%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">Assessment amount:</td><td style="width: 75%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">$' . number_format($amount, 2) . '</td></tr><tr style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><td style="width: 25%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">Rush amount:</td><td style="width: 75%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">$' . number_format($rush_amount, 2) . '</td></tr><tr style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><td style="width: 25%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">Order total:</td><td style="width: 75%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">$' . number_format($grand_total, 2) . '</td></tr></tbody></table></div><div class="table-responsive" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;min-height: .01%;overflow-x: auto;"><table class="table table-striped" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;border-spacing: 0;border-collapse: collapse!important;background-color: transparent;width: 100%;max-width: 100%;margin-bottom: 0;"><thead style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;display: table-header-group;"><tr style="background-color: #82796f;color: #e7e7e7;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><th colspan="2" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;text-align: left;line-height: 1.42857143;vertical-align: bottom;border-top: 1px solid #ddd;border-bottom: 2px solid #ddd;white-space: nowrap;">Billing details</th></tr></thead><tbody style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;"><tr style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><td style="width: 25%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">Name:</td><td style="width: 75%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">' . $user_information->field_first_name['und'][0]['value'] . ' ' . $user_information->field_last_name['und'][0]['value'] . '</td></tr><tr style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><td style="width: 25%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">Address:</td><td style="width: 75%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;"><address style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;margin-bottom: 20px;font-style: normal;line-height: 1.42857143;">' . $user_information->field_address['und'][0]['value'] . '<br style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;">' . $user_information->field_city['und'][0]['value'] . ', ' . $user_information->field_state['und'][0]['value'] . ' ' . $user_information->field_zip['und'][0]['value'] . '</address></td></tr></tbody></table></div></div></div></div>';
+
+  $params = array(
+    'subject' => t('Order Confirmation mail from NDSBS'),
+    'body' => $message_text
+  );
+
+  drupal_mail('ndsbs_payment', 'order_confirmation', $user_information->mail, language_default(), $params);
+}
+
+/**
+ * Function _add_cart_items() Implemented to
+ * save the items into the cart
+ */
+function _add_cart_items($nid, $tid) {
+  global $user;
+  //  First delete the cart items
+  delete_cart_items();
+  $queryinsert = db_insert('users_cart')
+    ->fields(array(
+      'uid' => $user->uid,
+      'nid' => $nid,
+      'tid' => $tid,
+      'sess_id' => session_id(),
+    ));
+  $queryinsert->execute();
+  drupal_goto('user/payment');
+}
+
+/**
+ *  Function implemented to get the cart items
+ */
+function get_cart_items() {
+  global $user;
+  $queryselect = db_select('users_cart', 'uc')
+    ->fields('uc', array('uid', 'nid', 'tid', 'notary_amount', 'shipping_address', 'sub_report', 'express_mail'))
+    ->condition('uc.uid', $user->uid, '=')
+    ->condition('uc.sess_id', session_id(), '=')
+    ->orderBy('cid', 'DESC');
+  $result = $queryselect->execute();
+  $data = $result->fetchAll();
+  return $data;
+}
+
+/**
+ *  Function delete_cart_items() Implemented
+ *  To delete the cart items
+ */
+function delete_cart_items() {
+  global $user;
+  $sess = session_id();
+  $num_deleted = db_delete('users_cart')
+    ->condition('uid', $user->uid)
+    ->condition('sess_id', $sess)
+    ->execute();
+  return;
+}
+
+/**
+ * Function special_assessment_form_selection()
+ * @return type
+ */
+function special_assessment_form_selection() {
+  return drupal_get_form('list_all_assessments_for_special_user');
+}
+
+/**
+ * Function implemented to get the all assessment for user
+ * To make request
+ *
+ * @return string
+ */
+function list_all_assessments_for_special_user() {
+  //  Get the all assessment and create the assessment Link
+  $val_asmnt = get_all_assessment();
+  $nid_array_asmnt = array();
+  foreach ($val_asmnt as $data_asmnt) {
+    $nid_array_asmnt[] = $data_asmnt->nid;
+  }
+  //  load the node data
+  $result_asmnt = node_load_multiple($nid_array_asmnt);
+  foreach($result_asmnt as $rec_asmnt) {
+    if($rec_asmnt->field_assessment_status['und'][0]['value'] == 'Active') {
+      //$assessment_alias = drupal_lookup_path('alias', "node/".$rec_asmnt->nid);
+      //print '<li><a href="' . $base_url . '/' . $assessment_alias . '" title="'.$rec_asmnt->field_assessment_title['und'][0]['value'].'">' . $rec_asmnt->field_assessment_title['und'][0]['value'] . '</a></li>';
+      //print '<li><a href="' . $base_url . '/node/160/nid/' . $rec_asmnt->nid . '" title="'.$rec_asmnt->field_assessment_title['und'][0]['value'].'">' . $rec_asmnt->field_assessment_title['und'][0]['value'] . '</a></li>';
+      $service_dropdown[''] = '--Select--';
+      $service_dropdown[$rec_asmnt->nid] = $rec_asmnt->field_assessment_title['und'][0]['value'];
+    }
+  }
+
+  //  creating dropdown
+  $form['get_special_assessment'] = array(
+    '#name' => 'get_special_assessment',
+    '#id' => 'get_special_assessment',
+    '#type' => 'select',
+    '#title' => t('Select an assessment:'),
+    '#options' => $service_dropdown,
+    //'#default_value' => arg(3) . '||' . arg(5),
+    '#required' => TRUE,
+    '#attributes' => array('class' => array('select_box wd_250 mlr_12')),
+    '#prefix' => '<div class="request3">',
+  );
+
+  //  creating dropdown category values
+  /*    $form['btn_get_details'] = array(
+          '#type' => 'submit',
+          '#name' => 'get_details',
+          '#id' => 'get_details',
+          '#value' => t('Submit Request'),
+          '#attributes' => array('class' => array('brown_btn', 'specialbtn')),
+          '#suffix' => '</div>',
+      );*/
+  $form['btn_get_details'] = array(
+    '#type' => 'submit',
+    '#name' => 'get_details',
+    '#id' => 'get_details',
+    '#value' => t('Submit Request'),
+    '#attributes' => array('class' => array('brown_btn', 'specialbtn')),
+    '#suffix' => '</div>',
+  );
+
+  return $form;
+}
+
+/**
+ * Function list_all_assessments_for_special_user_submit($form, &$form_state)
+ *
+ * @param type $form
+ */
+function list_all_assessments_for_special_user_submit($form, &$form_state) {
+  global $user;
+
+  $queryinsert = db_insert('assessment_special_request')
+    ->fields(array(
+      'nid' => $form_state['values']['get_special_assessment'],
+      'request_by' => $user->uid,
+      'action_by' => 0,
+      'status' => 0,
+      'requested_on' => time(),
+      'updated_on' => 0,
+    ));
+  $queryinsert->execute();
+
+  // Send email to notify staff of special assessment request.
+  $user_data = user_load($user->uid);
+  $user_name = $user_data->field_first_name['und'][0]['value'] . ' ' . $user_data->field_last_name['und'][0]['value'];
+  $node = node_load($form_state['values']['get_special_assessment']);
+  $node_title = $node->title;
+  $subject = 'Special Assessment Request';
+  $message = $user_name . ' has requested a special assessment or rush service for ' . $node_title . '. Please visit the <a href="https://www.ndsbs.com/request/assessment/invoice">Special Assessment Invoice</a> page to send an invoice to ' . $user_name . '.';
+  $alert = 'Thanks. Your request for invoice has been successfully created and sent to NDSBS.';
+
+  bdg_ndsbs_drupal_mail('default_from', 'default_to', $subject, $message, $alert);
+}
+
+/**
+ * Function get_special_assessment_data_status()
+ * implemented to get the cart items
+ */
+function get_special_assessment_data_status() {
+  global $user;
+  $queryselect = db_select('assessment_special_request', 'asr')
+    ->fields('asr')
+    ->condition('asr.request_by', $user->uid, '=')
+    ->orderBy('id', 'DESC')
+    ->range(0, 1);
+  $result = $queryselect->execute();
+  $data = $result->fetchAll();
+  return $data;
+}
+
+/**
+ * Function get_invoiced_form();
+ */
+function get_invoiced_form() {
+  return drupal_get_form('list_invoiced_assessments_for_special_user');
+}
+
+/**
+ * Function implemented to get the all assessment for user
+ * To make request
+ *
+ * @return string
+ */
+function list_invoiced_assessments_for_special_user() {
+  //  Get the all assessment and create the assessment Link
+  $val_asmnt = get_all_assessment_by_nid();
+
+  $nid_array_asmnt = array();
+  $service_dropdown[''] = '--Select--';
+  foreach ($val_asmnt as $data_asmnt) {
+    $rec_asmnt = node_load($data_asmnt->nid);
+    $service_dropdown[''] = '--Select--';
+    $service_dropdown[$rec_asmnt->nid . '||' . $rec_asmnt->field_primary_service['und'][0]['tid'] . '||' . $data_asmnt->id] = $rec_asmnt->field_assessment_title['und'][0]['value'];
+  }
+
+  //  creating dropdown
+  $form['get_special_assessment'] = array(
+    '#name' => 'get_special_assessment',
+    '#id' => 'get_special_assessment',
+    '#type' => 'select',
+    '#title' => t('Select an assessment:'),
+    '#options' => $service_dropdown,
+    //'#default_value' => arg(3) . '||' . arg(5),
+    '#required' => TRUE,
+    '#attributes' => array('class' => array('select_box wd_250 mlr_12')),
+    '#prefix' => '<div class="request3">',
+  );
+
+  //  creating dropdown category values
+  $form['btn_get_details'] = array(
+    '#type' => 'submit',
+    '#name' => 'get_details',
+    '#id' => 'get_details',
+    '#value' => t('Make Payment'),
+    '#attributes' => array('class' => array('brown_btn', 'specialbtn')),
+    '#suffix' => '</div>',
+  );
+  return $form;
+}
+
+/**
+ * Function list_all_assessments_for_special_user_submit($form, &$form_state)
+ *
+ * @param type $form
+ */
+function list_invoiced_assessments_for_special_user_submit($form, &$form_state) {
+  global $user, $base_url;
+  $data_post = $form_state['values']['get_special_assessment'];
+  $data_explode = explode('||', $data_post);
+
+  //  Update the special assessment table
+  $field_options = array();
+  $field_options['session_id'] = session_id();
+  $result = db_update('assessment_special_request');
+  $result->fields($field_options);
+  $result->condition('id', $data_explode[2], '=');
+  $result->execute();
+
+  $field_options['session_id'] = 0;
+  $result = db_update('assessment_special_request');
+  $result->fields($field_options);
+  $result->condition('id', $data_explode[2], '!=');
+  $result->execute();
+
+  drupal_goto($base_url . '/user/cart/nid/'.$data_explode[0].'/tid/'.$data_explode[1]);
+}
+
+/**
+ * Function get_all_assessment_by_nid() define.
+ * function implemented for getting the all assessment created by Super Admin
+ */
+function get_all_assessment_by_nid() {
+  global $user;
+  //  Query to get the all node of paper work base on particular user
+  $result = db_select('assessment_special_request', 'n')
+    ->fields('n')
+    ->condition('n.request_by', $user->uid, '=')
+    ->condition('n.payment_status', 0, '=')
+    ->condition('n.status', 1, '=');
+  $excute = $result->execute();
+  $result = $excute->fetchAll();
+  return $result;
+}
+
+/**
+ * Function get_all_assessment_invoice() define.
+ * Depends on the user id of the client
+ */
+function get_all_assessment_invoice() {
+  $result = db_select('assessment_special_request', 'n')
+    ->fields('n')
+    ->orderBy('requested_on', 'DESC');
+  $excute = $result->execute();
+  $result = $excute->fetchAll();
+  return $result;
+}
+
+/**
+ * Function _assessment_form_createinvoice() define.
+ * function implemented for assign the amount to the state form
+ */
+function _assessment_form_createinvoice() {
+  $output = '';
+  $output .= drupal_render(drupal_get_form('assessment_form_create_invoice'));
+  print $output;
+}
+
+function _transaction_edit() {
+  print drupal_render(drupal_get_form('transaction_edit_form'));
+}
+
+/**
+ * Function state_form_create_invoice() defined to
+ * Create the Custom form
+ * @return string
+ */
+function assessment_form_create_invoice() {
+  //  creating dropdown category values
+  $form['invoice_amount'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Enter amount'),
+    '#required' => true,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit')
+  );
+  return $form;
+}
+
+function transaction_edit_form($form, &$form_state) {
+  $form['actions'] = array(
+    '#type' => 'actions'
+  );
+  $form['description'] = array(
+    '#markup' => '<p>Select which action to take for this transaction.</p><dl><dt>Delete</dt><dd>Removes the transaction data from the database. This does not send a request to Authorize.net</dd><dt>Refund</dt><dd>Send a refund request to Authorize.net. This will also update the transaction in the database.</dd><dt>Void</dt><dd>Send a void request to Authorize.net. This will also update the transaction in the database.</dd></dl>'
+  );
+  $form['actions']['delete_transaction'] = array(
+    '#type' => 'button',
+    '#value' => t('Delete')
+  );
+  $form['actions']['refund_transaction'] = array(
+    '#type' => 'button',
+    '#value' => t('Refund')
+  );
+  $form['actions']['void_transaction'] = array(
+    '#type' => 'button',
+    '#value' => t('Void')
+  );
+  return $form;
+}
+
+/**
+ *  Validate the create invoice form
+ */
+function assessment_form_create_invoice_validate(&$form, &$form_state) {
+  if($form_state['values']['invoice_amount'] == '') {
+    form_set_error('invoice_amount', t('Please enter the cost.'));
+  }
+}
+
+/**
+ * Submit the create invoice form
+ */
+function assessment_form_create_invoice_submit(&$form, &$form_state) {
+  global $user;
+  $nid = arg(3);
+  $uid = arg(4);
+  $aid = arg(5);  // pk of the table
+
+  $field_options = array();
+  $field_options['special_amount'] = $form_state['values']['invoice_amount'];
+  $field_options['updated_on'] = time();
+  $field_options['action_by'] = $user->uid;
+  $field_options['status'] = 1;
+
+  //  Db update the change the assessment custom price
+  $result = db_update('assessment_special_request');
+  $result->fields($field_options);
+  $result->condition('id', $aid, '=');
+  $result->execute();
+  //  Send Email (Invoice to the customer)
+  ndsbs_payment_assessment_form_create_invoice_mail($nid, $uid, $form_state['values']['invoice_amount']);
+
+  // Inform the user.
+  drupal_set_message(t('Invoice has been generated and sent to client.'));
+  echo '<script>window.opener.location.reload(true);window.close();</script>';
+  exit();
+}
+
+/**
+ * Implementation of function ndsbs_payment_assessment_form_create_invoice_mail()
+ * Parameter: user account info
+ * Desc: Save the record into the database with status 1
+ */
+function ndsbs_payment_assessment_form_create_invoice_mail($nid, $uid, $amount) {
+  global $base_url;
+  $node = node_load($nid);
+  $client_user = user_load($uid);
+
+  $module = 'ndsbs_payment';
+  $key = 'assessment_form_create_invoice_mail';
+  $to = $client_user->mail;
+  $language = $client_user->language;
+
+  $message = drupal_mail($module, $key, $to, $language, $params = array(), $from = NULL, $send = FALSE);
+
+  //  Creating the message body
+  $message['subject'] = 'Invoice for Special Assessment or Rush Order Services';
+  $message['body'] = array();
+  $message['body'][] = 'Hi ' . $client_user->field_first_name['und'][0]['value'] . ', <br /><br />';
+  $message['body'][] = 'Your special invoice/rush order request has been processed by NDSBS. Your request was for ' . $node->field_assessment_title['und'][0]['value'] . '.<br />';
+  $message['body'][] = 'The updated price for your servicec is: $' . $amount . '<br />';
+  $message['body'][] = 'You must first log into your account and then <a href="' . $base_url . '/special/assessment/payment">click here</a> to make payment.<br /><br />';
+  $message['body'][] = 'If you have any questions please contact us directly at 614-888-7274 (9-5 EST) or email us at info@ndsbs.com<br /><br />';
+  $message['body'][] = 'The New Directions Team.';
+  $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
+
+  // Retrieve the responsible implementation for this message.
+  $system = drupal_mail_system($module, $key);
+
+  // Format the message body.
+  $message = $system->format($message);
+
+  // Send e-mail.
+  $message['result'] = $system->mail($message);
+  if(!$message['result']) {
+    watchdog($module, 'Unable to send the email hook_state_form_invoice_mail', array(), WATCHDOG_NOTICE);
+  }
+}
+
+/**
+ * Implementation of get_special_assessment_custom_amount()
+ *
+ * @global type $user
+ * @param type $nid
+ */
+function get_special_assessment_custom_amount($nid) {
+  global $user;
+  $result = db_select('assessment_special_request', 'n')
+    ->fields('n', array('special_amount'))
+    ->condition('n.request_by', $user->uid, '=')
+    ->condition('n.payment_status', 0, '=')
+    ->condition('n.nid', $nid, '=')
+    ->condition('n.status', 1, '=');
+  $excute = $result->execute();
+  $result = $excute->fetchAll();
+  if (isset($result[0]->special_amount)) {
+    return $result[0]->special_amount;
+  }
+  else {
+    return '0';
+  }
+}
+
+/**
+ *  Rush service form.
+ */
+function ndsbs_payment_rush_service_form($form, &$form_state) {
+  $path = drupal_get_path_alias(current_path());
+  $tid = 5;
+  $terms = taxonomy_get_tree($tid, $parent = 0, $max_depth = NULL, $load_entities = TRUE);
+  $output = array();
+
+  if ($path != 'assessment/special/rush-order') {
+    $output[0] = 'No rush service';
+  }
+  else {
+    if (!$_SESSION['ndsbs_payment']['rush_amount']) {
+      $_SESSION['ndsbs_payment']['rush_amount'] = 225;
+    }
+  }
+
+  foreach ($terms as $data) {
+    // $name = $data->name;
+    $amount = $data->field_rush_amount['und'][0]['value'];
+    $description = $data->description;
+    $option = $description . ' ($' . $amount . ')';
+    $explode = explode('.', $amount);
+    $output[$explode[0]] = $option;
+  }
+
+  if (!isset($_SESSION['ndsbs_payment']['rush_amount'])) {
+    $_SESSION['ndsbs_payment']['rush_amount'] = 0;
+  }
+
+  $wrapper = 'payment-ajax-load';
+  $progress = FALSE;
+
+  $form['rush_service'] = array(
+    '#type' => 'radios',
+    '#title' => t('Select rush service'),
+    '#options' => $output,
+    '#required' => TRUE,
+    '#default_value' => $_SESSION['ndsbs_payment']['rush_amount'],
+  );
+
+  if ($path != 'assessment/special/rush-order') {
+    $form['about_rush_service'] = array(
+      '#markup' => '<p class="about-rush">Not sure if you need a rush order?<br />Call <a href="tel:6148887274">614-888-7274</a> or email <a href="mailto:support@ndsbs.com">support@ndsbs.com</a></p>',
+    );
+  }
+
+  return $form;
+}
+
+function _payment_rush_service() {
+  return drupal_get_form('ndsbs_payment_rush_service_form');
+}
+
+function ndsbs_ajax_rush_service(&$form, $form_state) {
+  $return = '';
+  $_SESSION['ndsbs_payment']['rush_amount'] = $form_state['input']['rush_service'];
+  $theme = drupal_get_path('theme', 'bootstrap_ndsbs');
+
+  ob_start();
+  include($theme . '/templates/custom/payment.tpl.php');
+  $result = ob_get_contents();
+  ob_end_clean();
+  $return .= $result;
+  $return .= '<script>window.location.reload()</script>';
+
+  return $return;
+}

@@ -1,0 +1,65 @@
+Version 7.x-1.0
+ - Merge branch 'feature-admin_styles' into develop
+ - Update README.md
+ - Prepared feature branch admin_styles for new release.
+ - Merge branch 'update-styles' into develop
+ - Updated page sections styles.
+ - Merge branch 'update-styles' into develop
+ - Updated page sections styles.
+ - Updated coeus_core.info.
+ - Removed theme settings.
+ - Removed theme setting from .info file.
+ - Removed theme-settings.php.
+ - Merge branch 'master' into develop
+ - Merge branch 'release-7.x-1.0alpha2'
+ - Update coeus_core.info
+ - Removed theme-settings.php.
+ - Updated template.php
+ - Add admin theme and updated font styles in core.
+ - Updated stylesheets and templates
+ - Updated fonts
+ - Updated fonts
+ - Updated webfonts and styles
+ - Updated template.php
+ - Nu Validation Service fixes
+ - Adding height and width attributes to logo image
+ - Modified core templates
+ - Edited page.tpl.php variables explenations
+ - Edited page.tpl.php variables =
+ - Fixed source formatting
+ - Fixed source formatting
+ - Fixed source formatting
+ - Made some major changes
+ - Made some major changes
+ - Made some major changes
+ - Made some major changes
+ - Made some major changes
+ - Update README.md
+ - Update README.md
+ - Update README.md
+ - Update README.md
+ - Update README.md
+ - Update README.md
+ - Update README.md
+ - Update README.md
+ - Update README.md
+ - Update README.md
+ - Began creating README
+ - Modified grid system styles
+ - Rename LICENSE.MD to LICENSE.md
+ - Create LICENSE.MD
+ - Removed git files from local repository
+ - Updated template.php and coeus.info
+ - Updating functions in template.php
+ - Merge pull request #1 from richardbuchanan/7.x-1.x
+ - Update README.md
+ - Update README.md
+ - Update README.md
+ - Initial GitHub commit
+ - Update README.md
+ - Update README.md
+ - Update README.md
+ - Update README.md
+ - Create README.md
+ - Create .gitignore
+

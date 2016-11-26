@@ -1,0 +1,1479 @@
+<?php
+/**
+ * @file
+ * Module name ndsbs_transactions.module
+ * Finoit Technologies
+ * Developer krishna@finoit.com
+ * Allows developer to customize the site's functionality.
+ */
+
+/**
+ *  Implementation of hook_menu()
+ *  Function ndsbs_transactions_menu() defined
+ *  Parameter no
+ */
+function ndsbs_transactions_menu() {
+  $items = array();
+  $items['user/transactions/list/%'] = array(
+    'title' => 'Transactions',
+    'description' => 'Transactions',
+    'access callback' => 'user_is_logged_in',
+    'page callback' => '_user_transactions',
+    'access arguments' => array('access content'),
+  );
+
+  $items['user/transactions/detail/%'] = array(
+    'title' => 'Transaction Detail',
+    'description' => 'Transaction Detail',
+    'access callback' => 'user_is_logged_in',
+    'page callback' => '_user_transactions_details',
+    'access arguments' => array('access content'),
+  );
+
+  $items['all/transactions/list/%'] = array(
+    'title' => 'Transactions',
+    'description' => 'Transactions List',
+    'access callback' => 'request_permission',
+    'page callback' => '_list_all_transaction',
+    'access arguments' => array('access content'),
+  );
+
+  $items['all/failed/requested/transaction'] = array(
+    'title' => 'Requested Transactions',
+    'description' => 'Requested Transactions List',
+    'access callback' => 'request_permission',
+    'page callback' => '_list_all_requested_transaction',
+    'access arguments' => array('access content'),
+  );
+
+  $items['transactions/detail/%'] = array(
+    'title' => 'Transaction Detail',
+    'description' => 'Transaction Detail',
+    'access callback' => 'request_permission',
+    'page callback' => '_transactions_details',
+    'access arguments' => array('access content'),
+  );
+
+  $items['transactions/request/%'] = array(
+    'title' => 'Transactions',
+    'description' => 'Transactions',
+    'access callback' => 'user_is_logged_in',
+    'page arguments' => array(2),
+    'page callback' => '_request_for_transaction',
+    'access arguments' => array('access content'),
+  );
+
+  $items['user/purchased/assessment'] = array(
+    'title' => 'Purchased Assessment',
+    'description' => 'Purchased Assessment',
+    'access callback' => 'user_is_logged_in',
+    'page callback' => '_user_purchased_assessment',
+    'access arguments' => array('access content'),
+  );
+
+  $items['all/assessment/users'] = array(
+    'title' => 'All Assessment Users',
+    'description' => 'All Assessment Users.',
+    'access callback' => 'request_permission',
+    'page callback' => '_list_all_assessment_users',
+    'access arguments' => array('access content'),
+  );
+
+  $items['assign/therapist'] = array(
+    'title' => 'Assign Counselor',
+    'description' => 'Assign Counselor',
+    'access callback' => 'request_permission',
+    'page callback' => '_assign_therapist',
+    'access arguments' => array('access content'),
+  );
+
+  $items['user/complete/resume/questionnaire'] = array(
+    'title' => 'Complete Questionnaire',
+    'description' => 'Complete Questionnaire',
+    'access callback' => 'user_is_logged_in',
+    'page callback' => '_user_view_questionnaire',
+    'access arguments' => array('access content'),
+  );
+
+  $items['user/email/report'] = array(
+    'title' => 'Email Report',
+    'description' => 'Email Report.',
+    'access callback' => 'user_is_logged_in',
+    'page callback' => '_user_email_report',
+    'access arguments' => array('access content'),
+  );
+
+  $items['view/assessment/report'] = array(
+    'title' => 'View Report',
+    'description' => 'View Report.',
+    'access callback' => 'user_is_logged_in',
+    'page callback' => '_user_view_assessment_report',
+    'access arguments' => array('access content'),
+  );
+
+  return $items;
+}
+
+/*
+ *  Implementation of hook_theme()
+ *  Function ndsbs_custom_theme() defined
+ *  Parameter no
+ */
+function ndsbs_transactions_theme() {
+  $items = array();
+  $items['user_transactions'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'user_transactions',
+  );
+
+  $items['user_transactions_details'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'user_transactions_details',
+  );
+
+  $items['list_all_transaction'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'list_all_transaction',
+  );
+
+  $items['transaction_detail'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'transaction_detail',
+  );
+
+  $items['list_all_requested_transaction'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'list_all_requested_transaction',
+  );
+
+  $items['user_purchased_assessment'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'user_purchased_assessment',
+  );
+
+  $items['user_view_questionnaire'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'user_view_questionnaire',
+  );
+
+  $items['list_all_assessment_users'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'list_all_assessment_users',
+  );
+
+  /*$items['dashboard'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'dashboard',
+  );*/
+
+  $items['assign_therapist_form'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'assign_therapist_form',
+  );
+
+  $items['user_view_assessment_report'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'user_view_assessment_report',
+  );
+
+  $items['user_email_report_form'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'template' => 'user_email_report_form',
+  );
+
+  return $items;
+}
+
+/**
+ *  Implementation of _user_transactions()
+ *  Function _user_transactions() defined
+ *  Parameter no
+ */
+function _user_transactions() {
+  return theme('user_transactions');
+}
+
+/**
+ *  Implementation of _user_transactions_details()
+ *  Function _user_transactions_details() defined
+ *  Parameter no
+ */
+function _user_transactions_details() {
+  return theme('user_transactions_details');
+}
+
+/**
+ *  Implementation of _transactions_details()
+ *  Function _transactions_details() defined
+ *  Parameter no
+ */
+function _transactions_details() {
+  return theme('transaction_detail');
+}
+
+/**
+ *  Implementation of _user_purchased_assessment()
+ *  Function _user_purchased_assessment() defined
+ *  Parameter no
+ */
+function _user_purchased_assessment() {
+  return theme('user_purchased_assessment');
+}
+
+/**
+ *  Implementation of _list_all_assessment_users()
+ *  Function _list_all_assessment_users() defined
+ *  Parameter no
+ */
+function _list_all_assessment_users() {
+  return theme('list_all_assessment_users');
+}
+
+/**
+ *  Implementation of _list_all_assessment_users()
+ *  Function _list_all_assessment_users() defined
+ *  Parameter no
+ */
+function _user_view_questionnaire() {
+  return theme('user_view_questionnaire');
+}
+
+/**
+ *  Implementation of user_view_assessment_report()
+ *  Function user_view_assessment_report() defined
+ *  Parameter no
+ */
+function _user_view_assessment_report() {
+  return theme('user_view_assessment_report');
+}
+
+/**
+ * Function get_user_transactions() implemented to
+ * Get the users all transactions
+ */
+function get_user_transactions($payment_status) {
+  global $user;
+  //$payment_status = arg(3);
+  $result = db_select('users_transactions', 'ut')->extend('PagerDefault');
+  $result->fields('ut', array(
+    'order_id',
+    'nid',
+    'tid',
+    'uid',
+    'cost',
+    'payment_status',
+    'payment_method',
+    'order_date',
+    'transaction_id',
+    'shipping_info',
+    'ip_address',
+    'transaction_action',
+    'action_by',
+    'reason',
+    'action_date',
+    'client_request',
+    'requested_on',
+    'therapist'
+  ))
+    ->condition('ut.payment_status', $payment_status, '=')
+    ->condition('ut.uid', $user->uid, '=')
+    ->orderBy('ut.order_date', 'DESC');
+  $result->innerJoin('users_transactions_data', 'utd', 'ut.order_id = utd.oid');
+  $result->fields('utd', array(
+    'oid',
+    'termid',
+    'amount',
+    'notary_cost',
+    'sub_report'
+  ));
+  $result->condition('utd.sub_report', 0, '=');
+  $execute = $result->execute();
+  $date = $execute->fetchAll();
+  return $date;
+}
+
+/**
+ * Function get_user_transactions_detail() implemented to
+ * Get the users all transactions
+ */
+function get_user_transactions_detail() {
+  global $user;
+  $oid = arg(3);
+
+  //  Query to get the all node of paper work base on particular user
+  $result = db_select('users_transactions', 'ut')
+    ->fields('ut', array(
+      'order_id',
+      'nid',
+      'tid',
+      'uid',
+      'cost',
+      'payment_status',
+      'payment_method',
+      'order_date',
+      'transaction_id',
+      'shipping_info',
+      'ip_address',
+      'transaction_action',
+      'action_by',
+      'reason',
+      'action_date',
+      'client_request',
+      'requested_on',
+      'therapist'
+    ))
+    ->condition('ut.order_id', $oid, '=')
+    ->condition('ut.uid', $user->uid, '=')
+    ->orderBy('ut.order_date', 'DESC');
+  $result->innerJoin('users_transactions_data', 'utd', 'ut.order_id = utd.oid');
+  $result->fields('utd', array(
+    'oid',
+    'termid',
+    'amount',
+    'notary_cost',
+    'sub_report'
+  ));
+  $result->condition('utd.sub_report', 0, '=');
+  $execute = $result->execute();
+  $date = $execute->fetchAll();
+  return $date;
+}
+
+/**
+ * Function get_purchased_service_title() Implemeted
+ * For getting the purchased service title
+ * Service May be Primary Service or Rush Order Service
+ */
+function get_purchased_service_title($node, $tid) {
+  $title = '';
+  if ($node->field_primary_service['und'][0]['tid'] == $tid) {
+    $title = $node->field_assessment_title['und'][0]['value'];
+    return $title;
+  }
+  if ($node->field_rush_order_service_one['und'][0]['tid'] == $tid) {
+    $title = $node->field_rush_order_title_one['und'][0]['value'];
+    return $title;
+  }
+  if ($node->field_rush_order_service_two['und'][0]['tid'] == $tid) {
+    $title = $node->field_rush_order_title_two['und'][0]['value'];
+    return $title;
+  }
+  if ($node->field_rush_order_service_three['und'][0]['tid'] == $tid) {
+    $title = $node->field_rush_order_title_three['und'][0]['value'];
+    return $title;
+  }
+  if ($node->field_rush_order_service_four['und'][0]['tid'] == $tid) {
+    $title = $node->field_rush_order_title_four['und'][0]['value'];
+    return $title;
+  }
+}
+
+/**
+ * Function get_purchased_service_amount() Implemeted
+ * For getting the purchased service Cost
+ * Service May be Primary Service or Rush Order Service
+ */
+function get_purchased_service_amount($tid) {
+  $term = taxonomy_term_load($tid);
+  $cost = $term->field_assessment_amount['und'][0]['value'];
+  return $cost;
+}
+
+/**
+ * Function _list_all_transaction() Implemented
+ * To get the all transactions of client in admin
+ *
+ */
+function _list_all_transaction() {
+  return theme('list_all_transaction');
+}
+
+/**
+ * Function get_all_user_transactions() implemented to
+ * Get the users all transactions function used in admin panel
+ */
+function get_all_user_transactions() {
+  $payment_status = arg(3);
+
+  //  Query to get the all node of paper work base on particular user
+  $result = db_select('users_transactions', 'ut')->extend('PagerDefault');
+  $result->fields('ut', array(
+    'order_id',
+    'nid',
+    'tid',
+    'uid',
+    'cost',
+    'rush_cost',
+    'payment_status',
+    'payment_method',
+    'order_date',
+    'transaction_id',
+    'shipping_info',
+    'ip_address',
+    'transaction_action',
+    'action_by',
+    'reason',
+    'action_date',
+    'client_request',
+    'requested_on',
+    'therapist'
+  ))
+    ->condition('ut.payment_status', $payment_status, '=')
+    ->orderBy('ut.order_date', 'DESC');
+  $result->innerJoin('users_transactions_data', 'utd', 'ut.order_id = utd.oid');
+  $result->fields('utd', array(
+    'oid',
+    'termid',
+    'amount',
+    'notary_cost',
+    'sub_report'
+  ));
+  $result->condition('utd.sub_report', 0, '=');
+  $execute = $result->execute();
+  $data = $execute->fetchAll();
+
+  return $data;
+}
+
+/**
+ * Function get_transactions_detail() implemented to
+ * Get the transactions details
+ */
+function get_transactions_detail() {
+  $oid = arg(2);
+
+  //  Query to get the all node of paper work base on particular user
+  $result = db_select('users_transactions', 'ut')
+    ->fields('ut', array(
+      'order_id',
+      'nid',
+      'tid',
+      'uid',
+      'cost',
+      'payment_status',
+      'payment_method',
+      'order_date',
+      'transaction_id',
+      'shipping_info',
+      'ip_address',
+      'transaction_action',
+      'action_by',
+      'reason',
+      'action_date',
+      'client_request',
+      'requested_on',
+      'therapist',
+      'rush_cost'
+    ))
+    ->condition('ut.order_id', $oid, '=')
+    ->orderBy('ut.order_date', 'DESC');
+  $result->innerJoin('users_transactions_data', 'utd', 'ut.order_id = utd.oid');
+  $result->fields('utd', array(
+    'oid',
+    'termid',
+    'amount',
+    'notary_cost',
+    'sub_report'
+  ));
+  $result->condition('utd.sub_report', 0, '=');
+  $execute = $result->execute();
+  $date = $execute->fetchAll();
+
+  return $date;
+}
+
+/**
+ *  Function action_on_transaction() Implemented
+ *  to updated the transaction action perform by
+ * admin, Staff admin, therapist
+ */
+function action_on_transaction() {
+  return drupal_render(drupal_get_form('action_on_transaction_form'));
+}
+
+/**
+ *  Implementation of action_on_transaction_form()
+ *  Function action_on_transaction_form() defined
+ *  To create the transaction action form
+ */
+function action_on_transaction_form($form, &$form_state) {
+  $active = array(1 => t('Confirm Transaction'), 0 => t('Not Confirm'));
+
+  $form['transaction_action'] = array(
+    '#type' => 'radios',
+    '#title' => t('Action on Transaction'),
+    '#options' => $active,
+    '#default_value' => 0,
+    '#required' => TRUE
+  );
+
+  $form['transaction_reason'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Reason'),
+    '#required' => TRUE
+  );
+
+  $form['transaction_submit'] = array(
+    '#id' => 'transaction_submit',
+    '#type' => 'submit',
+    '#value' => t('Submit')
+  );
+  return $form;
+}
+
+/**
+ *  Function Implemented to submit the request
+ */
+function action_on_transaction_form_submit(&$form, &$form_state) {
+  global $user;
+  $oid = arg(2);
+  $num_updated = db_update('users_transactions')
+    ->fields(array(
+      'payment_status' => $form_state['values']['transaction_action'],
+      'transaction_action' => $form_state['values']['transaction_action'],
+      'action_by' => $user->uid,
+      'reason' => $form_state['values']['transaction_reason'],
+      'action_date' => time(),
+    ))
+    ->condition('order_id', $oid, '=')
+    ->execute();
+  drupal_set_message(t('Record updated successfully.'));
+}
+
+/**
+ * Function _request_for_transaction() Implemented
+ * To update the transaction table for client request
+ */
+function _request_for_transaction($oid) {
+  global $user;
+  $num_updated = db_update('users_transactions')
+    ->fields(array(
+      'client_request' => 1,
+      'requested_on' => time(),
+    ))
+    ->condition('order_id', $oid, '=')
+    ->condition('uid', $user->uid, '=')
+    ->execute();
+
+  drupal_set_message(t('Request made successfully.'));
+  drupal_goto('user/transactions/list/0');
+}
+
+/**
+ * Function defined to call the theme
+ */
+function _list_all_requested_transaction() {
+  return theme('list_all_requested_transaction');
+}
+
+/**
+ * Function get_all_requested_transactions() implemented to
+ * Get the users all transactions function used in admin panel
+ */
+function get_all_requested_transactions() {
+  //  Query to get the all node of paper work base on particular user
+  $result = db_select('users_transactions', 'ut')->extend('PagerDefault');
+  $result->fields('ut', array(
+    'order_id',
+    'nid',
+    'tid',
+    'uid',
+    'cost',
+    'payment_status',
+    'payment_method',
+    'order_date',
+    'transaction_id',
+    'shipping_info',
+    'ip_address',
+    'transaction_action',
+    'action_by',
+    'reason',
+    'action_date',
+    'client_request',
+    'requested_on'
+  ))
+    ->condition('ut.payment_status', 0, '=')
+    ->condition('ut.client_request', 1, '=')
+    ->orderBy('ut.order_date', 'DESC');
+  $result->innerJoin('users_transactions_data', 'utd', 'ut.order_id = utd.oid');
+  $result->fields('utd', array(
+    'oid',
+    'termid',
+    'amount',
+    'notary_cost',
+    'sub_report'
+  ));
+  $result->condition('utd.sub_report', 0, '=');
+  $execute = $result->execute();
+  $data = $execute->fetchAll();
+  return $data;
+}
+
+/**
+ * Function get_user_purchased_assessment() implemented
+ * to get the purchased assessment and sent user to
+ * Start questionnaire
+ *
+ */
+function get_user_purchased_assessment() {
+  global $user;
+  $result = db_select('users_transactions', 'ut');
+  $result->fields('ut', array(
+    'order_id',
+    'nid',
+    'tid',
+    'uid',
+    'cost',
+    'payment_status',
+    'payment_method',
+    'order_date',
+    'transaction_id',
+    'shipping_info',
+    'ip_address',
+    'transaction_action',
+    'action_by',
+    'reason',
+    'action_date',
+    'client_request',
+    'requested_on',
+    'therapist'
+  ))
+    ->condition('ut.payment_status', 1, '=')
+    ->condition('ut.uid', $user->uid, '=')
+    ->orderBy('ut.order_date', 'DESC');
+  $result->innerJoin('users_transactions_data', 'utd', 'ut.order_id = utd.oid');
+  $result->fields('utd', array(
+    'oid',
+    'termid',
+    'amount',
+    'notary_cost',
+    'sub_report',
+    'report_status'
+  ));
+  $result->condition('utd.sub_report', 0, '=');
+  $execute = $result->execute();
+  $data = $execute->fetchAll();
+  return $data;
+}
+
+/**
+ * Function get_mainservice_subservice_title() Implemeted
+ * For getting the purchased service title
+ * Service May be Primary Service or Rush Order Service
+ */
+function get_mainservice_subservice_title($node, $tid) {
+  $title = '';
+  $service_join = '';
+  $sub_title = '';
+  //echo '<pre>';
+  //print_r($node);
+  //echo '</pre>';
+  if (isset($node->field_primary_service['und'][0]['tid']) && $node->field_primary_service['und'][0]['tid'] == $tid) {
+    $title = $node->field_assessment_title['und'][0]['value'];
+    $sub_title = 'NO';
+    $service_join = $title . '||' . $sub_title;
+    return $service_join;
+  }
+  if (isset($node->field_rush_order_service_one['und'][0]['tid']) && $node->field_rush_order_service_one['und'][0]['tid'] == $tid) {
+    $title = $node->field_assessment_title['und'][0]['value'];
+    $sub_title = $node->field_rush_order_title_one['und'][0]['value'];
+    $service_join = $title . '||' . $sub_title;
+    return $service_join;
+  }
+  if (isset($node->field_rush_order_service_two['und'][0]['tid']) && $node->field_rush_order_service_two['und'][0]['tid'] == $tid) {
+    $title = $node->field_assessment_title['und'][0]['value'];
+    $sub_title = $node->field_rush_order_title_two['und'][0]['value'];
+    $service_join = $title . '||' . $sub_title;
+    return $service_join;
+  }
+  if (isset($node->field_rush_order_service_three['und'][0]['tid']) && $node->field_rush_order_service_three['und'][0]['tid'] == $tid) {
+    $title = $node->field_assessment_title['und'][0]['value'];
+    $sub_title = $node->field_rush_order_title_three['und'][0]['value'];
+    $service_join = $title . '||' . $sub_title;
+    return $service_join;
+  }
+  if (isset($node->field_rush_order_service_four['und'][0]['tid']) && $node->field_rush_order_service_four['und'][0]['tid'] == $tid) {
+    $title = $node->field_assessment_title['und'][0]['value'];
+    $sub_title = $node->field_rush_order_title_four['und'][0]['value'];
+    $service_join = $title . '||' . $sub_title;
+    return $service_join;
+  }
+}
+
+/**
+ * Function assessment_qa_details() implemented
+ * to get the details of attempted questionnaire
+ *
+ * @global type $user
+ * @param type $assessment_id
+ */
+function questionnaire_attempted_details($assessment_id, $uid, $order_id) {
+  $data = db_select('assessment_qa_details', 'aqd')
+    ->fields('aqd', array(
+      'total_attempts',
+      'total_time',
+      'time_consumed',
+      'questionnaire_startime',
+      'timestamp',
+      'evaluation'
+    ))
+    ->condition('aqd.assessment_id', $assessment_id, '=')
+    ->condition('aqd.user_id', $uid, '=')
+    ->condition('aqd.transid', $order_id, '=')
+    ->orderBy('aqd.id', 'DESC')
+    ->execute()
+    ->fetchAll();
+  return $data;
+}
+
+/**
+ * Function get_all_assessment_users() define.
+ * function implemented for getting the client
+ * who has purchased the assessment
+ */
+function get_all_assessment_users() {
+  global $user;
+  $result = db_select('users_transactions', 'ut')->extend('PagerDefault');
+  $result->fields('ut', array(
+    'order_id',
+    'nid',
+    'tid',
+    'uid',
+    'cost',
+    'payment_status',
+    'payment_method',
+    'order_date',
+    'transaction_id',
+    'shipping_info',
+    'ip_address',
+    'transaction_action',
+    'action_by',
+    'reason',
+    'action_date',
+    'client_request',
+    'requested_on',
+    'therapist'
+  ))->condition('ut.payment_status', 1, '=');
+
+  if (isset($user->roles[4]) && $user->roles[4] == 'therapist') {
+    //$result->condition('ut.therapist', $user->uid, '=');
+  }
+
+  $result->orderBy('ut.order_date', 'DESC');
+  $result->innerJoin('users_transactions_data', 'utd', 'ut.order_id = utd.oid');
+  $result->fields('utd', array(
+    'oid',
+    'termid',
+    'amount',
+    'notary_cost',
+    'sub_report',
+    'main_report_id',
+    'express_mail_status',
+    'notary_status',
+    'updated_on',
+    'updated_by',
+    'report_name',
+    'main_report',
+    'report_status'
+  ));
+  $result->condition('utd.sub_report', 0, '=');
+  $execute = $result->execute();
+  $data = $execute->fetchAll();
+  return $data;
+}
+
+/**
+ * Function get_assigned_therapist() Implemented
+ * to get the all assigned therapist
+ *
+ * @param type $termid
+ */
+function get_assigned_therapist_OLD($termid) {
+  //  Returns all staff's uid
+  $uid = get_all_staff();
+//    echo '<pre>';
+//      print_r($uid);
+//    echo '<pre>';
+
+  foreach ($uid as $user_id) {
+    $user_info = user_load($user_id->uid);
+    foreach ($user_info->field_assessment_assigned['und'] as $assigned_term) {
+      if ($assigned_term['tid'] == $termid) {
+        return $user_info->field_first_name['und'][0]['value'] . ' ' . $user_info->field_last_name['und'][0]['value'];
+      }
+    }
+  }
+}
+
+/**
+ * Function get_assigned_therapist() Implemented
+ * to get the all assigned therapist
+ *
+ * @param type $termid
+ *
+ * return assigned therapist
+ */
+function get_assigned_therapist($uid) {
+  $user_therapist = user_load($uid);
+
+  if (isset($user_therapist->field_first_name['und']) && isset($user_therapist->field_last_name['und'])) {
+    return $user_therapist->field_first_name['und'][0]['value'] . ' ' . $user_therapist->field_last_name['und'][0]['value'];
+  }
+  else {
+    return 'No therapist has been assigned';
+  }
+}
+
+/**
+ *  Implementation of hook_menu_alter()
+ *  Function ndsbs_user_confirm_menu_alter() defined
+ *  Parameter no
+ */
+/*function ndsbs_transactions_menu_alter(&$items) {
+  $items['admin/dashboard'] = array(
+    'title' => 'Dashboard',
+    'description' => 'Dashboard',
+    //'page callback' => 'admin_dashboard_page',
+    'access callback' => 'request_permission',
+    'weight' => -12,
+  );
+}*/
+
+/**
+ * Function admin_dashboard_page() Implemented
+ * to get the admin dashboard
+ * @return type
+ */
+/*function admin_dashboard_page() {
+  return theme('dashboard');
+}*/
+
+/**
+ * Function _assign_therapist() Defined
+ * to get the rendered drupal form
+ *
+ * @return type
+ */
+function _assign_therapist() {
+  return drupal_get_form('assign_therapist_form');
+}
+
+/**
+ * Function assign_therapist_form() Implemented
+ * to assing the therapist to client for particular assessment
+ *
+ * @param type $form
+ * @param type $form_state
+ * @return type
+ */
+function assign_therapist_form($form, &$form_state) {
+  //  Get all therapist name and their uid
+  $staff = get_staff();
+  $data = array();
+  $active = array(
+    '' => '-- Select --',
+    0 => 'Unassigned',
+  );
+  foreach ($staff as $staff_data) {
+    $data[] = user_load($staff_data->uid);
+  }
+  foreach ($data as $therapist) {
+    $active[$therapist->uid] = $therapist->field_first_name['und'][0]['value'] . ' ' . $therapist->field_last_name['und'][0]['value'];
+  }
+
+  $form['therapist_list'] = array(
+    '#type' => 'select',
+    '#title' => t('Select Counselor'),
+    '#options' => $active,
+    '#default_value' => 0,
+    '#required' => TRUE,
+  );
+
+  $form['therapist_submit'] = array(
+    '#id' => 'therapist_submit',
+    '#type' => 'submit',
+    '#value' => t('Assign'),
+  );
+  return $form;
+}
+
+/**
+ *  Function Implemented to submit the request
+ */
+function assign_therapist_form_submit(&$form, &$form_state) {
+  //  Update the transaction table for assigning therapist to purchassed assessment.
+  $oid = arg(3);
+  db_update('users_transactions')
+    ->fields(array(
+      'therapist' => $form_state['values']['therapist_list'],
+    ))
+    ->condition('order_id', $oid, '=')
+    ->execute();
+  drupal_set_message(t('Counselor assigned successfully.'));
+}
+
+/**
+ * Function get_transaction_info_orderid() Implemented
+ * to get the particular order information
+ * Argument passed is order id (transaction id)
+ *
+ * @param type $oid
+ * @return type
+ */
+function get_transaction_info_orderid($oid) {
+  //  Query to get the all node of paper work base on particular user
+  $result = db_select('users_transactions', 'ut')
+    ->fields('ut', array(
+      'order_id',
+      'nid',
+      'tid',
+      'uid',
+      'cost',
+      'payment_status',
+      'payment_method',
+      'order_date',
+      'transaction_id',
+      'shipping_info',
+      'ip_address',
+      'transaction_action',
+      'action_by',
+      'reason',
+      'action_date',
+      'client_request',
+      'requested_on',
+      'therapist'
+    ))
+    ->condition('ut.order_id', $oid, '=')
+    ->orderBy('ut.order_date', 'DESC');
+  $result->innerJoin('users_transactions_data', 'utd', 'ut.order_id = utd.oid');
+  $result->fields('utd', array(
+    'oid',
+    'termid',
+    'amount',
+    'notary_cost',
+    'sub_report'
+  ));
+  $result->condition('utd.sub_report', 0, '=');
+  $execute = $result->execute();
+  $date = $execute->fetchAll();
+
+  return $date;
+}
+
+/**
+ * Function count_all_stateform_invoice_requested() define.
+ * function implemented from getting the requested paper work of the client
+ */
+function count_all_stateform_invoice_requested() {
+  $type = 'state_form_request';
+  $payment_status = 0;    //  not paid
+  //  Query
+  $query = db_select('node', 'n');
+  $query->condition('n.type', $type, '=')
+    ->orderBy('n.created', 'DESC');
+  $query->innerJoin('field_data_field_invoice_created_by', 'invoice', 'invoice.entity_id = n.nid');
+  $query->innerJoin('field_data_field_state_form_payment_status', 'field_state_form', 'field_state_form.entity_id = n.nid');
+  $query->condition('invoice.field_invoice_created_by_value', 0, '>');
+  $query->condition('field_state_form.field_state_form_payment_status_value', $payment_status, '=');
+
+  // Add the COUNT expression
+  $query->addExpression('COUNT(n.nid)', 'ncount');
+
+  $result = $query->execute();
+  $data = $result->fetchAll();
+  return $data[0]->ncount;
+}
+
+/**
+ * Function count_all_paperwork_request() define.
+ * function implemented from getting the paper work of the client
+ */
+function count_all_paperwork_request() {
+  $type = 'paper_work';
+  $paperwork_status = 0;  //  not verified
+  //  Query
+  $query = db_select('node', 'n');
+  $query->condition('n.type', $type, '=');
+  $query->innerJoin('field_data_field_paperwork_status', 'field_paperwork_status', 'field_paperwork_status.entity_id = n.nid');
+  $query->condition('field_paperwork_status.field_paperwork_status_value', $paperwork_status, '=');
+
+  // Add the COUNT expression
+  $query->addExpression('COUNT(n.nid)', 'ncount');
+  $result = $query->execute();
+  $data = $result->fetchAll();
+  return $data[0]->ncount;
+}
+
+/**
+ * Function count_all_thirdparty_request() define.
+ * function implemented for getting the third party request
+ */
+function count_all_thirdparty_request() {
+  $type = 'third_party_request';
+  $request_status = 0;    //  open
+
+  //  Query
+  $query = db_select('node', 'n');
+  $query->condition('n.type', $type, '=');
+  $query->innerJoin('field_data_field_status_changed_by', 'field_status_changed_by', 'field_status_changed_by.entity_id = n.nid');
+  $query->condition('field_status_changed_by.field_status_changed_by_value', $request_status, '<=');
+  // Add the COUNT expression
+  $query->addExpression('COUNT(n.nid)', 'ncount');
+
+  $result = $query->execute();
+  $data = $result->fetchAll();
+
+  return $data[0]->ncount;
+}
+
+/**
+ * Function count_all_user_transactions() implemented to
+ * Get the users all transactions function used in admin panel
+ */
+function count_all_user_transactions() {
+  $payment_status = 1;
+
+  //  Query to get the all node of paper work base on particular user
+  $query = db_select('users_transactions', 'ut');
+  $query->condition('ut.payment_status', $payment_status, '=');
+  $query->innerJoin('users_transactions_data', 'utd', 'ut.order_id = utd.oid');
+  $query->condition('utd.sub_report', 0, '=');
+  // Add the COUNT expression
+  $query->addExpression('COUNT(ut.order_id)', 'ncount');
+
+  $result = $query->execute();
+  $data = $result->fetchAll();
+
+  return $data[0]->ncount;
+}
+
+/**
+ * Function total_amount_all_user_transactions() implemented to
+ * Get the users all transactions function used in admin panel
+ */
+function total_amount_all_user_transactions() {
+  $payment_status = 1;
+
+  //  Query to get the all node of paper work base on particular user
+  $query = db_select('users_transactions', 'ut');
+  $query->fields('ut', array('cost'));
+  $query->condition('ut.payment_status', $payment_status, '=');
+  $query->innerJoin('users_transactions_data', 'utd', 'ut.order_id = utd.oid');
+  $query->condition('utd.sub_report', 0, '=');
+
+  $result = $query->execute();
+  $data = $result->fetchAll();
+
+  $total_cost = 0;
+  foreach ($data as $cost) {
+    $total_cost = $total_cost + $cost->cost;
+  }
+
+  return $total_cost;
+}
+
+/**
+ * Function total_amount_all_user_other_transactions() implemented to
+ * Get the users all transactions function used in admin panel
+ */
+function total_amount_all_user_other_transactions() {
+  $payment_status = 1;
+
+  //  Query to get the all node of paper work base on particular user
+  $query = db_select('users_transactions', 'ut');
+  $query->fields('ut', array('cost'));
+  $query->condition('ut.payment_status', $payment_status, '=');
+  $query->innerJoin('users_transactions_data', 'utd', 'ut.order_id = utd.oid');
+  $query->condition('utd.sub_report', 1, '=');
+  $query->groupBy('ut.order_id');
+
+  $result = $query->execute();
+  $data = $result->fetchAll();
+
+  $total_cost = 0;
+  foreach ($data as $cost) {
+    $total_cost = $total_cost + $cost->cost;
+  }
+
+  return $total_cost;
+}
+
+/**
+ * Function total_all_user_other_services() implemented to
+ * Get the users all transactions function used in admin panel
+ */
+function total_all_user_other_services($type, $tid) {
+  $payment_status = 1;
+
+  //  Query to get the all node of paper work base on particular user
+  $query = db_select('users_transactions', 'ut');
+  $query->fields('ut', array('cost'));
+  $query->condition('ut.payment_status', $payment_status, '=');
+  $query->innerJoin('users_transactions_data', 'utd', 'ut.order_id = utd.oid');
+
+  if ($type == 1) {
+    $query->condition('utd.termid', $tid, '=');
+  }
+  else {
+    $query->condition('utd.termid', $tid, 'IN');
+  }
+
+  $query->condition('utd.sub_report', 1, '=');
+
+  // Add the COUNT expression
+  $query->addExpression('COUNT(ut.order_id)', 'ncount');
+
+  $result = $query->execute();
+  $data = $result->fetchAll();
+
+  return $data[0]->ncount;
+}
+
+/**
+ * Function get_user_purchased_assessment_list() implemented
+ * to get the purchased assessment and sent user to
+ * Start questionnaire
+ *
+ */
+function get_user_purchased_assessment_list() {
+  global $user;
+  $result = db_select('users_transactions', 'ut');
+  $result->fields('ut', array(
+    'order_id',
+    'nid',
+    'tid',
+    'uid',
+    'cost',
+    'payment_status',
+    'payment_method',
+    'order_date',
+    'transaction_id',
+    'shipping_info',
+    'ip_address',
+    'transaction_action',
+    'action_by',
+    'reason',
+    'action_date',
+    'client_request',
+    'requested_on',
+    'therapist'
+  ))
+    ->condition('ut.payment_status', 1, '=')
+    ->orderBy('ut.order_date', 'DESC');
+  $result->innerJoin('users_transactions_data', 'utd', 'ut.order_id = utd.oid');
+  $result->fields('utd', array(
+    'oid',
+    'termid',
+    'amount',
+    'notary_cost',
+    'sub_report',
+    'report_status'
+  ));
+  $result->condition('utd.sub_report', 0, '=');
+  $execute = $result->execute();
+  $data = $execute->fetchAll();
+  return $data;
+}
+
+/**
+ * Function complete_resume_questionnaire() Defined
+ * to get the rendered drupal form
+ *
+ * @return type
+ */
+function complete_resume_questionnaire() {
+  return drupal_get_form('complete_resume_questionnaire_form');
+}
+
+/**
+ * Function complete_resume_questionnaire_form() Implemented
+ * to assing the therapist to client for particular assessment
+ *
+ * @param type $form
+ * @param type $form_state
+ * @return type
+ */
+function complete_resume_questionnaire_form($form, &$form_state) {
+  $active = array('' => '-- Select --');
+  $data = get_user_purchased_assessment();
+  foreach ($data as $data_info) {
+    $node_info = node_load($data_info->nid);
+    //  Function called to get the main service and sub service title
+    $service_title = get_mainservice_subservice_title($node_info, $data_info->termid);
+    $explode_title = explode('||', $service_title);
+
+    $main_service = $explode_title[0];
+    $sub_service = $explode_title[1];
+
+    if ($sub_service <> 'NO') {
+      $assessment_title = $sub_service;
+    }
+    else {
+      $assessment_title = $main_service;
+    }
+    $key = $data_info->nid . '||' . $data_info->order_id . '||' . $node_info->field_online_questionnaire['und'][0]['value'];
+    $active[$key] = $assessment_title;
+  }
+
+  //  Get all therapist name and their uid
+  $form['assessment_list'] = array(
+    '#type' => 'select',
+    '#title' => t('Select Assessment'),
+    '#options' => $active,
+    '#default_value' => 0,
+    '#required' => TRUE,
+  );
+
+  $form['assessment_submit'] = array(
+    '#id' => 'assessment_submit',
+    '#type' => 'submit',
+    '#value' => t('Submit'),
+  );
+  return $form;
+}
+
+/**
+ * Function complete_resume_questionnaire_form_submit() defined
+ * to submit the Questionnaire form
+ *
+ * @param type $form
+ * @param type $form_state
+ */
+function complete_resume_questionnaire_form_submit($form, &$form_state) {
+  global $base_url, $user;
+  $post_data = $form_state['values']['assessment_list'];
+  $explode_data = explode('||', $post_data);
+  $node_id = $explode_data[0];
+  $trans_id = $explode_data[1];
+  $availability_status = $explode_data[2];
+
+  //  Get the attempted questionnaire
+  $qinfo = questionnaire_attempted_details($node_id, $user->uid, $trans_id);
+
+  $total_attempted = 0;
+  foreach ($qinfo as $ques_data) {
+    $total_attempted = $ques_data->total_attempts;
+  }
+  if ($total_attempted > 0) {
+    drupal_goto($base_url . '/questionnaire/start/' . $node_id . '/trans/' . $trans_id);
+  }
+  elseif ($availability_status == 'Available') {
+    drupal_goto($base_url . '/questionnaire/start/' . $node_id . '/trans/' . $trans_id);
+  }
+  else {
+    drupal_set_message('Questionnaire not available');
+    drupal_goto($base_url . '/user/complete/resume/questionnaire');
+  }
+}
+
+/**
+ * Function get_purchased_questionnaire_assessment_list_leftpanel() Implemented
+ * to assing the therapist to client for particular assessment
+ *
+ * @param type $form
+ * @param type $form_state
+ * @return type
+ */
+function get_purchased_questionnaire_assessment_list_leftpanel() {
+  $active = array();
+  $data = get_user_purchased_assessment();
+
+  $i = 0;
+  foreach ($data as $data_info) {
+    $node_info = node_load($data_info->nid);
+    //  Function called to get the main service and sub service title
+    $service_title = get_mainservice_subservice_title($node_info, $data_info->termid);
+    $explode_title = explode('||', $service_title);
+
+    $main_service = $explode_title[0];
+    $sub_service = $explode_title[1];
+
+    if ($sub_service <> 'NO') {
+      $assessment_title = $sub_service;
+    }
+    else {
+      $assessment_title = $main_service;
+    }
+    //  $key = $data_info->nid . '||' . $data_info->order_id . '||' . $node_info->field_online_questionnaire['und'][0]['value'] . '||' . $data_info->termid;
+
+    $active[$i]['title'] = $assessment_title;
+    $active[$i]['assessment_node_id'] = $data_info->nid;
+    $active[$i]['transaction_id'] = $data_info->order_id;
+    $active[$i]['availability'] = $node_info->field_online_questionnaire['und'][0]['value'];
+    $active[$i]['term_id'] = $data_info->termid;
+    $i++;
+  }
+  return $active;
+}
+
+/*
+ *  Implementation of _user_email_report()
+ *  Function _user_email_report() defined
+ *  for calling th custom form
+ *  Parameter no
+ */
+function _user_email_report() {
+  return drupal_get_form('user_email_report_form');
+}
+
+/*
+ *  Implementation of user_change_password_form()
+ *  Function user_change_password_form() defined
+ *  To create the change password form
+ *  Parameter no
+ */
+function user_email_report_form($form, &$form_state) {
+  // Textfield cor current password confirmation.
+  $form['mail_to'] = array(
+    '#type' => 'textfield',
+    '#title' => t('To'),
+    '#size' => 25,
+    '#required' => TRUE
+  );
+
+  $form['mail_subject'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Subject'),
+    '#size' => 50,
+    '#required' => TRUE
+  );
+
+  $form['mail_body'] = array(
+    '#title' => t('Message'),
+    '#type' => 'textarea',
+    '#cols' => 80,
+    '#rows' => 5,
+    '#required' => FALSE,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit')
+  );
+  return $form;
+}
+
+/*
+ *  Validate handler for user_email_report_form_validate().
+ * 
+ */
+function user_email_report_form_validate(&$form, &$form_state) {
+  if (!valid_email_address($form_state['values']['mail_to'])) {
+    form_set_error('Email', t('The email address appears to be invalid.'));
+  }
+}
+
+/*
+ * Submit handler for user_email_report_form_submit().
+ *
+ */
+function user_email_report_form_submit(&$form, &$form_state) {
+  global $user, $base_url;
+  //  Send report into the email to the user
+  $mail_to = $form_state['values']['mail_to'];
+  $mail_subject = $form_state['values']['mail_subject'];
+  $mail_body = $form_state['values']['mail_body'];
+
+  //  Catching the file to be send
+  $file_name_path = 'public://reports/' . arg(3);   //  $filename       Denotes File path with File name
+  $file_name = arg(3);      //  $filename       Denotes File File name
+
+//    $user_information = user_load($user->uid);
+//    $user_fname = $user_information->field_first_name['und'][0]['value'];
+  $module = 'ndsbs_transactions';
+
+  $to = $mail_to;
+  $language = 'en';
+  $file_content = file_get_contents($file_name_path);
+
+  $attachments = array(
+    'filepath' => $file_name_path,
+    'filecontent' => $file_content,
+    'filename' => $file_name,
+    'filemime' => 'application/pdf',
+  );
+
+  $message = drupal_mail($module, $key = microtime(), $to, $language, $params = array(), $from = NULL, $send = FALSE);
+  //  Creating the message body
+  $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
+  $message['subject'] = $mail_subject;
+  $message['body'] = array();
+  $message['body'][] = $mail_body;
+  $message['params']['attachments'][] = $attachments;     //  Attachment added
+
+  // Retrieve the responsible implementation for this message.
+  $system = drupal_mail_system($module, $key);
+
+  // Format the message body.
+  $message_format = $system->format($message);
+
+  // Send e-mail.
+  $message['result'] = $system->mail($message_format);
+  if (!$message['result']) {
+    watchdog($module, 'Unable to send the email hook_send_attachment_mail', array(), WATCHDOG_NOTICE);
+  }
+  else {
+    //print 'Mail sent';
+    drupal_set_message('Email sent successfully.');
+  }
+
+  drupal_goto($base_url . '/view/assessment/report');
+}
+
+/**
+ * Implementation of get_transaction_list_data()
+ * Function implemeted to get the transaction data list
+ *
+ */
+function get_transaction_data_by_transid($trans_id) {
+  global $user;
+  //$payment_status = arg(3);
+  $result = db_select('users_transactions', 'ut')->extend('PagerDefault');
+  $result->fields('ut', array(
+    'order_id',
+    'nid',
+    'tid',
+    'uid',
+    'cost',
+    'payment_status',
+    'payment_method',
+    'order_date',
+    'transaction_id',
+    'shipping_info',
+    'ip_address',
+    'transaction_action',
+    'action_by',
+    'reason',
+    'action_date',
+    'client_request',
+    'requested_on',
+    'therapist',
+    'rush_cost'
+  ))
+    ->condition('ut.order_id', $trans_id, '=')
+    ->orderBy('ut.order_date', 'DESC');
+  $result->innerJoin('users_transactions_data', 'utd', 'ut.order_id = utd.oid');
+  $result->fields('utd', array(
+    'oid',
+    'termid',
+    'amount',
+    'notary_cost',
+    'sub_report'
+  ));
+  $result->condition('utd.sub_report', 0, '=');
+  $execute = $result->execute();
+  $date = $execute->fetchAll();
+  return $date;
+}

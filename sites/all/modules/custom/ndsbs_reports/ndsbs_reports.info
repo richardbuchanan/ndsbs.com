@@ -1,0 +1,5 @@
+name = Ndsbs Reports
+description = "Ndsbs Reports module is used to make request for report by customer and display the reports information to the user and admin."
+package = Custom
+version = VERSION
+core = 7.x

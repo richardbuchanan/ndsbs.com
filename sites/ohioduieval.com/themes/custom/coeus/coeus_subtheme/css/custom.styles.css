@@ -1,0 +1,130 @@
+/**
+ * @file
+ * custom.styles.css
+ *
+ * Coeus Subtheme Base Styles
+ * This stylesheet contains common selectors and elements found in a default
+ * Drupal installation.
+ *
+ * Media queries:
+ *   @see css/custom.media-queries.css 
+ */
+
+/**
+ * HTML Basic Elements
+ */
+html {}
+body {}
+html,
+body {}
+body.adminimal-menu {}
+h1, h2, h3, h4, h5, h6 {}
+p {}
+a {}
+a:hover {}
+blockquote {}
+ul {}
+li {}
+img {}
+form {}
+label {}
+details,
+figcaption,
+figure,
+summary {}
+input,
+select,
+textarea {}
+input:focus,
+select:focus,
+textarea:focus {}
+button,
+input[type="button"],
+input[type="reset"],
+input[type="submit"] {}
+button:hover,
+input[type="button"]:hover,
+input[type="reset"]:hover,
+input[type="submit"]:hover {}
+
+/**
+ * Menu Styles
+ */
+nav ul,
+nav ol {}
+ul.menu li {}
+ul.primary {}
+ul.primary li a {}
+ul.primary li a:hover {}
+
+/**
+ * Template Styles
+ *
+ * Selectors defined in our page template file.
+ * @see tempaltes/page/page.tpl.php
+ */
+#page-container {}
+
+/**
+ * Top Navigation Styles
+ */
+#top-nav {}
+#top-nav-wrapper {}
+#branding {}
+#logo-figure {}
+#logo-figure a {}
+#logo-figure img {}
+#navbar {}
+#navbar #main-nav {}
+#navbar #main-menu {}
+#navbar #secondary-nav {}
+#navbar #secondary-menu {}
+#navbar ul {}
+#navbar ul li {}
+#navbar ul li:hover {}
+#navbar ul li a {}
+
+/** 
+ * Page Header Styles
+ */
+#page-header {}
+#page-title-search {}
+#page-title-wrapper {}
+#page-title {}
+#search-block-wrapper {}
+#breadcrumb-wrapper {}
+#breadcrumb {}
+
+/**
+ * Highlights and Help Styles
+ */
+#highlights {}
+#site-messages {}
+#highlighted {}
+#help {}
+
+/**
+ * Content Styles
+ */
+#content-section {}
+main-content {} /* This is an anchor tag for accessibility. */
+#content-header {}
+#tabs {}
+#action-links {}
+#content {}
+#page-content {
+}
+#sidebar {}
+
+/**
+ * Footer Styles
+ */
+#footer {}
+#footer-section {}
+#footer-section #content {}
+
+/**
+ * Aside Styles
+ */
+aside ul {}
+aside ul.menu {}

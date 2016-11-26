@@ -1,0 +1,721 @@
+/**
+ * @file
+ *
+ * Our custom styles go here.
+ *
+ * If you transfer these styles to sass or scss stylesheets, let me know and I
+ * will include the sass or scss stylesheets in place of this stylesheet.
+ *
+ * You can also create your SASS stylesheets without transfering these
+ * styles, we will just need to include this stylesheet along with the SASS
+ * stylesheets.
+ *
+ * If adding comments, please follow the examples throughout this stylesheet.
+ * I like to keep up with Drupal coding standards as a best practice during
+ * my development.
+ *
+ * Send any questions or recommendations to:
+ * richard_buchanan@buchanandesigngroup.com
+ */
+
+/**
+ * Basic Elements
+ */
+html, body {
+  font-family: 'Segoe UI', Helvetica, sans-serif;
+  height: 100%;
+  width: 100%;
+  background-color: #f9f9f9;
+}
+body {
+  font-size: 14px;
+  line-height: 1.125em;
+}
+body.adminimal-menu {
+  margin-top: 29px;
+}
+p {
+  font-family: 'Segoe UI', Helvetica, sans-serif;
+  font-size: 0.875em;
+  font-weight: normal;
+  margin: 1em 0;
+}
+h1 {
+  font-family: 'open_sanslight', 'Segoe UI', Helvetica, sans-serif;
+  font-weight: normal;
+  font-size: 2em;
+  margin: 0;
+  padding: 0;
+}
+
+/**
+ * Page Content Styles
+ */
+#page-container {
+  width: auto;
+  padding: 0 0 40px 0;
+  margin-right: 40px;
+  margin-left: 40px;
+  clear: left;
+}
+#content {
+  min-height: 500px;
+}
+#page-header {
+  position: relative;
+  top: 130px;
+  width: 100%;
+  height: 80px;
+  background: none;
+  background-repeat: no-repeat;
+  background-position: center top;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  -moz-box-shadow: 0px -40px #d0e1f0;
+  -webkit-box-shadow: 0px -40px #d0e1f0;
+  box-shadow: 0px -40px #d0e1f0;
+}
+#page-title-wrapper {
+  width: 1200px !important;
+  margin: 0 auto;
+}
+#highlights,
+#highlights p {
+  margin: 0;
+}
+#page-content {
+  margin-bottom: 1em;
+}
+#page-title {
+  text-align: left;
+  font-family: 'open_sanslight', 'Segoe UI', Helvetica, sans-serif;
+  font-weight: normal;
+  color: rgba(96, 96, 96, 1);
+  font-size: 2.4em;
+  text-transform: uppercase;
+}
+#content-section, #content, #page-content, .region, .region-content, #block-system-main, .content, .node {
+  width: 100%;
+  margin-top: 0;
+  padding-top: 0;
+}
+#content-section,
+footer {
+  position: static;
+  top: 0;
+}
+
+/**
+ * All Admin Pages
+ */
+.description {
+  font-size: 12px;
+}
+#edit-actions {
+  display: block;
+}
+#edit-actions a#edit-cancel {
+  cursor: pointer;
+  display: block;
+  padding: 4px 6px;
+  float: left;
+  margin: 9px 12px 7px 0;
+  line-height: 1.2em;
+  color: #444;
+  background-color: rgba(245, 245, 245, 1);
+  background-image: -webkit-linear-gradient( top, rgba(245, 245, 245, 1), rgba(241, 241, 241, 1) );
+  background-image: linear-gradient( top, rgba(245, 245, 245, 1), rgba(241, 241, 241, 1) );
+  border: 1px solid rgba(217, 217, 217, 1) !important;
+  border-top: 1px solid rgba(192, 192, 192, 1) !important;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  border-radius: 2px;
+  -webkit-border-radius: 2px;
+  -webkit-appearance: initial;
+  font: -webkit-small-control;
+}
+#edit-actions a#edit-cancel:hover {
+  background-color: rgba(229, 229, 229, 1);
+  background-image: -webkit-linear-gradient( top, rgba(229, 229, 229, 1), rgba(225, 225, 225, 1) );
+  background-image: linear-gradient( top, rgba(229, 229, 229, 1), rgba(225, 225, 225, 1) );
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  text-decoration: none;
+}
+.item-list ul {
+  list-style-type: square;
+  list-style-image: none;
+  margin: 0 !important;
+  padding: 0;
+  border: 0;
+  vertical-align: baseline;
+}
+.item-list ul li {
+  list-style-type: disc;
+  list-style-image: none;
+}
+
+/**
+ * Admin Panel Styles (admin/config)
+ */
+body.ohio-dui-admin-theme div.admin-panel.admin.config {
+  width: auto;
+  background-color: #e9e9e9;
+  margin-bottom: 2em;
+}
+div.admin-panel h3 {
+  font-family: 'open_sanslight', 'Segoe UI', Helvetica, sans-serif;
+  font-size: 23px;
+  font-weight: 300;
+  margin: 0;
+  padding-bottom: 9px;
+  text-transform: none;
+}
+
+/**
+ * Footer Styles
+ */
+#footer {
+  display: block !important;
+  background-color: #444;
+}
+#footer #footer-section .content {
+  text-align: center;
+}
+#footer #footer-section .content #site-logo {
+  opacity: 0.4;
+}
+#footer #footer-section .content #site-logo:hover {
+  opacity: 1;
+}
+#footer #footer-bottom {
+  width: 100%;
+  text-align: center;
+  clear: both;
+  font-size: .9em;
+  color: rgba(219, 220, 222, 0.5);
+  padding-top: 0;
+}
+
+/**
+ * Sub Header styles
+ */
+#breadcrumb-wrapper {
+  display: block;
+}
+
+/**
+ * All Assessment Visitor Page
+ */
+.views-row {
+  margin: 1em 0 0 !important;
+  padding: 0 0 4em !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+/**
+ * Custom list styles
+ *
+ * These styles are mainly used on the assessment pages and the Terms &
+ * Conditions page.
+ */
+ul.disc li {
+  list-style-type: disc;
+}
+
+ul.no-list-style li {
+  list-style-type: none;
+}
+
+/**
+ * Table Styles
+ */
+table {
+  border: 1px solid gray;
+}
+table.sticky-header {
+  z-index: 99;
+}
+thead {
+  font-size: 1.3em;
+  font-family: 'open_sanssemibold', 'Segoe UI', Helvetica, sans-serif;
+  font-weight: bold;
+}
+td, th {
+  padding: 12px;
+}
+th a {
+  color: #fff;
+}
+#module-filter-squeeze > table.sticky-enabled > tbody > tr > td {
+  padding-bottom: 4px;
+}
+#module-filter-squeeze > table.sticky-enabled > tbody > tr > td.checkbox {
+  max-width: 40%;
+}
+#module-filter-squeeze > table.sticky-enabled > tbody > tr > td:nth-child(2),
+#module-filter-squeeze > table.sticky-enabled > tbody > tr > td:nth-child(3),
+#module-filter-squeeze > table.sticky-enabled > tbody > tr > td.help,
+#module-filter-squeeze > table.sticky-enabled > tbody > tr > td.permissions,
+#module-filter-squeeze > table.sticky-enabled > tbody > tr > td.configure {
+  text-align: center;
+}
+#module-filter-squeeze > table.sticky-enabled > tbody > tr > td.description > div.admin-requirements {
+  font-size: 12px;
+  color: #777;
+}
+table.sticky-header > thead > tr > th,
+table.sticky-enabled > thead > tr > th {
+  font-family: 'open_sanssemibold', 'Segoe UI', Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 15px;
+  padding: 12px;
+  text-align: center;
+  background-color: rgba(68, 68, 68, 1);
+  border: 1px solid rgba(68, 68, 68, 1);
+  color: rgba(221, 221, 221, 1);
+}
+table.sticky-enabled > tbody > tr > td > label {
+  font-family: 'open_sanssemibold', 'Segoe UI', Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 16px;
+  font-weight: normal;
+}
+.view-all-assessments td.views-field a {
+  padding-right: 6px;
+}
+
+/**
+ * Fieldset Styles
+ */
+.container-inline.form-wrapper {
+  margin: 1em auto;
+}
+
+/**
+ * Form Styles
+ */
+form input[type="submit"] {
+  margin: 0 4px;
+  padding: 5px 10px;
+}
+#comment-admin-overview > div {
+  padding: 1em 0;
+}
+input.field-formatter-settings-edit {
+  border: 0 !important;
+}
+
+/**
+ * List Styles
+ */
+ol {
+  -webkit-margin-before: 1em;
+  -webkit-margin-after: 1em;
+  -webkit-margin-start: 0px;
+  -webkit-margin-end: 0px;
+  -webkit-padding-start: 40px;
+}
+ul,
+.block ul,
+.item-list ul {
+  list-style-type: square;
+  list-style-image: none;
+  margin: 0.25em 0 0.25em 1.5em;
+}
+ul#views-display-menu-tabs li.add ul.action-list li {
+  float: left;
+  clear: both;
+  width: 100%;
+  padding: 6px 0 6px 10px;
+}
+ul#views-display-menu-tabs li.add ul.action-list li input {
+  border: none !important;
+  display: inline-block;
+  width: 100%;
+  text-align: left;
+}
+ul#views-display-menu-tabs li.add ul.action-list li.first {
+  margin-top: 0;
+}
+
+/**
+ * Module Filter Styles
+ */
+#module-filter-submit.fixed-top {
+  top: 30px;
+}
+.administration-tab-content .help,
+.administration-tab-content .permissions,
+.administration-tab-content .configure {
+  font-size: 0.8em;
+}
+#module-filter-submit .form-actions {
+  width: 100%;
+}
+.page-admin #module-filter-submit input {
+  margin: 0 auto !important;
+}
+
+/**
+ * Views Styles
+ *
+ * These are some styles used on pages rendered by the Views module.
+ *
+ * @see http://dev.ohioduieval.com/assessments for an example of a page using
+ * Views. The elements on this page rendered by views will be obviously
+ * classified in id's and classes. Change these styles to fit your needs.
+ */
+.views-table thead th,
+.views-table tbody td {
+  width: auto;
+  text-align: left;
+  padding-left: 12px;
+}
+.views-table th.active img {
+  display: inline;
+  float: right;
+  padding-right: 12px;
+}
+.views-table thead th a {
+  color: #ddd;
+}
+.views-field .assessment-img {
+  float: right;
+  padding: 12px;
+}
+
+/**
+ * Admin Menu Styles
+ */
+#admin-menu .dropdown li ul {
+  z-index: 9999;
+}
+
+/**
+ * Adminimal Styles
+ *
+ * Some of these classes/id's are added by the Adminimal Menu module for use
+ * with the Adminimal Theme. Since we are using our own admin theme, these
+ * styles need fixed for our needs.
+ */
+ #branding {
+  overflow: hidden;
+  padding: 10px 20px 0 20px;
+  position: relative;
+  width: auto;
+  height: auto;
+  min-height: 85px;
+}
+#branding h1.page-title {
+  float: left;
+  line-height: 38px;
+  padding: 0 0 12px;
+}
+.compact-link {
+  visibility: hidden;
+  height: 0;
+}
+div.admin-panel.admin.config {
+  font-size: 13px;
+}
+
+/**
+ * Action Tabs Styles
+ */
+.tabs-secondary {
+  clear: both;
+}
+ul.secondary {
+  font-size: 0.923em;
+  padding: 0 3px 5px;
+  overflow: hidden;
+  text-align: right;
+  width: 100%;
+  border: none;
+}
+ul.primary {
+  padding: 0;
+}
+ul.primary li {
+  line-height: 24px;
+  margin-right: 0;
+}
+ul.primary li a {
+  margin-right: 0;
+  padding: 4px 12px 4px 12px;
+}
+ul.primary li.active a {
+  background-color: #f9f9f9;
+  border: 1px solid #bbb;
+  border-bottom: 1px solid #f9f9f9;
+}
+ul.primary li a:hover {
+  color: #000;
+}
+ul.primary li.active a:hover {
+  background-color: #eee;
+  border-color: #ccc;
+  border-bottom-color: #eee;
+}
+
+/**
+ * Status Report Styles
+ */
+.system-status-report {
+  border: none;
+}
+.system-status-report tbody {
+  border-top: none;
+}
+.page-admin table.system-status-report tr {
+  border-left: 3px solid #eee;
+}
+.page-admin table.system-status-report tr.ok {
+  background-color: #dff0d8;
+  border-color: #3c763d;
+}
+.page-admin table.system-status-report tr.info {
+  background-color: #e1edf3;
+  border-color: #156ca1;
+}
+.page-admin table.system-status-report tr.warning {
+  background-color: #fcf8f2;
+  border-color: #f0ad4e;
+}
+.page-admin table.system-status-report tr.error {
+  background-color: #fdf7f7;
+  border-color: #d9534f;
+}
+.page-admin table.system-status-report tr.merge-up {
+  border-top-style: solid;
+  border-top-color: transparent !important;
+  border-top-width: 1em !important;
+}
+table.system-status-report td,
+table.system-status-report td.status-value {
+  color: #333;
+}
+table.system-status-report td.status-value li {
+  margin: 0;
+}
+table.system-status-report td.status-title {
+  padding-right: 20px;
+}
+table.system-status-report tr.ok td.status-title {
+  color: #3c763d;
+}
+table.system-status-report tr.info td.status-title {
+  color: #156ca1;
+}
+table.system-status-report tr.warning td.status-title {
+  color: #f0ad4e;
+}
+table.system-status-report tr.error td.status-title {
+  color: #d9534f;
+}
+
+/**
+ * Drupal Core Admin Styles
+ */
+div.admin {
+  padding-top: 0;
+}
+
+/* Overlay theming */
+#overlay {
+  max-width: 800px;
+}
+#overlay #branding {
+  min-height: 0;
+}
+#overlay #overlay-content {
+  color: #777;
+}
+#overlay #content {
+  min-height: 0;
+}
+#overlay #content-section {
+  top: 0;
+}
+#overlay #content-section:after {
+  display: none;
+}
+#overlay #page-content {
+  background: #fff;
+}
+#overlay .views-row {
+  border-bottom: 0;
+}
+
+.overlay #top-nav,
+.overlay #page-header,
+.overlay #branding h1.page-title,
+.overlay #left,
+.overlay #footer {
+  display: none !important;
+}
+
+.overlay #page {
+  margin: 0;
+  padding: 0 20px;
+}
+
+#overlay-tabs {
+  bottom: -1px;
+  font-size: 1.54em;
+  line-height: 1.54em;
+  margin: 0;
+}
+
+#overlay-tabs li {
+  margin: 0 -3px;
+}
+
+.overlay ul.secondary {
+  background: transparent none;
+  margin: -1.4em 0 0.3em 0;/* LTR */
+  overflow: visible;
+  text-align: right;
+  float: left;
+  width: 100%;
+}
+
+.overlay #content {
+  padding: 0;
+}
+
+#overlay-titlebar {
+  padding: 0;
+}
+
+h1#overlay-title {
+  font-family: 'open_sansregular', 'Segoe UI', Helvetica, sans-serif;
+  font-size: 32px;
+  padding: 0 0 5px;
+  line-height: 44px;
+}
+
+#overlay-titlebar .add-or-remove-shortcuts {
+  padding-top: 1.5em;
+}
+
+#overlay-close {
+  opacity: 0.8;
+}
+#overlay-close:hover {
+  opacity: 0.9;
+}
+
+.overlay div.breadcrumb {
+  display: none;
+}
+
+#overlay-container, .overlay-modal-background, .overlay-element, #overlay {
+  padding-top: 29px;
+}
+
+#overlay-tabs li a, #overlay-tabs li a:active, #overlay-tabs li a:visited, #overlay-tabs li a:hover {
+  background-color: #ddd;
+  border-radius: 0 0 0 0;
+  color: #000000;
+  display: inline-block;
+  font-family: 'open_sansregular', 'Segoe UI', Helvetica, sans-serif;
+  font-size: 18px;
+  font-weight: 300;
+  margin: 0 0 2px;
+  outline: 0 none;
+  padding: 4px 15px;
+  text-decoration: none;
+  text-transform: none;
+}
+
+#overlay-tabs li a:hover {
+  background: none repeat scroll 0 0 #0074BD;
+  color: #f9f9f9;
+}
+
+#overlay-tabs li.active a, #overlay-tabs li.active a.active, #overlay-tabs li.active a:active, #overlay-tabs li.active a:visited, #overlay-tabs li.active a:hover {
+  background-color: #f9f9f9;
+  margin: 0;
+  padding-bottom: 4px;
+}
+
+#overlay-tabs {
+  bottom: -2px;
+  font-size: 1.54em;
+  line-height: 1.54em;
+  margin: 0;
+  right: 0px;
+}
+
+/**
+ * Autocomplete Styles
+ *
+ * The autocomplete styles are used for autocomplete text fields, ie when using an entity reference on a form item.
+ */
+#autocomplete {
+  display: block;
+  margin: 0 0 6px 2px;
+  padding: 4px;
+  background-color: white;
+}
+#autocomplete .reference-autocomplete {
+   padding: 4px;
+   border-bottom: 1px solid #cecece;
+}
+html.js input.form-autocomplete {
+  background-position: 100% 6px;
+}
+html.js input.throbbing {
+  background-position: 100% -14px;
+}
+.element-invisible {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/**
+ * Module Filter styles
+ */
+html.js #module-filter-submit .form-actions {
+  margin-top: 14px;
+}
+#module-filter-tabs li a {
+  padding: 5px;
+}
+#module-filter-tabs li.selected a,
+#module-filter-tabs li.selected a:hover,
+#module-filter-tabs li.selected a:focus,
+#module-filter-tabs li.selected a:active {
+  margin-right: 0;
+}
+#module-filter-tabs li .summary {
+  padding-top: 0;
+}
+#module-filter-modules .admin-operations {
+  background-color: #fff;
+}
+html.js .toggle-enable {
+  -webkit-box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.3) inset;
+  box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.3) inset;
+}
+
+/**
+ * Rules
+ */
+ ul.rules-operations {
+  float: right;
+}
+ul.rules-operations li {
+  margin-right: 1em;
+}
+.rules-elements-table ul.action-links {
+  list-style: none;
+}
+.rules-elements-table ul.action-links li {
+  margin: 0;
+  padding: .5em;
+}

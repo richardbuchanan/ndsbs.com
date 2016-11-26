@@ -1,0 +1,5 @@
+name = BDG Maps
+description = Configurable maps using jQuery.
+core = 7.x
+package = User Interface
+configure = admin/config/user-interface/bdg-maps

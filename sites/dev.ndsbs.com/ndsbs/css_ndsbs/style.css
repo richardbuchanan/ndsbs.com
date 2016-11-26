@@ -1,0 +1,21 @@
+/*--------------------------------------------------------------
+
+	* Filename: Style.css
+	* Description: All Layout CSS
+	* Version: 1.0 (10-Oct-2012) DD-MM-YYYY
+	* Website: http://
+	* Author: Finoit Technologies
+
+==== STRUCTURE:==============================================
+
+	* Page Width: 1024px
+	* Number of columns: 1
+
+--------------------------------------------------------------*/
+@import url("reset.css");
+@import url("ndsbs_forms.css");
+@import url("icons.css");
+@import url("buttons.css");
+@import url("tables.css");
+@import url("main.css");
+

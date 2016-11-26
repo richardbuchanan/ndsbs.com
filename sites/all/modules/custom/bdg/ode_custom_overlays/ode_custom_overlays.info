@@ -1,0 +1,5 @@
+name = ODE Custom Overlays
+description = Custom overlays defined by path. Works the same as the admin overlay module in Drupal core.
+version = 7.x-1.x-alpha1
+core = 7.x
+package = Buchanan Design Group

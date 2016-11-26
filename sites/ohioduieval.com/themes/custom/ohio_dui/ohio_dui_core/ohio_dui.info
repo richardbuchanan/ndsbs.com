@@ -1,0 +1,36 @@
+; BASIC SETTINGS
+name = Ohio DUI Eval
+description = HTML5 theme designed for <a href="http://ohioduieval.com/" target="_blank">Ohio DUI Eval</a> by <a href="http://simmonsdesign.co/" target="_blank">Simmons Design Co</a>.
+core = 7.x
+version = 7.x-1.0rc
+base theme = coeus
+
+; CSS and SASS
+; global.styles.css contains all of Drupal core's styles in one stylesheet.
+; custom.styles.css is where your custom css styles should go.
+; SASS support is also available. Add your SASS stylesheets the same way you
+; would CSS stylesheets - ie, stylesheets[media property][] = sass/style.sass
+stylesheets[all][] = css/fonts/custom.webfonts.css
+stylesheets[all][] = css/global.styles.css
+stylesheets[all][] = css/seven/seven.css
+stylesheets[all][] = css/custom.styles.css
+stylesheets[all][] = css/custom.media-queries.css
+
+; JAVASCRIPT
+scripts[] = js/user-profile.js
+scripts[] = js/modernizr.custom.min.js
+scripts[] = js/custom.min.js
+scripts[] = js/jquery.autotab.min.js
+scripts[] = js/bdg.ode.js
+
+; FEATURES (intentionally blank)
+
+; Regions
+regions[header] = Header
+regions[main_menu] = Main Menu
+regions[user_menu] = User Menu
+regions[highlighted] = Highlighted
+regions[help] = Help
+regions[content] = Content
+regions[sidebar] = Sidebar
+regions[footer] = Footer

@@ -1,0 +1,33 @@
+<?php
+
+//  $Id: ndsbs_user_confirm.install,v 1.8 2012/09/17 10:42:09 Finoit Technologies Exp $
+
+/**
+ * Implementation of hook_schema().
+ */
+function ndsbs_user_confirm_schema() {
+    $schema['users_confirm'] = array(
+        'fields' => array(
+            'id' => array('type' => 'serial', 'unsigned' => TRUE, 'not null' => TRUE, 'description' => 'Id'),
+            'user_uid' => array('type' => 'int', 'not null' => FALSE, 'description' => 'Primary key from  users table user id'),
+            'ap_uid' => array('type' => 'int', 'not null' => FALSE, 'description' => 'Appointment Plus user id'),
+            'confirm_status' => array('type' => 'int', 'not null' => FALSE, 'description' => '1 mean user has confirmed the account'),
+        ),
+        'primary key' => array('id'),
+    );
+    return $schema;
+}
+
+/**
+ * Implementation of hook_install()
+ */
+//function ndsbs_user_confirm_install() {
+//    drupal_install_schema('ndsbs_user_confirm');
+//}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+//function ndsbs_user_confirm_uninstall() {
+//    drupal_uninstall_schema('ndsbs_user_confirm');
+//}

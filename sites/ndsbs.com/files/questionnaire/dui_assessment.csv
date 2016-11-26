@@ -1,0 +1,95 @@
+Question,Answer  (Use || as a seperator),Field Type,Other (Questions having the other option text)
+Your primary occupation (include paid or unpaid occupations)  ,,textarea,
+Hours per week (average) you are engaged in this occupation ,0-5||5-10||10-20||20-30||30-40||40-50||50-60||60-80||80 +  ,radiobutton,
+Height,5||6||7,dropdown,
+Weight ,50||55||60||65||70,dropdown,
+Current Prescription Medication Usage,none||blood pressure||anti- anxiety||anti-depressant||other  (Please list any other types or names of medication),radiobutton,other (Please list any other types or names of medication)
+Heart condition in the last 24 months,Yes||No,radiobutton,
+Broken bones in last 24 months,Yes||No,,
+Gastro-intestinal symptoms or diagnosis in last 24 months ,Yes||No,,
+Liver condition in last 24 months   ,Yes||No,,
+Emergency room visits in last 24 months ,Yes||No,,
+Pancreas condition in the last 24  months  ,Yes||No,,
+Pregnancy  currently,Yes||No||male ? NA,,
+Pregnancy within the last year ,Yes||No||male ? NA,,
+Select any symptoms you have experienced on 3 occasions or more within the last 3months,"panic feelings or  panic attacks||rapid heartbeat||shortness of breath||excessive sweating||chest pain||dizziness||stomach or intestinal problems||
+feeling the urge to check things/ repeat things||poor mood||low energy||insomnia||desire to sleep too much||low self esteem||
+excessive crying||weight gain or weight loss||ow appetite or excessive appetite||excess use of alcohol, medicine or another drug||
+loss of pleasure||loss of motivation||frequently thinking about dying or killing myself||feelings of hopelessness||difficulty controlling anger||
+difficulty concentrating or staying focused||problems in close relationships||parenting problems||increase of conflict at work, home or school||
+emotional or mental health diagnosis in the past year||no symptoms from this list present in the last 3 months",checkbox,
+At what age did you first experiment with alcohol for the purpose of feeling a  physical effect or ?buzz?,1||2||3||4||5||6||7||8||9||10||NA,dropdown,
+"At what age did you first experience getting drunk, if ever",10||11||12||13||14||15||16||17||18||19||20||21||22||23||24||25||26||27||28||29||30||NA,dropdown,
+"At what age did you begin using alcohol on any kind of a regular basis, even if it  was as infrequent as once a week
+",10||11||12||13||14||15||16||17||18||19||20||21||22||23||24||25||26||27||28||29||30||NA,dropdown,
+"Indicate any blood relatives who you believe have or had, an alcohol or substance abuse problem (mark all that  apply) 
+",grandparent(s)||father||mother||aunt(s)||uncle(s)||sibling (s)||your own child/children||none ,checkbox,
+"In the 24 months before the incident leading to this assessment, how many days  per week  were you typically consuming one or more alcoholic beverages
+",0-1||1-2||2-3||3-4||4-5||5-6||6-7||did not use alcohol  ,checkbox,
+"What  has your preferred  alcoholic beverage(s) been for the last 2 years? (Mark all  that apply)
+",Beer||Wine||Mixed drink||Unmixed liquor or liquor on ice||Desert Liqueur||Do not have a preferred alcoholic beverage ||Have not drank alcohol in the last 2 years,checkbox,
+"In typical situations where you drink alcohol, how many drinks do you usually  consume?
+",1-2||2-3||2-4||3-5||4-6||5-7||6-8||7-9||8-10||10 or more||do not drink alcohol,checkbox,
+"In times of special celebration (example: a birthday, wedding or reunion)  what is the maximum number of drinks you would typically consume? 
+",1-2||2-3||2-4||3-5||4-6||5-7||6-8||7-9||8-10||10-12||12-14||14 or more||do not drink alcohol,checkbox,
+"Comparing your recent use of alcohol to the first two years you used alcohol  - is the  quantity you have consumed recently in any given setting  
+",about the same as it used to be||moderately less||a lot less||moderately more||a lot more||do not drink alcohol,radiobutton,
+"Have you received any treatment for any substance abuse or dependence in the  past?   (mark all that apply)
+","Previous alcohol assessment||Education||Counseling||Intensive Outpatient Program||Inpatient Treatment||Residential Treatment||Have never received  assessment, education or treatment of any kind
+",checkbox,
+"Have you ever attended AA, 12 Step or other Addiction Recovery Groups by your  own choice to receive help or support regarding alcohol use
+",Yes||No,radiobutton,
+"Month and year of legal charge, work, school or other incident that lead to assessment request
+",01/2013||02/2013||03/2013||04/2013||05/2013||06/2013||07/2013||08/2013||09/2013||10/2013||11/2013||12/2013||NA/self referral,dropdown,
+"Approximate time of day that you were originally stopped or 
+      questioned by police, or other authority, or indicate ""no  police/authority"" involved
+",all hours of the day||AM | PM  ||no police or authority involved,dropdown,
+"If you were offered a breathalyzer, blood, or urine test to measure your blood  alcohol  concentration (BAC)what range was the official or final BAC (blood alcohol  concentration) result of your test
+","no BAC test associated with the incident||. 01 - .08||.08 - .10||.10 - .13||.13 - .17||.17-  .20||.20 ?.24||.24 - .29||.30 or greater||was tested but do not know the result at this time||chose not to provide a breath, blood, or urine sample||drug related OVI ? no BAC",radiobutton,
+Driving Privileges you have at the present time (mark all that apply):,no loss of driving privileges||no driving privileges permitted at this time ||work or school privileges || counseling  /treatment /  AA / 12 Step Meeting privileges ,checkbox,
+Have you been required to install an interlock device on your car at the present ,Yes/No,radiobutton,
+"Since the incident leading to this assessment, has your alcohol use:",remained the same||decreased||increased||have stopped drinking completely,radiobutton,
+"If you have completely stopped drinking alcohol since the incident,  how long do  you plan to stop for
+","until all court, employer, school or other proceedings are completed||permanently||unsure||uestion does not apply, do not want or need to stop||a specific time period of
+",radiobutton,a specific time period of
+"If you have any current legal charges (other than the cause for this assessment)   list them here or enter ""NA"" if there are none:  
+",,textarea,
+") If you have past legal convictions   please list them here or use ""NA"" if none: (do not  include  DUIs, OVIs, speeding or parking tickets)
+",,textarea,
+"If you have any previous impaired driving charges (DUI or OVI or OMVIs)   please provide the approximate date and approximate BAC (blood alcohol concentration) that was recorded or reported. If more than one, please start with  earliest date and proceed to most recent date:
+","Refused BAC Testing||.01 - .079||.08 - .099||.10 - .129||.13 - .169||.17- .199||.20 ? .239||.24 - .299||.30 or greater|| was tested but do not know the result at this time||drug related OVI ? no BAC
+",,
+Second charge ,"Refused BAC Testing||.01 - .079||.08 - .099||.10 - .129||.13 - .169||.17- .199||.20 ? .239||.24 - .299||.30 or greater|| was tested but do not know the result at this time||drug related OVI ? no BAC
+",radiobutton,
+"Do you feel that you are a normal drinker?  (?normal? MEANS that you drink a similar amount to the amount most other people that you know drink. If you think you drink less than what most other people drink, this is also considered a ?normal drinker? in the context of this question.)  ",Yes||No,radiobutton,
+Have you ever awakened the morning after some drinking the night before and found that you could not remember a part of the evening,Yes||No,radiobutton,
+Does any near relative or close friend ever worry or complain about your drinking,Yes||No,radiobutton,
+Can you stop drinking without difficulty after one or two drinks,Yes||No,radiobutton,
+ Do you ever feel guilty about your drinking,Yes||No,radiobutton,
+ Have you ever attended a meeting of Alcoholics Anonymous (AA),Yes||No,radiobutton,
+Have you ever gotten into physical fights when drinking,Yes||No,radiobutton,
+Has drinking ever created problems between you and a near relative or close friend,Yes||No,radiobutton,
+Has any family member or close friend gone to anyone for help about your drinking,Yes||No,radiobutton,
+ Have you ever lost friends because of your drinking,Yes||No,radiobutton,
+Have you ever gotten into trouble at work because of drinking,Yes||No,radiobutton,
+Have you ever lost a job because of drinking,Yes||No,radiobutton,
+"Have you ever neglected your obligations, your family, or your work for two or more days in a row because you were drinking",Yes||No,radiobutton,
+Do you drink before noon fairly often,Yes||No,radiobutton,
+Have you ever been told you have liver trouble such as cirrhosis,Yes||No,radiobutton,
+"After heavy drinking have you ever had delirium tremens (D.T.?s), severe shaking, visual or auditory (hearing) hallucinations",Yes||No,radiobutton,
+Have you ever gone to anyone for help about your drinking,Yes||No,radiobutton,
+Have you ever been hospitalized because of drinking,Yes||No,radiobutton,
+Has your drinking ever resulted in your being hospitalized in a psychiatric ward,Yes||No,radiobutton,
+"Have you ever gone to any doctor, social worker, clergyman, or mental health clinic for help with any emotional problem in which drinking was part of the problem",Yes||No,radiobutton,
+Have you been arrested more than once for driving under the influence of alcohol,Yes||No,radiobutton,
+"Have you ever been arrested, even for a few hours because of other behavior (other than driving under the influence)  while drinking","Yes||No||If yes, how many times",radiobutton,"If yes, how many times"
+How often do you have a drink containing alcohol ,Never||Monthly or less||2-4 times a month||2-3 times a week||4 or more times a week,radiobutton,
+How many drinks containing alcohol do you have on a typical day when you are drinking,1 or 2||3 or 4 ||5 or 6||6 to 9 ||10 or more,radiobutton,
+How often do you have six or more drinks on one occasion,Never||Less than monthly||Monthly||Weekly||Daily or almost daily,radiobutton,
+How often during the last year have you found that you were not able to stop drinking once you had started,Never||Less than monthly||Monthly||Weekly||Daily or almost daily,radiobutton,
+How often during the last year have you failed to do what was normally expected of you because of drinking,Never||Less than monthly||Monthly||Weekly||Daily or almost daily,radiobutton,
+How often during the last year have you needed a first drink in the morning to get yourself going after a heavy drinking session,Never||Less than monthly||Monthly||Weekly||Daily or almost daily,radiobutton,
+How often during the last year have you had a feeling of guilt or remorse after drinking,Never||Less than monthly||Monthly||Weekly||Daily or almost daily,radiobutton,
+How often during the last year have you been unable to remember what happened the night before because of your drinking,Never||Less than monthly||Monthly||Weekly||Daily or almost daily,radiobutton,
+Have you or someone else been injured because of your drinking,"No||Yes, but not in the last year||Yes, during the last year",radiobutton,
+"Has a relative, friend, doctor, or other health care worker been concerned about your drinking or suggested you to cut down","No||Yes, but not in the last year||Yes, during the last year",radiobutton,
