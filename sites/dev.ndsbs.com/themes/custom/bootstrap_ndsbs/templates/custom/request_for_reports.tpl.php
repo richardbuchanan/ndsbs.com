@@ -1,6 +1,6 @@
 <?php
 if ($_REQUEST['reptype'] == 'statefrm') {
-  $path_theme = drupal_get_path('theme', 'ndsbs') . '/templates';
+  $path_theme = drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates';
   include_once 'headerstate.tpl.php';
 }
 else {

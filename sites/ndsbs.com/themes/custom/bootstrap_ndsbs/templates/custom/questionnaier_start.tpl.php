@@ -1,7 +1,7 @@
 <?php
 global $user;
 global $base_url;
-$path_theme = drupal_get_path('theme', 'ndsbs') . '/templates';
+$path_theme = drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates';
 
 //  Used current_path() Drupal core function for getting the current path
 $_SESSION['COMPLETE_MY_QUESTIONNAIRE'] = current_path();

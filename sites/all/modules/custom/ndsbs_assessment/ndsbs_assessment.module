@@ -52,32 +52,32 @@ function ndsbs_assessment_theme() {
 
   $items['assessment_node_form'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'assessment_node_form',
   );
 
   $items['list_all_assessment'] = array(
     'render element' => 'assessment_data',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'list_all_assessment',
   );
 
   $items['list_other_services'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'list_other_services',
   );
 
   $items['other_services_node_form'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'other_services_node_form',
   );
 
   //  Page added for assessment Start
   $items['page__assessment'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'page__assessment',
   );
   //  Page added for assessment End

@@ -123,73 +123,73 @@ function ndsbs_transactions_theme() {
   $items = array();
   $items['user_transactions'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'user_transactions',
   );
 
   $items['user_transactions_details'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'user_transactions_details',
   );
 
   $items['list_all_transaction'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'list_all_transaction',
   );
 
   $items['transaction_detail'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'transaction_detail',
   );
 
   $items['list_all_requested_transaction'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'list_all_requested_transaction',
   );
 
   $items['user_purchased_assessment'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'user_purchased_assessment',
   );
 
   $items['user_view_questionnaire'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'user_view_questionnaire',
   );
 
   $items['list_all_assessment_users'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'list_all_assessment_users',
   );
 
   /*$items['dashboard'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'dashboard',
   );*/
 
   $items['assign_therapist_form'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'assign_therapist_form',
   );
 
   $items['user_view_assessment_report'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'user_view_assessment_report',
   );
 
   $items['user_email_report_form'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'user_email_report_form',
   );
 

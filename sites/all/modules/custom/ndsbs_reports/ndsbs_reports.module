@@ -170,50 +170,50 @@ function ndsbs_reports_theme() {
 
   $items['request_for_reports'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'request_for_reports',
   );
   $items['clients_view_reports'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'clients_view_reports',
   );
   $items['user_requested_reports'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'user_requested_reports',
   );
   $items['user_all_other_reports'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'user_all_other_reports',
   );
   $items['generate_user_report_form'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'generate_user_report_form',
   );
   $items['user_report_format'] = array(
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'user_report_format',
   );
   $items['overnight_express_mail'] = array(
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'overnight_express_mail',
   );
   $items['report_format_node_form'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'report_format_node_form',
   );
   $items['users_stateform_report'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'users_stateform_report',
   );
   $items['users_other_report'] = array(
     'variables' => array(),
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'users_other_report',
   );
 

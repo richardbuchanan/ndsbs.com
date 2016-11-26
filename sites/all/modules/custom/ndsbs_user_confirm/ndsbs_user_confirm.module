@@ -54,7 +54,7 @@ function ndsbs_user_confirm_theme() {
     $items = array();
     $items['user_resend_confirmation_link'] = array(
         'render element' => 'form',
-        'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+        'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
         'template' => 'user_resend_confirmation_link',
     );
     return $items;

@@ -116,17 +116,17 @@ function ndsbs_payment_theme($existing, $type, $theme, $path) {
   );
   $items['user_special_assessment'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'user_special_assessment',
   );
   $items['user_special_assessment_payment'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'user_special_assessment_payment',
   );
   $items['request_assessment_invoice'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'request_assessment_invoice',
   );
   $items['payment_confirmation'] = array(

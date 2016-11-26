@@ -279,7 +279,7 @@ function ndsbs_custom_theme() {
   $items = array();
   $items['user_register_form'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'user_register_forms',
     //'preprocess functions' => array(
     //'ndsbs_preprocess_user_register_form'
@@ -287,230 +287,230 @@ function ndsbs_custom_theme() {
   );
   $items['user_welcome'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'user_welcome',
   );
   $items['user_success_register'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'user_success_register',
   );
   $items['error_malicious_data'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'error_malicious_data',
   );
   $items['user_pass'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'user_pass',
   );
   $items['user_login'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'user_login',
   );
   $items['user-profile'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'user-profile',
   );
   $items['user_profile_form'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'user_profile_form',
   );
 
   $items['paper_work_node_form'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'paper_work_node_form',
   );
 
   $items['client_paperwork_list'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'client_paperwork_list',
   );
 
   $items['list_all_client_paperwork'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'list_all_client_paperwork',
   );
 
   $items['list_all_client_stateform_invoice'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'list_all_client_stateform_invoice',
   );
 
   $items['list_all_client_stateform_invoice_requested'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'list_all_client_stateform_invoice_requested',
   );
 
   $items['state_form_request_node_form'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'state_form_request_node_form',
   );
 
   $items['client_stateform_list'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'client_stateform_list',
   );
 
   $items['list_all_client'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'list_all_client',
   );
 
   $items['list_all_client_counseling_request'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'list_all_client_counseling_request',
   );
 
   $items['counseling_request_node_form'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'counseling_request_node_form',
   );
 
   $items['appointment_preference_node_form'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'appointment_preference_node_form',
   );
 
   $items['refund_payment_node_form'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'refund_payment_node_form',
   );
 
   $items['list_all_client_payment_refund_request'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'list_all_client_payment_refund_request',
   );
 
   $items['client_allrequest_list'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'client_allrequest_list',
   );
 
   $items['list_all_thirdparty_request'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'list_all_thirdparty_request',
   );
 
   $items['third_party_request_node_form'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'third_party_request_node_form',
   );
 
   //  theme called for pages START
   $items['page__about'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'page__about',
   );
 
   $items['page__faq'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'page__faq',
   );
 
   //$items['page__staff'] = array(
   //'render element' => 'form',
-  //'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+  //'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
   //'template' => 'page__staff',
   //);
 
   $items['page__tnc'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'page__tnc',
   );
 
   $items['page__sitemap'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'page__sitemap',
   );
 
   //$items['page__contact'] = array(
   //'render element' => 'form',
-  //'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+  //'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
   //'template' => 'page__contact',
   //);
 
   $items['page__courts'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'page__courts',
   );
 
   $items['page__employers'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'page__employers',
   );
 
   $items['page__our_services'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'page__our_services',
   );
 
   $items['page__professional_service'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'page__professional_service',
   );
 
   $items['page__online_services'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'page__online_services',
   );
 
   $items['page__inperson_services'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'page__inperson_services',
   );
 
   $items['page__professional_staff'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'page__professional_staff',
   );
 
   $items['page__choose_new_directions'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'page__choose_new_directions',
   );
 
   $items['page__map'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'page__map',
   );
 
   $items['page__hippa'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'page__hippa',
   );
 
@@ -518,62 +518,62 @@ function ndsbs_custom_theme() {
   /*
   $items['page_node_form'] = array(
       'render element' => 'form',
-      'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+      'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
       'template' => 'page_node_form',
   );
   */
   $items['list_all_staff'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'list_all_staff',
   );
 
   //$items['testimonials_node_form'] = array(
   //'render element' => 'form',
-  //'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+  //'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
   //'template' => 'testimonials_node_form',
   //);
 
   $items['important_document_node_form'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'important_document_node_form',
   );
 
   $items['account_verification_node_form'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'account_verification_node_form',
   );
 
   $items['user_list_verification_document'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'user_list_verification_document',
   );
 
   $items['list_verification_document'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'list_verification_document',
   );
 
   $items['page__testimonial'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'page__testimonial',
   );
 
   $items['user_assessment_status'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'user_assessment_status',
   );
 
   /*
   $items['state_form_create_invoice'] = array(
       'render element' => 'form',
-      'path' => drupal_get_path('theme', 'ndsbs') . '/templates',
+      'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
       'template' => 'state_form_create_invoice',
   );
   */
@@ -1736,8 +1736,8 @@ function ndsns_custom_contactus_email($contact_name, $contact_email, $contact_ph
 function ndsbs_custom_css_alter(&$css) {
   // Remove css file at contact us page.
   if (arg(0) == 'node' && arg(1) == '164') {
-    unset($css[drupal_get_path('theme', 'ndsbs') . '/css/normalize.css']);
-    unset($css[drupal_get_path('theme', 'ndsbs') . '/css/layouts/fixed-width.css']);
+    unset($css[drupal_get_path('theme', 'bootstrap_ndsbs') . '/css/normalize.css']);
+    unset($css[drupal_get_path('theme', 'bootstrap_ndsbs') . '/css/layouts/fixed-width.css']);
   }
 }
 
