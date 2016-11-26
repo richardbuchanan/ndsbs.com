@@ -311,10 +311,47 @@ cd NDSBS/sites
 cp -R ndsbs.com localhost.ndsbs
 ````
 
-Then copy the default settings file.
+Then copy the default settings file and create a logs directory for Nginx to write logs to.
 ````
 cp localhost.ndsbs/default.settings.php localhost.ndsbs/settings.php
+mkdir localhost.ndsbs/logs
 ````
+
+We also need to make the files directory and settings.php file writable for the Drupal installation.
+````
+chmod a+w localhost.ndsbs/files
+chmod a+w localhost.ndsbs/settings.php
+````
+
+Now test the Nginx configuration for any errors.
+````
+sudo ngnix -t
+````
+
+If the above command reports everything is okay, you can now go to http://localhost.ndsbs in your browser and install
+Drupal as normal.
+
+### 9. Import database from ndsbs.com to localhost.ndsbs
+The [Backup and Migrate](https://drupal.org/project/backup_migrate) module is used at ndsbs.com to backup and restore
+the production database in case of any emergencies. We will also use this module to import the production database into
+our development database.
+
+To enable the Backup and Migrate module on our development site, which is already included in the repository, use Drush.
+````
+cd localhost.ndsbs
+drush en backup_migrate -y
+````
+
+Now log in at [ndsbs.com](https://www.ndsbs.com/user/login) and go to the
+[Backup and Migrate configuration page](https://www.ndsbs.com/admin/config/system/backup_migrate). All you need to do is
+select the "Backup now" button, which will download a mysql.gz file for us to import into the local development site.
+
+NOTE: The database at ndsbs.com is rather large, so give it a minute to do its thing.
+
+Now go to the
+[Backup and Migrate restore page](http://localhost.ndsbs/#overlay=admin/config/system/backup_migrate/restore) on the
+local site and select "Choose File". Find and select the mysql.gz file we just downloaded and select "Open" and
+"Restore now" button. Again, this is a rather large database so give it time. Grab a coffee and read some news.
 
 **[Back to top](#table-of-contents)**
 

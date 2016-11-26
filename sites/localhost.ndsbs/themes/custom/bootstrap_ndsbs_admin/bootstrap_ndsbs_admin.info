@@ -1,0 +1,11 @@
+name = Bootstrap NDSBS Admin
+description = Admin sub-theme of Bootstrap NDSBS for ndsbs.com
+core = 7.x
+base theme = bootstrap_ndsbs
+version = 7.x-1.1
+
+stylesheets[all][] = css/bootstrap-ndsbs.admin.css
+scripts[] = js/bootstrap-ndsbs.admin.js
+
+regions[help] = Help
+regions[content] = Content
