@@ -296,7 +296,9 @@ function bootstrap_ndsbs_preprocess_breadcrumb(&$variables) {
     ),
   );
 
-  $variables['breadcrumb'][] = l($title, drupal_get_path_alias(), $options);
+  if (!drupal_is_front_page()) {
+    $variables['breadcrumb'][] = l($title, drupal_get_path_alias(), $options);
+  }
 }
 
 /**
