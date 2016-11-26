@@ -305,6 +305,9 @@ ndsbs.com website for development.
 ### 8. Setup Drupal for localhost.ndsbs
 Now we can setup Drupal for local development of ndsbs.com.
 
+NOTE: This repository contains the sites directory for localhost.ndsbs. If you are using the same hostname in your local
+development environment, you can skip the copying of the ndsbs.com directory to localhost.ndsbs.
+
 First go to the sites directory of our local Drupal installation and copy the ndsbs.com directory into a new directory.
 ````
 cd NDSBS/sites
