@@ -112,7 +112,7 @@ PHPStorm projects directory. Make appropriate changes based on your local develo
 
 In your projects directory, download Drupal using Drush:
 ````
-cd ~/PhpStormProjects
+cd ~/PhpstormProjects
 drush dl drupal-7.52
 ````
 
