@@ -164,6 +164,12 @@ function bootstrap_ndsbs_preprocess_page(&$variables) {
       }
     }
     $variables['page']['front_main_menu'] = menu_tree(variable_get('menu_main_links_source', 'main-menu'));
+
+    $breadcrumb = array();
+    $breadcrumb[] = l('New Directions Substance and Behavioral Services', '<front>');
+
+    // Set Breadcrumbs
+    drupal_set_breadcrumb($breadcrumb);
   }
 
   if ($path == 'user/payment/confirmation') {
@@ -179,6 +185,15 @@ function bootstrap_ndsbs_preprocess_page(&$variables) {
     $variables['payment']['rush_cost'] = number_format($rush_cost, 2);
     $variables['payment']['total_cost'] = number_format($transactions[0]->cost + $rush_cost, 2);
   }
+
+  $variables['breadcrumb_attributes_array']['class'] = array('hidden');
+}
+
+/**
+ * Implements template_process_page().
+ */
+function bootstrap_ndsbs_process_page(&$variables) {
+  $variables['breadcrumb_attributes'] = drupal_attributes($variables['breadcrumb_attributes_array']);
 }
 
 /**
@@ -255,6 +270,7 @@ function bootstrap_ndsbs_preprocess_breadcrumb(&$variables) {
   foreach ($variables['breadcrumb'] as $key => $crumb) {
     $assessments = '<a href="/" title="">Assessments</a>';
     $rush = '<a href="/" title="">Rush order</a>';
+
     if ($crumb == $assessments || $crumb == $rush) {
       $crumb = '<a href="/view/assessment/status" title="">Assessments</a>';
     }
@@ -267,6 +283,38 @@ function bootstrap_ndsbs_preprocess_breadcrumb(&$variables) {
 
     if (preg_match('/briantdavis/', $new_crumb)) {
       unset($variables['breadcrumb'][$key]);
+    }
+  }
+
+  // Add the current page to the breadcrumb for structured data.
+  $title = '<span property="name">' . drupal_get_title() . '</span>';
+  $options = array(
+    'html' => TRUE,
+    'attributes' => array(
+      'property' => 'item',
+      'typeof' => 'WebPage',
+    ),
+  );
+
+  $variables['breadcrumb'][] = l($title, drupal_get_path_alias(), $options);
+}
+
+/**
+ * Implements hook_menu_breadcrumb_alter().
+ */
+function bootstrap_ndsbs_menu_breadcrumb_alter(&$active_trail, $item) {
+  $home = isset($active_trail[0]) ? $active_trail[0] : 0;
+  $about = isset($active_trail[1]) && $active_trail[1]['link_title'] == 'About';
+
+  if ($home) {
+    $active_trail[0]['title'] = 'NDSBS';
+  }
+
+  if ($about) {
+    unset($active_trail[1]);
+
+    if (isset($active_trail[2])) {
+      unset($active_trail[2]);
     }
   }
 }
