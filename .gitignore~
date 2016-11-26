@@ -40,6 +40,7 @@
 /sites/*/files/mailsystem
 /sites/*/files/print_pdf
 /sites/*/files/private
+/sites/*/files/styles
 /sites/*/files/tmp
 /sites/*/logs
 /sites/*/mysqldump
