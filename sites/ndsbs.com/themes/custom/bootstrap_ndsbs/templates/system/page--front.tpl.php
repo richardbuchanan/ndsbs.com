@@ -83,6 +83,12 @@
 
       <div<?php print $left_col_attributes; ?>>
 
+        <?php if ($breadcrumb): ?>
+          <div<?php print $breadcrumb_attributes; ?>>
+            <?php print $breadcrumb; ?>
+          </div>
+        <?php endif; ?>
+
         <?php if ($tabs = render($tabs)): ?>
           <a href="/node/1670/edit" title="Edit front page content" class="front-page-edit"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a>
         <?php endif; ?>

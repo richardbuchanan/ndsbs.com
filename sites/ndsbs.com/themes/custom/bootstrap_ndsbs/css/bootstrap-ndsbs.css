@@ -2612,3 +2612,60 @@ hr.dashed {
 .form-item-question-name label {
   display: block;
 }
+.view-all-assessments-public-page .purchase-wrapper {
+  height: auto;
+  width: 100%;
+  max-width: 302px;
+  padding: 14px 0;
+  text-align: center;
+  background: -webkit-linear-gradient(top, rgb(239, 231, 181) 0%, rgb(226, 211, 137) 100%);
+  background: -o-linear-gradient(top, rgb(239, 231, 181) 0%, rgb(226, 211, 137) 100%);
+  background: -ms-linear-gradient(top, rgb(239, 231, 181) 0%, rgb(226, 211, 137) 100%);
+  background: -moz-linear-gradient(top, rgb(239, 231, 181) 0%, rgb(226, 211, 137) 100%);
+  background: linear-gradient(to bottom, rgb(239, 231, 181) 0%, rgb(226, 211, 137) 100%);
+  border: 1px solid #8b857d;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(81, 81, 81, .6);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(81, 81, 81, .6);
+  margin-left: 15px;
+}
+.view-all-assessments-public-page .purchase-wrapper .service-amount span {
+  display: inline-block;
+  font-size: 23px;
+  font-weight: bold;
+  line-height: normal;
+  text-shadow: 1px 1px 0 #fff;
+  padding-bottom: 5px;
+  width: 100%;
+}
+.view-all-assessments-public-page .purchase-wrapper .service-amount span > a {
+  text-shadow: none;
+}
+.view-all-assessments-public-page .purchase-wrapper .service-amount > a {
+  display: inline-block;
+  padding: 6px 12px;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-image: none;
+  border: 1px solid transparent;
+  color: #fdfdfd;
+  background: #bf915b;
+  background: -moz-linear-gradient(top, #bf915b 0%, #a87340 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #bf915b), color-stop(100%, #a87340));
+  background: -webkit-linear-gradient(top, #bf915b 0%, #a87340 100%);
+  background: -o-linear-gradient(top, #bf915b 0%, #a87340 100%);
+  background: -ms-linear-gradient(top, #bf915b 0%, #a87340 100%);
+  background: linear-gradient(to bottom, #bf915b 0%, #a87340 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bf915b', endColorstr='#a87340', GradientType=0 );
+}
