@@ -191,10 +191,10 @@ function bdg_ndsbs_node_update($node) {
  */
 function bdg_ndsbs_drupal_mail($from = 'default_from', $to = 'default_to', $subject, $message, $alert) {
   if ($from == 'default_from') {
-    $from = variable_get('system_mail', 'info@ndsbs.com');
+    $from = variable_get('system_name', 'New Directions Substance and Behavioral Services') . ' <' . variable_get('system_mail', 'info@ndsbs.com') . '>';
   }
   if ($to == 'default_to') {
-    $to = variable_get('system_mail', 'info@ndsbs.com');
+    $to = variable_get('system_name', 'New Directions Substance and Behavioral Services') . ' <' . variable_get('system_mail', 'info@ndsbs.com') . '>';
   }
 
   $message = array(
