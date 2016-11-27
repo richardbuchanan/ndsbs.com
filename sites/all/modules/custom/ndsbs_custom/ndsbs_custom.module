@@ -661,11 +661,8 @@ function ndsbs_custom_form_alter(&$form, &$form_state, $form_id) {
  */
 function ndsbs_custom_mail_alter(&$message) {
   $default_from = variable_get('site_mail', ini_get('sendmail_from'));
-
-  if ($message['from'] == $default_from) {
-    $message['from'] = '"'. variable_get('site_name', 'Drupal') .'" <'. $default_from .'>';
-    $message['headers']['From'] = $message['headers']['Sender'] = $message['headers']['Return-Path'] = $message['headers']['Errors-To'] = $message['headers']['Reply-To'] = $message['from'];
-  }
+  $message['headers']['Sender'] = $message['headers']['Return-Path'] = $default_from;
+  $message['headers']['From'] = variable_get('site_name', 'Drupal') . ' <' . $default_from . '>';
 }
 
 /**

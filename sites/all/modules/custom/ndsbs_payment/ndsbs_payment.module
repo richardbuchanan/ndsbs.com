@@ -25,7 +25,9 @@ function ndsbs_payment_mail($key, &$message, $params) {
  * Implements hook_mail_alter().
  */
 function ndsbs_payment_mail_alter(&$message) {
-  $message['from'] = $message['headers']['From'] = '"New Directions Substance and Behavioral Services" <info@ndsbs.com>';
+  $default_from = variable_get('site_mail', ini_get('sendmail_from'));
+  $message['headers']['Sender'] = $message['headers']['Return-Path'] = $default_from;
+  $message['headers']['From'] = variable_get('site_name', 'Drupal') . ' <' . $default_from . '>';
 }
 
 /*
