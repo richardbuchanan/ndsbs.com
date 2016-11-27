@@ -13,6 +13,8 @@
  * @contact Richard Buchanan <richard_buchanan@buchanandesigngroup.com>
  * @link http://www.buchanandesigngroup.com @endlink
  */
+
+date_default_timezone_set('America/New_York');
 global $user;
 drupal_add_js(drupal_get_path('theme', 'bootstrap_ndsbs') . '/js/clients-view-reports.js');
 $pdf = $user->uid . '.pdf';
