@@ -657,6 +657,18 @@ function ndsbs_custom_form_alter(&$form, &$form_state, $form_id) {
 }
 
 /**
+ * Implements hook_mail_alter().
+ */
+function ndsbs_custom_mail_alter(&$message) {
+  $default_from = variable_get('site_mail', ini_get('sendmail_from'));
+
+  if ($message['from'] == $default_from) {
+    $message['from'] = '"'. variable_get('site_name', 'Drupal') .'" <'. $default_from .'>';
+    $message['headers']['From'] = $message['headers']['Sender'] = $message['headers']['Return-Path'] = $message['headers']['Errors-To'] = $message['headers']['Reply-To'] = $message['from'];
+  }
+}
+
+/**
  *  Implementation of user registration custom validation function
  *  Function _user_registration_custom_validation_callback() defined
  */
