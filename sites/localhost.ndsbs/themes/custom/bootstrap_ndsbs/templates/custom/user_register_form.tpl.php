@@ -71,7 +71,12 @@
   <fieldset>
     <legend>Terms of Use</legend>
     <div id="form-items-terms-of-use" class="form-item_custum fw_fixed" style="height: 200px; overflow: auto; border: 1px solid #D5D5D5">
-      <?php print drupal_render($form['field_terms_of_use_register']); ?>
+      <?php hide($form['field_terms_of_use_register']); ?>
+      <?php $terms = node_load('162'); ?>
+      <?php $terms = $terms->body['und'][0]['value']; ?>
+      <div class="field-name-field-terms-of-use-register">
+        <?php print $terms; ?>
+      </div>
     </div>
     <?php print drupal_render($form['field_terms_of_use']); ?>
   </fieldset>
