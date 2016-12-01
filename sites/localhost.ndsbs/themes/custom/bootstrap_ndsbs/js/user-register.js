@@ -9,9 +9,9 @@ jQuery(document).ready(function ($) {
   $('#edit-field-zip-und-0-value').attr('maxlength', '5');
 
   //$('#edit-field-middle-name-und-0-value').val('Middle Name');
-  $('#edit-field-first-name-und-0-value').attr('value', '');
-  $('#edit-field-last-name-und-0-value').attr('value', '');
-  $('#edit-field-state-und-0-value').attr('value', '');
+  //$('#edit-field-first-name-und-0-value').attr('value', '');
+  //$('#edit-field-last-name-und-0-value').attr('value', '');
+  //$('#edit-field-state-und-0-value').attr('value', '');
 
   //  Date of birth calculation called
   year.unbind('change').bind("change", function () {

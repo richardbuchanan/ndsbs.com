@@ -29,8 +29,8 @@ function bdg_ndsbs_preprocess_textfield(&$variables) {
     $variables['theme_hook_suggestions'][] = 'textfield__phone';
   }
   if ($name == 'field_first_name' || $name == 'field_last_name') {
-    $variables['element']['#default_value'] = '';
-    $variables['element']['#value'] = '';
+    //$variables['element']['#default_value'] = '';
+    //$variables['element']['#value'] = '';
   }
 }
 
