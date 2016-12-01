@@ -79,7 +79,7 @@ jQuery(document).ready(function ($) {
     }
   }
 
-  $('#edit-field-reason-for-assessment-und-3').change(function() {
+  $('#edit-field-reason-for-assessment-und-7').change(function() {
     var checkedProbation = !!this.checked;
     forProbation(checkedProbation);
   });
