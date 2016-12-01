@@ -79,6 +79,22 @@ jQuery(document).ready(function ($) {
     }
   }
 
+  $('#edit-field-reason-for-assessment-und-3').change(function() {
+    var checkedProbation = !!this.checked;
+    forProbation(checkedProbation);
+  });
+
+  // Enable for probation.
+  function forProbation(first) {
+    var forProbation = $('.field-name-field-for-probation');
+    if (first) {
+      forProbation.show();
+    }
+    else {
+      forProbation.hide();
+    }
+  }
+
   // Form validation.
   $('#user-register-form').formValidation({
     framework: 'bootstrap',

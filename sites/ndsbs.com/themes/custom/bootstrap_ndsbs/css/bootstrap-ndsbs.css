@@ -2603,7 +2603,8 @@ hr.dashed {
 .field-name-field-asmentinfo-section-two h2.trigger {
   font-weight: 700;
 }
-.field-name-field-for-courts {
+.field-name-field-for-courts,
+.field-name-field-for-probation {
   display: none;
 }
 .form-item-question-name {

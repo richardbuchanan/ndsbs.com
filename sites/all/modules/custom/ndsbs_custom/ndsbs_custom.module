@@ -14,6 +14,14 @@ function ndsbs_custom_entity_info_alter(&$info) {
   //dpm($info);
 }
 
+function ndsbs_custom_permission() {
+  return array(
+    'administer ndsbs' => array(
+      'title' => t('Administer NDSBS settings'),
+      'description' => t('Perform administration tasks for NDSBS.'),
+    ),
+  );
+}
 
 /**
  *  Implementation of hook_menu()
@@ -22,6 +30,13 @@ function ndsbs_custom_entity_info_alter(&$info) {
  */
 function ndsbs_custom_menu() {
   $items = array();
+  $items['admin/config/administration/ndsbs'] = array(
+    'title' => 'NDSBS administration',
+    'description' => 'Administrative settings for NDSBS.',
+    'access arguments' => array('administer ndsbs'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('ndsbs_custom_admin_settings'),
+  );
   $items['user/welcome'] = array(
     'title' => 'Welcome',
     'description' => 'Welcome page for registerd user.',
@@ -1941,4 +1956,63 @@ function chk_confirm_status() {
     ->execute()
     ->fetchAll();
   return $result;
+}
+
+/**
+ * Admin settings form
+ */
+function ndsbs_custom_admin_settings() {
+  $form = array();
+
+  // Select active preferences for display
+  $for_courts = field_info_field('field_for_courts');
+  $courts_preferences = list_allowed_values($for_courts);
+  $for_probation = field_info_field('field_for_probation');
+  $probation_preferences = list_allowed_values($for_probation);
+
+  $form['field_for_courts_active'] = array(
+    '#type' => 'checkboxes',
+    '#title' => t('Active options for courts'),
+    '#options' => $courts_preferences,
+    '#description' => t('Select the preferences available for user selection during registration. Unchecked options will not appear on the registration form.'),
+    '#default_value' => variable_get('field_for_courts_active', array()),
+  );
+
+  $form['field_for_probation_active'] = array(
+    '#type' => 'checkboxes',
+    '#title' => t('Active options for probation'),
+    '#options' => $probation_preferences,
+    '#description' => t('Select the preferences available for user selection during registration. Unchecked options will not appear on the registration form.'),
+    '#default_value' => variable_get('field_for_probation_active', array()),
+  );
+
+  return system_settings_form($form);
+
+}
+
+/**
+ * Implements hook_field_attach_form
+ */
+function ndsbs_custom_field_attach_form($entity_type, $entity, &$form, &$form_state, $langcode) {
+  // Filter out inactive preferences
+  if (isset($form['field_for_courts'])) {
+    $preferences = variable_get('field_for_courts_active', array());
+
+    foreach($preferences as $key => $preference){
+      // If this preference isn't checked, but is set in the field values, unset it.
+      if (empty($preference) && isset($form['field_for_courts'][LANGUAGE_NONE]['#options'][$key])) {
+        unset($form['field_for_courts'][LANGUAGE_NONE]['#options'][$key]);
+      }
+    }
+  }
+  if (isset($form['field_for_probation'])) {
+    $preferences = variable_get('field_for_probation_active', array());
+
+    foreach($preferences as $key => $preference){
+      // If this preference isn't checked, but is set in the field values, unset it.
+      if (empty($preference) && isset($form['field_for_probation'][LANGUAGE_NONE]['#options'][$key])) {
+        unset($form['field_for_probation'][LANGUAGE_NONE]['#options'][$key]);
+      }
+    }
+  }
 }
