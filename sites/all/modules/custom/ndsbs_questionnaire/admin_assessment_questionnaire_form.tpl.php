@@ -26,15 +26,27 @@
   <table class="table table-striped">
     <thead>
       <tr>
-        <td><b>Name:</b> <?php print l(t($name), 'user/' . $user_info->uid . '/edit'); ?></td>
-        <td><b>Service:</b> <?php print arg(8); ?></td>
+        <th>
+          <b>Name:</b> <?php print l(t($name), 'user/' . $user_info->uid . '/edit'); ?>
+          <br>
+          <b>Date of Birth:</b> <?php print t($dob) . t($age); ?>
+          <br>
+          <b>Email:</b> <?php print $user_info->mail; ?>
+        </th>
+        <th>
+          <b>Phone:</b> <?php print $user_info->field_phone['und'][0]['value']; ?>
+          <br>
+          <?php print $user_info->field_address['und'][0]['value']; ?>
+          <br>
+          <?php print $user_info->field_city['und'][0]['value']; ?>, <?php print $user_info->field_state['und'][0]['value']; ?> <?php print $user_info->field_zip['und'][0]['value']; ?>
+        </th>
       </tr>
     </thead>
 
     <tbody>
       <tr>
         <td>
-          <b>Date of Birth:</b> <?php print t($dob) . t($age); ?>
+          <b>Service:</b> <?php print arg(8); ?>
         </td>
         <td>
           <?php print $reason_for_assessment; ?>
@@ -46,19 +58,6 @@
             <br>
             <?php print $for_probation; ?>
           <?php endif; ?>
-        </td>
-      </tr>
-
-      <tr>
-        <td>
-          <b>Email:</b> <?php print $user_info->mail; ?>
-          <br>
-          <b>Phone:</b> <?php print $user_info->field_phone['und'][0]['value']; ?>
-        </td>
-        <td>
-          <?php print $user_info->field_address['und'][0]['value']; ?>
-          <br>
-          <?php print $user_info->field_city['und'][0]['value']; ?>, <?php print $user_info->field_state['und'][0]['value']; ?> <?php print $user_info->field_zip['und'][0]['value']; ?>
         </td>
       </tr>
 

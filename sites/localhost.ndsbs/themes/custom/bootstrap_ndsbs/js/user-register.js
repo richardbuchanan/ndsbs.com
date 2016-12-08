@@ -28,27 +28,32 @@ jQuery(document).ready(function ($) {
     }
   });
 
-  $('#edit-submit').attr('disabled', 'disabled').after('<small class="help-block edit-submit-help" style="display: none; clear: both;">WARNING: You must agree to the Terms of Use to continue.</small>');
-  //$('#edit-submit').attr('disabled', 'disabled').after('<br><br><p class="help-block edit-submit-help" style="display: none;">WARNING: You must agree to the Terms of Use to continue.</p>');
-  $('[value="I do not agree with NDSBS Terms of Use"]').prop('checked', true);
-  $('.edit-submit-help').show();
-  var required = $('.required');
+  if ($('body').hasClass('role-anonymous-user')) {
+    $('#edit-submit')
+      .attr('disabled', 'disabled')
+      .after('<small class="help-block edit-submit-help" style="display: none; clear: both;">WARNING: You must agree to the Terms of Use to continue.</small>');
+    //$('#edit-submit').attr('disabled', 'disabled').after('<br><br><p class="help-block edit-submit-help" style="display: none;">WARNING: You must agree to the Terms of Use to continue.</p>');
+    $('[value="I do not agree with NDSBS Terms of Use"]').prop('checked', true);
+    $('.edit-submit-help').show();
+    var required = $('.required');
 
-  // Terms of use acceptance.
-  $('.field-name-field-terms-of-use .radio input[name="field_terms_of_use[und]"]').click(function() {
-    if ($(this).attr('value') == 'I agree with NDSBS Terms of Use') {
-      required.each(function() {
-        if ($(this).val()) {
-          $('.edit-submit-help').hide();
-          $('#edit-submit').removeAttr('disabled');
+    // Terms of use acceptance.
+    $('.field-name-field-terms-of-use .radio input[name="field_terms_of_use[und]"]')
+      .click(function () {
+        if ($(this).attr('value') == 'I agree with NDSBS Terms of Use') {
+          required.each(function () {
+            if ($(this).val()) {
+              $('.edit-submit-help').hide();
+              $('#edit-submit').removeAttr('disabled');
+            }
+          });
+        }
+        else {
+          $('.edit-submit-help').show();
+          $('#edit-submit').attr('disabled', '');
         }
       });
-    }
-    else {
-      $('.edit-submit-help').show();
-      $('#edit-submit').attr('disabled', '');
-    }
-  });
+  }
 
   // Reason for assessment.
   var checkedOne = false;
