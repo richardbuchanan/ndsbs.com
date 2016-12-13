@@ -327,7 +327,7 @@ function bootstrap_ndsbs_menu_breadcrumb_alter(&$active_trail, $item) {
 function bootstrap_ndsbs_preprocess_link(&$variables) {
   $current_path = explode('/', current_path());
   $path = explode('/', $variables['path']);
-  $questionnaire_path = $path[0] == 'user' && $path[1] == 'questionnaire';
+  $questionnaire_path = $path[0] == 'user' && (isset($path[1]) && $path[1] == 'questionnaire');
   $questionnaire_page = $current_path[0] == 'user' && $current_path[1] == 'questionnaire';
 
   if ($questionnaire_path && $questionnaire_page) {

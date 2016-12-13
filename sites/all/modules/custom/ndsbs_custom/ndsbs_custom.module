@@ -7,13 +7,6 @@
  * Allows developer to customize the site's functionality.
  */
 
-/**
- * Implements hook_entity_info_alter().
- */
-function ndsbs_custom_entity_info_alter(&$info) {
-  //dpm($info);
-}
-
 function ndsbs_custom_permission() {
   return array(
     'administer ndsbs' => array(
