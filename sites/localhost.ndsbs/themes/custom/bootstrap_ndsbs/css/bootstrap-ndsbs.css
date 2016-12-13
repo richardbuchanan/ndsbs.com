@@ -2670,3 +2670,11 @@ hr.dashed {
   background: linear-gradient(to bottom, #bf915b 0%, #a87340 100%);
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bf915b', endColorstr='#a87340', GradientType=0 );
 }
+.resource-group-item {
+  padding: 0 15px;
+}
+.resource-group-item > h4 {
+  color: #000;
+  font-weight: 700;
+  margin-bottom: 0;
+}
