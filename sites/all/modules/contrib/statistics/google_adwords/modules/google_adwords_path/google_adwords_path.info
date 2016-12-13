@@ -4,9 +4,9 @@ core = 7.x
 dependencies[] = google_adwords
 package = Statistics
 
-; Information added by Drupal.org packaging script on 2014-09-28
-version = "7.x-2.0-beta5"
+; Information added by Drupal.org packaging script on 2015-08-25
+version = "7.x-2.1"
 core = "7.x"
 project = "google_adwords"
-datestamp = "1411900158"
+datestamp = "1440530944"
 
