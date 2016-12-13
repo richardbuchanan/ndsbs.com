@@ -35,10 +35,15 @@ drupal_add_js('misc/tableheader.js');
     $total_count = count($result);
     foreach ($result as $rec) {
       $user_info = user_load($rec->uid);
+      $user_name = array(
+        'first' => $user_info->field_first_name['und'][0]['value'],
+        'middle' => isset($user_info->field_middle_name['und']) ? $user_info->field_middle_name['und'][0]['value'] : '',
+        'last' => $user_info->field_last_name['und'][0]['value'],
+      );
       ?>
       <tr>
         <td>
-          <?php $name = $user_info->field_first_name['und'][0]['value'] . ' ' . $user_info->field_middle_name['und'][0]['value'] . ' ' . $user_info->field_last_name['und'][0]['value']; ?>
+          <?php $name = implode(' ', $user_name); ?>
           <b>Name-</b> <?php print l(t($name), 'user/' . $user_info->uid . '/edit'); ?>
           <br/>
           <b>Phone-</b> <?php print $user_info->field_phone['und'][0]['value']; ?>
@@ -72,7 +77,8 @@ drupal_add_js('misc/tableheader.js');
         <td>
           <?php
           if ($rec->type == 'important_document') {
-            if ($rec->field_imp_status['und'][0]['value'] == 1) {
+            $imp_status = isset($rec->field_imp_status['und']) && $rec->field_imp_status['und'][0]['value'] == 1;
+            if ($imp_status) {
               print 'Verified';
             }
             else {
@@ -80,7 +86,8 @@ drupal_add_js('misc/tableheader.js');
             }
           }
           if ($rec->type == 'account_verification') {
-            if ($rec->field_acc_status['und'][0]['value'] == 1) {
+            $field_acc_status = isset($rec->field_acc_status['und']) && $rec->field_acc_status['und'][0]['value'] == 1;
+            if ($field_acc_status) {
               print 'Verified';
             }
             else {
@@ -92,10 +99,10 @@ drupal_add_js('misc/tableheader.js');
 
         <td>
           <?php
-          if ($rec->type == 'important_document') {
+          if ($rec->type == 'important_document' && isset($rec->field_pr_description['und'])) {
             print $rec->field_pr_description['und'][0]['value'];
           }
-          if ($rec->type == 'account_verification') {
+          if ($rec->type == 'account_verification' && isset($rec->field_pa_description['und'])) {
             print $rec->field_pa_description['und'][0]['value'];
           }
           ?>
@@ -105,7 +112,8 @@ drupal_add_js('misc/tableheader.js');
           <?php
           if ($rec->type == 'important_document') {
             //  verify/document/nid/%/%
-            if ($rec->field_imp_status['und'][0]['value'] == 1) {
+            $field_imp_status = isset($rec->field_imp_status['und']) && $rec->field_imp_status['und'][0]['value'] == 1;
+            if ($field_imp_status) {
               print '<a href="' . $base_url . '/verify/document/nid/' . $rec->nid . '/imp/0" class="edit_icon">Not Verify</a>';
             }
             else {
@@ -116,7 +124,8 @@ drupal_add_js('misc/tableheader.js');
             }
           }
           if ($rec->type == 'account_verification') {
-            if ($rec->field_acc_status['und'][0]['value'] == 1) {
+            $_field_acc_status = isset($rec->field_acc_status['und']) && $rec->field_acc_status['und'][0]['value'] == 1;
+            if ($_field_acc_status) {
               print '<a href="' . $base_url . '/verify/document/nid/' . $rec->nid . '/acc/0" class="edit_icon">Not Verify</a>';
             }
             else {

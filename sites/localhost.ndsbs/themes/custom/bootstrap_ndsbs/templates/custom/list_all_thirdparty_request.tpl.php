@@ -6,7 +6,9 @@
 global $base_url;
 ?>
 <?php
-if ($_REQUEST['search_text'] <> '' || $_REQUEST['assessment_status'] <> '') {
+$search_text = isset($_REQUEST['search_text']) && $_REQUEST['search_text'];
+$assessment_status = isset($_REQUEST['assessment_status']) && $_REQUEST['assessment_status'] <> '';
+if ($search_text || $assessment_status) {
   $val = get_third_party_request_custom_search();
 }
 else {

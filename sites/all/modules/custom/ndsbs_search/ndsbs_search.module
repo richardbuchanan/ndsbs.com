@@ -50,7 +50,8 @@ function ndsbs_search_theme() {
  *  Parameter no
  */
 function client_search() {
-  return drupal_render(drupal_get_form('user_client_search_form'));
+  $client_search_form = drupal_get_form('user_client_search_form');
+  return drupal_render($client_search_form);
 }
 
 /**
@@ -175,7 +176,8 @@ function get_all_clients_custom_search() {
  *  Parameter no
  */
 function search_assessment_client() {
-  return drupal_render(drupal_get_form('search_assessment_client_form'));
+  $search_assessment_client_form = drupal_get_form('search_assessment_client_form');
+  return drupal_render($search_assessment_client_form);
 }
 
 /**
@@ -653,7 +655,8 @@ function get_client_paperwork_custom_search() {
  *  Parameter no
  */
 function search_transactions() {
-  return drupal_render(drupal_get_form('search_transactions_form'));
+  $search_transactions_form = drupal_get_form('search_transactions_form');
+  return drupal_render($search_transactions_form);
 }
 
 /**
@@ -691,7 +694,6 @@ function search_transactions_form($form, &$form_state) {
   $form['search_text'] = array(
     '#type' => 'textfield',
     '#title' => t('Search:'),
-    '#default_value' => $selected_value,
   );
 
   $form['asmnt_status'] = array(
@@ -1105,7 +1107,8 @@ function get_all_failed_requested_transaction_custom_search() {
  *  Parameter no
  */
 function search_third_party_request() {
-  return drupal_render(drupal_get_form('search_third_party_request_form'));
+  $search_third_party_request_form = drupal_get_form('search_third_party_request_form');
+  return drupal_render($search_third_party_request_form);
 }
 
 /**
@@ -1218,7 +1221,8 @@ function get_third_party_request_custom_search() {
  */
 function search_all_other_services() {
   drupal_set_title('All Other Documents');
-  return drupal_render(drupal_get_form('search_all_other_services_form'));
+  $search_all_other_services_form = drupal_get_form('search_all_other_services_form');
+  return drupal_render($search_all_other_services_form);
 }
 
 /**
@@ -1245,10 +1249,9 @@ function search_all_other_services_form($form, &$form_state) {
     '0' => 'Pending'
   );
 
-  //  Code for subreports
   $taxonomy_tree = taxonomy_get_tree(3);
   $report_by_options = array();
-  //  creating dropdown category values
+
   foreach ($taxonomy_tree as $tdata) {
     if ($tdata->tid <> 18 && $tdata->tid <> 19) {
       $term = taxonomy_term_load($tdata->tid);
@@ -1261,30 +1264,23 @@ function search_all_other_services_form($form, &$form_state) {
     '#type' => 'select',
     '#options' => $report_by_options,
   );
-
   $form['asmnt_status'] = array(
     '#type' => 'select',
     '#options' => $asmnt_status,
   );
-
-  // Textfield cor current password confirmation.
   $form['search_by'] = array(
     '#type' => 'select',
-    //'#title' => t('Select from list:'),
     '#options' => $custom_dropdown,
-    //'#default_value' => $selected_value,
   );
-
   $form['search_text'] = array(
     '#type' => 'textfield',
     '#title' => t('Search:'),
-    '#default_value' => $selected_value,
   );
-
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Submit')
   );
+
   return $form;
 }
 

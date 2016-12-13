@@ -832,7 +832,7 @@ function bootstrap_ndsbs_field__field_welcome_message__front_page($variables) {
 function bootstrap_ndsbs_field_collection_view($variables) {
   $element = $variables['element'];
   foreach ($element['entity']['field_collection_item'] as $item) {
-    if ($item['#bundle'] == 'field-carousel') {
+    if (isset($item['#bundle']) && $item['#bundle'] == 'field-carousel') {
       $element['links']['#links']['edit']['title'] = 'Edit carousel';
     }
   }
