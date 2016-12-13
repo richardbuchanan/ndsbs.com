@@ -25,7 +25,7 @@ if (!empty($element['#type'])) {
 if (!empty($element['#name'])) {
   $attributes['class'][] = 'form-item-' . strtr($element['#name'], array(' ' => '-', '_' => '-', '[' => '-', ']' => ''));
 }
-if ((!empty($element['#name']) && $element['#name'] = 'field_for_probation[und]') && $element['#return_value'] === '_none') {
+if ((!empty($element['#name']) && $element['#name'] = 'field_for_probation[und]') && (isset($element['#return_value']) && $element['#return_value'] === '_none')) {
   return;
 }
 // Add a class for disabled elements to facilitate cross-browser styling.

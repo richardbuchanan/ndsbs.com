@@ -1281,40 +1281,38 @@ function complete_resume_questionnaire_form_submit($form, &$form_state) {
 /**
  * Function get_purchased_questionnaire_assessment_list_leftpanel() Implemented
  * to assing the therapist to client for particular assessment
- *
- * @param type $form
- * @param type $form_state
- * @return type
  */
 function get_purchased_questionnaire_assessment_list_leftpanel() {
   $active = array();
   $data = get_user_purchased_assessment();
-
   $i = 0;
+
   foreach ($data as $data_info) {
-    $node_info = node_load($data_info->nid);
-    //  Function called to get the main service and sub service title
-    $service_title = get_mainservice_subservice_title($node_info, $data_info->termid);
-    $explode_title = explode('||', $service_title);
+    if ($data_info->nid != '2792') {
+      $node_info = node_load($data_info->nid);
+      //  Function called to get the main service and sub service title
+      $service_title = get_mainservice_subservice_title($node_info, $data_info->termid);
+      $explode_title = explode('||', $service_title);
 
-    $main_service = $explode_title[0];
-    $sub_service = $explode_title[1];
+      $main_service = $explode_title[0];
+      $sub_service = $explode_title[1];
 
-    if ($sub_service <> 'NO') {
-      $assessment_title = $sub_service;
+      if ($sub_service <> 'NO') {
+        $assessment_title = $sub_service;
+      }
+      else {
+        $assessment_title = $main_service;
+      }
+
+      $active[$i]['title'] = $assessment_title;
+      $active[$i]['assessment_node_id'] = $data_info->nid;
+      $active[$i]['transaction_id'] = $data_info->order_id;
+      $active[$i]['availability'] = $node_info->field_online_questionnaire['und'][0]['value'];
+      $active[$i]['term_id'] = $data_info->termid;
+      $i++;
     }
-    else {
-      $assessment_title = $main_service;
-    }
-    //  $key = $data_info->nid . '||' . $data_info->order_id . '||' . $node_info->field_online_questionnaire['und'][0]['value'] . '||' . $data_info->termid;
-
-    $active[$i]['title'] = $assessment_title;
-    $active[$i]['assessment_node_id'] = $data_info->nid;
-    $active[$i]['transaction_id'] = $data_info->order_id;
-    $active[$i]['availability'] = $node_info->field_online_questionnaire['und'][0]['value'];
-    $active[$i]['term_id'] = $data_info->termid;
-    $i++;
   }
+
   return $active;
 }
 

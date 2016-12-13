@@ -376,7 +376,7 @@ function bdg_ndsbs_therapist_reports_service($uid) {
 function bdg_ndsbs_therapist_reports_service_title($uid) {
   $nid = db_query('SELECT n.nid FROM {users_transactions} n WHERE n.uid = :uid', array(':uid' => $uid));
   foreach ($nid as $index => $result) {
-    if ($result->nid != '3965') {
+    if ($result->nid != '3965' && $result->nid != '2792') {
       $nid = $result->nid;
     }
   }
@@ -544,27 +544,23 @@ function bdg_ndsbs_assigned_therapist($uid) {
  */
 function bdg_ndsbs_get_steps_page() {
   global $base_url, $user;
-  $client = isset($user->roles[6]);
-
-  if (isset($_SESSION['COMPLETE_MY_QUESTIONNAIRE'])) {
-    $get_assessment_id = explode('/', $_SESSION['COMPLETE_MY_QUESTIONNAIRE']);
-    $transid_selected = $get_assessment_id[4];
-  }
-
   $data_left_asment = get_purchased_questionnaire_assessment_list_leftpanel();
 
   foreach ($data_left_asment as $key => $item) {
-    if ($item['assessment_node_id'] == '3965') {
+    $unset = array(
+      '2792',
+      '3965'
+    );
+
+    if (in_array($item['assessment_node_id'], $unset)) {
       unset($data_left_asment[$key]);
     }
   }
 
-  $assmnt_purchase_staus = 0;
 
   if (user_is_logged_in()) {
-    if (get_purchased_questionnaire_assessment_list_leftpanel()) {
+    if ($data_left_asment) {
       foreach ($data_left_asment as $dataleft_asment) {
-        $assmnt_purchase_staus = 1;
 
         if (isset($dataleft_asment['assessment_node_id'])) {
           return $base_url . '/questionnaire/start/' . $dataleft_asment['assessment_node_id'] . '/trans/' . $dataleft_asment['transaction_id'] . '/termid/' . $dataleft_asment['term_id'];
@@ -590,11 +586,6 @@ function bdg_ndsbs_get_steps_page_no_base_url() {
   global $user;
   $client = isset($user->roles[6]);
 
-  if (isset($_SESSION['COMPLETE_MY_QUESTIONNAIRE'])) {
-    $get_assessment_id = explode('/', $_SESSION['COMPLETE_MY_QUESTIONNAIRE']);
-    $transid_selected = $get_assessment_id[4];
-  }
-
   $data_left_asment = get_purchased_questionnaire_assessment_list_leftpanel();
 
   foreach ($data_left_asment as $key => $item) {
@@ -603,11 +594,8 @@ function bdg_ndsbs_get_steps_page_no_base_url() {
     }
   }
 
-  $assmnt_purchase_staus = 0;
-
   if ($client) {
     foreach ($data_left_asment as $dataleft_asment) {
-      $assmnt_purchase_staus = 1;
 
       if (isset($dataleft_asment['assessment_node_id'])) {
         return 'questionnaire/start/' . $dataleft_asment['assessment_node_id'] . '/trans/' . $dataleft_asment['transaction_id'] . '/termid/' . $dataleft_asment['term_id'];
