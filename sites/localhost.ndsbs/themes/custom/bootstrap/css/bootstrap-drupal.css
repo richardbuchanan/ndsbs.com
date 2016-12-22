@@ -273,23 +273,40 @@ div.vertical-tabs fieldset.vertical-tabs-pane > legend {
   animation: spin .7s infinite linear;
 }
 #autocomplete {
-  border: 1px solid;
   overflow: hidden;
   position: absolute;
   z-index: 100;
 }
 #autocomplete ul {
+  min-width: 160px;
+  padding: 5px 0;
+  margin: 2px 0 0;
+  font-size: 14px;
+  text-align: left;
   list-style: none;
-  list-style-image: none;
-  margin: 0;
-  padding: 0;
+  background-color: #fff;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0,0,0,.15);
+  border-radius: 4px;
+  -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+  box-shadow: 0 6px 12px rgba(0,0,0,.175);
 }
-#autocomplete li {
-  background: #fff;
-  color: #000;
-  cursor: default;
-  white-space: pre;
-  zoom: 1;
+#autocomplete ul li {
+  display: block;
+  cursor: pointer;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: 400;
+  line-height: 1.42857143;
+  color: #333;
+  white-space: nowrap;
+}
+#autocomplete ul li:hover {
+  color: #262626;
+  text-decoration: none;
+  background-color: #f5f5f5;
 }
 
 /**

@@ -2678,3 +2678,11 @@ hr.dashed {
   font-weight: 700;
   margin-bottom: 0;
 }
+.field-type-url .field-value-url input,
+.field-type-url .field-value-title input,
+.field-type-url .field-value-url label,
+.field-type-url .field-value-title label {
+}
+.has-autocomplete {
+  display: inline-block;
+}

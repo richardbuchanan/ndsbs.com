@@ -99,3 +99,19 @@
   border: 1px solid #ddd;
   padding: 15px;
 }
+.form-control-feedback {
+  width: 34px;
+  height: 28px;
+  line-height: 28px;
+}
+.field-widget-taxonomy-autocomplete .form-group > label {
+  display: block;
+}
+.btn.ajax-processed {
+  margin-top: 2em;
+}
+[aria-live="assertive"] {
+  display: none !important;
+  height: 0 !important;
+  width: 0 !important;
+}
