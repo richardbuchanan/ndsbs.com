@@ -79,7 +79,7 @@
 <?php endif; ?>
 
 <div id="page-container">
-  <div id="main-container" class="container<?php if ($page['navigation_sidebar'] || arg(0) == 'admin'): ?>-fluid<?php endif; ?>">
+  <div id="main-container" class="container">
     <div class="row">
       <a id="content"></a>
 
@@ -94,14 +94,6 @@
       <?php if ($breadcrumb): ?>
         <div<?php print $breadcrumb_attributes; ?>>
           <?php print $breadcrumb; ?>
-        </div>
-      <?php endif; ?>
-
-      <?php if ($page['navigation_sidebar']): ?>
-        <div<?php print $nav_col_attributes; ?>>
-          <div class="sidebar hidden-print hidden-xs">
-            <?php print render($page['navigation_sidebar']); ?>
-          </div>
         </div>
       <?php endif; ?>
 

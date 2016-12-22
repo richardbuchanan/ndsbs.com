@@ -306,7 +306,7 @@ function bootstrap_ndsbs_preprocess_breadcrumb(&$variables) {
  */
 function bootstrap_ndsbs_menu_breadcrumb_alter(&$active_trail, $item) {
   $home = isset($active_trail[0]) ? $active_trail[0] : 0;
-  $about = isset($active_trail[1]) && $active_trail[1]['link_title'] == 'About';
+  $about = isset($active_trail[1]) && isset($active_trail[1]['link_title']) && $active_trail[1]['link_title'] == 'About';
 
   if ($home) {
     $active_trail[0]['title'] = 'NDSBS';
@@ -832,7 +832,7 @@ function bootstrap_ndsbs_field__field_welcome_message__front_page($variables) {
 function bootstrap_ndsbs_field_collection_view($variables) {
   $element = $variables['element'];
   foreach ($element['entity']['field_collection_item'] as $item) {
-    if ($item['#bundle'] == 'field-carousel') {
+    if (isset($item['#bundle']) && $item['#bundle'] == 'field-carousel') {
       $element['links']['#links']['edit']['title'] = 'Edit carousel';
     }
   }
