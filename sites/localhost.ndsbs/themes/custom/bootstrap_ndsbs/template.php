@@ -306,7 +306,7 @@ function bootstrap_ndsbs_preprocess_breadcrumb(&$variables) {
  */
 function bootstrap_ndsbs_menu_breadcrumb_alter(&$active_trail, $item) {
   $home = isset($active_trail[0]) ? $active_trail[0] : 0;
-  $about = isset($active_trail[1]) && $active_trail[1]['link_title'] == 'About';
+  $about = isset($active_trail[1]) && isset($active_trail[1]['link_title']) && $active_trail[1]['link_title'] == 'About';
 
   if ($home) {
     $active_trail[0]['title'] = 'NDSBS';

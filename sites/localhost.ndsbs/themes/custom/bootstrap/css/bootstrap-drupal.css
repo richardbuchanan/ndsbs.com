@@ -272,6 +272,25 @@ div.vertical-tabs fieldset.vertical-tabs-pane > legend {
   -o-animation: spin .7s infinite linear ;
   animation: spin .7s infinite linear;
 }
+#autocomplete {
+  border: 1px solid;
+  overflow: hidden;
+  position: absolute;
+  z-index: 100;
+}
+#autocomplete ul {
+  list-style: none;
+  list-style-image: none;
+  margin: 0;
+  padding: 0;
+}
+#autocomplete li {
+  background: #fff;
+  color: #000;
+  cursor: default;
+  white-space: pre;
+  zoom: 1;
+}
 
 /**
  * ajax Throbber
