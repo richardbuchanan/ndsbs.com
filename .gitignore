@@ -44,6 +44,7 @@
 /sites/*/files/tmp
 /sites/*/logs
 /sites/*/mysqldump
+/sites/*/files/xmlsitemap
 
 # Ignore developer-only directories.
 sites/all/libraries/php-console
