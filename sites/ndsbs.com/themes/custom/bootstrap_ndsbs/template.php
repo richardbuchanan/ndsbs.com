@@ -731,6 +731,20 @@ function bootstrap_ndsbs_preprocess_views_view_fields(&$variables) {
 }
 
 /**
+ * Implements template_preprocess_views_view_list().
+ */
+function bootstrap_ndsbs_preprocess_views_view_list(&$variables) {
+  $rows = $variables['rows'];
+
+  foreach ($rows as $key => $row) {
+    if (empty($row)) {
+      $variables['title'] = '';
+      unset($variables['rows'][$key]);
+    }
+  }
+}
+
+/**
  * Implements theme_field__FIELD__CONTENT_TYPE().
  */
 function bootstrap_ndsbs_field__field_carousel__front_page($variables) {
