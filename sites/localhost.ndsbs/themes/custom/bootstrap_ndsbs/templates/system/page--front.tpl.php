@@ -108,6 +108,12 @@
           </div>
         <?php endif; ?>
 
+        <div id="professional-reviews">
+          <div class="container">
+            <?php print views_embed_view('professional_reviews', $display_id = 'block'); ?>
+          </div>
+        </div>
+
         <div id="front-welcome" class="container">
           <div id="front-welcome-wrapper" class="col-xs-12 col-sm-12 col-md-9">
             <div class="row">

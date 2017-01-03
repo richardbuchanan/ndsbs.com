@@ -214,17 +214,39 @@ body.front #main-container #left-content #front-carousel {
   margin: 0;
   padding: 0;
 }
+body.front #main-container #left-content #professional-reviews .container,
 body.front #main-container #left-content #front-welcome,
-body.front #main-container #left-content #sub-footer .container,
-body.front #main-container #left-content .view-professional-reviews {
+body.front #main-container #left-content #sub-footer .container {
   max-width: 1170px;
 }
-body.front #main-container #left-content .view-professional-reviews {
-  max-width: 1170px;
+body.front #main-container #left-content #professional-reviews .view-header h2 {
+  font-size: 2.8em;
+  text-align: center;
+}
+body.front #main-container #left-content #professional-reviews .view-content {
+  background-color: #935a2d;
+  color: #f8f8f8;
+  font-size: 1.5em;
+  text-align: center;
+}
+body.front #main-container #left-content #professional-reviews .view-content .carousel-inner {
   margin: 0 auto;
+  height: 200px;
+  width: 75%;
 }
-body.front #main-container #left-content .view-professional-reviews .views-slideshow-cycle-main-frame {
-  width: 100%;
+body.front #main-container #left-content #professional-reviews .view-content .carousel-inner .views-field-body {
+  padding: 2em 0 0;
+}
+body.front #main-container #left-content #professional-reviews .view-content .carousel-inner .views-field-title {
+  padding: 1em 0 0;
+}
+body.front #main-container #left-content #professional-reviews .view-content .carousel-inner .views-field-title {
+  position: relative;
+  right: 2em;
+  text-align: right;
+}
+body.front #main-container #left-content #professional-reviews .view-content .carousel-indicators {
+  display: none;
 }
 body.front #main-container #left-content #front-welcome {
   margin-top: 14px;
