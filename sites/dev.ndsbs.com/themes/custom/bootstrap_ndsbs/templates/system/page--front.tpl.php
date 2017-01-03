@@ -107,6 +107,7 @@
             <?php print $messages; ?>
           </div>
         <?php endif; ?>
+        <?php print views_embed_view('professional_reviews', $display_id = 'block'); ?>
 
         <div id="front-welcome" class="container">
           <div id="front-welcome-wrapper" class="col-xs-12 col-sm-12 col-md-9">
