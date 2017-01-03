@@ -152,6 +152,13 @@ table.field-ui-overview tr.add-new  .form-type-textfield .field-prefix .form-con
 }
 
 /**
+ * Help blocks.
+ */
+#block-system-help p:last-of-type {
+  margin-bottom: 0;
+}
+
+/**
  * Vertical tabs
  */
 div.vertical-tabs {

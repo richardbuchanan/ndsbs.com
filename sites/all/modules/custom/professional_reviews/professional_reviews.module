@@ -1,0 +1,23 @@
+<?php
+
+/**
+ * Implements hook_node_info()
+ */
+function professional_reviews_node_info() {
+  return array(
+    'professional_review' => array(
+      'name' => t('Professional review'),
+      'base' => 'professional_review',
+      'description' => t('Use <em>Profesionnal Reviews</em> to create reviews given by attorneys and other professionals.'),
+      'has_title' => TRUE,
+      'title_label' => t('Professional\'s name'),
+    )
+  );
+}
+
+/**
+ * Implement hook_form()
+ */
+function professional_review_form($node, $form_state) {
+  return node_content_form($node, $form_state);
+}
