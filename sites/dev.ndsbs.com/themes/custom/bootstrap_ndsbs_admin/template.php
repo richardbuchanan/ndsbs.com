@@ -49,12 +49,17 @@ function bootstrap_ndsbs_admin_preprocess_block(&$variables) {
   $region = $variables['block']->region;
 
   if ($region == 'dashboard_main') {
-    // $variables['classes_array'][] = 'col-xs-12';
-    // $variables['classes_array'][] = 'col-md-6';
+    if ($variables['elements']['#block']->delta != 'staff_transactions-block_1') {
+      $variables['classes_array'][] = 'col-xs-12';
+      $variables['classes_array'][] = 'col-md-6';
+    }
+    else {
+      $variables['classes_array'][] = 'col-xs-12';
+    }
   }
 
   if ($region == 'dashboard_sidebar') {
-    // $variables['classes_array'][] = 'col-xs-12';
+    //$variables['classes_array'][] = 'col-xs-12';
   }
 }
 

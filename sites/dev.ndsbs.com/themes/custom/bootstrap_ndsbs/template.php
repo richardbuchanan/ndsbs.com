@@ -306,7 +306,7 @@ function bootstrap_ndsbs_preprocess_breadcrumb(&$variables) {
  */
 function bootstrap_ndsbs_menu_breadcrumb_alter(&$active_trail, $item) {
   $home = isset($active_trail[0]) ? $active_trail[0] : 0;
-  $about = isset($active_trail[1]) && $active_trail[1]['link_title'] == 'About';
+  $about = isset($active_trail[1]) && isset($active_trail[1]['link_title']) && $active_trail[1]['link_title'] == 'About';
 
   if ($home) {
     $active_trail[0]['title'] = 'NDSBS';
@@ -327,7 +327,7 @@ function bootstrap_ndsbs_menu_breadcrumb_alter(&$active_trail, $item) {
 function bootstrap_ndsbs_preprocess_link(&$variables) {
   $current_path = explode('/', current_path());
   $path = explode('/', $variables['path']);
-  $questionnaire_path = $path[0] == 'user' && $path[1] == 'questionnaire';
+  $questionnaire_path = $path[0] == 'user' && (isset($path[1]) && $path[1] == 'questionnaire');
   $questionnaire_page = $current_path[0] == 'user' && $current_path[1] == 'questionnaire';
 
   if ($questionnaire_path && $questionnaire_page) {
@@ -731,6 +731,20 @@ function bootstrap_ndsbs_preprocess_views_view_fields(&$variables) {
 }
 
 /**
+ * Implements template_preprocess_views_view_list().
+ */
+function bootstrap_ndsbs_preprocess_views_view_list(&$variables) {
+  $rows = $variables['rows'];
+
+  foreach ($rows as $key => $row) {
+    if (empty($row)) {
+      $variables['title'] = '';
+      unset($variables['rows'][$key]);
+    }
+  }
+}
+
+/**
  * Implements theme_field__FIELD__CONTENT_TYPE().
  */
 function bootstrap_ndsbs_field__field_carousel__front_page($variables) {
@@ -832,7 +846,7 @@ function bootstrap_ndsbs_field__field_welcome_message__front_page($variables) {
 function bootstrap_ndsbs_field_collection_view($variables) {
   $element = $variables['element'];
   foreach ($element['entity']['field_collection_item'] as $item) {
-    if ($item['#bundle'] == 'field-carousel') {
+    if (isset($item['#bundle']) && $item['#bundle'] == 'field-carousel') {
       $element['links']['#links']['edit']['title'] = 'Edit carousel';
     }
   }

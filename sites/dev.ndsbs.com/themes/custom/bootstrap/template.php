@@ -295,6 +295,12 @@ function bootstrap_js_alter(&$javascript) {
   // Get path to the Bootstrap theme.
   $theme = drupal_get_path('theme', 'bootstrap');
 
+  if (isset($javascript['misc/autocomplete.js'])) {
+    // Replace Drupal core's autocomplete script with the theme's.
+    $autocomplete = $theme . '/js/autocomplete.js';
+    $javascript['misc/autocomplete.js']['data'] = $autocomplete;
+  }
+
   if (isset($javascript['misc/jquery.ba-bbq.js'])) {
     // Replace Drupal core's ba-bbq script with the theme's.
     $ba_bbq = $theme . '/js/ba-bbq.js';

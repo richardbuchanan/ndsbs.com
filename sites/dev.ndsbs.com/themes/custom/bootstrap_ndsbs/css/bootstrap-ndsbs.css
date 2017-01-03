@@ -2670,3 +2670,19 @@ hr.dashed {
   background: linear-gradient(to bottom, #bf915b 0%, #a87340 100%);
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bf915b', endColorstr='#a87340', GradientType=0 );
 }
+.resource-item {
+  padding: 0 15px;
+}
+.resource-item > h4 {
+  color: #000;
+  font-weight: 700;
+  margin-bottom: 0;
+}
+.field-type-url .field-value-url input,
+.field-type-url .field-value-title input,
+.field-type-url .field-value-url label,
+.field-type-url .field-value-title label {
+}
+.has-autocomplete {
+  display: inline-block;
+}

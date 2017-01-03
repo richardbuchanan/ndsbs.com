@@ -3,7 +3,9 @@
  * @file
  * list_all_transaction.tpl.php
  */
-if ($_REQUEST['search_text'] <> '' || $_REQUEST['assessment_status'] <> '') {
+$search_text = isset($_REQUEST['search_text']) && $_REQUEST['search_text'];
+$assessment_status = isset($_REQUEST['assessment_status']) && $_REQUEST['assessment_status'] <> '';
+if ($search_text || $assessment_status) {
   $transactio_data = get_all_transaction_custom_search();
 }
 else {
@@ -33,7 +35,8 @@ drupal_set_title($title);
     <tbody>
     <?php
     //  Creating the serial number for listing count
-    if ($_REQUEST['page'] == '') {
+    $page = isset($_REQUEST['page']);
+    if (!$page) {
       $i = 0;
     }
     else {
@@ -47,7 +50,7 @@ drupal_set_title($title);
         $node_info = node_load($data->nid);
         ?>
         <tr>
-          <td>
+          <td data-test>
             <?php
             print ++$i;
             ?>
@@ -60,9 +63,12 @@ drupal_set_title($title);
             <?php
             $options = array('query' => array('destination' => 'all/transactions/list/' . arg(3)));
             ?>
-            <?php print l(t($user_info->field_first_name['und'][0]['value']), 'user/' . $user_info->uid . '/edit', $options); ?>
-            <?php print $user_info->field_middle_name['und'][0]['value']; ?>
-            <?php print $user_info->field_last_name['und'][0]['value']; ?>
+            <?php $name = array(
+              'first' => $user_info->field_first_name['und'][0]['value'],
+              'middle' => isset($user_info->field_middle_name['und']) ? $user_info->field_middle_name['und'][0]['value'] : '',
+              'last' => $user_info->field_last_name['und'][0]['value'],
+            ); ?>
+            <?php print l(implode(' ', $name), 'user/' . $user_info->uid . '/edit', $options); ?>
             <br/>
             For service
             - <?php print get_purchased_service_title($node_info, $data->termid); ?>
