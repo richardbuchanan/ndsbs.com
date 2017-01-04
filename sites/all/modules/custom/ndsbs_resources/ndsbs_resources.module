@@ -1,0 +1,99 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function ndsbs_resources_menu() {
+  $items['resources'] = array(
+    'title' => 'Resources',
+    'page callback' => 'resources_page',
+    'access arguments' => array('access content'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+function resources_page() {
+  $renderable_array = array();
+  $nid = '4846';
+  $vid = '6';
+  $node = node_load($nid);
+  $node_entity = entity_metadata_wrapper('node', $node);
+  $field_resource = $node_entity->field_resource->value();
+  $tids = array();
+
+  if (user_access('bypass node access')) {
+    $tabs = '<nav id="local-tasks" class="navbar">';
+    $tabs .= '<div id="primary-tasks">';
+    $tabs .= '<h2 class="sr-only">Primary tabs</h2>';
+    $tabs .= '<ul class="nav nav-tabs">';
+    $tabs .= '<li class="active"><a href="/resources" class="active">View<span class="sr-only">(active tab)</span></a></li>';
+    $tabs .= '<li><a href="/node/4846/edit?destination=resources">Edit</a></li>';
+    $tabs .= '<li><a href="/admin/structure/taxonomy/resource_category?destination=resources">Reorder categories</a></li>';
+    $tabs .= '</ul></div></nav>';
+
+    $renderable_array['tabs'] = array(
+      '#markup' => $tabs,
+    );
+  }
+
+  foreach ($field_resource as $item) {
+    $tid = $item->field_resource_category['und'][0]['tid'];
+    $term = taxonomy_term_load($tid);
+    $name = $term->name;
+    $weight = $term->weight;
+
+    if (!in_array($tid, $tids)) {
+      $tids[$weight]['name'] = $name;
+      $tids[$weight]['tid'] = $tid;
+    }
+  }
+
+  ksort($tids);
+
+  foreach ($tids as $delta => $value) {
+    $renderable_array[$delta]['name'] = array(
+      '#markup' => '<h3>' . $value['name'] . '</h3>',
+    );
+
+    $term_id = $value['tid'];
+
+    $renderable_array[$delta]['list_start'] = array(
+      '#markup' => '<ul>',
+    );
+
+    foreach ($field_resource as $field_resource_delta => $field_resource_value) {
+      $field_resource_tid = $field_resource_value->field_resource_category['und'][0]['tid'];
+
+      if ($term_id == $field_resource_tid) {
+        $title = $field_resource_value->field_resource_title['und'][0]['value'];
+        $path = $field_resource_value->field_resource_link['und'][0]['value'];
+        $text = isset($field_resource_value->field_resource_link['und'][0]['title']) ? $field_resource_value->field_resource_link['und'][0]['title'] : $field_resource_value->field_resource_link['und'][0]['value'];
+        $options = array('attributes' => array('target' => '_blank'));
+
+        $renderable_array[$delta][$field_resource_delta]['list_item_start'] = array(
+          '#markup' => '<li>',
+        );
+
+        $renderable_array[$delta][$field_resource_delta]['title'] = array(
+          '#markup' => '<div>' . $title . '</div>',
+        );
+
+        $renderable_array[$delta][$field_resource_delta]['path'] = array(
+          '#markup' => '<div>' . l($text, $path, $options) . '</div>',
+        );
+
+        $renderable_array[$delta][$field_resource_delta]['list_item_end'] = array(
+          '#markup' => '</li>',
+        );
+      }
+    }
+
+    $renderable_array[$delta]['list_end'] = array(
+      '#markup' => '</ul>',
+    );
+  }
+
+  return $renderable_array;
+}
