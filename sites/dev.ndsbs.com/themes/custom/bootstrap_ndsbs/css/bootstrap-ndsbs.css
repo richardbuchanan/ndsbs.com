@@ -210,6 +210,11 @@ body.front #main-container #left-content .front-page-edit {
   text-shadow: rgba(0, 0, 0, 0.3) 2px 2px 6px;
   z-index: 1;
 }
+body.front #main-container #left-content #faq-videos,
+body.front #main-container #left-content #our-team-services {
+  border-top: 1px dashed #c4c4c4;
+  margin-top: 2em;
+}
 body.front #main-container #left-content #front-carousel {
   margin: 0;
   padding: 0;

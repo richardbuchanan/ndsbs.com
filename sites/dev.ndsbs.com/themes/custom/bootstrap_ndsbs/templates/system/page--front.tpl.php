@@ -114,7 +114,7 @@
 
         <div id="front-welcome" class="container">
           <div id="front-welcome-wrapper" class="col-xs-12 col-sm-12 col-md-9">
-            <div class="row">
+            <div id="front-welcome-message" class="row">
               <div id="welcome-image" class="col-xs-4 col-sm-3 col-md-3">
                 <a href="/staff"><?php print render($page['field_welcome_image']); ?></a>
                 <h4><a href="/staff">Brian T. Davis, CEO, LISW-S, SAP</a></h4>
@@ -124,7 +124,35 @@
                 <?php print render($page['field_welcome_message']); ?>
               </div>
             </div>
-            <div class="row">
+
+            <div id="faq-videos" class="row">
+              <div class="col-xs-12">
+                <h2>Get Answers to Common Questions Here</h2>
+              </div>
+
+              <div class="col-xs-12 col-sm-12 col-md-4">
+                <h3>What's the cost?</h3>
+                <div class="embed-responsive embed-responsive-16by9">
+                  <iframe class="embed-responsive-item" src="//www.youtube.com/embed/i5sqJNFFwqc?rel=0" allowfullscreen=""></iframe>
+                </div>
+              </div>
+
+              <div class="col-xs-12 col-sm-12 col-md-4">
+                <h3>Will it be accepted?</h3>
+                <div class="embed-responsive embed-responsive-16by9">
+                  <iframe class="embed-responsive-item" src="//www.youtube.com/embed/Mdcl1teQG3A?rel=0" allowfullscreen=""></iframe>
+                </div>
+              </div>
+
+              <div class="col-xs-12 col-sm-12 col-md-4">
+                <h3>How's it work?</h3>
+                <div class="embed-responsive embed-responsive-16by9">
+                  <iframe class="embed-responsive-item" src="//www.youtube.com/embed/H8ULIw0Zgaw?rel=0" allowfullscreen=""></iframe>
+                </div>
+              </div>
+            </div>
+
+            <div id="our-team-services" class="row">
               <div id="our-team" class="col-xs-12 col-sm-6 col-md-6">
                 <h2><a href="/staff">Our Team</a></h2>
                 <a href="/staff"><?php print render($page['field_our_team_image']); ?></a>
@@ -136,7 +164,9 @@
                 <?php print render($page['field_our_services_message']); ?>
               </div>
             </div>
+
           </div>
+
           <div id="front-testimonials" class="col-xs-12 col-sm-12 col-md-3">
             <h2>Check My State</h2>
             <div id="states-map">
