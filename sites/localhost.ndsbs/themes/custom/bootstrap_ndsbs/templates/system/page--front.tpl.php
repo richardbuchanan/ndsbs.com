@@ -109,9 +109,7 @@
         <?php endif; ?>
 
         <div id="professional-reviews">
-          <div class="container">
-            <?php print views_embed_view('professional_reviews', $display_id = 'block'); ?>
-          </div>
+          <?php print views_embed_view('professional_reviews', $display_id = 'block'); ?>
         </div>
 
         <div id="front-welcome" class="container">

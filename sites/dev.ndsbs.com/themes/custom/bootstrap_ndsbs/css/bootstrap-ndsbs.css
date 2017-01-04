@@ -214,36 +214,74 @@ body.front #main-container #left-content #front-carousel {
   margin: 0;
   padding: 0;
 }
+body.front #main-container #left-content #front-carousel:before,
+body.front #main-container #left-content #front-carousel:after,
+body.front #main-container #left-content #front-carousel .clearfix:before,
+body.front #main-container #left-content #front-carousel .clearfix:after {
+  display: none;
+}
 body.front #main-container #left-content #professional-reviews .container,
 body.front #main-container #left-content #front-welcome,
 body.front #main-container #left-content #sub-footer .container {
-  max-width: 1170px;
+}
+body.front #main-container #left-content #professional-reviews {
+}
+body.front #main-container #left-content #professional-reviews .view-header {
+  background-color: #82796f;
 }
 body.front #main-container #left-content #professional-reviews .view-header h2 {
+  color: #f8f8f8;
   font-size: 2.8em;
+  margin: 0 auto;
+  padding: .5em 0;
+  max-width: 1170px;
+  width: 75%;
   text-align: center;
 }
 body.front #main-container #left-content #professional-reviews .view-content {
-  background-color: #935a2d;
+  background-color: #82796f;
   color: #f8f8f8;
   font-size: 1.5em;
   text-align: center;
 }
-body.front #main-container #left-content #professional-reviews .view-content .carousel-inner {
+body.front #main-container #left-content #professional-reviews .view-content .carousel {
   margin: 0 auto;
   height: 200px;
+  max-width: 1170px;
   width: 75%;
 }
+body.front #main-container #left-content #professional-reviews .view-content .carousel-control.left,
+body.front #main-container #left-content #professional-reviews .view-content .carousel-control.right {
+  background-image: none;
+}
+body.front #main-container #left-content #professional-reviews .view-content .carousel-control.left .icon-prev:before,
+body.front #main-container #left-content #professional-reviews .view-content .carousel-control.right .icon-next:before {
+  display: none;
+}
+body.front #main-container #left-content #professional-reviews .view-content .carousel-inner {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 15%;
+  width: 70%;
+}
+body.front #main-container #left-content #professional-reviews .view-content .carousel-inner .item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
 body.front #main-container #left-content #professional-reviews .view-content .carousel-inner .views-field-body {
-  padding: 2em 0 0;
+  position: absolute;
+  top: 1em;
+  right: 0;
+  left: 0;
 }
 body.front #main-container #left-content #professional-reviews .view-content .carousel-inner .views-field-title {
-  padding: 1em 0 0;
-}
-body.front #main-container #left-content #professional-reviews .view-content .carousel-inner .views-field-title {
-  position: relative;
-  right: 2em;
-  text-align: right;
+  position: absolute;
+  right: 0;
+  bottom: 2em;
 }
 body.front #main-container #left-content #professional-reviews .view-content .carousel-indicators {
   display: none;
