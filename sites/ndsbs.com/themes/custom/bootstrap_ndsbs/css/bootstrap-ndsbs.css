@@ -210,13 +210,93 @@ body.front #main-container #left-content .front-page-edit {
   text-shadow: rgba(0, 0, 0, 0.3) 2px 2px 6px;
   z-index: 1;
 }
+@media (min-width: 992px) {
+  #faq-row,
+  #recent-blogs-row {
+    border-top: 1px dashed #c4c4c4;
+    margin-top: 1em;
+  }
+}
+#front-welcome-messages {
+  margin-top: 20px;
+}
+body.front #main-container #left-content #faq-videos,
+body.front #main-container #left-content #our-team-services {
+}
 body.front #main-container #left-content #front-carousel {
   margin: 0;
   padding: 0;
 }
+body.front #main-container #left-content #front-carousel:before,
+body.front #main-container #left-content #front-carousel:after,
+body.front #main-container #left-content #front-carousel .clearfix:before,
+body.front #main-container #left-content #front-carousel .clearfix:after {
+  display: none;
+}
+body.front #main-container #left-content #professional-reviews .container,
 body.front #main-container #left-content #front-welcome,
 body.front #main-container #left-content #sub-footer .container {
+}
+body.front #main-container #left-content #professional-reviews {
+}
+body.front #main-container #left-content #professional-reviews .view-header {
+}
+body.front #main-container #left-content #professional-reviews .view-header h2 {
+  color: #82796f;
+  font-size: 2.8em;
+  margin: 0 auto;
+  padding: .5em 0;
   max-width: 1170px;
+  width: 75%;
+  text-align: center;
+}
+body.front #main-container #left-content #professional-reviews .view-content {
+  background-color: #82796f;
+  color: #f8f8f8;
+  font-size: 1.5em;
+  text-align: center;
+}
+body.front #main-container #left-content #professional-reviews .view-content .carousel {
+  margin: 0 auto;
+  height: 200px;
+  max-width: 1170px;
+  width: 75%;
+}
+body.front #main-container #left-content #professional-reviews .view-content .carousel-control.left,
+body.front #main-container #left-content #professional-reviews .view-content .carousel-control.right {
+  background-image: none;
+}
+body.front #main-container #left-content #professional-reviews .view-content .carousel-control.left .icon-prev:before,
+body.front #main-container #left-content #professional-reviews .view-content .carousel-control.right .icon-next:before {
+  display: none;
+}
+body.front #main-container #left-content #professional-reviews .view-content .carousel-inner {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 15%;
+  width: 70%;
+}
+body.front #main-container #left-content #professional-reviews .view-content .carousel-inner .item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+body.front #main-container #left-content #professional-reviews .view-content .carousel-inner .views-field-body {
+  position: absolute;
+  top: 1em;
+  right: 0;
+  left: 0;
+}
+body.front #main-container #left-content #professional-reviews .view-content .carousel-inner .views-field-title {
+  position: absolute;
+  right: 0;
+  bottom: 2em;
+}
+body.front #main-container #left-content #professional-reviews .view-content .carousel-indicators {
+  display: none;
 }
 body.front #main-container #left-content #front-welcome {
   margin-top: 14px;
@@ -259,6 +339,9 @@ body.front .field-name-field-choose-us ul {
 }
 body.front .field-name-field-choose-us ul li {
 
+}
+body.front .faq-videos-title {
+  font-size: 2.2em;
 }
 
 /**
@@ -604,14 +687,12 @@ body.front .field-name-field-choose-us ul li {
   font-size: 11px;
   font-weight: 600;
 }
-#welcome-message h2:first-of-type,
-#front-testimonials h2:first-of-type {
+#welcome-message h2:first-of-type {
   margin-top: 0;
 }
-@media (min-width: 992px) {
-  #front-testimonials {
-    border-left: 1px dashed #c4c4c4;
-  }
+.field-name-field-our-team-message,
+.field-name-field-our-services-message {
+  margin-top: 1em;
 }
 #front-testimonials #bbb,
 #front-testimonials #payment-cards {
@@ -1870,10 +1951,6 @@ div.table-responsive {
   font-size: 16px;
   line-height: 24px;
 }
-#front-recent-blogs .block {
-  border-top: 1px dashed #c4c4c4;
-  margin-top: 2em;
-}
 #front-recent-blogs .block>h2 {
   font-size: 1.5em;
 }
@@ -2685,4 +2762,14 @@ hr.dashed {
 }
 .has-autocomplete {
   display: inline-block;
+}
+@media only screen and (min-width : 768px) {
+  .is-table-row {
+    display: table;
+  }
+  .is-table-col {
+    float: none;
+    display: table-cell;
+    vertical-align: top;
+  }
 }

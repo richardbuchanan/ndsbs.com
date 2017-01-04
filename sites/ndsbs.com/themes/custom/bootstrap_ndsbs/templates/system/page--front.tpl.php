@@ -108,54 +108,106 @@
           </div>
         <?php endif; ?>
 
-        <div id="front-welcome" class="container">
-          <div id="front-welcome-wrapper" class="col-xs-12 col-sm-12 col-md-9">
-            <div class="row">
-              <div id="welcome-image" class="col-xs-4 col-sm-3 col-md-3">
-                <a href="/staff"><?php print render($page['field_welcome_image']); ?></a>
-                <h4><a href="/staff">Brian T. Davis, CEO, LISW-S, SAP</a></h4>
-              </div>
-              <div id="welcome-message" class="col-xs-12 col-sm-9 col-md-9">
-                <h2>Welcome to New Directions</h2>
-                <?php print render($page['field_welcome_message']); ?>
-              </div>
-            </div>
-            <div class="row">
-              <div id="our-team" class="col-xs-12 col-sm-6 col-md-6">
-                <h2><a href="/staff">Our Team</a></h2>
-                <a href="/staff"><?php print render($page['field_our_team_image']); ?></a>
-                <?php print render($page['field_our_team_message']); ?>
-              </div>
-              <div id="our-services" class="col-xs-12 col-sm-6 col-md-6">
-                <h2><a href="/our-services">Our Services</a></h2>
-                <a href="/our-services"><?php print render($page['field_our_services_image']); ?></a>
-                <?php print render($page['field_our_services_message']); ?>
-              </div>
-            </div>
-          </div>
-          <div id="front-testimonials" class="col-xs-12 col-sm-12 col-md-3">
-            <h2>Check My State</h2>
-            <div id="states-map">
-              <?php $theme = drupal_get_path('theme', 'bootstrap_ndsbs'); ?>
-              <a href="/state-map">
-                <img src="<?php print $theme ?>/css/images/state-map.jpg" style="max-width: 100%;" />
-              </a>
-            </div>
-            <h2>Testimonials</h2>
-            <?php print views_embed_view('testimonials', $display_id = 'block_1'); ?>
-            <div id="bbb">
-              <a href="https://www.bbb.org/centralohio/business-reviews/marriage-family-child-individual-counselors/directions-counseling-group-in-worthington-oh-70078980/#bbbonlineclick">
-                <?php print render($page['field_better_business_bureau']); ?>
-              </a>
-            </div>
-            <div id="payment-cards">
-              <?php print render($page['field_accepted_payments']); ?>
-            </div>
-          </div>
-          <div id="front-recent-blogs" class="col-xs-12">
-            <?php print render($page['content']); ?>
-          </div>
+        <div id="professional-reviews">
+          <?php print views_embed_view('professional_reviews', $display_id = 'block'); ?>
         </div>
+
+        <div id="front-welcome" class="container">
+
+          <div id="welcome-message-row" class="row is-table-row">
+            <div id="front-welcome-wrapper" class="col-xs-12 col-sm-12 col-md-9 is-table-col">
+              <div id="front-welcome-message" class="row">
+                <div id="welcome-image" class="col-xs-4 col-sm-3 col-md-3">
+                  <a href="/staff"><?php print render($page['field_welcome_image']); ?></a>
+                  <h4><a href="/staff">Brian T. Davis, CEO, LISW-S, SAP</a></h4>
+                </div>
+
+                <div id="welcome-message" class="col-xs-12 col-sm-9 col-md-9">
+                  <h2>Welcome to New Directions</h2>
+                  <?php print render($page['field_welcome_message']); ?>
+                </div>
+              </div>
+            </div>
+
+            <div id="states-map" class="col-xs-12 col-sm-12 col-md-3 is-table-col">
+              <h2>Check My State</h2>
+              <?php $theme = drupal_get_path('theme', 'bootstrap_ndsbs'); ?>
+              <a href="/state-map" style="display: inline-block; width: 100%; text-align: center;">
+                <img src="<?php print $theme ?>/css/images/state-map.jpg" style="width: 100%;" />
+              </a>
+            </div>
+          </div>
+
+          <div id="faq-row" class="row is-table-row">
+            <div id="faq-and-services" class="col-xs-12 col-sm-12 col-md-9 is-table-col">
+              <div id="faq-videos" class="row">
+                <div class="col-xs-12">
+                  <h2 class="faq-videos-title">Get Answers to Common Questions Here</h2>
+                </div>
+
+                <div class="col-xs-12 col-sm-12 col-md-4">
+                  <h3>What's the cost?</h3>
+                  <div class="embed-responsive embed-responsive-16by9">
+                    <iframe class="embed-responsive-item" src="//www.youtube.com/embed/i5sqJNFFwqc?rel=0" allowfullscreen=""></iframe>
+                  </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-12 col-md-4">
+                  <h3>Will it be accepted?</h3>
+                  <div class="embed-responsive embed-responsive-16by9">
+                    <iframe class="embed-responsive-item" src="//www.youtube.com/embed/Mdcl1teQG3A?rel=0" allowfullscreen=""></iframe>
+                  </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-12 col-md-4">
+                  <h3>How's it work?</h3>
+                  <div class="embed-responsive embed-responsive-16by9">
+                    <iframe class="embed-responsive-item" src="//www.youtube.com/embed/H8ULIw0Zgaw?rel=0" allowfullscreen=""></iframe>
+                  </div>
+                </div>
+              </div>
+
+              <div id="our-team-services" class="row">
+                <div id="our-team" class="col-xs-12 col-sm-6 col-md-6">
+                  <h2><a href="/staff">Our Team</a></h2>
+                  <a href="/staff"><?php print render($page['field_our_team_image']); ?></a>
+                  <?php print render($page['field_our_team_message']); ?>
+                </div>
+                <div id="our-services" class="col-xs-12 col-sm-6 col-md-6">
+                  <h2><a href="/our-services">Our Services</a></h2>
+                  <a href="/our-services"><?php print render($page['field_our_services_image']); ?></a>
+                  <?php print render($page['field_our_services_message']); ?>
+                </div>
+              </div>
+
+            </div>
+
+            <div id="front-testimonials" class="col-xs-12 col-sm-12 col-md-3 is-table-col">
+
+              <h2>Testimonials</h2>
+              <?php print views_embed_view('testimonials', $display_id = 'block_1'); ?>
+
+              <div id="bbb">
+                <a href="https://www.bbb.org/centralohio/business-reviews/marriage-family-child-individual-counselors/directions-counseling-group-in-worthington-oh-70078980/#bbbonlineclick">
+                  <?php print render($page['field_better_business_bureau']); ?>
+                </a>
+              </div>
+
+              <div id="payment-cards">
+                <?php print render($page['field_accepted_payments']); ?>
+              </div>
+
+            </div>
+          </div>
+
+          <div id="recent-blogs-row" class="row">
+            <div id="front-recent-blogs" class="col-xs-12">
+              <?php print render($page['content']); ?>
+            </div>
+          </div>
+
+        </div>
+
         <div id="sub-footer">
           <div class="container">
             <div class="col-md-12">
