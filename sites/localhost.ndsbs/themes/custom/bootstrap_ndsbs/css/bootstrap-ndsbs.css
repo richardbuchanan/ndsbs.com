@@ -232,10 +232,9 @@ body.front #main-container #left-content #sub-footer .container {
 body.front #main-container #left-content #professional-reviews {
 }
 body.front #main-container #left-content #professional-reviews .view-header {
-  background-color: #82796f;
 }
 body.front #main-container #left-content #professional-reviews .view-header h2 {
-  color: #f8f8f8;
+  color: #82796f;
   font-size: 2.8em;
   margin: 0 auto;
   padding: .5em 0;
