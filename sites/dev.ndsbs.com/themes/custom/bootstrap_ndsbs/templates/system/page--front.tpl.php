@@ -171,8 +171,8 @@
             <h2>Check My State</h2>
             <div id="states-map">
               <?php $theme = drupal_get_path('theme', 'bootstrap_ndsbs'); ?>
-              <a href="/state-map">
-                <img src="<?php print $theme ?>/css/images/state-map.jpg" style="max-width: 100%;" />
+              <a href="/state-map" style="display: inline-block; width: 100%; text-align: center;">
+                <img src="<?php print $theme ?>/css/images/state-map.jpg" style="width: 100%;" />
               </a>
             </div>
             <h2>Testimonials</h2>
