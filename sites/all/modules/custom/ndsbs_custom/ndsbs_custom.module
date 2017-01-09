@@ -235,6 +235,22 @@ function ndsbs_custom_menu() {
 }
 
 /**
+ * Implements hook_menu_local_tasks_alter().
+ */
+function ndsbs_custom_menu_local_tasks_alter(&$data, $router_item, $root_path) {
+  switch ($root_path) {
+    case 'admin/content/professional-reviews':
+      $item = menu_get_item('node/add/professional-review');
+      $item['title'] = t('Add professional review');
+      $data['actions']['output'][] = array(
+        '#theme' => 'menu_local_action',
+        '#link' => $item,
+      );
+      break;
+  }
+}
+
+/**
  *  Implementation of _user_welcome_page()
  *  Function _user_welcome_page() defined
  *  Display the welcome page to user
