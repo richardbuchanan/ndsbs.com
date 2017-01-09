@@ -1,11 +1,5 @@
-; $Id: ndsbs_custom.info 2012-09-05 16:09:05 krishna $
 name = Ndsbs Custom
 description = "Ndsbs custom module."
-package = Custom
-version = VERSION
+package = NDSBS
+version = 7.x-1.1
 core = 7.x
-
-; Information added by drupal.org packaging script on 2012-08-01
-version = "7.15"
-project = "Ndsbs Custom"
-datestamp = "1346821200"

@@ -1,11 +1,5 @@
-; $Id: ndsbs_creditcard_payment.info 2012-10-09 16:09:05 krishna $
 name = Ndsbs Custom credit card processing
 description = "Ndsbs Custom credit card processing module is defined for payment processing."
-package = Custom
-version = VERSION
+package = NDSBS
+version = 7.x-1.1
 core = 7.x
-
-; Information added by drupal.org packaging script on 2012-08-01
-version = "7.15"
-project = "Ndsbs Custom"
-datestamp = "1346821200"

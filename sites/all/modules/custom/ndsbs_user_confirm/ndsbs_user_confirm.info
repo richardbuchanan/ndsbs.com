@@ -1,11 +1,5 @@
-; $Id: ndsbs_user_confirm.info 2012-09-05 16:09:05 krishna $
 name = Ndsbs User Confirm
 description = Module used for email confirmation.
-package = Custom
-version = VERSION
+package = NDSBS
+version = 7.x-1.1
 core = 7.x
-
-; Information added by drupal.org packaging script on 2010-07-01
-version = "7.15"
-project = "Ndsbs"
-datestamp = "1277942710"

@@ -1,5 +1,5 @@
 name = Resources
 description = Provides configuration for the resources page.
-core = 7.x
 package = NDSBS
-version = 7.x-1.0
+version = 7.x-1.1
+core = 7.x

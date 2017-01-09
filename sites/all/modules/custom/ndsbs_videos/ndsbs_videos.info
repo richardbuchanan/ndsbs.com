@@ -1,8 +1,8 @@
-name = ndsbs_videos
+name = NDSBS Videos
 description = Allows administrators to add videos to embed on the site.
-core = 7.x
 package = NDSBS
-version = 7.x-1.0
+version = 7.x-1.1
+core = 7.x
 
 dependencies[] = features
 dependencies[] = file
