@@ -1338,8 +1338,21 @@ form .vertical-tabs {
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(81, 81, 81, .6);
 }
 .form-managed-file .btn {
-  margin-top: 10px;
-  margin-bottom: 20px;
+  margin: -4px 0 0 10px;
+}
+
+input.form-file {
+  float: left;
+  color: #555;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 2px;
+}
+.form-textarea-wrapper textarea {
+  width: 100%;
+}
+.fb-node-settings-form .panel:not(:first-of-type) {
+  display: none;
 }
 
 /**
