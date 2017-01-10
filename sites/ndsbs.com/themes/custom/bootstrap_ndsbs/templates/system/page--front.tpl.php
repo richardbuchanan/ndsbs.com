@@ -184,7 +184,7 @@
 
             <div id="front-testimonials" class="col-xs-12 col-sm-12 col-md-3 is-table-col">
 
-              <h2>Testimonials</h2>
+              <h2>Reviews</h2>
               <?php print views_embed_view('testimonials', $display_id = 'block_1'); ?>
 
               <div id="bbb">
