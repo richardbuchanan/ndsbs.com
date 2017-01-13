@@ -220,9 +220,6 @@ body.front #main-container #left-content .front-page-edit {
 #front-welcome-messages {
   margin-top: 20px;
 }
-body.front #main-container #left-content #faq-videos,
-body.front #main-container #left-content #our-team-services {
-}
 body.front #main-container #left-content #front-carousel {
   margin: 0;
   padding: 0;
@@ -233,27 +230,37 @@ body.front #main-container #left-content #front-carousel .clearfix:before,
 body.front #main-container #left-content #front-carousel .clearfix:after {
   display: none;
 }
-body.front #main-container #left-content #professional-reviews .container,
-body.front #main-container #left-content #front-welcome,
-body.front #main-container #left-content #sub-footer .container {
-}
 body.front #main-container #left-content #professional-reviews {
   margin-bottom: 30px;
 }
-body.front #main-container #left-content #professional-reviews .view-header {
-}
 body.front #main-container #left-content #professional-reviews .view-header h2 {
   color: #82796f;
-  font-size: 2.8em;
+  font-size: 20px;
   padding: .5em 0;
   text-align: center;
 }
 body.front #main-container #left-content #professional-reviews .view-content {
   color: #82796f;
-  font-size: 1.5em;
+  font-size: 14px;
   text-align: center;
 }
-body.front #main-container #left-content #professional-reviews .view-content .carousel {
+@media (min-width: 600px) {
+  body.front #main-container #left-content #professional-reviews .view-header h2 {
+    font-size: 2em;
+  }
+  body.front #main-container #left-content #professional-reviews .view-content {
+    font-size: 1.15em;
+  }
+}
+@media (min-width: 992px) {
+  body.front #main-container #left-content #professional-reviews .view-header h2 {
+    font-size: 2.8em;
+  }
+  body.front #main-container #left-content #professional-reviews .view-content {
+    font-size: 1.5em;
+  }
+}
+@media (min-width: 1200px) {
 }
 body.front #main-container #left-content #professional-reviews .view-content .carousel-control.left,
 body.front #main-container #left-content #professional-reviews .view-content .carousel-control.right {
@@ -268,8 +275,6 @@ body.front #main-container #left-content #professional-reviews .view-content .ca
 }
 body.front #main-container #left-content #professional-reviews .view-content .carousel-inner .item {
   height: 100%;
-}
-body.front #main-container #left-content #professional-reviews .view-content .carousel-inner .views-field-body {
 }
 body.front #main-container #left-content #professional-reviews .view-content .carousel-inner .views-field-title {
   padding: 15px 0;
@@ -316,9 +321,6 @@ body.front .field-collection-container ul.action-links-field-collection-add li a
 }
 body.front .field-name-field-choose-us ul {
   padding-left: 14px;
-}
-body.front .field-name-field-choose-us ul li {
-
 }
 body.front .faq-videos-title {
   font-size: 2.2em;
@@ -508,10 +510,6 @@ body.front .faq-videos-title {
   }
   #front-page-carousel .field-name-field-carousel-content a {
     font-size: .7em;
-  }
-  #front-welcome-wrapper,
-  #front-testimonials {
-    padding: 0;
   }
   #front-testimonials {
     border: 0 !important;
