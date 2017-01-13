@@ -238,29 +238,22 @@ body.front #main-container #left-content #front-welcome,
 body.front #main-container #left-content #sub-footer .container {
 }
 body.front #main-container #left-content #professional-reviews {
+  margin-bottom: 30px;
 }
 body.front #main-container #left-content #professional-reviews .view-header {
 }
 body.front #main-container #left-content #professional-reviews .view-header h2 {
   color: #82796f;
   font-size: 2.8em;
-  margin: 0 auto;
   padding: .5em 0;
-  max-width: 1170px;
-  width: 75%;
   text-align: center;
 }
 body.front #main-container #left-content #professional-reviews .view-content {
-  background-color: #82796f;
-  color: #f8f8f8;
+  color: #82796f;
   font-size: 1.5em;
   text-align: center;
 }
 body.front #main-container #left-content #professional-reviews .view-content .carousel {
-  margin: 0 auto;
-  height: 200px;
-  max-width: 1170px;
-  width: 75%;
 }
 body.front #main-container #left-content #professional-reviews .view-content .carousel-control.left,
 body.front #main-container #left-content #professional-reviews .view-content .carousel-control.right {
@@ -271,29 +264,16 @@ body.front #main-container #left-content #professional-reviews .view-content .ca
   display: none;
 }
 body.front #main-container #left-content #professional-reviews .view-content .carousel-inner {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 15%;
-  width: 70%;
+  border-bottom: 1px dashed #c4c4c4;
 }
 body.front #main-container #left-content #professional-reviews .view-content .carousel-inner .item {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  height: 100%;
 }
 body.front #main-container #left-content #professional-reviews .view-content .carousel-inner .views-field-body {
-  position: absolute;
-  top: 1em;
-  right: 0;
-  left: 0;
 }
 body.front #main-container #left-content #professional-reviews .view-content .carousel-inner .views-field-title {
-  position: absolute;
-  right: 0;
-  bottom: 2em;
+  padding: 15px 0;
+  text-align: right;
 }
 body.front #main-container #left-content #professional-reviews .view-content .carousel-indicators {
   display: none;

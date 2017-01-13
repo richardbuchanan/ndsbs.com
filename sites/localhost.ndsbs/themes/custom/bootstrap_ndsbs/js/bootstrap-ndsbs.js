@@ -51,6 +51,16 @@ jQuery(document).ready(function($) {
       body.hasClass('role-staff-admin') ||
       body.hasClass('role-developer') ||
       body.hasClass('role-super-admin'))) ? true : false;
+  var professionalReviews = $('body.front #main-container #left-content #professional-reviews .view-content .carousel .carousel-inner');
+
+  function thisHeight(){
+    return $(this).outerHeight(true);
+  }
+
+  professionalReviews.each(function() {
+    var thisULMax = Math.max.apply(Math, $(this).find('.item').map(thisHeight));
+    $(this).height(thisULMax);
+  });
 
   // First add a menu position class to each user menu item.
   $('.header-nav #user-menu-wrapper .dropdown-menu>li>a').each(function() {
