@@ -240,9 +240,11 @@ body.front #main-container #left-content #professional-reviews .view-header h2 {
   text-align: center;
 }
 body.front #main-container #left-content #professional-reviews .view-content {
-  color: #82796f;
+  background-color: #82796f;
+  color: #fdfdfd;
   font-size: 14px;
-  text-align: center;
+  padding-top: 15px;
+  text-align: justify;
 }
 @media (min-width: 600px) {
   body.front #main-container #left-content #professional-reviews .view-header h2 {
@@ -269,9 +271,6 @@ body.front #main-container #left-content #professional-reviews .view-content .ca
 body.front #main-container #left-content #professional-reviews .view-content .carousel-control.left .icon-prev:before,
 body.front #main-container #left-content #professional-reviews .view-content .carousel-control.right .icon-next:before {
   display: none;
-}
-body.front #main-container #left-content #professional-reviews .view-content .carousel-inner {
-  border-bottom: 1px dashed #c4c4c4;
 }
 body.front #main-container #left-content #professional-reviews .view-content .carousel-inner .item {
   height: 100%;
