@@ -1,6 +1,13 @@
 <?php
 
 /**
+ * @file
+ * Code for the Professional Reviews feature.
+ */
+
+include_once 'professional_reviews.features.inc';
+
+/**
  * Implements hook_node_info()
  */
 function professional_reviews_node_info() {
