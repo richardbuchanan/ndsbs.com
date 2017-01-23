@@ -2759,6 +2759,7 @@ body.front #main-container #left-content #professional-reviews .view-footer .btn
 body.front #main-container #left-content #professional-reviews .view-content .carousel-control.left,
 body.front #main-container #left-content #professional-reviews .view-content .carousel-control.right {
   background-image: none;
+  display: none;
 }
 body.front #main-container #left-content #professional-reviews .view-content .carousel-control.left .icon-prev:before,
 body.front #main-container #left-content #professional-reviews .view-content .carousel-control.right .icon-next:before {
