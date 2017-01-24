@@ -34,6 +34,16 @@ body {
     margin: 0 !important;
   }
 }
+blockquote .small,
+blockquote footer,
+blockquote small {
+  text-align: right;
+}
+blockquote .small:before,
+blockquote footer:before,
+blockquote small:before {
+  display: none;
+}
 #page-container {
   position: relative;
   min-height: 100%;
