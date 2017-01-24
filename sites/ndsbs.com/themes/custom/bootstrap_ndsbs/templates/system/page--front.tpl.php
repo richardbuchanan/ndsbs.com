@@ -225,7 +225,7 @@
                   <ul id="front-contact-menu">
                     <li class="mail"><a href="mailto:info@ndsbs.com">info@ndsbs.com</a>, <a href="mailto:support@ndsbs.com">support@ndsbs.com</a></li>
                     <li class="phone">1-800-671-8589</li>
-                    <li class="fax">614.888.3239</li>
+                    <li class="fax">614-888-3239</li>
                     <li class="facebook"><a href="https://www.facebook.com/onlinealcoholdrugassessment" target="_blank">Facebook</a></li>
                     <li class="twitter"><a href="https://twitter.com/DUIevaluation" target="_blank">Twitter</a></li>
                     <li class="google"><a href="https://plus.google.com/100444795766134346734" rel="publisher" target="_blank">Google+</a></li>

@@ -220,9 +220,6 @@ body.front #main-container #left-content .front-page-edit {
 #front-welcome-messages {
   margin-top: 20px;
 }
-body.front #main-container #left-content #faq-videos,
-body.front #main-container #left-content #our-team-services {
-}
 body.front #main-container #left-content #front-carousel {
   margin: 0;
   padding: 0;
@@ -231,71 +228,6 @@ body.front #main-container #left-content #front-carousel:before,
 body.front #main-container #left-content #front-carousel:after,
 body.front #main-container #left-content #front-carousel .clearfix:before,
 body.front #main-container #left-content #front-carousel .clearfix:after {
-  display: none;
-}
-body.front #main-container #left-content #professional-reviews .container,
-body.front #main-container #left-content #front-welcome,
-body.front #main-container #left-content #sub-footer .container {
-}
-body.front #main-container #left-content #professional-reviews {
-}
-body.front #main-container #left-content #professional-reviews .view-header {
-}
-body.front #main-container #left-content #professional-reviews .view-header h2 {
-  color: #82796f;
-  font-size: 2.8em;
-  margin: 0 auto;
-  padding: .5em 0;
-  max-width: 1170px;
-  width: 75%;
-  text-align: center;
-}
-body.front #main-container #left-content #professional-reviews .view-content {
-  background-color: #82796f;
-  color: #f8f8f8;
-  font-size: 1.5em;
-  text-align: center;
-}
-body.front #main-container #left-content #professional-reviews .view-content .carousel {
-  margin: 0 auto;
-  height: 200px;
-  max-width: 1170px;
-  width: 75%;
-}
-body.front #main-container #left-content #professional-reviews .view-content .carousel-control.left,
-body.front #main-container #left-content #professional-reviews .view-content .carousel-control.right {
-  background-image: none;
-}
-body.front #main-container #left-content #professional-reviews .view-content .carousel-control.left .icon-prev:before,
-body.front #main-container #left-content #professional-reviews .view-content .carousel-control.right .icon-next:before {
-  display: none;
-}
-body.front #main-container #left-content #professional-reviews .view-content .carousel-inner {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 15%;
-  width: 70%;
-}
-body.front #main-container #left-content #professional-reviews .view-content .carousel-inner .item {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-body.front #main-container #left-content #professional-reviews .view-content .carousel-inner .views-field-body {
-  position: absolute;
-  top: 1em;
-  right: 0;
-  left: 0;
-}
-body.front #main-container #left-content #professional-reviews .view-content .carousel-inner .views-field-title {
-  position: absolute;
-  right: 0;
-  bottom: 2em;
-}
-body.front #main-container #left-content #professional-reviews .view-content .carousel-indicators {
   display: none;
 }
 body.front #main-container #left-content #front-welcome {
@@ -336,9 +268,6 @@ body.front .field-collection-container ul.action-links-field-collection-add li a
 }
 body.front .field-name-field-choose-us ul {
   padding-left: 14px;
-}
-body.front .field-name-field-choose-us ul li {
-
 }
 body.front .faq-videos-title {
   font-size: 2.2em;
@@ -528,10 +457,6 @@ body.front .faq-videos-title {
   }
   #front-page-carousel .field-name-field-carousel-content a {
     font-size: .7em;
-  }
-  #front-welcome-wrapper,
-  #front-testimonials {
-    padding: 0;
   }
   #front-testimonials {
     border: 0 !important;
@@ -1338,8 +1263,21 @@ form .vertical-tabs {
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(81, 81, 81, .6);
 }
 .form-managed-file .btn {
-  margin-top: 10px;
-  margin-bottom: 20px;
+  margin: -4px 0 0 10px;
+}
+
+input.form-file {
+  float: left;
+  color: #555;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 2px;
+}
+.form-textarea-wrapper textarea {
+  width: 100%;
+}
+.fb-node-settings-form .panel:not(:first-of-type) {
+  display: none;
 }
 
 /**
@@ -2684,9 +2622,6 @@ hr.dashed {
 .field-name-field-for-probation {
   display: none;
 }
-.form-item-question-name {
-
-}
 .form-item-question-name label {
   display: block;
 }
@@ -2771,4 +2706,69 @@ hr.dashed {
     display: table-cell;
     vertical-align: top;
   }
+}
+
+
+body.front #main-container #left-content #professional-reviews {
+  margin-bottom: 30px;
+}
+body.front #main-container #left-content #professional-reviews .view-header h2 {
+  color: #82796f;
+  font-size: 20px;
+  padding: .5em 0;
+  text-align: center;
+}
+body.front #main-container #left-content #professional-reviews .view-content {
+  background-color: #82796f;
+  color: #fdfdfd;
+  font-size: 14px;
+  padding: 15px 0;
+  text-align: justify;
+}
+body.front #main-container #left-content #professional-reviews .view-footer {
+  position: relative;
+  top: -50px;
+}
+body.front #main-container #left-content #professional-reviews .view-footer .btn-slide {
+  background-color: #82796f;
+  border-color: #e9e9e9;
+  color: #e9e9e9;
+  font-size: 1em;
+  text-shadow: none;
+}
+body.front #main-container #left-content #professional-reviews .view-footer .btn-slide:hover {
+  border-color: #fff;
+  color: #fff;
+}
+@media (min-width: 600px) {
+  body.front #main-container #left-content #professional-reviews .view-header h2 {
+    font-size: 2em;
+  }
+  body.front #main-container #left-content #professional-reviews .view-content {
+    font-size: 1.15em;
+  }
+}
+@media (min-width: 992px) {
+  body.front #main-container #left-content #professional-reviews .view-header h2 {
+    font-size: 2.8em;
+  }
+  body.front #main-container #left-content #professional-reviews .view-content {
+    font-size: 1.5em;
+  }
+}
+body.front #main-container #left-content #professional-reviews .view-content .carousel-control.left,
+body.front #main-container #left-content #professional-reviews .view-content .carousel-control.right {
+  background-image: none;
+  display: none;
+}
+body.front #main-container #left-content #professional-reviews .view-content .carousel-control.left .icon-prev:before,
+body.front #main-container #left-content #professional-reviews .view-content .carousel-control.right .icon-next:before {
+  display: none;
+}
+body.front #main-container #left-content #professional-reviews .view-content .carousel-inner .views-field-title {
+  padding: 15px 0 0 0;
+  text-align: right;
+}
+body.front #main-container #left-content #professional-reviews .view-content .carousel-indicators {
+  display: none;
 }

@@ -1022,3 +1022,17 @@ function bootstrap_ndsbs_html_head_alter(&$head_elements) {
 function bootstrap_ndsbs_preprocess_payment(&$variables) {
   drupal_add_js(drupal_get_path('theme', 'bootstrap_ndsbs') . '/js/payment.js');
 }
+
+/**
+ * Implements template_preprocess_HOOK()./
+ */
+function bootstrap_ndsbs_preprocess_views_bootstrap_carousel_plugin_style(&$variables) {
+  $name = $variables['view']->name;
+  $display = $variables['view']->current_display;
+  $professional_reviews = $name == 'professional_reviews';
+  $professional_reviews_block = $professional_reviews && $display == 'block';
+
+  if ($professional_reviews_block) {
+    $variables['classes_array'][] = 'container';
+  }
+}

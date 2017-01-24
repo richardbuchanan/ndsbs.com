@@ -46,11 +46,32 @@ jQuery(document).ready(function($) {
   var staffTrigger = $('.staff-profile-more-info');
   var carouselItem = $('[data-carousel-item]');
   var menuPosition = 1;
-  var staffRole = (body.hasClass('role-client') &&
+  var staffRole = !!(body.hasClass('role-client') &&
     (body.hasClass('role-therapist') ||
-      body.hasClass('role-staff-admin') ||
-      body.hasClass('role-developer') ||
-      body.hasClass('role-super-admin'))) ? true : false;
+    body.hasClass('role-staff-admin') ||
+    body.hasClass('role-developer') ||
+    body.hasClass('role-super-admin')));
+  var professionalReviews = $('body.front #main-container #left-content #professional-reviews .view-content .carousel .carousel-inner');
+  var professionalReviewsItem = professionalReviews.find('.item');
+
+  function thisHeight(){
+    return $(this).outerHeight(true);
+  }
+
+  professionalReviews.each(function() {
+    var thisULMax = Math.max.apply(Math, $(this).find('.item').map(thisHeight));
+    $(this).height(thisULMax + 15);
+  });
+
+  var professionalReviewsHeight = professionalReviews.outerHeight();
+  professionalReviewsItem.each(function() {
+    var professionalReviewsItemHeight = $(this).outerHeight();
+    var professionalReviewsItemPadding = (professionalReviewsHeight - professionalReviewsItemHeight) / 2;
+    $(this).css({
+      'padding-top': professionalReviewsItemPadding,
+      'padding-bottom': professionalReviewsItemPadding
+    });
+  });
 
   // First add a menu position class to each user menu item.
   $('.header-nav #user-menu-wrapper .dropdown-menu>li>a').each(function() {
