@@ -9,8 +9,6 @@
  * Implements hook_views_default_views().
  */
 function professional_reviews_views_default_views() {
-  $export = array();
-
   $view = new view();
   $view->name = 'professional_reviews';
   $view->description = '';
@@ -336,5 +334,6 @@ function professional_reviews_views_default_views() {
   $handler->display->display_options['fields']['nothing']['element_label_colon'] = FALSE;
   $handler->display->display_options['path'] = 'professional-reviews';
 
-  return $export;
+  $views[$view->name] = $view;
+  return $views;
 }
