@@ -115,6 +115,9 @@ h4 {
 .navbar-static-top .container {
   max-width: 1120px;
 }
+.glyphicon-padding-right {
+  padding-right: 10px;
+}
 #page-title {
   background-color: #82796f;
   color: #e7e7e7;
@@ -2778,6 +2781,9 @@ body.front #main-container #left-content #professional-reviews .view-content .ca
 body.front #main-container #left-content #professional-reviews .view-content .carousel-inner .views-field-title {
   padding: 15px 0 0 0;
   text-align: right;
+}
+body.front #main-container #left-content #professional-reviews .view-content .carousel-inner .views-field-title a {
+  color: #fdfdfd;
 }
 body.front #main-container #left-content #professional-reviews .view-content .carousel-indicators {
   display: none;

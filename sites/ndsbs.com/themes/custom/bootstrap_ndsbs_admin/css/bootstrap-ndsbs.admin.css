@@ -115,3 +115,12 @@
   height: 0 !important;
   width: 0 !important;
 }
+.form-type-file > label,
+.form-type-managed-file > label {
+  display: block;
+}
+.form-type-file > input,
+.form-type-managed-file > input {
+  display: block;
+  float: none;
+}

@@ -305,6 +305,25 @@ function get_user_transactions($payment_status) {
 }
 
 /**
+ * Function get_user_transactions() implemented to
+ * Get the users all transactions
+ */
+function get_assessment_user_details($uid) {
+  $result = db_select('users_transactions', 'ut');
+  $result->fields('ut', array(
+    'order_id',
+    'nid',
+    'tid',
+    'uid',
+  ))
+    ->condition('ut.payment_status', 1, '=')
+    ->condition('ut.uid', $uid, '=');
+  $execute = $result->execute();
+  $details = $execute->fetchAll();
+  return $details;
+}
+
+/**
  * Function get_user_transactions_detail() implemented to
  * Get the users all transactions
  */

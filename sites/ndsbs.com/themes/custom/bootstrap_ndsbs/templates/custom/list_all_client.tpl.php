@@ -71,22 +71,22 @@ drupal_add_js('misc/tableheader.js');
         </td>
         <?php if (user_access('administer users')): ?>
           <td style="width: 15%">
-            <?php $options = array(
-              'query' => array(
-                'destination' => 'user/clients/list'
-              ),
-              'attributes' => array(
-                'class' => 'edit_icon'
-              )
-            );
-            print l(t('Edit'), 'user/'.$user_info->uid.'/edit', $options) . '<br />';
+            <?php $options = array('html' => TRUE);
+
+            $options['query']['destination'] = 'user/clients/list';
+            print l('<span class="glyphicon glyphicon-edit glyphicon-padding-right" aria-hidden="true"></span>' . t('Edit'), 'user/'.$user_info->uid.'/edit', $options) . '<br />';
+
             $time = time();
-            $options = array(
-              'attributes' => array(
-                'class' => 'edit_icon'
-              )
-            );
-            print l(t('Reset Password'), 'reset/users/password/'.$user_info->uid.'/'.$time, $options); ?>
+
+            unset($options['query']);
+
+            print l('<span class="glyphicon glyphicon-lock glyphicon-padding-right" aria-hidden="true"></span>' . t('Reset password'), 'reset/users/password/'.$user_info->uid.'/'.$time, $options);
+
+            $options['query']['assessment_status'] = "All Status";
+            $options['query']['search_by'] = "";
+            $options['query']['search_text'] = $user_info->mail;
+            $service_url = "/all/assessment/users";
+            print '<br />' . l('<span class="glyphicon glyphicon-folder-open glyphicon-padding-right" aria-hidden="true"></span>' . t('Service tabs'), $service_url, $options); ?>
           </td>
         <?php endif; ?>
         <td>

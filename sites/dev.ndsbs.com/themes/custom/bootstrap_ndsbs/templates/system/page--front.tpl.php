@@ -140,7 +140,7 @@
 
           <div id="faq-row" class="row is-table-row">
             <div id="faq-and-services" class="col-xs-12 col-sm-12 col-md-9 is-table-col">
-              <div id="faq-videos" class="row">
+              <!-- <div id="faq-videos" class="row">
                 <div class="col-xs-12">
                   <h2 class="faq-videos-title">Get Answers to Common Questions Here</h2>
                 </div>
@@ -165,7 +165,7 @@
                     <iframe class="embed-responsive-item" src="//www.youtube.com/embed/H8ULIw0Zgaw?rel=0" allowfullscreen=""></iframe>
                   </div>
                 </div>
-              </div>
+              </div> -->
 
               <div id="our-team-services" class="row">
                 <div id="our-team" class="col-xs-12 col-sm-6 col-md-6">

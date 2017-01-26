@@ -41,7 +41,6 @@ function professional_reviews_views_default_views() {
   $handler->display->display_options['header']['area_text_custom']['id'] = 'area_text_custom';
   $handler->display->display_options['header']['area_text_custom']['table'] = 'views';
   $handler->display->display_options['header']['area_text_custom']['field'] = 'area_text_custom';
-  $handler->display->display_options['header']['area_text_custom']['empty'] = TRUE;
   $handler->display->display_options['header']['area_text_custom']['content'] = '<h2>What Attorneys & Professionals Say About Us</h2>';
   /* Field: Content: Body */
   $handler->display->display_options['fields']['body']['id'] = 'body';
@@ -62,6 +61,14 @@ function professional_reviews_views_default_views() {
   $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
   $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['title']['link_to_node'] = FALSE;
+  /* Field: Content: Website */
+  $handler->display->display_options['fields']['field_professional_review_url']['id'] = 'field_professional_review_url';
+  $handler->display->display_options['fields']['field_professional_review_url']['table'] = 'field_data_field_professional_review_url';
+  $handler->display->display_options['fields']['field_professional_review_url']['field'] = 'field_professional_review_url';
+  $handler->display->display_options['fields']['field_professional_review_url']['label'] = '';
+  $handler->display->display_options['fields']['field_professional_review_url']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['field_professional_review_url']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_professional_review_url']['type'] = 'text_plain';
   /* Sort criterion: Content: Post date */
   $handler->display->display_options['sorts']['created']['id'] = 'created';
   $handler->display->display_options['sorts']['created']['table'] = 'node';
@@ -82,8 +89,8 @@ function professional_reviews_views_default_views() {
     'professional_review' => 'professional_review',
   );
 
-  /* Display: Block */
-  $handler = $view->new_display('block', 'Block', 'block');
+  /* Display: Frontpage Block */
+  $handler = $view->new_display('block', 'Frontpage Block', 'block');
   $handler->display->display_options['defaults']['footer'] = FALSE;
   /* Footer: Global: Unfiltered text */
   $handler->display->display_options['footer']['area_text_custom']['id'] = 'area_text_custom';
@@ -136,8 +143,10 @@ function professional_reviews_views_default_views() {
   $handler->display->display_options['fields']['nothing']['element_wrapper_type'] = '0';
   $handler->display->display_options['fields']['nothing']['element_default_classes'] = FALSE;
 
-  /* Display: Page */
-  $handler = $view->new_display('page', 'Page', 'page_1');
+  /* Display: Administrative page */
+  $handler = $view->new_display('page', 'Administrative page', 'page_1');
+  $handler->display->display_options['defaults']['title'] = FALSE;
+  $handler->display->display_options['title'] = 'Professional Reviews';
   $handler->display->display_options['defaults']['style_plugin'] = FALSE;
   $handler->display->display_options['style_plugin'] = 'table';
   $handler->display->display_options['style_options']['columns'] = array(
@@ -287,8 +296,8 @@ function professional_reviews_views_default_views() {
   $handler->display->display_options['menu']['context'] = 0;
   $handler->display->display_options['menu']['context_only_inline'] = 0;
 
-  /* Display: Page 2 */
-  $handler = $view->new_display('page', 'Page 2', 'page_2');
+  /* Display: Public page */
+  $handler = $view->new_display('page', 'Public page', 'page_2');
   $handler->display->display_options['defaults']['style_plugin'] = FALSE;
   $handler->display->display_options['style_plugin'] = 'default';
   $handler->display->display_options['defaults']['style_options'] = FALSE;
@@ -326,7 +335,6 @@ function professional_reviews_views_default_views() {
 </blockquote>';
   $handler->display->display_options['fields']['nothing']['element_label_colon'] = FALSE;
   $handler->display->display_options['path'] = 'professional-reviews';
-  $export['professional_reviews'] = $view;
 
   return $export;
 }
