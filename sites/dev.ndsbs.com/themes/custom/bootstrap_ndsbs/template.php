@@ -72,6 +72,42 @@ function bootstrap_ndsbs_preprocess_page(&$variables) {
   $left_col = array('col-xs-12', 'col-sm-12', 'col-md-12');
   $right_col = array('col-xs-12', 'col-sm-12', 'col-md-4');
   $nav_col = array('col-xs-12', 'col-sm-12', 'col-md-3', 'sidebar-offcanvas');
+  $maintenance_mode = variable_get('maintenance_mode', 0);
+
+  if ($maintenance_mode) {
+    $messages = drupal_get_messages();
+
+    foreach ($messages as $type => $messages_array) {
+      if ($type == 'status') {
+        foreach ($messages_array as $key => $message) {
+          if ($message == 'Operating in maintenance mode. <a href="/admin/config/development/maintenance">Go online.</a>') {
+            unset($messages['status'][$key]);
+          }
+        }
+
+        if (empty($messages['status'])) {
+          unset($messages['status']);
+        }
+      }
+
+      if (!empty($messages[$type])) {
+        foreach ($messages[$type] as $message) {
+          drupal_set_message($message, $type);
+        }
+      }
+    }
+
+    $maintenance_message = array();
+    $maintenance_link = l(t('Maintenance mode'), '/admin/config/development/maintenance');
+    $maintenance_message[] = t('The site is currently in maintenance mode. To put the site back online:');
+    $maintenance_message[] = t('Go to ') . $maintenance_link . t(' and follow the instructions given.');
+
+    if ($path != 'admin/config/development/maintenance') {
+      foreach ($maintenance_message as $message) {
+        drupal_set_message($message, 'status');
+      }
+    }
+  }
 
   if ($path == 'contact') {
     $left_col = array('col-xs-12', 'col-sm-12', 'col-md-7');
@@ -1034,5 +1070,84 @@ function bootstrap_ndsbs_preprocess_views_bootstrap_carousel_plugin_style(&$vari
 
   if ($professional_reviews_block) {
     $variables['classes_array'][] = 'container';
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function bootstrap_ndsbs_form_system_site_maintenance_mode_alter(&$form, &$form_state, $form_id) {
+  $destination = drupal_get_destination();
+  $messages = drupal_get_messages();
+  $form['#submit'][] = 'bootstrap_ndsbs_maintenance_mode_submit';
+
+  $form['actions']['flush_cache'] = array(
+    '#type' => 'markup',
+    '#markup' => l(t('Flush cache'), 'admin_menu/flush-cache', array(
+      'attributes' => array(
+        'class' => array('btn', 'btn-primary'),
+      ),
+      'query' => array(
+        'token' => drupal_get_token('admin_menu/flush-cache'),
+        'destination' => $destination['destination'],
+      ),
+    )),
+  );
+
+  $maintenance_mode = variable_get('maintenance_mode', 0);
+
+  $maintenance_message = array();
+
+  if ($maintenance_mode) {
+    $maintenance_message['maintenance_mode'] = t('The site is currently in maintenance mode.');
+  }
+
+  $maintenance_message['back_online'] = t('To put the site back online, make sure <b>Put the site into maintenance mode</b> is UNCHECKED and select <b>Save configuration</b>.');
+  $maintenance_message['flush_cache'] = t('Once the page finishes reloading please select <b>Flush cache</b> to be sure the site\'s cache has been completely flushed.');
+
+  foreach ($messages as $type => $message_array) {
+    if ($type == 'status') {
+      foreach ($message_array as $key => $message) {
+        if ($message == $maintenance_message['maintenance_mode'] || $message == $maintenance_message['back_online'] || $message == $maintenance_message['flush_cache']) {
+          unset($messages['status'][$key]);
+        }
+        elseif ($message != 'The configuration options have been saved.' && $message != 'The site is currently in maintenance mode.') {
+          drupal_set_message($message, 'status');
+        }
+      }
+    }
+    else {
+      foreach ($message_array as $message) {
+        drupal_set_message($message, $type);
+      }
+    }
+  }
+
+  if ($maintenance_mode) {
+    foreach ($maintenance_message as $message) {
+      drupal_set_message($message, 'status');
+    }
+  }
+}
+
+/**
+ * Submission handler of system_settings_form() for system_site_maintenance_mode.
+ */
+
+/**
+ * Submission handler for the system_site_maintenance_mode form.
+ *
+ * @param $form
+ * @param $form_state
+ *
+ * @see bootstrap_ndsbs_form_system_site_maintenance_mode_alter()
+ */
+function bootstrap_ndsbs_maintenance_mode_submit($form, &$form_state) {
+  $maintenance_mode = $form_state['values']['maintenance_mode'];
+
+  if ($maintenance_mode) {
+  }
+  else {
+    drupal_set_message('The site has been taken out of maintenance mode.');
   }
 }
