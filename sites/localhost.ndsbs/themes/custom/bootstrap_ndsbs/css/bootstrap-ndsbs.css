@@ -2788,3 +2788,18 @@ body.front #main-container #left-content #professional-reviews .view-content .ca
 body.front #main-container #left-content #professional-reviews .view-content .carousel-indicators {
   display: none;
 }
+body.maintenance-page #logo-title .center-block {
+  padding: 25px 0;
+  text-align: center;
+}
+body.maintenance-page .form-control {
+  width: 100%;
+}
+body.maintenance-page .form-actions,
+body.maintenance-page .form-actions .btn {
+  margin: 0;
+}
+body.front .alert {
+  margin-top: 20px;
+  margin-bottom: 0;
+}
