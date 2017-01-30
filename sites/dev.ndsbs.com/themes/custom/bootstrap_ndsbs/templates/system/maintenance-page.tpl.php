@@ -50,12 +50,12 @@
           <h1 class="title" id="page-title"><?php print $title; ?></h1>
         <?php endif; ?>
 
-        <?php if (!empty(trim($messages))): ?>
-            <?php print trim($messages); ?>
+        <?php if (!empty($messages)): ?>
+            <?php print $messages; ?>
         <?php endif; ?>
 
         <div class="alert alert-warning" role="alert">
-          <?php print trim($content); ?>
+          <?php print $content; ?>
         </div>
 
         <?php $login_form = drupal_get_form('user_login_block'); ?>

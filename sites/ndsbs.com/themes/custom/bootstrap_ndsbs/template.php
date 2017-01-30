@@ -1148,6 +1148,6 @@ function bootstrap_ndsbs_maintenance_mode_submit($form, &$form_state) {
   if ($maintenance_mode) {
   }
   else {
-    drupal_set_message('The site has been taken out of maintenance mode.');
+    drupal_set_message('The site has been taken out of maintenance mode. Please select <b>Flush cache</b> to be sure the site\'s cache has been cleared.');
   }
 }
