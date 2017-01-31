@@ -1,5 +1,5 @@
 name = BDG Maps
 description = Configurable maps using jQuery.
 core = 7.x
-package = User Interface
+package = Buchanan Design Group
 configure = admin/config/user-interface/bdg-maps
