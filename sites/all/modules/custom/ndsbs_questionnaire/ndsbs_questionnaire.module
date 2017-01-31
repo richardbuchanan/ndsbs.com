@@ -1301,39 +1301,27 @@ function ndsbs_questionnaire_email_to_therapist($assessment_id) {
   $module = 'ndsbs_questionnaire';
   $key = 'email_to_therapist';
   $superadmin_uid = 1;
-  //  Load the logged in user
   $client = user_load($user->uid);
-
-  //  get the order information based on order id or transaction id
   $order_data = get_transaction_info_orderid($transid);
-  //$therapist = user_load($order_data[0]->therapist);
   $superadmin = user_load($superadmin_uid);
-  $to = $superadmin->mail . ', Stephen@directionscounseling.com';
-  //$to = 'brian@ndsbs.com';
+  $to = "Brian Davis <$superadmin->mail>, Stephen <Stephen@directionscounseling.com>";
   $node_info = node_load($order_data[0]->nid);
   $node_tid = $node_info->field_primary_service['und'][0]['tid'];
-
   $language = $edit['original']->language;
-
-  $message = drupal_mail($module, $key, $to, $language, $params = array(), $from = NULL, $send = FALSE);
+  $default_from = variable_get('site_mail', ini_get('sendmail_from'));
+  $message = drupal_mail($module, $key, $to, $language, $params = array(), $from = $default_from, $send = FALSE);
 
   //  Creating the message body
   $message['subject'] = 'Questionnaire completed notification';
   $message['body'] = array();
   $message['body'][] = 'Hi!!! ' . $therapist->field_first_name['und'][0]['value'];
   $message['body'][] = '<br /><br /><b>User ' . $client->field_first_name['und'][0]['value'] . ' has completed the questionnaire. Please go to the link to check the questionnaire.</b>';
-  //$message['body'][] = l(t('Go to Questionnaire'), $base_url . '/user/questionnaire/'.$assessment_id.'/trans/'.$transid.'/uid/' . $user->uid);
   $message['body'][] = l(t('Go to Client Tabs'), $base_url . '/users/view/reports/' . $user->uid . '/tid/' . $node_tid . '/nid/' . $order_data[0]->nid . '/transid/' . $transid);
-  // users/view/reports/387/tid/1/nid/271/transid/2116
   $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
-  // Retrieve the responsible implementation for this message.
   $system = drupal_mail_system($module, $key);
-
-  // Format the message body.
   $message = $system->format($message);
-
-  // Send e-mail.
   $message['result'] = $system->mail($message);
+
   if (!$message['result']) {
     watchdog($module, 'Unable to send the email hook_order_confirmation_mail', array(), WATCHDOG_NOTICE);
   }

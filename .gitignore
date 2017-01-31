@@ -45,6 +45,7 @@
 /sites/*/logs
 /sites/*/mysqldump
 /sites/*/files/xmlsitemap
+/sites/localhost.ndsbs/files
 
 # Ignore developer-only directories.
 sites/all/libraries/php-console
