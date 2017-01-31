@@ -1314,8 +1314,7 @@ function ndsbs_questionnaire_email_to_therapist($assessment_id) {
   //  Creating the message body
   $message['subject'] = 'Questionnaire completed notification';
   $message['body'] = array();
-  $message['body'][] = 'Hi!!! ' . $therapist->field_first_name['und'][0]['value'];
-  $message['body'][] = '<br /><br /><b>User ' . $client->field_first_name['und'][0]['value'] . ' has completed the questionnaire. Please go to the link to check the questionnaire.</b>';
+  $message['body'][] = '<b>User ' . $client->field_first_name['und'][0]['value'] . ' has completed the questionnaire. Please go to the link to check the questionnaire.</b>';
   $message['body'][] = l(t('Go to Client Tabs'), $base_url . '/users/view/reports/' . $user->uid . '/tid/' . $node_tid . '/nid/' . $order_data[0]->nid . '/transid/' . $transid);
   $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
   $system = drupal_mail_system($module, $key);

@@ -1,0 +1,10 @@
+name = FAQ Videos
+description = Allows site administrators to create and configure FAQ videos to display on the site.
+package = NDSBS
+version = 7.x-1.1
+core = 7.x
+
+dependencies[] = views
+
+files[] = faq_videos.install
+files[] = faq_videos.module

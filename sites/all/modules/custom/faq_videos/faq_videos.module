@@ -1,0 +1,59 @@
+<?php
+
+/**
+ * @file
+ * Code for the FAQ Videos module.
+ */
+
+/**
+ * Implements hook_help().
+ */
+function faq_videos_help($path, $arg) {
+  switch ($path) {
+    case 'admin/content/faq-videos':
+      return '<p>' . t('This page provides administration actions to manage FAQ videos.') . '</p>';
+  }
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function faq_videos_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'faq_videos') . '/includes/views',
+    'template path' => drupal_get_path('module', 'faq_videos') . '/templates',
+  );
+}
+
+/**
+ * Implements hook_node_info()
+ */
+function faq_videos_node_info() {
+  return array(
+    'faq_video' => array(
+      'name' => t('FAQ Video'),
+      'base' => 'faq_videos',
+      'description' => t('Use <em>FAQ Videos</em> to create videos about frequently asked questions.'),
+      'has_title' => TRUE,
+      'title_label' => t('Video title'),
+    ),
+  );
+}
+
+/**
+ * Implement hook_form()
+ */
+function faq_videos_form($node, $form_state) {
+  $type = node_type_get_type($node);
+  $form['title'] = array(
+    '#type' => 'textfield',
+    '#title' => check_plain($type->title_label),
+    '#default_value' => !empty($node->title) ? $node->title : '',
+    '#required' => FALSE,
+    '#weight' => -5,
+    '#description' => t('The title to display above the video. Leave blank if you do not want to display a title.'),
+  );
+
+  return $form;
+}
