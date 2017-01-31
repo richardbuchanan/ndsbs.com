@@ -235,15 +235,6 @@ function ndsbs_custom_menu() {
 }
 
 /**
- * Implements hook_menu_alter().
- */
-function ndsbs_custom_menu_alter(&$items) {
-  $items['admin/all/assessment']['type'] = MENU_LOCAL_TASK;
-  $items['admin/content/unpulished']['type'] = MENU_LOCAL_TASK;
-  $items['view/assessment/status']['type'] = MENU_LOCAL_TASK;
-}
-
-/**
  * Implements hook_menu_local_tasks_alter().
  */
 function ndsbs_custom_menu_local_tasks_alter(&$data, $router_item, $root_path) {

@@ -15,12 +15,13 @@
  */
 function ndsbs_assessment_menu() {
   $items = array();
-  $items['admin/all/assessment'] = array(
+  $items['admin/content/assessments'] = array(
     'title' => 'All Assessments',
     'description' => 'List All Assessments.',
     'access callback' => 'admin_request_permission',
     'page callback' => '_list_all_assessment',
     'access arguments' => array('access content'),
+    'type' => MENU_LOCAL_TASK,
   );
 
   $items['assessment/getprice'] = array(
