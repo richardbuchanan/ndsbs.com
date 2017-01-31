@@ -209,17 +209,29 @@ function bootstrap_ndsbs_preprocess_page(&$variables) {
   }
 
   if ($path == 'user/payment/confirmation') {
+    $misc_service = FALSE;
+
     $transactions = get_user_transactions(1);
+
+    foreach ($transactions as $transaction) {
+      if ($transaction->nid == '3965') {
+        $misc_service = TRUE;
+        break;
+      }
+    }
+
     $assessment_node = node_load($transactions[0]->nid);
     $assessment_user = user_load($transactions[0]->uid);
     $assessment_title = $assessment_node->title;
     $rush_cost = !(empty($_SESSION['ndsbs_payment']['rush_amount'])) ? $_SESSION['ndsbs_payment']['rush_amount'] : number_format(0, 2);
+
     $variables['payment']['order_id'] = $transactions[0]->order_id;
     $variables['payment']['user_email'] = $assessment_user->mail;
     $variables['payment']['assessment'] = $assessment_title;
     $variables['payment']['cost'] = $transactions[0]->cost;
     $variables['payment']['rush_cost'] = number_format($rush_cost, 2);
     $variables['payment']['total_cost'] = number_format($transactions[0]->cost + $rush_cost, 2);
+    $variables['payment']['misc_service'] = $misc_service;
   }
 
   $variables['breadcrumb_attributes_array']['class'] = array('hidden');
