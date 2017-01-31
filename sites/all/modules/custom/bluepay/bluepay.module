@@ -97,8 +97,12 @@ function bluepay_payment_form($form, &$form_state, $order) {
 
   // BluePay's test mode requires an odd value for the total amount, so we set
   // the rush service to 75 in order to get an approved transaction response.
-  if ($_SERVER['HTTP_HOST'] == 'dev.ndsbs.com') {
-    $form_state['values']['rush_service'] = 75;
+  $host = $_SERVER['HTTP_HOST'];
+  $dev_env = $host == 'localhost.ndsbs' || $host == 'dev.ndsbs.com';
+  if ($dev_env) {
+    if ($cart_items[0]->nid != '3965') {
+      $form_state['values']['rush_service'] = 75;
+    }
   }
 
   $title = field_get_items('node', $order, 'field_assessment_title');
@@ -296,13 +300,14 @@ function bluepay_payment_form($form, &$form_state, $order) {
   );
 
   // Create default values during development.
-  if ($_SERVER['HTTP_HOST'] == 'dev.ndsbs.com') {
+  if ($dev_env) {
     $form['form_wrapper']['cc']['credit_card']['#default_value'] = 'Visa';
     $form['form_wrapper']['cc']['name_on_card']['#default_value'] = 'Richard Buchanan';
     $form['form_wrapper']['cc']['card_number']['#default_value'] = '4111111111111111';
     $form['form_wrapper']['cc']['expiration_month']['#default_value'] = '12';
     $form['form_wrapper']['cc']['expiration_year']['#default_value'] = '17';
     $form['form_wrapper']['cc']['cvv']['#default_value'] = '123';
+    drupal_set_message(t('<b>NOTICE</b>: You are visiting a development site for testing purposes only! If you wish to purchase services from New Directions Substance and Behavioral Services, please visit <b><a href="@ndsbs" target="_blank">ndsbs.com</a></b>.', array('@ndsbs' => 'https://www.ndsbs.com')), 'error');
     drupal_set_message('For testing purposes rush services and credit card payment information has been entered for you. Please click "Submit payment" to test the transaction.', 'warning');
   }
 

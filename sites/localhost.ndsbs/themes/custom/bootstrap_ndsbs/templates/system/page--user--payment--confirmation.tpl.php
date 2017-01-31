@@ -121,7 +121,10 @@
             </tr>
             </tbody>
           </table>
-          <a href="/questionnaire/start/trans" class="btn btn-primary">Begin My Assessment</a>
+
+          <?php if (!$payment['misc_service']): ?>
+            <a href="/questionnaire/start/trans" class="btn btn-primary">Begin My Assessment</a>
+          <?php endif; ?>
 
           <!-- Google Code for NDSBS Conversion Page -->
           <script type="text/javascript">
