@@ -2803,3 +2803,6 @@ body.front .alert {
   margin-top: 20px;
   margin-bottom: 0;
 }
+.paragraph-margin {
+  margin-top: 1em;
+}

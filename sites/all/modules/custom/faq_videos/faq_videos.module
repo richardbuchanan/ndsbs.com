@@ -116,7 +116,13 @@ function faq_videos_embed_promoted() {
         $output .= '<iframe src="https://player.vimeo.com/video/' . $video_id . '?color=82796f&title=0&byline=0&portrait=0" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
       }
 
-      $output .= '</div></div>';
+      $output .= '</div>';
+
+      if (!empty($video['description']['#markup'])) {
+        $output .= '<p class="paragraph-margin">' . $video['description']['#markup'] . '</p>';
+      }
+
+      $output .= '</div>';
     }
   }
 
