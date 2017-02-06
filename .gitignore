@@ -28,28 +28,29 @@
 
 # Ignore configuration files that may contain sensitive information.
 /.idea
-sites/*/settings*.php
+/sites/*/settings*.php
 
 # Ignore paths that contain user-generated content.
-sites/*/.sass-cache
-sites/*/files/css
-sites/*/files/ctools
-sites/*/files/js
-sites/*/files/mailsystem
-sites/*/files/paperwork
-sites/*/files/print_pdf
-sites/*/files/private
-sites/*/files/reports
-sites/*/files/stateform
-sites/*/files/thirdparty_request
-sites/*/files/tmp
-sites/*/files/xmlsitemap
-sites/*/logs
-sites/*/mysqldump
+/sites/*/.sass-cache
+/sites/*/files/advagg_css
+/sites/*/files/advagg_js
+/sites/*/files/css
+/sites/*/files/ctools
+/sites/*/files/js
+/sites/*/files/mailsystem
+/sites/*/files/print_pdf
+/sites/*/files/private
+/sites/*/files/reports
+/sites/*/files/tmp
+/sites/*/logs
+/sites/*/mysqldump
+/sites/*/files/xmlsitemap
+/sites/localhost.ndsbs/files
 
 # Ignore developer-only directories.
 sites/all/libraries/php-console
 sites/all/modules/contrib/devel
 sites/all/modules/contrib/devel_themer
+sites/all/modules/contrib/examples
 sites/all/modules/contrib/pc
 sites/all/modules/contrib/simplehtmldom
