@@ -1,0 +1,8 @@
+filename = "NDSBS-2013-11-05T18-38-36"
+description = ""
+datestamp = "1383698322"
+generator = "Backup and Migrate (http://drupal.org/project/backup_migrate)"
+generatorversion = "7.x-2.x"
+sites[0][version] = "7.15"
+sites[0][name] = "NDSBS"
+sites[0][url] = "https://www.ndsbs.com/"
