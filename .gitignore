@@ -30,6 +30,7 @@
 /.idea
 sites/dev.ndsbs.com/settings*.php
 sites/ndsbs.com/settings*.php
+sites/ohioduieval.com/settings*.php
 
 # Ignore paths that contain user-generated content.
 sites/*/files
