@@ -83,15 +83,25 @@ function page_theme_debugger_block_view($delta = '') {
     $blacklist = preg_split("/\r\n|\n|\r|\s/", $page_theme_debugger_blacklist, -1, PREG_SPLIT_NO_EMPTY);
 
     $items = array();
-    $items[] = t('Default theme: %theme', array('%theme' => page_theme_get_themes(variable_get('theme_default', 'bartik'))));
+    $items[] = t('Default theme => !theme', array('!theme' => variable_get('theme_default', 'bartik')));
 
     foreach (module_implements('custom_theme') as $module) {
 
       if (!in_array($module, $blacklist)) {
 
-        $custom_theme = module_invoke($module, 'custom_theme');
-        if (!is_null($custom_theme)) {
-          $items[] = t('Theme %theme is set by %module', array('%theme' => page_theme_get_themes($custom_theme), '%module' => $module .'_custom_theme()'));
+        $theme = module_invoke($module, 'custom_theme');
+
+        if (is_null($theme)) {
+          $items[] = t('Module !module => %theme', array('!module' => $module, '%theme' => 'NULL'));
+        }
+        else if (empty($theme)) {
+          $items[] = t("Module !module => ''", array('!module' => $module));
+        }
+        else if (is_array($theme)) {
+          $items[] = t('Module !module => !theme', array('!module' => $module, '!theme' => serialize($theme)));
+        }
+        else {
+          $items[] = t('Module !module => !theme', array('!module' => $module, '!theme' => $theme));
         }
       }
     }

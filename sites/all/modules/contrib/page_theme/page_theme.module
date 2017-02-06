@@ -92,7 +92,7 @@ function page_theme_menu() {
 
 function page_theme_menu_access_add($perm) {
 
-  $theme_options = page_theme_get_theme_options();
+  $theme_options = page_theme_get_themes_options();
   return user_access($perm) && count($theme_options) > 1;
 }
 
@@ -124,14 +124,15 @@ function page_theme_theme() {
  */
 function page_theme_custom_theme() {
 
-  $path = drupal_get_path_alias($_GET['q']);
+  $path = drupal_strtolower(drupal_get_path_alias($_GET['q']));
 
   $result = db_query('SELECT theme, pages FROM {page_theme} WHERE status = 1 ORDER BY weight, theme');
   foreach ($result as $page_theme) {
+    $pages = drupal_strtolower($page_theme->pages);
 
-    $page_match = drupal_match_path($path, $page_theme->pages);
+    $page_match = drupal_match_path($path, $pages);
     if ($path != $_GET['q']) {
-      $page_match = $page_match || drupal_match_path($_GET['q'], $page_theme->pages);
+      $page_match = $page_match || drupal_match_path($_GET['q'], $pages);
     }
 
     if ($page_match) {
@@ -144,7 +145,30 @@ function page_theme_custom_theme() {
 /**
  *  Helper functions.
  */
-function page_theme_get_theme_options() {
+function page_theme_get_themes() {
+
+  static $themes = array();
+
+  if (!$themes) {
+
+    $result = db_query('SELECT name, status, info FROM {system} WHERE type = :type', array(':type' => 'theme'));
+    foreach ($result as $theme) {
+      $theme->info = unserialize($theme->info);
+
+      if (empty($theme->info['hidden']) || !$theme->info['hidden']) {
+        $themes[$theme->name] = array(
+          'theme' => $theme->name,
+          'name' => $theme->info['name'],
+          'status' => $theme->status,
+        );
+      }
+    }
+  }
+
+  return $themes;
+}
+
+function page_theme_get_themes_options() {
 
   static $options = array();
 
@@ -153,53 +177,31 @@ function page_theme_get_theme_options() {
     $themes = page_theme_get_themes();
 
     $result = db_query('SELECT theme FROM {page_theme}');
-    foreach ($result as $page_theme) {
-      unset($themes[$page_theme->theme]);
+    foreach ($result as $theme) {
+      unset($themes[$theme->theme]);
     }
 
     $options['0'] = '- '. t('Select theme') .' -';
-    foreach ($themes as $theme => $theme_name) {
-      $options[$theme] = page_theme_get_theme_status($theme) ? $theme_name : t('!theme (disabled)', array('!theme' => $theme_name));
+    foreach ($themes as $theme) {
+      $options[$theme['theme']] = page_theme_get_theme_name($theme['theme'], TRUE);
     }
+
+    asort($options, SORT_NATURAL | SORT_FLAG_CASE);
   }
 
   return $options;
 }
 
-function page_theme_get_themes($theme = NULL) {
-
-  static $themes = array();
-
-  if (!$themes) {
-
-    foreach (system_rebuild_theme_data() as $theme_data) {
-
-      $visibility = empty($theme_data->info['hidden']);
-      $compatible_core = isset($theme_data->info['core']) && $theme_data->info['core'] == DRUPAL_CORE_COMPATIBILITY && isset($theme_data->info['regions']['content']);
-      $compatible_php = version_compare(phpversion(), $theme_data->info['php'], '>=');
-
-      if ($visibility && $compatible_core && $compatible_php) {
-        $themes[$theme_data->name] = $theme_data->info['name'];
-      }
-    }
-
-    asort($themes);
-  }
-
-  return !is_null($theme) ? (isset($themes[$theme]) ? $themes[$theme] : $theme) : $themes;
-}
-
-function page_theme_get_theme_name($theme) {
+function page_theme_get_theme_name($theme, $expand = FALSE) {
 
   $themes = page_theme_get_themes();
 
-  return isset($themes[$theme]) ? (page_theme_get_theme_status($theme) ? $themes[$theme] : t('!theme (disabled)', array('!theme' => $themes[$theme]))) : t('!theme (not available)', array('!theme' => $theme));
-}
+  if (isset($themes[$theme])) {
+    $name = $expand && !$themes[$theme]['status'] ? t('!theme (disabled)', array('!theme' => $themes[$theme]['name'])) : $themes[$theme]['name'];
+  }
+  else {
+    $name = $expand ? t('!theme (not available)', array('!theme' => $theme)) : $theme;
+  }
 
-function page_theme_get_theme_status($theme) {
-
-  $system = db_query('SELECT status FROM {system} WHERE name = :name', array(':name' => $theme))
-    ->fetchObject();
-
-  return $system->status;
+  return $name;
 }

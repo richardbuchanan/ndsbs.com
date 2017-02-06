@@ -17,10 +17,10 @@ function page_theme_admin_overview($form, &$form_state) {
   foreach ($result as $page_theme) {
 
     $row['name'] = array(
-      '#markup' => page_theme_get_theme_name($page_theme->theme),
+      '#markup' => page_theme_get_theme_name($page_theme->theme, TRUE),
     );
     $row['pages'] = array(
-      '#markup' => str_replace("\n", '<br />', check_plain($page_theme->pages)),
+      '#markup' => nl2br(check_plain($page_theme->pages)),
     );
     $row['status'] = array(
       '#type' => 'checkbox',
@@ -129,7 +129,7 @@ function page_theme_admin_add($form, &$form_state) {
     '#title' => t('Theme'),
     '#description' => t('Choose which theme the page should display in.'),
     '#default_value' => '0',
-    '#options' => page_theme_get_theme_options(),
+    '#options' => page_theme_get_themes_options(),
     '#required' => TRUE,
   );
   $form['pages'] = array(
@@ -178,7 +178,7 @@ function page_theme_admin_add_submit($form, &$form_state) {
 
   $field = array();
   $field['theme'] = $form_state['values']['theme'];
-  $field['pages'] = trim($form_state['values']['pages']);
+  $field['pages'] = $form_state['values']['pages'];
   $field['status'] = intval(is_string($form_state['values']['status']['enabled']));
   $field['weight'] = $form_state['values']['weight'];
   db_insert('page_theme')
@@ -202,7 +202,7 @@ function page_theme_admin_edit($form, &$form_state, $page_theme) {
   $form['theme_name'] = array(
     '#type' => 'item',
     '#title' => t('Theme'),
-    '#markup' => page_theme_get_theme_name($page_theme->theme),
+    '#markup' => page_theme_get_theme_name($page_theme->theme, TRUE),
   );
   $form['pages'] = array(
     '#type' => 'textarea',
@@ -242,7 +242,7 @@ function page_theme_admin_edit($form, &$form_state, $page_theme) {
 function page_theme_admin_edit_submit($form, &$form_state) {
 
   $field = array();
-  $field['pages'] = trim($form_state['values']['pages']);
+  $field['pages'] = $form_state['values']['pages'];
   $field['status'] = intval(is_string($form_state['values']['status']['enabled']));
   $field['weight'] = $form_state['values']['weight'];
   db_update('page_theme')
@@ -264,7 +264,7 @@ function page_theme_admin_delete($form, &$form_state, $page_theme) {
     '#type' => 'value',
     '#value' => $page_theme->theme,
   );
-  $question = t('Are you sure you want to delete the theme %theme?', array('%theme' => page_theme_get_themes($page_theme->theme)));
+  $question = t('Are you sure you want to delete the theme %theme?', array('%theme' => page_theme_get_theme_name($page_theme->theme, TRUE)));
   $path = isset($_GET['destination']) ? $_GET['destination'] : 'admin/structure/page-theme';
 
   return confirm_form($form, $question, $path);
