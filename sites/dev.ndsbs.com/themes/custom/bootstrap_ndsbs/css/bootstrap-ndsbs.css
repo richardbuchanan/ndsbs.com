@@ -282,7 +282,6 @@ body.front .field-name-field-choose-us ul {
   padding-left: 14px;
 }
 body.front .faq-videos-title {
-  color: #82796f;
   font-size: 2.8em;
   margin-top: 0;
   text-align: center;
@@ -2803,4 +2802,9 @@ body.front .alert {
 }
 .paragraph-margin {
   margin-top: 1em;
+}
+@media (max-width: 767px) {
+  .faq-video-box {
+    height: auto !important;
+  }
 }
