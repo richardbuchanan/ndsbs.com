@@ -114,6 +114,14 @@
 
         <div id="front-welcome" class="container">
 
+          <div id="faq-video-row" class="row is-table-row">
+            <div id="faq-and-services" class="col-xs-12 is-table-col">
+              <div id="faq-videos" class="row">
+                <?php print render($faq_videos); ?>
+              </div>
+            </div>
+          </div>
+
           <div id="welcome-message-row" class="row is-table-row">
             <div id="front-welcome-wrapper" class="col-xs-12 col-sm-12 col-md-9 is-table-col">
               <div id="front-welcome-message" class="row">
@@ -140,10 +148,6 @@
 
           <div id="faq-row" class="row is-table-row">
             <div id="faq-and-services" class="col-xs-12 col-sm-12 col-md-9 is-table-col">
-
-              <div id="faq-videos" class="row">
-                <?php print render($faq_videos); ?>
-              </div>
 
               <div id="our-team-services" class="row">
                 <div id="our-team" class="col-xs-12 col-sm-6 col-md-6">
