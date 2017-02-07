@@ -287,12 +287,27 @@ function bdg_ndsbs_developer_modules() {
     '#markup' => '<h1>Developer modules</h1>',
   );
   $form['bdg_ndsbs_developer_modules_description'] = array(
-    '#markup' => '<p class="help">Developer modules aid in site development. The devel module allows rebuilding the theme registry and creating temporary content. The devel_themer module gives insight into Drupal functions and content in the theming layer. From this form you can either enable or disable these two modules with one click of a button!</p>',
+    '#markup' => '<p>Developer modules aid in site development and should not be enabled on a production site. From this form you can enable/disable these modules with one click of the button!</p>',
   );
 
   if (module_exists('devel')) {
+    global $conf;
+    $developer_modules = $conf['admin_menu_devel_modules'];
+    $items = array();
+
+    foreach ($developer_modules as $key => $module) {
+      $module_info = system_get_info('module', $module);
+      $items['items'][$key] = '<b>' . $module_info['name'] . '</b>: ';
+      $items['items'][$key] .= $module_info['description'];
+    }
+
+    $item_list = theme('item_list', $items);
+
+    $form['bdg_ndsbs_developer_modules_list'] = array(
+      '#markup' => t('<p>The following are the developer modules to be enabled/disbaled:</p>') . $item_list,
+    );
     $form['bdg_ndsbs_developer_modules_disable'] = array(
-      '#markup' => '<p style="color: green;">' . t('Developer modules are enabled.') . '</p>',
+      '#markup' => '<p style="color:green;">' . t('Developer modules are enabled.') . '</p>',
     );
     $form['submit'] = array(
       '#type' => 'submit',
@@ -301,7 +316,7 @@ function bdg_ndsbs_developer_modules() {
   }
   else {
     $form['bdg_ndsbs_developer_modules_enable'] = array(
-      '#markup' => '<p style="color: red;">' . t('Developer modules are not enabled.') . '</p>',
+      '#markup' => '<p style="color:red;">' . t('Developer modules are not enabled.') . '</p>',
     );
     $form['submit'] = array(
       '#type' => 'submit',
@@ -315,21 +330,16 @@ function bdg_ndsbs_developer_modules() {
  * Callback function for the developer modules form.
  */
 function bdg_ndsbs_developer_modules_submit($form, &$form_state) {
+  global $conf;
+  $developer_modules = $conf['admin_menu_devel_modules'];
+
   if (module_exists('devel')) {
-    module_disable(array(
-      'devel',
-      'devel_themer',
-    ));
-    drupal_set_message('The devel module has been disabled.');
-    drupal_set_message('The devel_themer module has been disabled.');
+    module_disable($developer_modules);
+    drupal_set_message('The developer modules have been disabled.');
   }
   else {
-    module_enable(array(
-      'devel',
-      'devel_themer',
-    ));
-    drupal_set_message('The devel module has been enabled.');
-    drupal_set_message('The devel_themer module has been enabled.');
+    module_enable($developer_modules);
+    drupal_set_message('The developer modules been enabled.');
   }
 }
 
