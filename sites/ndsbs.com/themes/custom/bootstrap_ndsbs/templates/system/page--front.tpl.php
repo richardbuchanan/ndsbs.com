@@ -114,6 +114,14 @@
 
         <div id="front-welcome" class="container">
 
+          <div id="faq-video-row" class="row is-table-row">
+            <div id="faq-and-services" class="col-xs-12 is-table-col">
+              <div id="faq-videos" class="row">
+                <?php print render($faq_videos); ?>
+              </div>
+            </div>
+          </div>
+
           <div id="welcome-message-row" class="row is-table-row">
             <div id="front-welcome-wrapper" class="col-xs-12 col-sm-12 col-md-9 is-table-col">
               <div id="front-welcome-message" class="row">
@@ -140,32 +148,6 @@
 
           <div id="faq-row" class="row is-table-row">
             <div id="faq-and-services" class="col-xs-12 col-sm-12 col-md-9 is-table-col">
-              <!-- <div id="faq-videos" class="row">
-                <div class="col-xs-12">
-                  <h2 class="faq-videos-title">Get Answers to Common Questions Here</h2>
-                </div>
-
-                <div class="col-xs-12 col-sm-12 col-md-4">
-                  <h3>What's the cost?</h3>
-                  <div class="embed-responsive embed-responsive-16by9">
-                    <iframe class="embed-responsive-item" src="//www.youtube.com/embed/i5sqJNFFwqc?rel=0" allowfullscreen=""></iframe>
-                  </div>
-                </div>
-
-                <div class="col-xs-12 col-sm-12 col-md-4">
-                  <h3>Will it be accepted?</h3>
-                  <div class="embed-responsive embed-responsive-16by9">
-                    <iframe class="embed-responsive-item" src="//www.youtube.com/embed/Mdcl1teQG3A?rel=0" allowfullscreen=""></iframe>
-                  </div>
-                </div>
-
-                <div class="col-xs-12 col-sm-12 col-md-4">
-                  <h3>How's it work?</h3>
-                  <div class="embed-responsive embed-responsive-16by9">
-                    <iframe class="embed-responsive-item" src="//www.youtube.com/embed/H8ULIw0Zgaw?rel=0" allowfullscreen=""></iframe>
-                  </div>
-                </div>
-              </div> -->
 
               <div id="our-team-services" class="row">
                 <div id="our-team" class="col-xs-12 col-sm-6 col-md-6">

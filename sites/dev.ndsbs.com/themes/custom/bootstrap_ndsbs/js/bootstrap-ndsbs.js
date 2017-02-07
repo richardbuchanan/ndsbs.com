@@ -30,6 +30,25 @@ window.fbAsyncInit = function() {
   }
 }(jQuery));
 
+(function ($) {
+  var a = $('.faq-video-box.first');
+  var b = $('.faq-video-box.second');
+  var c = $('.faq-video-box.third');
+  var d = $('.faq-video-box.fourth');
+
+  if (b.length) {
+    var e = Math.max(a.outerHeight(), b.outerHeight());
+    a.height(e);
+    b.height(e);
+  }
+
+  if (d.length) {
+    var f = Math.max(c.outerHeight(), d.outerHeight());
+    c.height(f);
+    d.height(f);
+  }
+}(jQuery));
+
 jQuery(document).ready(function($) {
   var userMenu = $('#user-menu-wrapper');
   var callUs = $('.call-us');

@@ -68,10 +68,6 @@ function bootstrap_ndsbs_preprocess_html(&$variables) {
  * Implements template_preprocess_page().
  */
 function bootstrap_ndsbs_preprocess_page(&$variables) {
-  $variables['faq_videos'] = array(
-    '#markup' => faq_videos_embed_promoted(),
-  );
-
   $path = current_path();
   $left_col = array('col-xs-12', 'col-sm-12', 'col-md-12');
   $right_col = array('col-xs-12', 'col-sm-12', 'col-md-4');
@@ -239,6 +235,12 @@ function bootstrap_ndsbs_preprocess_page(&$variables) {
   }
 
   $variables['breadcrumb_attributes_array']['class'] = array('hidden');
+
+  $variables['faq_videos'] = array();
+
+  if (function_exists('faq_videos_embed_promoted')) {
+    $variables['faq_videos']['#markup'] = faq_videos_embed_promoted();
+  }
 }
 
 /**

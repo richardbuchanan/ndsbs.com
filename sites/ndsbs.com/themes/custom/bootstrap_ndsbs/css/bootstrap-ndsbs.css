@@ -225,11 +225,13 @@ body.front #main-container #left-content .front-page-edit {
 }
 @media (min-width: 992px) {
   #faq-row,
-  #recent-blogs-row {
+  #recent-blogs-row,
+  #welcome-message-row {
     border-top: 1px dashed #c4c4c4;
     margin-top: 1em;
   }
 }
+#front-welcome-message,
 #front-welcome-messages {
   margin-top: 20px;
 }
@@ -242,9 +244,6 @@ body.front #main-container #left-content #front-carousel:after,
 body.front #main-container #left-content #front-carousel .clearfix:before,
 body.front #main-container #left-content #front-carousel .clearfix:after {
   display: none;
-}
-body.front #main-container #left-content #front-welcome {
-  margin-top: 14px;
 }
 body.front #site-footer {
   margin-top: 0;
@@ -284,6 +283,8 @@ body.front .field-name-field-choose-us ul {
 }
 body.front .faq-videos-title {
   font-size: 2.2em;
+  margin-top: 0;
+  text-align: center;
 }
 
 /**
@@ -2721,10 +2722,6 @@ hr.dashed {
   }
 }
 
-
-body.front #main-container #left-content #professional-reviews {
-  margin-bottom: 30px;
-}
 body.front #main-container #left-content #professional-reviews .view-header h2 {
   color: #82796f;
   font-size: 20px;
@@ -2802,4 +2799,7 @@ body.maintenance-page .form-actions .btn {
 body.front .alert {
   margin-top: 20px;
   margin-bottom: 0;
+}
+.paragraph-margin {
+  margin-top: 1em;
 }

@@ -69,7 +69,7 @@ function faq_videos_get_all_promoted() {
   $nodes = node_load_multiple(array(), array('type' => $type));
   $promoted_nodes = array();
 
-  foreach ($nodes as $nid => $node) {
+  foreach ($nodes as $node) {
     $promoted = field_get_items('node', $node, 'field_video_promote');
 
     if ($promoted[0]['value']) {
@@ -79,7 +79,7 @@ function faq_videos_get_all_promoted() {
       $description = field_get_items('node', $node, 'field_video_description');
       $video_description = field_view_value('node', $node, 'field_video_description', $description[0]);
 
-      $promoted_nodes[$nid] = array(
+      $promoted_nodes[] = array(
         'title' => $node->title,
         'url' => $video_url,
         'description' => $video_description,
@@ -99,15 +99,23 @@ function faq_videos_get_all_promoted() {
 function faq_videos_embed_promoted() {
   $videos = faq_videos_get_all_promoted();
   $output = '';
+  $i = 0;
+
+  $col_classes = array(
+    0 => 'first',
+    1 => 'second',
+    2 => 'third',
+    3 => 'fourth',
+  );
 
   if ($videos) {
     $output .= '<div class="col-xs-12">';
-    $output .= '<h2 class="faq-videos-title">Get Answers to Common Questions Here</h2>';
+    $output .= '<h2 class="faq-videos-title">Get Answers to Common Questions</h2>';
     $output .= '</div>';
 
-    foreach ($videos as $nid => $video) {
-
-      $output .= '<div class="col-xs-12 col-sm-12 col-md-6">';
+    foreach ($videos as $key => $video) {
+      $output .= "<div class='col-xs-12 col-sm-12 col-md-6 faq-video-box $col_classes[$key]'>";
+      $output .= '<div class="faq-video-box">';
       $output .= '<h2>' . $video['title'] . '</h2>';
       $output .= '<div class="embed-responsive embed-responsive-16by9">';
 
@@ -122,7 +130,8 @@ function faq_videos_embed_promoted() {
         $output .= '<p class="paragraph-margin">' . $video['description']['#markup'] . '</p>';
       }
 
-      $output .= '</div>';
+      $output .= '</div></div>';
+      $i++;
     }
   }
 
