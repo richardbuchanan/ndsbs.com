@@ -192,6 +192,11 @@ function faq_videos_views_default_views() {
   $handler->display->display_options['fields']['status']['label'] = 'Status';
   $handler->display->display_options['fields']['status']['type'] = 'published-notpublished';
   $handler->display->display_options['fields']['status']['not'] = 0;
+  /* Field: Content: Promoted to front page */
+  $handler->display->display_options['fields']['field_video_promote']['id'] = 'field_video_promote';
+  $handler->display->display_options['fields']['field_video_promote']['table'] = 'field_data_field_video_promote';
+  $handler->display->display_options['fields']['field_video_promote']['field'] = 'field_video_promote';
+  $handler->display->display_options['fields']['field_video_promote']['type'] = 'list_key';
   /* Field: Content: Updated date */
   $handler->display->display_options['fields']['changed']['id'] = 'changed';
   $handler->display->display_options['fields']['changed']['table'] = 'node';
