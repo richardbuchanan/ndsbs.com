@@ -2803,7 +2803,7 @@ body.front .alert {
 .paragraph-margin {
   margin-top: 1em;
 }
-@media (max-width: 767px) {
+@media (max-width: 991px) {
   .faq-video-box {
     height: auto !important;
   }

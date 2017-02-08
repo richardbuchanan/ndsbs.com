@@ -16,37 +16,47 @@ window.fbAsyncInit = function() {
 }(document, 'script', 'facebook-jssdk'));
 
 (function ($) {
-  // When using a medium or larger screen, use animations to open the dropdown
-  // menus.
-  if (window.matchMedia('(min-width: 768px)').matches) {
-    $('ul.navbar-nav li.dropdown > a').each(function () {
-      var dropdownTitle = $(this).text();
-      $(this).html(dropdownTitle);
-    });
-  }
-
-  if (window.matchMedia('(max-width: 767px)').matches) {
-    $('#main-menu-wrapper').find('#main-menu').removeClass('nav-justified');
-  }
-}(jQuery));
-
-(function ($) {
   var a = $('.faq-video-box.first');
   var b = $('.faq-video-box.second');
   var c = $('.faq-video-box.third');
   var d = $('.faq-video-box.fourth');
 
   if (b.length) {
+    var f = Math.max(a.find('h2').outerHeight(), b.find('h2').outerHeight());
+    a.find('h2').height(f);
+    b.find('h2').height(f);
+
     var e = Math.max(a.outerHeight(), b.outerHeight());
     a.height(e);
     b.height(e);
   }
 
   if (d.length) {
-    var f = Math.max(c.outerHeight(), d.outerHeight());
-    c.height(f);
-    d.height(f);
+    var h = Math.max(c.find('h2').outerHeight(), d.find('h2').outerHeight());
+    c.find('h2').height(h);
+    d.find('h2').height(h);
+
+    var g = Math.max(c.outerHeight(), d.outerHeight());
+    c.height(g);
+    d.height(g);
   }
+
+  function navbarAnimations() {
+    // When using a medium or larger screen, use animations to open the dropdown
+    // menus.
+    if (window.matchMedia('(min-width: 768px)').matches) {
+      $('ul.navbar-nav li.dropdown > a').each(function () {
+        var dropdownTitle = $(this).text();
+        $(this).html(dropdownTitle);
+      });
+    }
+
+    if (window.matchMedia('(max-width: 767px)').matches) {
+      $('#main-menu-wrapper').find('#main-menu').removeClass('nav-justified');
+    }
+  }
+
+  navbarAnimations();
 }(jQuery));
 
 jQuery(document).ready(function($) {

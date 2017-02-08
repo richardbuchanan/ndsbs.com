@@ -143,3 +143,13 @@ function faq_videos_uninstall() {
   // Purge all field infromation
   field_purge_batch(1000);
 }
+
+/**
+ * Add promoted video position variables.
+ */
+function faq_videos_update_7100() {
+  variable_set('faq_video_promoted_position_top_left', 0);
+  variable_set('faq_video_promoted_position_top_right', 0);
+  variable_set('faq_video_promoted_position_bottom_left', 0);
+  variable_set('faq_video_promoted_position_bottom_right', 0);
+}

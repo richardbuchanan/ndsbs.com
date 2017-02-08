@@ -27,6 +27,34 @@ function faq_videos_views_api() {
 }
 
 /**
+ * Implements hook_block_info().
+ */
+function faq_videos_block_info() {
+  $blocks['faq_videos_promoted_positions'] = array(
+    'info' => t('FAQ Videos Promoted Positions'),
+    'cache' => DRUPAL_NO_CACHE,
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function faq_videos_block_view($delta = '') {
+  $block = array();
+  $faq_positions_form = drupal_get_form('faq_videos_promoted_positions_form');
+
+  switch ($delta) {
+    case 'faq_videos_promoted_positions':
+      $block['subject'] = t('Front Page Positions');
+      $block['content'] = drupal_render($faq_positions_form);
+      break;
+  }
+  return $block;
+}
+
+/**
  * Implements hook_node_info()
  */
 function faq_videos_node_info() {
@@ -79,7 +107,8 @@ function faq_videos_get_all_promoted() {
       $description = field_get_items('node', $node, 'field_video_description');
       $video_description = field_view_value('node', $node, 'field_video_description', $description[0]);
 
-      $promoted_nodes[] = array(
+      $promoted_nodes[$node->nid] = array(
+        'nid' => $node->nid,
         'title' => $node->title,
         'url' => $video_url,
         'description' => $video_description,
@@ -98,42 +127,181 @@ function faq_videos_get_all_promoted() {
  */
 function faq_videos_embed_promoted() {
   $videos = faq_videos_get_all_promoted();
+  $top_left = variable_get('faq_video_promoted_position_top_left');
+  $top_right = variable_get('faq_video_promoted_position_top_right');
+  $bottom_left = variable_get('faq_video_promoted_position_bottom_left');
+  $bottom_right = variable_get('faq_video_promoted_position_bottom_right');
+  $videos_promoted = $top_left || $top_right || $bottom_left || $bottom_right;
   $output = '';
-  $i = 0;
 
-  $col_classes = array(
-    0 => 'first',
-    1 => 'second',
-    2 => 'third',
-    3 => 'fourth',
-  );
-
-  if ($videos) {
+  if ($videos && $videos_promoted) {
     $output .= '<div class="col-xs-12">';
     $output .= '<h2 class="faq-videos-title">Get Answers to Common Questions</h2>';
     $output .= '</div>';
 
-    foreach ($videos as $key => $video) {
-      $output .= "<div class='col-xs-12 col-sm-12 col-md-6 faq-video-box $col_classes[$key]'>";
+    if ($top_left) {
+      $output .= "<div class='col-xs-12 col-sm-12 col-md-6 faq-video-box first'>";
       $output .= '<div class="faq-video-box">';
-      $output .= '<h2>' . $video['title'] . '</h2>';
+      $output .= '<h2>' . $videos[$top_left]['title'] . '</h2>';
       $output .= '<div class="embed-responsive embed-responsive-16by9">';
 
-      if (substr($video['url']['#markup'], 0, 18) === 'https://vimeo.com/') {
-        $video_id = str_replace('https://vimeo.com/', '', $video['url']['#markup']);
+      if (substr($videos[$top_left]['url']['#markup'], 0, 18) === 'https://vimeo.com/') {
+        $video_id = str_replace('https://vimeo.com/', '', $videos[$top_left]['url']['#markup']);
         $output .= '<iframe src="https://player.vimeo.com/video/' . $video_id . '?color=82796f&title=0&byline=0&portrait=0" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
       }
 
       $output .= '</div>';
 
-      if (!empty($video['description']['#markup'])) {
-        $output .= '<p class="paragraph-margin">' . $video['description']['#markup'] . '</p>';
+      if (!empty($videos[$top_left]['description']['#markup'])) {
+        $output .= '<p class="paragraph-margin">' . $videos[$top_left]['description']['#markup'] . '</p>';
       }
 
       $output .= '</div></div>';
-      $i++;
+    }
+
+    if ($top_right) {
+      $output .= "<div class='col-xs-12 col-sm-12 col-md-6 faq-video-box second'>";
+      $output .= '<div class="faq-video-box">';
+      $output .= '<h2>' . $videos[$top_right]['title'] . '</h2>';
+      $output .= '<div class="embed-responsive embed-responsive-16by9">';
+
+      if (substr($videos[$top_right]['url']['#markup'], 0, 18) === 'https://vimeo.com/') {
+        $video_id = str_replace('https://vimeo.com/', '', $videos[$top_right]['url']['#markup']);
+        $output .= '<iframe src="https://player.vimeo.com/video/' . $video_id . '?color=82796f&title=0&byline=0&portrait=0" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+      }
+
+      $output .= '</div>';
+
+      if (!empty($videos[$top_right]['description']['#markup'])) {
+        $output .= '<p class="paragraph-margin">' . $videos[$top_right]['description']['#markup'] . '</p>';
+      }
+
+      $output .= '</div></div>';
+    }
+
+    if ($bottom_left) {
+      $output .= "<div class='col-xs-12 col-sm-12 col-md-6 faq-video-box third'>";
+      $output .= '<div class="faq-video-box">';
+      $output .= '<h2>' . $videos[$bottom_left]['title'] . '</h2>';
+      $output .= '<div class="embed-responsive embed-responsive-16by9">';
+
+      if (substr($videos[$bottom_left]['url']['#markup'], 0, 18) === 'https://vimeo.com/') {
+        $video_id = str_replace('https://vimeo.com/', '', $videos[$bottom_left]['url']['#markup']);
+        $output .= '<iframe src="https://player.vimeo.com/video/' . $video_id . '?color=82796f&title=0&byline=0&portrait=0" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+      }
+
+      $output .= '</div>';
+
+      if (!empty($videos[$bottom_left]['description']['#markup'])) {
+        $output .= '<p class="paragraph-margin">' . $videos[$bottom_left]['description']['#markup'] . '</p>';
+      }
+
+      $output .= '</div></div>';
+    }
+
+    if ($bottom_right) {
+      $output .= "<div class='col-xs-12 col-sm-12 col-md-6 faq-video-box fourth'>";
+      $output .= '<div class="faq-video-box">';
+      $output .= '<h2>' . $videos[$bottom_right]['title'] . '</h2>';
+      $output .= '<div class="embed-responsive embed-responsive-16by9">';
+
+      if (substr($videos[$bottom_right]['url']['#markup'], 0, 18) === 'https://vimeo.com/') {
+        $video_id = str_replace('https://vimeo.com/', '', $videos[$bottom_right]['url']['#markup']);
+        $output .= '<iframe src="https://player.vimeo.com/video/' . $video_id . '?color=82796f&title=0&byline=0&portrait=0" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+      }
+
+      $output .= '</div>';
+
+      if (!empty($videos[$bottom_right]['description']['#markup'])) {
+        $output .= '<p class="paragraph-margin">' . $videos[$bottom_right]['description']['#markup'] . '</p>';
+      }
+
+      $output .= '</div></div>';
     }
   }
 
   return $output;
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function faq_videos_preprocess_views_view_table(&$variables) {
+  $name = $variables['view']->name;
+  $display = $variables['view']->current_display;
+  $rows = $variables['rows'];
+
+  if ($name == 'faq_videos' && $display == 'page_1') {
+    foreach ($rows as $key => $row) {
+      $value = strip_tags($row['field_video_promote']);
+
+      if ($value == '1') {
+        $variables['rows'][$key]['field_video_promote'] = 'Yes';
+      }
+      else {
+        $variables['rows'][$key]['field_video_promote'] = 'No';
+      }
+    }
+  }
+}
+
+/**
+ * Build the tabledrag_simple_example_form form.
+ *
+ * @return array
+ *   A form array set for theming by theme_tabledrag_example_simple_form()
+ */
+function faq_videos_promoted_positions_form($form_state) {
+  $promoted_videos = faq_videos_get_all_promoted();
+  $top_left = variable_get('faq_video_promoted_position_top_left');
+  $top_right = variable_get('faq_video_promoted_position_top_right');
+  $bottom_left = variable_get('faq_video_promoted_position_bottom_left');
+  $bottom_right = variable_get('faq_video_promoted_position_bottom_right');
+  $options = array(0 => 'Select');
+
+  foreach ($promoted_videos as $video) {
+    $options[$video['nid']] = $video['title'];
+  }
+
+  $form['position_top_left'] = array(
+    '#type' => 'select',
+    '#title' => t('Top left'),
+    '#options' => $options,
+    '#default_value' => $top_left ? $top_left : 0,
+  );
+  $form['position_top_right'] = array(
+    '#type' => 'select',
+    '#title' => t('Top right'),
+    '#options' => $options,
+    '#default_value' => $top_right ? $top_right : 0,
+  );
+  $form['position_bottom_left'] = array(
+    '#type' => 'select',
+    '#title' => t('Bottom left'),
+    '#options' => $options,
+    '#default_value' => $bottom_left ? $bottom_left : 0,
+  );
+  $form['position_bottom_right'] = array(
+    '#type' => 'select',
+    '#title' => t('Bottom right'),
+    '#options' => $options,
+    '#default_value' => $bottom_right ? $bottom_right : 0,
+  );
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['submit'] = array('#type' => 'submit', '#value' => t('Save Changes'));
+  return $form;
+}
+
+/**
+ * Submit callback for the tabledrag_example_simple_form form.
+ *
+ * Updates the 'weight' column for each element in our table, taking into
+ * account that item's new order after the drag and drop actions have been
+ * performed.
+ */
+function faq_videos_promoted_positions_form_submit($form, &$form_state) {
+  variable_set('faq_video_promoted_position_top_left', $form_state['values']['position_top_left']);
+  variable_set('faq_video_promoted_position_top_right', $form_state['values']['position_top_right']);
+  variable_set('faq_video_promoted_position_bottom_left', $form_state['values']['position_bottom_left']);
+  variable_set('faq_video_promoted_position_bottom_right', $form_state['values']['position_bottom_right']);
 }
