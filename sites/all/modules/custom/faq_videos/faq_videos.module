@@ -140,14 +140,24 @@ function faq_videos_embed_promoted() {
     $output .= '</div>';
 
     if ($top_left) {
+      $parsed_url = parse_url($videos[$top_left]['url']['#markup']);
+      $host = isset($parsed_url['host']) ? $parsed_url['host'] : 0;
+      $path = isset($parsed_url['path']) ? $parsed_url['path'] : 0;
+      $query = isset($parsed_url['query']) ? $parsed_url['query'] : 0;
+
       $output .= "<div class='col-xs-12 col-sm-12 col-md-6 faq-video-box first'>";
       $output .= '<div class="faq-video-box">';
       $output .= '<h2>' . $videos[$top_left]['title'] . '</h2>';
       $output .= '<div class="embed-responsive embed-responsive-16by9">';
 
-      if (substr($videos[$top_left]['url']['#markup'], 0, 18) === 'https://vimeo.com/') {
-        $video_id = str_replace('https://vimeo.com/', '', $videos[$top_left]['url']['#markup']);
-        $output .= '<iframe src="https://player.vimeo.com/video/' . $video_id . '?color=82796f&title=0&byline=0&portrait=0" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+      $vimeo_video = $host == 'vimeo.com' ? str_replace('/', '', $path) : 0;
+      $youtube_video = $host == 'www.youtube.com' ? str_replace('v=', '', $query) : 0;
+
+      if ($vimeo_video) {
+        $output .= '<iframe src="https://player.vimeo.com/video/' . $vimeo_video . '?color=82796f&title=0&byline=0&portrait=0" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+      }
+      elseif ($youtube_video) {
+        $output .= '<iframe src="https://www.youtube.com/embed/' . $youtube_video . '" frameborder="0" allowfullscreen></iframe>';
       }
 
       $output .= '</div>';
@@ -160,14 +170,24 @@ function faq_videos_embed_promoted() {
     }
 
     if ($top_right) {
+      $parsed_url = parse_url($videos[$top_right]['url']['#markup']);
+      $host = isset($parsed_url['host']) ? $parsed_url['host'] : 0;
+      $path = isset($parsed_url['path']) ? $parsed_url['path'] : 0;
+      $query = isset($parsed_url['query']) ? $parsed_url['query'] : 0;
+
       $output .= "<div class='col-xs-12 col-sm-12 col-md-6 faq-video-box second'>";
       $output .= '<div class="faq-video-box">';
       $output .= '<h2>' . $videos[$top_right]['title'] . '</h2>';
       $output .= '<div class="embed-responsive embed-responsive-16by9">';
 
-      if (substr($videos[$top_right]['url']['#markup'], 0, 18) === 'https://vimeo.com/') {
-        $video_id = str_replace('https://vimeo.com/', '', $videos[$top_right]['url']['#markup']);
-        $output .= '<iframe src="https://player.vimeo.com/video/' . $video_id . '?color=82796f&title=0&byline=0&portrait=0" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+      $vimeo_video = $host == 'vimeo.com' ? str_replace('/', '', $path) : 0;
+      $youtube_video = $host == 'www.youtube.com' ? str_replace('v=', '', $query) : 0;
+
+      if ($vimeo_video) {
+        $output .= '<iframe src="https://player.vimeo.com/video/' . $vimeo_video . '?color=82796f&title=0&byline=0&portrait=0" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+      }
+      elseif ($youtube_video) {
+        $output .= '<iframe src="https://www.youtube.com/embed/' . $youtube_video . '" frameborder="0" allowfullscreen></iframe>';
       }
 
       $output .= '</div>';
@@ -180,14 +200,24 @@ function faq_videos_embed_promoted() {
     }
 
     if ($bottom_left) {
+      $parsed_url = parse_url($videos[$bottom_left]['url']['#markup']);
+      $host = isset($parsed_url['host']) ? $parsed_url['host'] : 0;
+      $path = isset($parsed_url['path']) ? $parsed_url['path'] : 0;
+      $query = isset($parsed_url['query']) ? $parsed_url['query'] : 0;
+
       $output .= "<div class='col-xs-12 col-sm-12 col-md-6 faq-video-box third'>";
       $output .= '<div class="faq-video-box">';
       $output .= '<h2>' . $videos[$bottom_left]['title'] . '</h2>';
       $output .= '<div class="embed-responsive embed-responsive-16by9">';
 
-      if (substr($videos[$bottom_left]['url']['#markup'], 0, 18) === 'https://vimeo.com/') {
-        $video_id = str_replace('https://vimeo.com/', '', $videos[$bottom_left]['url']['#markup']);
-        $output .= '<iframe src="https://player.vimeo.com/video/' . $video_id . '?color=82796f&title=0&byline=0&portrait=0" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+      $vimeo_video = $host == 'vimeo.com' ? str_replace('/', '', $path) : 0;
+      $youtube_video = $host == 'www.youtube.com' ? str_replace('v=', '', $query) : 0;
+
+      if ($vimeo_video) {
+        $output .= '<iframe src="https://player.vimeo.com/video/' . $vimeo_video . '?color=82796f&title=0&byline=0&portrait=0" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+      }
+      elseif ($youtube_video) {
+        $output .= '<iframe src="https://www.youtube.com/embed/' . $youtube_video . '" frameborder="0" allowfullscreen></iframe>';
       }
 
       $output .= '</div>';
@@ -200,14 +230,24 @@ function faq_videos_embed_promoted() {
     }
 
     if ($bottom_right) {
+      $parsed_url = parse_url($videos[$bottom_right]['url']['#markup']);
+      $host = isset($parsed_url['host']) ? $parsed_url['host'] : 0;
+      $path = isset($parsed_url['path']) ? $parsed_url['path'] : 0;
+      $query = isset($parsed_url['query']) ? $parsed_url['query'] : 0;
+
       $output .= "<div class='col-xs-12 col-sm-12 col-md-6 faq-video-box fourth'>";
       $output .= '<div class="faq-video-box">';
       $output .= '<h2>' . $videos[$bottom_right]['title'] . '</h2>';
       $output .= '<div class="embed-responsive embed-responsive-16by9">';
 
-      if (substr($videos[$bottom_right]['url']['#markup'], 0, 18) === 'https://vimeo.com/') {
-        $video_id = str_replace('https://vimeo.com/', '', $videos[$bottom_right]['url']['#markup']);
-        $output .= '<iframe src="https://player.vimeo.com/video/' . $video_id . '?color=82796f&title=0&byline=0&portrait=0" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+      $vimeo_video = $host == 'vimeo.com' ? str_replace('/', '', $path) : 0;
+      $youtube_video = $host == 'www.youtube.com' ? str_replace('v=', '', $query) : 0;
+
+      if ($vimeo_video) {
+        $output .= '<iframe src="https://player.vimeo.com/video/' . $vimeo_video . '?color=82796f&title=0&byline=0&portrait=0" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+      }
+      elseif ($youtube_video) {
+        $output .= '<iframe src="https://www.youtube.com/embed/' . $youtube_video . '" frameborder="0" allowfullscreen></iframe>';
       }
 
       $output .= '</div>';
