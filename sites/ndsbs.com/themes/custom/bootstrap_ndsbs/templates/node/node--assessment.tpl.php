@@ -107,6 +107,9 @@
       </div>
     </div>
     <div class="row<?php if (!empty($content['field_primary_service_amount'])): ?> dashed<?php endif; ?>">
+      <div class="col-md-12">
+        <hr class="assessment-divider">
+      </div>
       <div class="col-md-8">
         <?php print render($content['field_service_description']); ?>
 
