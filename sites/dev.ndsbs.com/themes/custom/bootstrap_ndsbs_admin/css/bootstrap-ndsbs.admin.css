@@ -26,7 +26,8 @@
 .header-brand #breadcrumbs {
   font-size: 0.9em;
   float: left;
-  margin: -15px 0 0 15px;
+  margin: 0;
+  padding: 0 15px;
 }
 .header-brand .navbar-toggle .icon-bar {
   background-color: #935a2d;
@@ -35,6 +36,7 @@
   float: left;
   margin-right: -15px;
   margin-left: -15px;
+  width: 100%;
 }
 .header-brand .nav>li>a:focus,
 .header-brand .nav>li>a:hover {
@@ -42,6 +44,7 @@
 }
 
 .header-brand #admin-page-title {
+  float: none;
   margin: 0;
 }
 

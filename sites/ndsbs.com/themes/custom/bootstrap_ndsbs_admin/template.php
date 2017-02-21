@@ -14,12 +14,7 @@ function bootstrap_ndsbs_admin_preprocess_html(&$variables) {
  * Implements template_preprocess_page().
  */
 function bootstrap_ndsbs_admin_preprocess_page(&$variables) {
-}
-
-/**
- * Implements template_preprocess_node().
- */
-function bootstrap_ndsbs_admin_preprocess_node(&$variables) {
+  $variables['breadcrumb_attributes_array']['class'] = array();
 }
 
 /**
