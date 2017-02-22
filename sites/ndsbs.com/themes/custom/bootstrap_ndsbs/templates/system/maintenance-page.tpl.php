@@ -58,23 +58,29 @@
           <?php print $content; ?>
         </div>
 
-        <?php $login_form = drupal_get_form('user_login_block'); ?>
-        <?php hide($login_form['links']); ?>
-        <?php hide($login_form['remember_me']); ?>
+        <?php if (user_is_logged_in()): ?>
+          <?php $destination = drupal_get_destination(); ?>
+          <?php $path = $destination['destination']; ?>
+          <?php print l(t('Return to previous page'), $path); ?>
+        <?php else: ?>
+          <?php $login_form = drupal_get_form('user_login_block'); ?>
+          <?php hide($login_form['links']); ?>
+          <?php hide($login_form['remember_me']); ?>
 
-        <div class="center-block">
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <h3 class="panel-title">Site administrators</h3>
-            </div>
-            <div class="panel-body">
-              <h3>If you are a site administrator, please login below.</h3>
-              <div class="help-block">All other users will be denied login access.</div>
+          <div class="center-block">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">Site administrators</h3>
+              </div>
+              <div class="panel-body">
+                <h3>If you are a site administrator, please login below.</h3>
+                <div class="help-block">All other users will be denied login access.</div>
 
-              <?php print render($login_form); ?>
+                <?php print render($login_form); ?>
+              </div>
             </div>
           </div>
-        </div>
+        <?php endif; ?>
 
       </div>
     </div>

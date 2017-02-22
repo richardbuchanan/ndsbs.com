@@ -257,6 +257,8 @@ function assessment_questionnaire_form($form, &$form_state) {
   $evaluation_status = get_evaluation_status($assessment_node_id, $transid);
 
   $new_field_added = 1;
+  $set_text_box_disable = 0;
+  $set_dd_radio_disable = 0;
 
   foreach ($data_answer as $answer_option) {
     switch ($question_type) {

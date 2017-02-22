@@ -26,14 +26,16 @@ $middle_name = isset($user_profile['field_middle_name'][0]) ? ' ' . $user_profil
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-3">
-      <b>Gender:</b>
+  <?php if (isset($user_profile['field_gender'][0])): ?>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-3">
+        <b>Gender:</b>
+      </div>
+      <div class="col-xs-12 col-sm-9 col-md-9">
+        <span class="user-profile-right"><?php echo $user_profile['field_gender'][0]['#markup']; ?></span>
+      </div>
     </div>
-    <div class="col-xs-12 col-sm-9 col-md-9">
-      <span class="user-profile-right"><?php echo $user_profile['field_gender'][0]['#markup']; ?></span>
-    </div>
-  </div>
+  <?php endif; ?>
 
   <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-3">
