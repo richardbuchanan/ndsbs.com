@@ -58,7 +58,7 @@ drupal_add_js('misc/tableheader.js');
       <td>
         <?php
         $options = array(
-          'query' => array('destination' => 'admin/all/assessment'),
+          'query' => array('destination' => 'admin/content/assessments'),
           'attributes' => array('class' => 'edit_icon')
         );
         print l(t('Edit'), 'node/' . $rec->nid . '/edit', $options);
