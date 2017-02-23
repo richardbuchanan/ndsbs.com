@@ -194,17 +194,6 @@ switch ($step) {
           <?php $file_name_path = 'public://reports/' . $fname; ?>
           <?php $file_time = date("n/j/Y @ g:i a", $report_info->updated_on); ?>
           <span>Status: <b>Uploaded <?php print $file_time; ?></b></span>
-          <ul class="report-status-list">
-            <li>
-              <a href="<?php print $base_url; ?>/sites/ndsbs.com/files/reports/<?php print  $fname; ?>" class="view-icon" title="View" target="_blank"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></a>
-            </li>
-            <li>
-              <a href="<?php print $base_url; ?>/download/report?file_name_path= <?php print $file_name_path; ?>" class="download-icon" title="Download"><span class="glyphicon glyphicon-download" aria-hidden="true"></span></a>
-            </li>
-            <li>
-              <a href="<?php print $base_url; ?>/sites/ndsbs.com/files/reports/<?php print $fname; ?>" class="print-icon" title="Print" target="_blank"><span class="glyphicon glyphicon-print" aria-hidden="true"></span></a>
-            </li>
-          </ul>
           <div class="status-complete add-testimonial">
             <span>Would you like to <a href="https://www.ndsbs.com/testimonials/add?destination=<?php print bdg_ndsbs_get_steps_page_no_base_url(); ?>">add a testimonial</a>?</span>
           </div>
@@ -212,20 +201,4 @@ switch ($step) {
       </div>
     </div>
   </div>
-  <nav id="arrows-wrapper-bottom">
-    <ul class="steps-arrows">
-      <li class="<?php print $step_one_arrow_class; ?>">
-        <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
-      </li>
-      <li class="<?php print $step_two_arrow_class; ?>">
-        <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
-      </li>
-      <li class="<?php print $step_three_arrow_class; ?>">
-        <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
-      </li>
-      <li class="<?php print $step_four_arrow_class; ?>">
-        <!-- <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span> -->
-      </li>
-    </ul>
-  </nav>
 </div>

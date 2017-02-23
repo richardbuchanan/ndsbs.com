@@ -298,6 +298,9 @@ function bootstrap_ndsbs_preprocess_node(&$variables) {
   if ($variables['nid'] == '3965') {
     $variables['theme_hook_suggestions'][] = 'node__assessment__misc_services';
   }
+  if ($variables['nid'] == '2622') {
+    $variables['theme_hook_suggestions'][] = 'node__assessment__general_mental_health';
+  }
 }
 
 /**

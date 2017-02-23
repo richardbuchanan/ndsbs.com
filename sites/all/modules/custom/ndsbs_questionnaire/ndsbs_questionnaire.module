@@ -257,8 +257,6 @@ function assessment_questionnaire_form($form, &$form_state) {
   $evaluation_status = get_evaluation_status($assessment_node_id, $transid);
 
   $new_field_added = 1;
-  $set_text_box_disable = 0;
-  $set_dd_radio_disable = 0;
 
   foreach ($data_answer as $answer_option) {
     switch ($question_type) {
@@ -1048,8 +1046,6 @@ function get_skipped_question_before_evaluation($assessment_id, $transid) {
 /**
  * Function save_questionnaire_for_evaluation() Implemented for
  * save the questionnaire for evaluation
- *
- * @global type $user
  */
 function save_questionnaire_for_evaluation($assessment_id) {
   global $user;
@@ -1118,8 +1114,6 @@ function save_questionnaire_for_evaluation($assessment_id) {
 /**
  * Function get_complete_questionnaire_single_page() implemented
  * for custom function
- *
- * @return type
  */
 function get_complete_questionnaire_single_page() {
   return drupal_get_form('complete_questionnaire_single_form');
@@ -2206,8 +2200,6 @@ function admin_assessment_questionnaire_form_submit($form, &$form_state) {
 /**
  * Function get_total_questions_numbers() defined to
  * get the total numbers of questions
- *
- * @param type $assessment_id
  */
 function get_total_attempted_questions_numbers($assessment_id, $transid) {
   $queryselect = db_select('assessment_result', 'aq')
@@ -2225,10 +2217,6 @@ function get_total_attempted_questions_numbers($assessment_id, $transid) {
 
 /**
  * Function get_evaluation_status() implemented to get the evaluation status
- *
- * @global type $user
- * @param type $assessment_nid
- * @param type $transid
  */
 function get_evaluation_status($assessment_nid, $transid) {
   global $user;

@@ -2587,6 +2587,30 @@ function get_purchased_items_reports_trans($nid, $payment_status, $subreport, $t
   return $data;
 }
 
+function get_all_client_reports($order_id) {
+  global $user;
+  $reports = array();
+
+  $ut_result = db_query('SELECT ut.order_id, ut.nid FROM {users_transactions} ut WHERE ut.uid = :uid', array(':uid' => $user->uid));
+
+  foreach ($ut_result as $ut_record) {
+    $node = node_load($ut_record->nid);
+
+    $reports[$ut_record->order_id] = array(
+      'order_id' => $ut_record->order_id,
+      'assessment' => $node->title,
+    );
+
+    $utd_result = db_query('SELECT utd.oid, utd.main_report FROM {users_transactions_data} utd WHERE utd.oid = :oid', array(':oid' => $ut_record->order_id));
+
+    foreach ($utd_result as $utd_record) {
+      $reports[$utd_record->oid]['report'] = $utd_record->main_report;
+    }
+  }
+
+  return $reports;
+}
+
 /**
  * Function get_users_not_paid_stateform()
  *
