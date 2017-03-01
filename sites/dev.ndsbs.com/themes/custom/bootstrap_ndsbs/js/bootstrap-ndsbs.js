@@ -82,6 +82,9 @@ jQuery(document).ready(function($) {
     body.hasClass('role-super-admin')));
   var professionalReviews = $('body.front #main-container #left-content #professional-reviews .view-content .carousel .carousel-inner');
   var professionalReviewsItem = professionalReviews.find('.item');
+  var professionalReviewsSlide = $('body.front #main-container #left-content #professional-reviews .view .slide');
+  var professionalReviewsLeft = professionalReviewsSlide.offset().left + 15;
+  var professionalReviewsFooter = $('body.front #main-container #left-content #professional-reviews .view-footer');
 
   function thisHeight(){
     return $(this).outerHeight(true);
@@ -100,6 +103,11 @@ jQuery(document).ready(function($) {
       'padding-top': professionalReviewsItemPadding,
       'padding-bottom': professionalReviewsItemPadding
     });
+  });
+
+  professionalReviewsFooter.css({
+    'left': professionalReviewsLeft,
+    'width': '70px'
   });
 
   // First add a menu position class to each user menu item.
