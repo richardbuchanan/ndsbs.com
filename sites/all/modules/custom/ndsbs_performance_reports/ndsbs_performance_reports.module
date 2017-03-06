@@ -1,0 +1,324 @@
+<?php
+
+/**
+ * @file
+ * NDSBS Performance Reports
+ *
+ * Allows administrators and therapists to view and generate perforamnce
+ * statistic reports.
+ */
+
+/**
+ * Implements hook_help().
+ */
+function ndsbs_performance_reports_help($path, $arg) {
+  switch ($path) {
+    case 'admin/dashboard/performance':
+      return '<p>' . t('This page allows you to view and generate performance statistics.') . '</p>';
+  }
+}
+
+/**
+ * Implements hook_menu().
+ */
+function ndsbs_performance_reports_menu() {
+  $items = array();
+
+  $items['admin/dashboard/performance'] = array(
+    'title' => 'Performance Statistics',
+    'description' => 'View and generate performance statistics.',
+    'page callback' => 'ndsbs_performance_reports_dashboard',
+    'access arguments' => array('access dashboard'),
+  );
+
+  return $items;
+}
+
+/**
+ * Page callback: Displays the performance statistics dashboard.
+ */
+function ndsbs_performance_reports_dashboard() {
+  $filters = $_SESSION['performance_filters'];
+  $transactions = get_users_transactions();
+  $start = mktime(0, 0, 0, $filters['month'], 1, $filters['year']);
+  $end = mktime(23, 59, 59, $filters['month'] + 1, 0, $filters['year']);
+  $orders = array();
+
+  foreach ($transactions as $transaction) {
+    $order_date = $transaction->order_date;
+
+    if ($order_date >= $start && $order_date <= $end) {
+      $therapist = $transaction->therapist;
+
+      if ($filters['therapist'] == $therapist && $filters['therapist'] != 0) {
+        $orders[$transaction->order_id] = $transaction;
+      }
+      elseif ($filters['therapist'] == 0) {
+        $orders[$transaction->order_id] = $transaction;
+      }
+    }
+  }
+
+  $performance_report_filters = drupal_get_form('performance_report_filters');
+  $performance_report_transactions = performance_report_transactions($orders);
+  $performance_report_therapist_transactions = performance_report_therapist_transactions($orders);
+
+  $output = '<div class="row"><div class="col-xs-12">';
+  $output .= drupal_render($performance_report_filters);
+  $output .= '</div>';
+  $output .= '<div class="col-xs-12 col-md-9">';
+  $output .= render($performance_report_transactions);
+  $output .= '</div>';
+  $output .= '</div>';
+
+  return $output;
+}
+
+function get_users_transactions() {
+  $query = db_query('SELECT * FROM {users_transactions} ut WHERE ut.payment_status = :payment_status', array(':payment_status' => 1));
+  $result = $query->fetchAll();
+  return $result;
+}
+
+function performance_report_filters($form, &$form_state) {
+  if (!isset($_SESSION['performance_filters'])) {
+    $_SESSION['performance_filters'] = array(
+      'month' => date('n'),
+      'year' => date('Y'),
+      'therapist' => 0,
+      'reset' => 0,
+    );
+  }
+
+  $query = db_select('users', 'u');
+  $query->fields('u', array('uid'))
+    ->condition('u.status', 1, '=')
+    ->orderBy('u.uid', 'ASC');
+  $query->join('users_roles', 'users_roles', 'users_roles.uid = u.uid');
+  $query->condition('users_roles.rid', 4, '=');
+  $result = $query->execute();
+  $data = $result->fetchAll();
+
+  $therapists = array(
+    0 => '- All -',
+  );
+
+  foreach ($data as $user_data) {
+    $user_info = user_load($user_data->uid);
+    $therapists[$user_data->uid] = $user_info->field_first_name['und'][0]['value'] . ' ' . $user_info->field_last_name['und'][0]['value'];
+  }
+
+  $months = array();
+  $years = array();
+
+  for ($m=1; $m<=12; ++$m) {
+    $months[$m] = date('F', mktime(0, 0, 0, $m, 1));
+  }
+
+  $y = 2013;
+
+  while ($y <= date('Y')) {
+    $years[$y] = $y;
+    $y++;
+  }
+
+  $form['months'] = array(
+    '#type' => 'select',
+    '#title' => t('Month'),
+    '#options' => $months,
+    '#default_value' => $_SESSION['performance_filters']['month'],
+  );
+  $form['years'] = array(
+    '#type' => 'select',
+    '#title' => t('Year'),
+    '#options' => $years,
+    '#default_value' => $_SESSION['performance_filters']['year'],
+  );
+  $form['therapists'] = array(
+    '#type' => 'select',
+    '#title' => t('Therapist'),
+    '#options' => $therapists,
+    '#default_value' => $_SESSION['performance_filters']['therapist'],
+  );
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Update'),
+    '#submit' => array('performance_report_filters_submit'),
+  );
+
+  if ($_SESSION['performance_filters']['reset']) {
+    $form['reset'] = array(
+      '#type' => 'submit',
+      '#value' => t('Reset'),
+      '#submit' => array('performance_report_filters_reset'),
+    );
+  }
+
+  return $form;
+}
+
+function performance_report_filters_submit($form, &$form_state) {
+  $_SESSION['performance_filters'] = array(
+    'month' => $form_state['values']['months'],
+    'year' => $form_state['values']['years'],
+    'therapist' => $form_state['values']['therapists'],
+    'reset' => 1,
+  );
+}
+
+function performance_report_filters_reset($form, &$form_state) {
+  $_SESSION['performance_filters'] = array(
+    'month' => date('n'),
+    'year' => date('Y'),
+    'therapist' => 0,
+    'reset' => 0,
+  );
+}
+
+function performance_report_transactions($orders) {
+  $header = array(
+    t('Client details'),
+    t('Transaction details'),
+    t('Order date'),
+    t('Transaction amount'),
+  );
+  $rows = array();
+  $total_assessments = 0;
+  $total_rush_services = 0;
+  $total_refunds = 0;
+
+  foreach ($orders as $key => $order) {
+    $has_refund = FALSE;
+    $refund_query = new EntityFieldQuery();
+    $entities = $refund_query->entityCondition('entity_type', 'node')
+      ->entityCondition('bundle', 'refund_payment')
+      ->propertyCondition('uid', $order->uid)
+      ->execute();
+    $nodes = node_load_multiple(array_keys($entities['node']));
+
+    foreach ($nodes as $node) {
+      if ($node->field_request_status['und'][0]['value']) {
+        $has_refund = TRUE;
+      }
+    }
+
+    $user = user_load($order->uid);
+    $user_name = array($user->field_first_name['und'][0]['value']);
+    $user_name[] = $user->field_last_name['und'][0]['value'];
+    $client_details = implode(' ', $user_name);
+
+    $node = node_load($order->nid);
+    $transaction_details = '<b>Transaction ID:</b> ';
+    $transaction_details .= $order->transaction_id . '<br>';
+    $transaction_details .= '<b>Service:</b> ';
+    $transaction_details .= $node->title;
+
+    $order_date = format_date($order->order_date, 'blog_date');
+
+    $cost = $order->cost;
+    $rush = $order->rush_cost;
+    $refund = $has_refund ? -$order->cost : 0;
+    $refund_class = $has_refund ? ' text-danger' : '';
+    $total = $cost + $rush + $refund;
+
+    $total_assessments = $total_assessments + $cost;
+    $total_rush_services = $total_rush_services + $rush;
+    $total_refunds = $total_refunds + $refund;
+
+    $transaction_amount = '<span class="pull-left"><b>Assessment:</b></span>';
+    $transaction_amount .= '<span class="pull-right">$' . $cost . '</span><br>';
+    $transaction_amount .= '<span class="pull-left"><b>Rush service:</b></span>';
+    $transaction_amount .= '<span class="pull-right">$' . $rush . '</span><br>';
+    $transaction_amount .= '<span class="pull-left' . $refund_class . '"><b>Refund:</b></span>';
+    $transaction_amount .= '<span class="pull-right' . $refund_class . '">$' . number_format($refund, 2) . '</span><br>';
+    $transaction_amount .= '<span class="pull-left"><b>Total:</b></span>';
+    $transaction_amount .= '<span class="pull-right">$' . number_format($total, 2) . '</span>';
+
+    if (user_has_client_role_only($order->uid)) {
+      $row = array(
+        $client_details,
+        $transaction_details,
+        $order_date,
+        $transaction_amount,
+      );
+
+      $rows[] = $row;
+    }
+  }
+
+  $totals_total = $total_assessments + $total_rush_services + $total_refunds;
+  $totals = '<span class="pull-left text-success"><b>Assessments:</b></span>';
+  $totals .= '<span class="pull-right text-success">$' . number_format($total_assessments, 2) . '</span><br>';
+  $totals .= '<span class="pull-left text-success"><b>Rush services:</b></span>';
+  $totals .= '<span class="pull-right text-success">$' . number_format($total_rush_services, 2) . '</span><br>';
+  $totals .= '<span class="pull-left text-danger"><b>Refunds:</b></span>';
+  $totals .= '<span class="pull-right text-danger">$' . number_format($total_refunds, 2) . '</span><br>';
+  $totals .= '<span class="pull-left text-success"><b>Totals:</b></span>';
+  $totals .= '<span class="pull-right text-success">$' . number_format($totals_total, 2) . '</span>';
+  $rows[] = array('', '', '', $totals);
+
+  return $build['performance_transactions_table'] = array(
+    '#theme' => 'table',
+    '#header' => $header,
+    '#rows' => $rows,
+    '#empty' => t('No transactions found.')
+  );
+}
+
+function performance_report_therapist_transactions($orders) {
+  $query = db_select('users', 'u');
+  $query->fields('u', array('uid'))
+    ->condition('u.status', 1, '=')
+    ->orderBy('u.uid', 'ASC');
+  $query->join('users_roles', 'users_roles', 'users_roles.uid = u.uid');
+  $query->condition('users_roles.rid', 4, '=');
+  $result = $query->execute();
+  $data = $result->fetchAll();
+
+  $therapists = array(
+    0 => array(
+      'name' => 'Unassigned',
+    ),
+  );
+
+  foreach ($data as $user_data) {
+    $user_info = user_load($user_data->uid);
+    $therapists[$user_data->uid]['name'] = $user_info->field_first_name['und'][0]['value'] . ' ' . $user_info->field_last_name['und'][0]['value'];
+    $therapists[$user_data->uid]['orders'] = array();
+  }
+
+  foreach ($orders as $order) {
+    $cost = (int)$order->cost;
+
+    if ($cost >= 250) {
+      if ($order->therapist) {
+        $therapists[$order->therapist]['orders'][] = $order;
+      }
+      else {
+        $therapists[0]['orders'][] = $order;
+      }
+    }
+  }
+
+  foreach ($therapists as $therapist) {
+    dpm($therapist);
+  }
+}
+
+function user_has_client_role_only($uid) {
+  // Staff role IDs.
+  $roles = array(3, 4, 5, 7, 8);
+
+  // User account to check against.
+  $user = user_load($uid);
+  $user_roles = array_keys($user->roles);
+
+  foreach ($roles as $role) {
+    if (in_array($role, $user_roles)) {
+      // Return false if user has staff role.
+      return FALSE;
+    }
+  }
+
+  return TRUE;
+}

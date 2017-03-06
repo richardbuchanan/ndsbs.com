@@ -1,0 +1,17 @@
+#performance-report-filters > .form-item,
+#performance-report-filters > #edit-submit,
+#performance-report-filters > #edit-reset {
+  display: inline-block;
+  margin-bottom: 15px;
+}
+#performance-report-filters > #edit-submit,
+#performance-report-filters > #edit-reset {
+  margin-top: 13px;
+}
+#performance-report-filters > .form-item-years,
+#performance-report-filters > .form-item-therapists {
+  margin-right: 15px;
+}
+#performance-report-filters > #edit-reset {
+  margin-left: 8px;
+}

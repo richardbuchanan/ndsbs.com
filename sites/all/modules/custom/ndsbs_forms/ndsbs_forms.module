@@ -8,6 +8,4 @@ function ndsbs_forms_form_alter(&$form, &$form_state, $form_id) {
 }
 
 function ndsbs_forms_node_form_submit($form, &$form_state) {
-  // Clear the page and block caches.
-  drupal_flush_all_caches();
 }

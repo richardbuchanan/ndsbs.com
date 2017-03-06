@@ -80,35 +80,43 @@ jQuery(document).ready(function($) {
     body.hasClass('role-staff-admin') ||
     body.hasClass('role-developer') ||
     body.hasClass('role-super-admin')));
-  var professionalReviews = $('body.front #main-container #left-content #professional-reviews .view-content .carousel .carousel-inner');
-  var professionalReviewsItem = professionalReviews.find('.item');
-  var professionalReviewsSlide = $('body.front #main-container #left-content #professional-reviews .view .slide');
-  var professionalReviewsLeft = professionalReviewsSlide.offset().left + 15;
-  var professionalReviewsFooter = $('body.front #main-container #left-content #professional-reviews .view-footer');
 
-  function thisHeight(){
-    return $(this).outerHeight(true);
-  }
+  if (body.hasClass('front')) {
+    var professionalReviews = $('body.front #main-container #left-content #professional-reviews .view-content .carousel .carousel-inner');
+    var professionalReviewsItem = professionalReviews.find('.item');
+    var professionalReviewsSlide = $('body.front #main-container #left-content #professional-reviews .view .slide');
 
-  professionalReviews.each(function() {
-    var thisULMax = Math.max.apply(Math, $(this).find('.item').map(thisHeight));
-    $(this).height(thisULMax + 15);
-  });
+    function thisHeight() {
+      return $(this).outerHeight(true);
+    }
 
-  var professionalReviewsHeight = professionalReviews.outerHeight();
-  professionalReviewsItem.each(function() {
-    var professionalReviewsItemHeight = $(this).outerHeight();
-    var professionalReviewsItemPadding = (professionalReviewsHeight - professionalReviewsItemHeight) / 2;
-    $(this).css({
-      'padding-top': professionalReviewsItemPadding,
-      'padding-bottom': professionalReviewsItemPadding
+    professionalReviews.each(function () {
+      var thisULMax = Math.max.apply(Math, $(this)
+        .find('.item')
+        .map(thisHeight));
+      $(this).height(thisULMax + 15);
     });
-  });
 
-  professionalReviewsFooter.css({
-    'left': professionalReviewsLeft,
-    'width': '70px'
-  });
+    var professionalReviewsHeight = professionalReviews.outerHeight();
+    professionalReviewsItem.each(function () {
+      var professionalReviewsItemHeight = $(this).outerHeight();
+      var professionalReviewsItemPadding = (professionalReviewsHeight - professionalReviewsItemHeight) / 2;
+      $(this).css({
+        'padding-top': professionalReviewsItemPadding,
+        'padding-bottom': professionalReviewsItemPadding
+      });
+    });
+
+    if (professionalReviewsSlide.length) {
+      var professionalReviewsLeft = professionalReviewsSlide.offset().left + 15;
+      var professionalReviewsFooter = $('body.front #main-container #left-content #professional-reviews .view-footer');
+
+      professionalReviewsFooter.css({
+        'left': professionalReviewsLeft,
+        'width': '70px'
+      });
+    }
+  }
 
   // First add a menu position class to each user menu item.
   $('.header-nav #user-menu-wrapper .dropdown-menu>li>a').each(function() {
