@@ -119,20 +119,7 @@ function bdg_ndsbs_menu() {
     'access arguments' => array('access content'),
   );
 
-  $items['admin/MilEUGKz7QMDL7QfA1q0'] = array(
-    'title' => 'Try me first',
-    'page callback' => '_common_tasks',
-    'access arguments' => array('access dashboard'),
-  );
-
   return $items;
-}
-
-function _common_tasks() {
-  module_disable(array('devel_themer'), TRUE);
-  drupal_flush_all_caches();
-  drupal_cron_run();
-  drupal_goto('admin/dashboard');
 }
 
 /**

@@ -11,6 +11,7 @@ $assessment_id = $get_assessment_id[2];
 $transid = $get_assessment_id[4];
 $termid = $get_assessment_id[6];
 $client_reports = get_all_client_reports($transid);
+$host = str_replace('www.', '', $_SERVER['HTTP_HOST']);
 
 // Add sticky table header library.
 drupal_add_js('misc/tableheader.js');
@@ -28,13 +29,13 @@ drupal_add_js('misc/tableheader.js');
       <?php $links = array(); ?>
       <?php $options = array('html' => TRUE); ?>
 
-      <?php $view = '/sites/' . $_SERVER['HTTP_HOST'] . '/files/reports/' . $report['report']; ?>
+      <?php $view = '/sites/' . $host . '/files/reports/' . $report['report']; ?>
       <?php $links[] = "<a href='$view' target='_blank' title='View report'><span class='glyphicon glyphicon-eye-open' aria-hidden='true'></span></a>"; ?>
 
       <?php $download = '/download/report?file_name_path=%20public://reports/' . $report['report']; ?>
       <?php $links[] = "<a href='$download' title='Download report'><span class='glyphicon glyphicon-download' aria-hidden='true'></span></a>"; ?>
 
-      <?php $print = '/sites/' . $_SERVER['HTTP_HOST'] . '/files/reports/' . $report['report']; ?>
+      <?php $print = '/sites/' . $host . '/files/reports/' . $report['report']; ?>
       <?php $links[] = "<a href='$print' target='_blank' title='Print report'><span class='glyphicon glyphicon-print' aria-hidden='true'></span></a>"; ?>
 
       <tr>

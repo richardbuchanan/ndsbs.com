@@ -39,45 +39,29 @@ function ndsbs_performance_reports_menu() {
  */
 function ndsbs_performance_reports_dashboard() {
   $filters = $_SESSION['performance_filters'];
-  $transactions = get_users_transactions();
   $start = mktime(0, 0, 0, $filters['month'], 1, $filters['year']);
   $end = mktime(23, 59, 59, $filters['month'] + 1, 0, $filters['year']);
-  $orders = array();
+  $therapist = $filters['therapist'];
+  $transactions = ndsbs_performance_reports_get_transactions($start, $end);
 
-  foreach ($transactions as $transaction) {
-    $order_date = $transaction->order_date;
-
-    if ($order_date >= $start && $order_date <= $end) {
-      $therapist = $transaction->therapist;
-
-      if ($filters['therapist'] == $therapist && $filters['therapist'] != 0) {
-        $orders[$transaction->order_id] = $transaction;
-      }
-      elseif ($filters['therapist'] == 0) {
-        $orders[$transaction->order_id] = $transaction;
-      }
-    }
-  }
+  $output = '<div class="row">';
 
   $performance_report_filters = drupal_get_form('performance_report_filters');
-  $performance_report_transactions = performance_report_transactions($orders);
-  $performance_report_therapist_transactions = performance_report_therapist_transactions($orders);
-
-  $output = '<div class="row"><div class="col-xs-12">';
+  $output .= '<div class="col-xs-12">';
   $output .= drupal_render($performance_report_filters);
   $output .= '</div>';
+
   $output .= '<div class="col-xs-12 col-md-9">';
-  $output .= render($performance_report_transactions);
+  $output .= drupal_render(performance_report_transactions__monthly($transactions, $therapist));
   $output .= '</div>';
+
+  $output .= '<div class="col-xs-12 col-md-3">';
+  $output .= drupal_render(performance_report_therapist_transactions($transactions, $therapist));
+  $output .= '</div>';
+
   $output .= '</div>';
 
   return $output;
-}
-
-function get_users_transactions() {
-  $query = db_query('SELECT * FROM {users_transactions} ut WHERE ut.payment_status = :payment_status', array(':payment_status' => 1));
-  $result = $query->fetchAll();
-  return $result;
 }
 
 function performance_report_filters($form, &$form_state) {
@@ -100,7 +84,8 @@ function performance_report_filters($form, &$form_state) {
   $data = $result->fetchAll();
 
   $therapists = array(
-    0 => '- All -',
+    'all' => '- All -',
+    0 => 'Unassigned',
   );
 
   foreach ($data as $user_data) {
@@ -170,12 +155,23 @@ function performance_report_filters_reset($form, &$form_state) {
   $_SESSION['performance_filters'] = array(
     'month' => date('n'),
     'year' => date('Y'),
-    'therapist' => 0,
+    'therapist' => 'all',
     'reset' => 0,
   );
 }
 
-function performance_report_transactions($orders) {
+/**
+ * Displays monthly transactions on the performance statistics page.
+ *
+ * These transactions detail client details, transaction details, order date and
+ * purchase details. Users can filter the details by month, year and therapist.
+ */
+function performance_report_transactions__monthly($transactions, $therapist = NULL) {
+  $amount_total = 0;
+  $rush_total = 0;
+  $refund_total = 0;
+  $totals = 0;
+
   $header = array(
     t('Client details'),
     t('Transaction details'),
@@ -183,58 +179,45 @@ function performance_report_transactions($orders) {
     t('Transaction amount'),
   );
   $rows = array();
-  $total_assessments = 0;
-  $total_rush_services = 0;
-  $total_refunds = 0;
+  dpm($_SERVER);
 
-  foreach ($orders as $key => $order) {
-    $has_refund = FALSE;
-    $refund_query = new EntityFieldQuery();
-    $entities = $refund_query->entityCondition('entity_type', 'node')
-      ->entityCondition('bundle', 'refund_payment')
-      ->propertyCondition('uid', $order->uid)
-      ->execute();
-    $nodes = node_load_multiple(array_keys($entities['node']));
+  foreach ($transactions as $transaction) {
+    if ($therapist == 'all') {
+      $assessment = $transaction['assessment'];
+      $client = $transaction['client'];
+      $order = $transaction['order'];
 
-    foreach ($nodes as $node) {
-      if ($node->field_request_status['und'][0]['value']) {
-        $has_refund = TRUE;
-      }
-    }
+      $client_details = '<b>' . ucwords($client['name']) . '</b><br>';
+      $client_details .= $client['mail'] . '<br>';
+      $client_details .= $client['phone'] . '<br>';
+      $client_details .= '<b>Therapist</b>: ' . $transaction['therapist']['name'];
 
-    $user = user_load($order->uid);
-    $user_name = array($user->field_first_name['und'][0]['value']);
-    $user_name[] = $user->field_last_name['und'][0]['value'];
-    $client_details = implode(' ', $user_name);
+      $transaction_details = '<b>Transaction ID</b>: ' . $transaction['transaction_id'] . '<br>';
+      $transaction_details .= '<b>Service</b>: ' . $assessment['title'];
 
-    $node = node_load($order->nid);
-    $transaction_details = '<b>Transaction ID:</b> ';
-    $transaction_details .= $order->transaction_id . '<br>';
-    $transaction_details .= '<b>Service:</b> ';
-    $transaction_details .= $node->title;
+      $order_date = $order['date_formatted'];
 
-    $order_date = format_date($order->order_date, 'blog_date');
+      $amount = $order['amount'];
+      $rush = $order['rush_amount'];
+      $refund = $transaction['refunded'] ? $order['amount'] : 0;
+      $total = $amount + $rush - $refund;
 
-    $cost = $order->cost;
-    $rush = $order->rush_cost;
-    $refund = $has_refund ? -$order->cost : 0;
-    $refund_class = $has_refund ? ' text-danger' : '';
-    $total = $cost + $rush + $refund;
+      $amount_total = $amount_total + $amount;
+      $rush_total = $rush_total + $rush;
+      $refund_total = $refund_total + $refund;
+      $totals = $totals + $total;
 
-    $total_assessments = $total_assessments + $cost;
-    $total_rush_services = $total_rush_services + $rush;
-    $total_refunds = $total_refunds + $refund;
+      $refund_class = $transaction['refunded'] ? ' text-danger' : '';
 
-    $transaction_amount = '<span class="pull-left"><b>Assessment:</b></span>';
-    $transaction_amount .= '<span class="pull-right">$' . $cost . '</span><br>';
-    $transaction_amount .= '<span class="pull-left"><b>Rush service:</b></span>';
-    $transaction_amount .= '<span class="pull-right">$' . $rush . '</span><br>';
-    $transaction_amount .= '<span class="pull-left' . $refund_class . '"><b>Refund:</b></span>';
-    $transaction_amount .= '<span class="pull-right' . $refund_class . '">$' . number_format($refund, 2) . '</span><br>';
-    $transaction_amount .= '<span class="pull-left"><b>Total:</b></span>';
-    $transaction_amount .= '<span class="pull-right">$' . number_format($total, 2) . '</span>';
+      $transaction_amount = '<span class="pull-left"><b>Assessment</b>:</span>';
+      $transaction_amount .= '<span class="pull-right">$' . number_format($amount, 2) . '</span><br>';
+      $transaction_amount .= '<span class="pull-left"><b>Rush Service</b>:</span>';
+      $transaction_amount .= '<span class="pull-right">$' . number_format($rush, 2) . '</span><br>';
+      $transaction_amount .= '<span class="pull-left"><b>Refund</b>:</span>';
+      $transaction_amount .= '<span class="pull-right' . $refund_class . '">$' . number_format($refund, 2) . '</span><br>';
+      $transaction_amount .= '<span class="pull-left"><b>Total</b>:</span>';
+      $transaction_amount .= '<span class="pull-right">$' . number_format($total, 2) . '</span>';
 
-    if (user_has_client_role_only($order->uid)) {
       $row = array(
         $client_details,
         $transaction_details,
@@ -246,65 +229,108 @@ function performance_report_transactions($orders) {
     }
   }
 
-  $totals_total = $total_assessments + $total_rush_services + $total_refunds;
-  $totals = '<span class="pull-left text-success"><b>Assessments:</b></span>';
-  $totals .= '<span class="pull-right text-success">$' . number_format($total_assessments, 2) . '</span><br>';
-  $totals .= '<span class="pull-left text-success"><b>Rush services:</b></span>';
-  $totals .= '<span class="pull-right text-success">$' . number_format($total_rush_services, 2) . '</span><br>';
-  $totals .= '<span class="pull-left text-danger"><b>Refunds:</b></span>';
-  $totals .= '<span class="pull-right text-danger">$' . number_format($total_refunds, 2) . '</span><br>';
-  $totals .= '<span class="pull-left text-success"><b>Totals:</b></span>';
-  $totals .= '<span class="pull-right text-success">$' . number_format($totals_total, 2) . '</span>';
-  $rows[] = array('', '', '', $totals);
+  $refunds_class = $refund_total > 0 ? ' text-danger' : '';
+
+  $totals_row = '<span class="pull-left"><b>Assessments</b>:</span>';
+  $totals_row .= '<span class="pull-right text-success">$' . number_format($amount_total, 2) . '</span><br>';
+  $totals_row .= '<span class="pull-left"><b>Rush Services</b>:</span>';
+  $totals_row .= '<span class="pull-right text-success">$' . number_format($rush_total, 2) . '</span><br>';
+  $totals_row .= '<span class="pull-left"><b>Refunds</b>:</span>';
+  $totals_row .= '<span class="pull-right' . $refunds_class . '">$' . number_format($refund_total, 2) . '</span><br>';
+  $totals_row .= '<span class="pull-left"><b>Total</b>:</span>';
+  $totals_row .= '<span class="pull-right text-success">$' . number_format($totals, 2) . '</span>';
+
+  $rows[] = array(
+    '',
+    '',
+    '',
+    $totals_row,
+  );
+
+  $dateObjMonth = DateTime::createFromFormat('!m', $_SESSION['performance_filters']['month']);
 
   return $build['performance_transactions_table'] = array(
     '#theme' => 'table',
     '#header' => $header,
     '#rows' => $rows,
-    '#empty' => t('No transactions found.')
+    '#empty' => t('No transactions found.'),
+    '#caption' => t('<h3>' . $dateObjMonth->format('F') . ' ' . $_SESSION['performance_filters']['year'] . ' Transactions</h3>'),
   );
 }
 
-function performance_report_therapist_transactions($orders) {
-  $query = db_select('users', 'u');
-  $query->fields('u', array('uid'))
-    ->condition('u.status', 1, '=')
-    ->orderBy('u.uid', 'ASC');
-  $query->join('users_roles', 'users_roles', 'users_roles.uid = u.uid');
-  $query->condition('users_roles.rid', 4, '=');
-  $result = $query->execute();
-  $data = $result->fetchAll();
+/**
+ * Displays monthly therapist transactions on the performance statistics page.
+ *
+ * These transactions detail total transaction dollar amounts and number of
+ * assessments a therapist had during a given month. Users can filter the
+ * details by month, year and therapist.
+ */
+function performance_report_therapist_transactions($transactions, $therapist = NULL) {
+  $therapists = ndsbs_performance_reports_get_all_therapists();
+  $total_amount = 0;
+  $total_assessments = 0;
 
-  $therapists = array(
-    0 => array(
-      'name' => 'Unassigned',
-    ),
-  );
-
-  foreach ($data as $user_data) {
-    $user_info = user_load($user_data->uid);
-    $therapists[$user_data->uid]['name'] = $user_info->field_first_name['und'][0]['value'] . ' ' . $user_info->field_last_name['und'][0]['value'];
-    $therapists[$user_data->uid]['orders'] = array();
+  foreach ($therapists as $uid => $therapist) {
+    $therapists[$uid]['total_amount'] = 0;
+    $therapists[$uid]['assessment_count'] = 0;
   }
 
-  foreach ($orders as $order) {
-    $cost = (int)$order->cost;
+  $header = array(
+    t('Therapist'),
+    t('Transactions'),
+    t('No. of Assessments'),
+  );
+  $rows = array();
 
-    if ($cost >= 250) {
-      if ($order->therapist) {
-        $therapists[$order->therapist]['orders'][] = $order;
-      }
-      else {
-        $therapists[0]['orders'][] = $order;
-      }
+  foreach ($transactions as $transaction) {
+    $nid = $transaction['assessment']['nid'];
+    $refunded = $transaction['refunded'];
+
+    if (!$refunded && $nid != '2792') {
+      $therapist_uid = $transaction['therapist']['uid'];
+      $therapists[$therapist_uid]['total_amount'] = $therapists[$therapist_uid]['total_amount'] + $transaction['order']['amount'] + $transaction['order']['rush_amount'];
+      $therapists[$therapist_uid]['assessment_count'] = $therapists[$therapist_uid]['assessment_count'] + 1;
+      $total_assessments = $total_assessments + 1;
     }
   }
 
   foreach ($therapists as $therapist) {
-    dpm($therapist);
+    if ($therapist['assessment_count']) {
+      $row = array(
+        $therapist['name'],
+        '$' . number_format($therapist['total_amount'], 2),
+        $therapist['assessment_count'],
+      );
+
+      $rows[] = $row;
+    }
+
+    $total_amount = $total_amount + $therapist['total_amount'];
   }
+
+  $rows[] = array(
+    '<b>Total</b>',
+    '$' . number_format($total_amount, 2),
+    $total_assessments,
+  );
+
+  return $build['performance_therapist_transactions_table'] = array(
+    '#theme' => 'table',
+    '#header' => $header,
+    '#rows' => $rows,
+    '#empty' => t('No transactions found.'),
+    '#caption' => t('<h3>Therapist transactions</h3>'),
+  );
 }
 
+/**
+ * Function to determine if a user only has the client role.
+ *
+ * For testing purposes some therapists, super admins and developers will also
+ * have the client role assigned to them. Sometimes we only need information on
+ * clients who are not staff members, which this function is able to determine
+ * for us.
+ */
 function user_has_client_role_only($uid) {
   // Staff role IDs.
   $roles = array(3, 4, 5, 7, 8);
@@ -321,4 +347,159 @@ function user_has_client_role_only($uid) {
   }
 
   return TRUE;
+}
+
+/**
+ * Retrieves all transactions between two given dates.
+ *
+ * @param string $start_date
+ *   Start date (timestamp) to begin transaction query.
+ * @param string $end_date
+ *   End date (timestamp) to end transaction query.
+ *
+ * @return array
+ *   Returns an array of orders that fall within the start and end dates.
+ */
+function ndsbs_performance_reports_get_transactions($start_date, $end_date) {
+  $query = db_query('SELECT * FROM {users_transactions} ut WHERE ut.payment_status = :payment_status', array(':payment_status' => 1));
+  $transactions = $query->fetchAll();
+  $orders = array();
+
+  foreach ($transactions as $transaction) {
+    $order_date = $transaction->order_date;
+    $date_range = $order_date >= $start_date && $order_date <= $end_date;
+    $client_role_only = user_has_client_role_only($transaction->uid);
+
+    if ($date_range && $client_role_only) {
+      // Basic order information.
+      $orders[$transaction->order_id]['payment_status'] = $transaction->payment_status;
+      $orders[$transaction->order_id]['refunded'] = FALSE;
+      $orders[$transaction->order_id]['transaction_id'] = $transaction->transaction_id;
+
+      // Gets refund_payment node tied to the client, indicating a refund was
+      // processed.
+      $refund_query = new EntityFieldQuery();
+      $entities = $refund_query->entityCondition('entity_type', 'node')
+        ->entityCondition('bundle', 'refund_payment')
+        ->propertyCondition('uid', $transaction->uid)
+        ->execute();
+      $refund_nodes = node_load_multiple(array_keys($entities['node']));
+
+      foreach ($refund_nodes as $refund_node) {
+        // Determine if transaction was refunded.
+        if ($refund_node->field_request_status['und'][0]['value']) {
+          $orders[$transaction->order_id]['refunded'] = TRUE;
+        }
+      }
+
+      // Add assessment details.
+      $assessment_node = node_load($transaction->nid);
+      $orders[$transaction->order_id]['assessment']['nid'] = $transaction->nid;
+      $orders[$transaction->order_id]['assessment']['tid'] = $transaction->tid;
+      $orders[$transaction->order_id]['assessment']['title'] = $assessment_node->title;
+
+      // Add client details.
+      $client = user_load($transaction->uid);
+      $orders[$transaction->order_id]['client']['address']['street'] = $client->field_address['und'][0]['value'];
+      $orders[$transaction->order_id]['client']['address']['city'] = $client->field_city['und'][0]['value'];
+      $orders[$transaction->order_id]['client']['address']['state'] = $client->field_state['und'][0]['value'];
+      $orders[$transaction->order_id]['client']['address']['zip'] = $client->field_zip['und'][0]['value'];
+      $orders[$transaction->order_id]['client']['mail'] = $client->mail;
+      $orders[$transaction->order_id]['client']['name'] = $client->field_first_name['und'][0]['value'];
+      $orders[$transaction->order_id]['client']['name'] .= ' ' . $client->field_last_name['und'][0]['value'];
+      $orders[$transaction->order_id]['client']['phone'] = $client->field_phone['und'][0]['value'];
+      $orders[$transaction->order_id]['client']['uid'] = $transaction->uid;
+
+      // Add order details.
+      $orders[$transaction->order_id]['order']['amount'] = number_format($transaction->cost, 0);
+      $orders[$transaction->order_id]['order']['date'] = $transaction->order_date;
+      $orders[$transaction->order_id]['order']['date_formatted'] = date('F j, Y', $transaction->order_date);
+      $orders[$transaction->order_id]['order']['id'] = $transaction->order_id;
+      $orders[$transaction->order_id]['order']['rush_amount'] = number_format($transaction->rush_cost, 0);
+
+      // Add therapist details.
+      $therapist = user_load($transaction->therapist);
+      if ($therapist) {
+        $orders[$transaction->order_id]['therapist']['name'] = $therapist->field_first_name['und'][0]['value'];
+        $orders[$transaction->order_id]['therapist']['name'] .= ' ' . $therapist->field_last_name['und'][0]['value'];
+        $orders[$transaction->order_id]['therapist']['uid'] = $transaction->therapist;
+      }
+      else {
+        $orders[$transaction->order_id]['therapist']['name'] = 'Unassigned';
+        $orders[$transaction->order_id]['therapist']['uid'] = 0;
+      }
+    }
+  }
+
+  return $orders;
+}
+
+function ndsbs_performance_reports_get_transactions__assessment_amounts($start_date, $end_date) {
+  $transactions = ndsbs_performance_reports_get_transactions($start_date, $end_date);
+  $return = 0;
+
+  foreach ($transactions as $transaction) {
+    $return = $return + $transaction['order']['amount'];
+  }
+
+  return $return;
+}
+
+function ndsbs_performance_reports_get_transactions__rush_amounts($start_date, $end_date) {
+  $transactions = ndsbs_performance_reports_get_transactions($start_date, $end_date);
+  $return = 0;
+
+  foreach ($transactions as $transaction) {
+    $return = $return + $transaction['order']['rush_amount'];
+  }
+
+  return $return;
+}
+
+function ndsbs_performance_reports_get_transactions__refund_amounts($start_date, $end_date) {
+  $transactions = ndsbs_performance_reports_get_transactions($start_date, $end_date);
+  $return = 0;
+
+  foreach ($transactions as $transaction) {
+    if ($transaction['refunded']) {
+      $return = $return + $transaction['order']['amount'];
+    }
+  }
+
+  return $return;
+}
+
+function ndsbs_performance_reports_get_transactions__all_amounts($start_date, $end_date) {
+  $assessments = ndsbs_performance_reports_get_transactions__assessment_amounts($start_date, $end_date);
+  $rush = ndsbs_performance_reports_get_transactions__rush_amounts($start_date, $end_date);
+  $refunds = ndsbs_performance_reports_get_transactions__refund_amounts($start_date, $end_date);
+
+  return $assessments + $rush - $refunds;
+}
+
+function ndsbs_performance_reports_get_all_therapists() {
+  $therapists = array(
+    0 => array(
+      'uid' => 0,
+      'name' => 'Unassigned',
+    ),
+  );
+
+  $query = db_select('users', 'u');
+  $query->fields('u', array('uid'))
+    ->condition('u.status', 1, '=')
+    ->orderBy('u.uid', 'ASC');
+  $query->join('users_roles', 'users_roles', 'users_roles.uid = u.uid');
+  $query->condition('users_roles.rid', 4, '=');
+  $result = $query->execute();
+  $users = $result->fetchAll();
+
+  foreach ($users as $user) {
+    $userObj = user_load($user->uid);
+    $therapists[$userObj->uid]['uid'] = $userObj->uid;
+    $therapists[$userObj->uid]['name'] = $userObj->field_first_name['und'][0]['value'];
+    $therapists[$userObj->uid]['name'] .= ' ' . $userObj->field_last_name['und'][0]['value'];
+  }
+
+  return $therapists;
 }
