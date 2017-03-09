@@ -179,7 +179,6 @@ function performance_report_transactions__monthly($transactions, $therapist = NU
     t('Transaction amount'),
   );
   $rows = array();
-  dpm($_SERVER);
 
   foreach ($transactions as $transaction) {
     if ($therapist == 'all') {
@@ -227,25 +226,117 @@ function performance_report_transactions__monthly($transactions, $therapist = NU
 
       $rows[] = $row;
     }
+    elseif (!$therapist && !$transaction['therapist']['uid']) {
+      $assessment = $transaction['assessment'];
+      $client = $transaction['client'];
+      $order = $transaction['order'];
+
+      $client_details = '<b>' . ucwords($client['name']) . '</b><br>';
+      $client_details .= $client['mail'] . '<br>';
+      $client_details .= $client['phone'] . '<br>';
+      $client_details .= '<b>Therapist</b>: ' . $transaction['therapist']['name'];
+
+      $transaction_details = '<b>Transaction ID</b>: ' . $transaction['transaction_id'] . '<br>';
+      $transaction_details .= '<b>Service</b>: ' . $assessment['title'];
+
+      $order_date = $order['date_formatted'];
+
+      $amount = $order['amount'];
+      $rush = $order['rush_amount'];
+      $refund = $transaction['refunded'] ? $order['amount'] : 0;
+      $total = $amount + $rush - $refund;
+
+      $amount_total = $amount_total + $amount;
+      $rush_total = $rush_total + $rush;
+      $refund_total = $refund_total + $refund;
+      $totals = $totals + $total;
+
+      $refund_class = $transaction['refunded'] ? ' text-danger' : '';
+
+      $transaction_amount = '<span class="pull-left"><b>Assessment</b>:</span>';
+      $transaction_amount .= '<span class="pull-right">$' . number_format($amount, 2) . '</span><br>';
+      $transaction_amount .= '<span class="pull-left"><b>Rush Service</b>:</span>';
+      $transaction_amount .= '<span class="pull-right">$' . number_format($rush, 2) . '</span><br>';
+      $transaction_amount .= '<span class="pull-left"><b>Refund</b>:</span>';
+      $transaction_amount .= '<span class="pull-right' . $refund_class . '">$' . number_format($refund, 2) . '</span><br>';
+      $transaction_amount .= '<span class="pull-left"><b>Total</b>:</span>';
+      $transaction_amount .= '<span class="pull-right">$' . number_format($total, 2) . '</span>';
+
+      $row = array(
+        $client_details,
+        $transaction_details,
+        $order_date,
+        $transaction_amount,
+      );
+
+      $rows[] = $row;
+    }
+    elseif ($therapist == $transaction['therapist']['uid']) {
+      $assessment = $transaction['assessment'];
+      $client = $transaction['client'];
+      $order = $transaction['order'];
+
+      $client_details = '<b>' . ucwords($client['name']) . '</b><br>';
+      $client_details .= $client['mail'] . '<br>';
+      $client_details .= $client['phone'] . '<br>';
+      $client_details .= '<b>Therapist</b>: ' . $transaction['therapist']['name'];
+
+      $transaction_details = '<b>Transaction ID</b>: ' . $transaction['transaction_id'] . '<br>';
+      $transaction_details .= '<b>Service</b>: ' . $assessment['title'];
+
+      $order_date = $order['date_formatted'];
+
+      $amount = $order['amount'];
+      $rush = $order['rush_amount'];
+      $refund = $transaction['refunded'] ? $order['amount'] : 0;
+      $total = $amount + $rush - $refund;
+
+      $amount_total = $amount_total + $amount;
+      $rush_total = $rush_total + $rush;
+      $refund_total = $refund_total + $refund;
+      $totals = $totals + $total;
+
+      $refund_class = $transaction['refunded'] ? ' text-danger' : '';
+
+      $transaction_amount = '<span class="pull-left"><b>Assessment</b>:</span>';
+      $transaction_amount .= '<span class="pull-right">$' . number_format($amount, 2) . '</span><br>';
+      $transaction_amount .= '<span class="pull-left"><b>Rush Service</b>:</span>';
+      $transaction_amount .= '<span class="pull-right">$' . number_format($rush, 2) . '</span><br>';
+      $transaction_amount .= '<span class="pull-left"><b>Refund</b>:</span>';
+      $transaction_amount .= '<span class="pull-right' . $refund_class . '">$' . number_format($refund, 2) . '</span><br>';
+      $transaction_amount .= '<span class="pull-left"><b>Total</b>:</span>';
+      $transaction_amount .= '<span class="pull-right">$' . number_format($total, 2) . '</span>';
+
+      $row = array(
+        $client_details,
+        $transaction_details,
+        $order_date,
+        $transaction_amount,
+      );
+
+      $rows[] = $row;
+    }
   }
 
-  $refunds_class = $refund_total > 0 ? ' text-danger' : '';
+  if (!empty($rows)) {
+    $refunds_class = $refund_total > 0 ? ' text-danger' : '';
 
-  $totals_row = '<span class="pull-left"><b>Assessments</b>:</span>';
-  $totals_row .= '<span class="pull-right text-success">$' . number_format($amount_total, 2) . '</span><br>';
-  $totals_row .= '<span class="pull-left"><b>Rush Services</b>:</span>';
-  $totals_row .= '<span class="pull-right text-success">$' . number_format($rush_total, 2) . '</span><br>';
-  $totals_row .= '<span class="pull-left"><b>Refunds</b>:</span>';
-  $totals_row .= '<span class="pull-right' . $refunds_class . '">$' . number_format($refund_total, 2) . '</span><br>';
-  $totals_row .= '<span class="pull-left"><b>Total</b>:</span>';
-  $totals_row .= '<span class="pull-right text-success">$' . number_format($totals, 2) . '</span>';
+    $totals_row = '<span class="pull-left"><b>Assessments</b>:</span>';
+    $totals_row .= '<span class="pull-right text-success">$' . number_format($amount_total, 2) . '</span><br>';
+    $totals_row .= '<span class="pull-left"><b>Rush Services</b>:</span>';
+    $totals_row .= '<span class="pull-right text-success">$' . number_format($rush_total, 2) . '</span><br>';
+    $totals_row .= '<span class="pull-left"><b>Refunds</b>:</span>';
+    $totals_row .= '<span class="pull-right' . $refunds_class . '">$' . number_format($refund_total, 2) . '</span><br>';
+    $totals_row .= '<span class="pull-left"><b>Total</b>:</span>';
+    $totals_row .= '<span class="pull-right text-success">$' . number_format($totals, 2) . '</span>';
 
-  $rows[] = array(
-    '',
-    '',
-    '',
-    $totals_row,
-  );
+    $rows[] = array(
+      '',
+      '',
+      '',
+      $totals_row,
+    );
+  }
 
   $dateObjMonth = DateTime::createFromFormat('!m', $_SESSION['performance_filters']['month']);
 
@@ -270,7 +361,7 @@ function performance_report_therapist_transactions($transactions, $therapist = N
   $total_amount = 0;
   $total_assessments = 0;
 
-  foreach ($therapists as $uid => $therapist) {
+  foreach ($therapists as $uid => $_therapist) {
     $therapists[$uid]['total_amount'] = 0;
     $therapists[$uid]['assessment_count'] = 0;
   }
@@ -283,14 +374,38 @@ function performance_report_therapist_transactions($transactions, $therapist = N
   $rows = array();
 
   foreach ($transactions as $transaction) {
-    $nid = $transaction['assessment']['nid'];
-    $refunded = $transaction['refunded'];
+    if ($therapist == 'all') {
+      $nid = $transaction['assessment']['nid'];
+      $refunded = $transaction['refunded'];
 
-    if (!$refunded && $nid != '2792') {
-      $therapist_uid = $transaction['therapist']['uid'];
-      $therapists[$therapist_uid]['total_amount'] = $therapists[$therapist_uid]['total_amount'] + $transaction['order']['amount'] + $transaction['order']['rush_amount'];
-      $therapists[$therapist_uid]['assessment_count'] = $therapists[$therapist_uid]['assessment_count'] + 1;
-      $total_assessments = $total_assessments + 1;
+      if (!$refunded && $nid != '2792') {
+        $therapist_uid = $transaction['therapist']['uid'];
+        $therapists[$therapist_uid]['total_amount'] = $therapists[$therapist_uid]['total_amount'] + $transaction['order']['amount'] + $transaction['order']['rush_amount'];
+        $therapists[$therapist_uid]['assessment_count'] = $therapists[$therapist_uid]['assessment_count'] + 1;
+        $total_assessments = $total_assessments + 1;
+      }
+    }
+    elseif (!$therapist && !$transaction['therapist']['uid']) {
+      $nid = $transaction['assessment']['nid'];
+      $refunded = $transaction['refunded'];
+
+      if (!$refunded && $nid != '2792') {
+        $therapist_uid = $transaction['therapist']['uid'];
+        $therapists[$therapist_uid]['total_amount'] = $therapists[$therapist_uid]['total_amount'] + $transaction['order']['amount'] + $transaction['order']['rush_amount'];
+        $therapists[$therapist_uid]['assessment_count'] = $therapists[$therapist_uid]['assessment_count'] + 1;
+        $total_assessments = $total_assessments + 1;
+      }
+    }
+    elseif ($therapist == $transaction['therapist']['uid']) {
+      $nid = $transaction['assessment']['nid'];
+      $refunded = $transaction['refunded'];
+
+      if (!$refunded && $nid != '2792') {
+        $therapist_uid = $transaction['therapist']['uid'];
+        $therapists[$therapist_uid]['total_amount'] = $therapists[$therapist_uid]['total_amount'] + $transaction['order']['amount'] + $transaction['order']['rush_amount'];
+        $therapists[$therapist_uid]['assessment_count'] = $therapists[$therapist_uid]['assessment_count'] + 1;
+        $total_assessments = $total_assessments + 1;
+      }
     }
   }
 
