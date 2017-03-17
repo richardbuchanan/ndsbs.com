@@ -28,10 +28,22 @@ function ndsbs_performance_reports_menu() {
     'title' => 'Performance Statistics',
     'description' => 'View and generate performance statistics.',
     'page callback' => 'ndsbs_performance_reports_dashboard',
-    'access arguments' => array('access dashboard'),
+    'access arguments' => array('view performance stats'),
   );
 
   return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function ndsbs_performance_reports_permission() {
+  return array(
+    'view performance stats' => array(
+      'title' => t('View performance statistics'),
+      'description' => t('Permission to view performance statistics.'),
+    ),
+  );
 }
 
 /**
@@ -65,6 +77,11 @@ function ndsbs_performance_reports_dashboard() {
 }
 
 function performance_report_filters($form, &$form_state) {
+  global $user;
+  $therapists = array();
+  $stats_access = user_can_view_stats();
+  $therapist_user = user_load($user->uid);
+
   if (!isset($_SESSION['performance_filters'])) {
     $_SESSION['performance_filters'] = array(
       'month' => date('n'),
@@ -83,14 +100,19 @@ function performance_report_filters($form, &$form_state) {
   $result = $query->execute();
   $data = $result->fetchAll();
 
-  $therapists = array(
-    'all' => '- All -',
-    0 => 'Unassigned',
-  );
+  if ($stats_access == 'all') {
+    $therapists['all'] = '- All -';
+    $therapists[0] = 'Unassigned';
+  }
 
-  foreach ($data as $user_data) {
-    $user_info = user_load($user_data->uid);
-    $therapists[$user_data->uid] = $user_info->field_first_name['und'][0]['value'] . ' ' . $user_info->field_last_name['und'][0]['value'];
+  if ($stats_access == 'all') {
+    foreach ($data as $user_data) {
+      $user_info = user_load($user_data->uid);
+      $therapists[$user_data->uid] = $user_info->field_first_name['und'][0]['value'] . ' ' . $user_info->field_last_name['und'][0]['value'];
+    }
+  }
+  elseif ($stats_access == 'own') {
+    $therapists[$therapist_user->uid] = $therapist_user->field_first_name['und'][0]['value'] . ' ' . $therapist_user->field_last_name['und'][0]['value'];
   }
 
   $months = array();
@@ -167,10 +189,12 @@ function performance_report_filters_reset($form, &$form_state) {
  * purchase details. Users can filter the details by month, year and therapist.
  */
 function performance_report_transactions__monthly($transactions, $therapist = NULL) {
+  global $user;
   $amount_total = 0;
   $rush_total = 0;
   $refund_total = 0;
   $totals = 0;
+  $stats_access = user_can_view_stats();
 
   $header = array(
     t('Client details'),
@@ -181,6 +205,10 @@ function performance_report_transactions__monthly($transactions, $therapist = NU
   $rows = array();
 
   foreach ($transactions as $transaction) {
+    if ($stats_access == 'own') {
+      $therapist = $user->uid;
+    }
+
     if ($therapist == 'all') {
       $assessment = $transaction['assessment'];
       $client = $transaction['client'];
@@ -357,9 +385,11 @@ function performance_report_transactions__monthly($transactions, $therapist = NU
  * details by month, year and therapist.
  */
 function performance_report_therapist_transactions($transactions, $therapist = NULL) {
+  global $user;
   $therapists = ndsbs_performance_reports_get_all_therapists();
   $total_amount = 0;
   $total_assessments = 0;
+  $stats_access = user_can_view_stats();
 
   foreach ($therapists as $uid => $_therapist) {
     $therapists[$uid]['total_amount'] = 0;
@@ -374,6 +404,10 @@ function performance_report_therapist_transactions($transactions, $therapist = N
   $rows = array();
 
   foreach ($transactions as $transaction) {
+    if ($stats_access == 'own') {
+      $therapist = $user->uid;
+    }
+
     if ($therapist == 'all') {
       $nid = $transaction['assessment']['nid'];
       $refunded = $transaction['refunded'];
@@ -462,6 +496,28 @@ function user_has_client_role_only($uid) {
   }
 
   return TRUE;
+}
+
+/**
+ * Function to determine which stats a staff role can view.
+ */
+function user_can_view_stats() {
+  global $user;
+  // Staff role IDs.
+  $roles = array_keys($user->roles);
+  $full_access = in_array(3, $roles) || in_array(7, $roles) || in_array(8, $roles);
+  $own_access = in_array(4, $roles);
+  $no_access = in_array(5, $roles);
+
+  if ($full_access) {
+    return 'all';
+  }
+  elseif ($own_access) {
+    return 'own';
+  }
+  else {
+    return 'none';
+  }
 }
 
 /**
