@@ -277,7 +277,7 @@ function bdg_ndsbs_developer_modules() {
     '#markup' => '<p>Developer modules aid in site development and should not be enabled on a production site. From this form you can enable/disable these modules with one click of the button!</p>',
   );
 
-  if (module_exists('devel')) {
+  if (module_exists('views_ui')) {
     global $conf;
     $developer_modules = $conf['admin_menu_devel_modules'];
     $items = array();
