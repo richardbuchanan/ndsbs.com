@@ -83,12 +83,22 @@ function performance_report_filters($form, &$form_state) {
   $therapist_user = user_load($user->uid);
 
   if (!isset($_SESSION['performance_filters'])) {
-    $_SESSION['performance_filters'] = array(
-      'month' => date('n'),
-      'year' => date('Y'),
-      'therapist' => 0,
-      'reset' => 0,
-    );
+    if ($stats_access == 'all') {
+      $_SESSION['performance_filters'] = array(
+        'month' => date('n'),
+        'year' => date('Y'),
+        'therapist' => 'all',
+        'reset' => 0,
+      );
+    }
+    elseif ($stats_access == 'own') {
+      $_SESSION['performance_filters'] = array(
+        'month' => date('n'),
+        'year' => date('Y'),
+        'therapist' => $therapist_user->uid,
+        'reset' => 0,
+      );
+    }
   }
 
   $query = db_select('users', 'u');

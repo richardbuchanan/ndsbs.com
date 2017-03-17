@@ -36,11 +36,23 @@ function bluepay_menu() {
     'description' => 'Configure your BluePay merchant settings to integrate BluePay with this Drupal site.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('bluepay_system_settings_form'),
-    'access arguments' => array('access administration pages'),
+    'access arguments' => array('administer bluepay'),
     'type' => MENU_NORMAL_ITEM,
   );
 
   return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function bluepay_permission() {
+  return array(
+    'administer bluepay' => array(
+      'title' => t('Administer BluePay API'),
+      'description' => t('Perform administration tasks for BluePay API module.'),
+    ),
+  );
 }
 
 /**
