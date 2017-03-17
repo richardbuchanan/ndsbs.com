@@ -84,6 +84,10 @@ function bdg_ndsbs_permission() {
       'title' => t('Edit testimonial user name'),
       'description' => t('Allows users to use their user name/initials, or a fictitious name/initials.'),
     ),
+    'access development pages' => array(
+      'title' => t('Access development pages'),
+      'description' => t('Allows users to access development modules'),
+    )
   );
 }
 
@@ -91,7 +95,6 @@ function bdg_ndsbs_permission() {
  * Implements hook_menu().
  */
 function bdg_ndsbs_menu() {
-  global $user, $base_url;
   $items = array();
 
   $items['admin/config/development/bdg-developer-modules'] = array(
@@ -99,11 +102,10 @@ function bdg_ndsbs_menu() {
     'description' => 'Disable/enable developer modules.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('bdg_ndsbs_developer_modules'),
-    'access arguments' => array('administer bdg admin paths settings'),
+    'access arguments' => array('access development pages'),
     'access callback' => TRUE,
     'type' => MENU_NORMAL_ITEM,
   );
-
   $items['questionnaire/start/trans'] = array(
     'title'           => 'My Assessment',
     'description'     => 'Client\'s assessment',
@@ -112,7 +114,6 @@ function bdg_ndsbs_menu() {
     'access arguments' => array('access content'),
     'menu_name' => 'menu-client-navigation',
   );
-
   $items['state-map'] = array(
     'title'           => 'Check My State',
     'page callback'   => '_check_my_state',
@@ -120,6 +121,14 @@ function bdg_ndsbs_menu() {
   );
 
   return $items;
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function bdg_ndsbs_menu_alter(&$items) {
+  $items['admin/config/development']['access arguments'] = array('access development pages');
+  $items['admin/index']['access arguments'] = array('access development pages');
 }
 
 /**

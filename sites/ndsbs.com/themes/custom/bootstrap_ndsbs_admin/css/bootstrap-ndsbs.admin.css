@@ -127,3 +127,22 @@
   display: block;
   float: none;
 }
+#ndsbs-admin-navbar .nav-tabs {
+  float: right;
+}
+#block-devel-switch-user ul.links {
+  margin-left: 0;
+  padding-left: 0;
+}
+#block-devel-switch-user ul.links li {
+  display: inline-block;
+  margin-left: 0;
+  margin-right: 1.5em;
+  padding-right: 0;
+}
+#devel-switch-user-form .form-autocomplete {
+  width: 300px;
+}
+html.js .module-filter-inputs-wrapper input[name="module_filter[name]"] {
+  margin: 0;
+}

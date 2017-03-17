@@ -95,8 +95,8 @@
         </div>
       <?php endif; ?>
     </div>
-    <nav id="ndsbs-admin-navbar" class="ndsbs-admin-navbar navbar-collapse collapse" aria-expanded="true">
-      <ul class="nav navbar-nav navbar-right">
+    <nav id="ndsbs-admin-navbar">
+      <ul class="nav nav-tabs">
         <li><a href="/user">My Account</a></li>
         <li><a href="/user/clients/list">Staff Dashboard</a></li>
         <li><a href="/user/logout">Log out</a></li>
