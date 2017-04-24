@@ -64,6 +64,9 @@
   }
 }
 
+#main-container {
+  padding-bottom: 0;
+}
 #main-container,
 .btn,
 .form-control {
