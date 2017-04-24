@@ -96,11 +96,7 @@
       <?php endif; ?>
     </div>
     <nav id="ndsbs-admin-navbar">
-      <ul class="nav nav-tabs">
-        <li><a href="/user">My Account</a></li>
-        <li><a href="/user/clients/list">Staff Dashboard</a></li>
-        <li><a href="/user/logout">Log out</a></li>
-      </ul>
+      <?php print drupal_render($staff_tabs); ?>
     </nav>
   </div>
 </header>

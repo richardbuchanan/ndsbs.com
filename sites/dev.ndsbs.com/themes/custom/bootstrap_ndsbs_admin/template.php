@@ -15,6 +15,30 @@ function bootstrap_ndsbs_admin_preprocess_html(&$variables) {
  */
 function bootstrap_ndsbs_admin_preprocess_page(&$variables) {
   $variables['breadcrumb_attributes_array']['class'] = array();
+
+  $links = array(
+    'user' => array(
+      'title' => t('My account'),
+      'href' => 'user',
+    ),
+    'dashboard' => array(
+      'title' => t('Staff dashboard'),
+      'href' => 'user/clients/list',
+    ),
+    'performance' => array(
+      'title' => t('Performance statistics'),
+      'href' => 'admin/dashboard/performance',
+    ),
+    'logout' => array(
+      'title' => t('Log out'),
+      'href' => 'user/logout',
+    ),
+  );
+  $variables['staff_tabs'] = array(
+    '#theme' => 'links',
+    '#links' => $links,
+    '#attributes' => array('class' => array('nav', 'nav-tabs')),
+  );
 }
 
 /**
