@@ -34,6 +34,9 @@ body {
     margin: 0 !important;
   }
 }
+body > .table {
+  margin: 0;
+}
 blockquote .small,
 blockquote footer,
 blockquote small {
