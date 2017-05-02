@@ -55,7 +55,6 @@ blockquote small:before {
   position: absolute;
   bottom: 0;
   width: 100%;
-  height: 75px;
 }
 a {
   color: #966A48;
@@ -687,8 +686,12 @@ body.front .faq-videos-title {
   background: #e3e4e5;
 }
 #site-footer #block-bdg-ndsbs-ndsbs-copyright {
-  padding: 25px 0;
+  padding: 25px 0 10px;
   text-align: right;
+}
+#site-footer #siteseal {
+  float: right;
+  padding: 10px 0;
 }
 #site-footer #block-bdg-ndsbs-ndsbs-copyright small {
   font-size: 13px;
