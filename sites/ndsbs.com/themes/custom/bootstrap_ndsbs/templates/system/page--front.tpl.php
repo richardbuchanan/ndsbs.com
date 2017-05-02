@@ -230,8 +230,7 @@
         </div>
         <div id="footer-right" class="col-xs-12 col-sm-12 col-md-4">
           <?php print render($page['footer_right']); ?>
-          <script type="text/javascript" src="https://cdn.ywxi.net/js/1.js" async></script>
-          <span id="siteseal"><script async type="text/javascript" src="https://seal.godaddy.com/getSeal?sealID=fPzyBVTYzEKessk4HA9jDt9ALuaThCsopCkEyyRc7mBTdwENhjRNDi"></script></span>
+          <?php print $site_seals; ?>
         </div>
       </div>
     </div>
