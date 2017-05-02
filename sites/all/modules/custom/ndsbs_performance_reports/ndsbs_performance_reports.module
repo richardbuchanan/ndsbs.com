@@ -29,6 +29,23 @@ function ndsbs_performance_reports_menu() {
     'description' => 'View and generate performance statistics.',
     'page callback' => 'ndsbs_performance_reports_dashboard',
     'access arguments' => array('view performance stats'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+  $items['admin/dashboard/performance/monthly'] = array(
+    'title' => 'Monthly',
+    'description' => 'View and generate monthly performance statistics.',
+    'page callback' => 'ndsbs_performance_reports_dashboard',
+    'access arguments' => array('view performance stats'),
+    'weight' => 0,
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+  $items['admin/dashboard/performance/advanced'] = array(
+    'title' => 'Advanced',
+    'description' => 'View and generate advanced performance statistics.',
+    'page callback' => 'ndsbs_performance_reports_dashboard_advanced',
+    'access arguments' => array('view performance stats'),
+    'weight' => 1,
+    'type' => MENU_LOCAL_TASK,
   );
 
   return $items;
@@ -47,7 +64,7 @@ function ndsbs_performance_reports_permission() {
 }
 
 /**
- * Page callback: Displays the performance statistics dashboard.
+ * Page callback: Displays the monthly performance statistics dashboard.
  */
 function ndsbs_performance_reports_dashboard() {
   $filters = $_SESSION['performance_filters'];
@@ -72,7 +89,21 @@ function ndsbs_performance_reports_dashboard() {
   $output .= '</div>';
 
   $output .= '</div>';
+  return $output;
+}
 
+/**
+ * Page callback: Displays the advanced performance statistics dashboard.
+ */
+function ndsbs_performance_reports_dashboard_advanced() {
+  $output = '<div class="row">';
+
+  $performance_report_filters = drupal_get_form('performance_report_filters');
+  $output .= '<div class="col-xs-12">';
+  $output .= drupal_render($performance_report_filters);
+  $output .= '</div>';
+
+  $output .= '</div>';
   return $output;
 }
 
