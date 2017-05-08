@@ -96,11 +96,30 @@ function ndsbs_performance_reports_dashboard() {
  * Page callback: Displays the advanced performance statistics dashboard.
  */
 function ndsbs_performance_reports_dashboard_advanced() {
+  drupal_add_js('//www.gstatic.com/charts/loader.js', array(
+    'type' => 'external',
+    'group' => JS_DEFAULT,
+  ));
+
+  $filters = $_SESSION['performance_filters_advanced'];
+  $start = mktime(0, 0, 0, $filters['month_start'], 1, $filters['year_start']);
+  $end = mktime(23, 59, 59, $filters['month_end'] + 1, 0, $filters['year_end']);
+  $therapist = $filters['therapist'];
+  $transactions = ndsbs_performance_reports_get_transactions($start, $end);
+
   $output = '<div class="row">';
 
   $performance_report_filters = drupal_get_form('performance_report_filters');
   $output .= '<div class="col-xs-12">';
   $output .= drupal_render($performance_report_filters);
+  $output .= '</div>';
+
+  $output .= '<div class="col-xs-12 col-md-3">';
+  $output .= drupal_render(performance_report_transactions__advanced($transactions, $therapist));
+  $output .= '</div>';
+
+  $output .= '<div class="col-xs-12 col-md-3">';
+  $output .= '<div id="chart"></div>';
   $output .= '</div>';
 
   $output .= '</div>';
@@ -126,6 +145,29 @@ function performance_report_filters($form, &$form_state) {
       $_SESSION['performance_filters'] = array(
         'month' => date('n'),
         'year' => date('Y'),
+        'therapist' => $therapist_user->uid,
+        'reset' => 0,
+      );
+    }
+  }
+
+  if (!isset($_SESSION['performance_filters_advanced'])) {
+    if ($stats_access == 'all') {
+      $_SESSION['performance_filters_advanced'] = array(
+        'month_start' => date('n'),
+        'month_end' => date('n'),
+        'year_start' => date('Y'),
+        'year_end' => date('Y'),
+        'therapist' => 'all',
+        'reset' => 0,
+      );
+    }
+    elseif ($stats_access == 'own') {
+      $_SESSION['performance_filters_advanced'] = array(
+        'month_start' => date('n'),
+        'month_end' => date('n'),
+        'year_start' => date('Y'),
+        'year_end' => date('Y'),
         'therapist' => $therapist_user->uid,
         'reset' => 0,
       );
@@ -170,29 +212,73 @@ function performance_report_filters($form, &$form_state) {
     $y++;
   }
 
-  $form['months'] = array(
-    '#type' => 'select',
-    '#title' => t('Month'),
-    '#options' => $months,
-    '#default_value' => $_SESSION['performance_filters']['month'],
-  );
-  $form['years'] = array(
-    '#type' => 'select',
-    '#title' => t('Year'),
-    '#options' => $years,
-    '#default_value' => $_SESSION['performance_filters']['year'],
-  );
-  $form['therapists'] = array(
+  $path = explode('/', current_path());
+  if (!isset($path[3])) {
+    $form['months'] = [
+      '#type' => 'select',
+      '#title' => t('Month'),
+      '#options' => $months,
+      '#default_value' => $_SESSION['performance_filters']['month'],
+    ];
+    $form['years'] = [
+      '#type' => 'select',
+      '#title' => t('Year'),
+      '#options' => $years,
+      '#default_value' => $_SESSION['performance_filters']['year'],
+    ];
+  }
+  else {
+    $form['date_begin'] = [
+      '#type' => 'fieldset',
+      '#title' => t('Begin date'),
+      '#attributes' => array(
+        'class' => array('col-md-3'),
+      ),
+    ];
+    $form['date_begin']['month_start'] = [
+      '#type' => 'select',
+      '#title' => t('Month'),
+      '#options' => $months,
+      '#default_value' => $_SESSION['performance_filters_advanced']['month_start'],
+    ];
+    $form['date_begin']['year_start'] = [
+      '#type' => 'select',
+      '#title' => t('Year'),
+      '#options' => $years,
+      '#default_value' => $_SESSION['performance_filters_advanced']['year_start'],
+    ];
+    $form['date_end'] = [
+      '#type' => 'fieldset',
+      '#title' => t('End date'),
+      '#attributes' => array(
+        'class' => array('col-md-3'),
+      ),
+    ];
+    $form['date_end']['month_end'] = [
+      '#type' => 'select',
+      '#title' => t('Month'),
+      '#options' => $months,
+      '#default_value' => $_SESSION['performance_filters_advanced']['month_end'],
+    ];
+    $form['date_end']['year_end'] = [
+      '#type' => 'select',
+      '#title' => t('Year'),
+      '#options' => $years,
+      '#default_value' => $_SESSION['performance_filters_advanced']['year_end'],
+    ];
+  }
+
+  $form['therapists'] = [
     '#type' => 'select',
     '#title' => t('Therapist'),
     '#options' => $therapists,
     '#default_value' => $_SESSION['performance_filters']['therapist'],
-  );
-  $form['submit'] = array(
+  ];
+  $form['submit'] = [
     '#type' => 'submit',
     '#value' => t('Update'),
-    '#submit' => array('performance_report_filters_submit'),
-  );
+    '#submit' => ['performance_report_filters_submit'],
+  ];
 
   if ($_SESSION['performance_filters']['reset']) {
     $form['reset'] = array(
@@ -212,12 +298,28 @@ function performance_report_filters_submit($form, &$form_state) {
     'therapist' => $form_state['values']['therapists'],
     'reset' => 1,
   );
+  $_SESSION['performance_filters_advanced'] = array(
+    'month_start' => $form_state['values']['month_start'],
+    'month_end' => $form_state['values']['month_end'],
+    'year_start' => $form_state['values']['year_start'],
+    'year_end' => $form_state['values']['year_end'],
+    'therapist' => $form_state['values']['therapists'],
+    'reset' => 1,
+  );
 }
 
 function performance_report_filters_reset($form, &$form_state) {
   $_SESSION['performance_filters'] = array(
     'month' => date('n'),
     'year' => date('Y'),
+    'therapist' => 'all',
+    'reset' => 0,
+  );
+  $_SESSION['performance_filters_advanced'] = array(
+    'month_start' => date('n'),
+    'month_end' => date('n'),
+    'year_start' => date('Y'),
+    'year_end' => date('Y'),
     'therapist' => 'all',
     'reset' => 0,
   );
@@ -415,6 +517,109 @@ function performance_report_transactions__monthly($transactions, $therapist = NU
     '#rows' => $rows,
     '#empty' => t('No transactions found.'),
     '#caption' => t('<h3>' . $dateObjMonth->format('F') . ' ' . $_SESSION['performance_filters']['year'] . ' Transactions</h3>'),
+  );
+}
+
+/**
+ * Displays advanced transactions on the performance statistics page.
+ *
+ * These transactions detail transaction details. Users can filter the details
+ * by month, year and therapist.
+ */
+function performance_report_transactions__advanced($transactions, $therapist = NULL) {
+  global $user;
+  $amount_total = 0;
+  $rush_total = 0;
+  $refund_total = 0;
+  $totals = 0;
+  $stats_access = user_can_view_stats();
+
+  $header = array();
+  $rows = array();
+
+  foreach ($transactions as $transaction) {
+    if ($stats_access == 'own') {
+      $therapist = $user->uid;
+    }
+
+    if ($therapist == 'all') {
+      $order = $transaction['order'];
+      $amount = $order['amount'];
+      $rush = $order['rush_amount'];
+      $refund = $transaction['refunded'] ? $order['amount'] : 0;
+      $total = $amount + $rush - $refund;
+
+      $amount_total = $amount_total + $amount;
+      $rush_total = $rush_total + $rush;
+      $refund_total = $refund_total + $refund;
+      $totals = $totals + $total;
+    }
+    elseif (!$therapist && !$transaction['therapist']['uid']) {
+      $order = $transaction['order'];
+      $amount = $order['amount'];
+      $rush = $order['rush_amount'];
+      $refund = $transaction['refunded'] ? $order['amount'] : 0;
+      $total = $amount + $rush - $refund;
+
+      $amount_total = $amount_total + $amount;
+      $rush_total = $rush_total + $rush;
+      $refund_total = $refund_total + $refund;
+      $totals = $totals + $total;
+    }
+    elseif ($therapist == $transaction['therapist']['uid']) {
+      $order = $transaction['order'];
+      $amount = $order['amount'];
+      $rush = $order['rush_amount'];
+      $refund = $transaction['refunded'] ? $order['amount'] : 0;
+      $total = $amount + $rush - $refund;
+
+      $amount_total = $amount_total + $amount;
+      $rush_total = $rush_total + $rush;
+      $refund_total = $refund_total + $refund;
+      $totals = $totals + $total;
+    }
+  }
+
+  $refunds_class = $refund_total > 0 ? ' text-danger' : '';
+
+  $totals_row = '<span class="pull-left"><b>Assessments</b>:</span>';
+  $totals_row .= '<span class="pull-right text-success">$' . number_format($amount_total, 2) . '</span><br>';
+  $totals_row .= '<span class="pull-left"><b>Rush Services</b>:</span>';
+  $totals_row .= '<span class="pull-right text-success">$' . number_format($rush_total, 2) . '</span><br>';
+  $totals_row .= '<span class="pull-left"><b>Refunds</b>:</span>';
+  $totals_row .= '<span class="pull-right' . $refunds_class . '">$' . number_format($refund_total, 2) . '</span><br>';
+  $totals_row .= '<span class="pull-left"><b>Total</b>:</span>';
+  $totals_row .= '<span class="pull-right text-success">$' . number_format($totals, 2) . '</span>';
+
+  $rows[] = array(
+    $totals_row,
+  );
+  drupal_add_js(array(
+    'ndsbs_performance_reports' => array(
+      'assessments_total' => $amount_total,
+      'rush_total' => $rush_total,
+      'totals' => $totals,
+  )), array(
+    'type' => 'setting',
+  ));
+
+  $charts = drupal_get_path('module', 'ndsbs_performance_reports') . '/js/ndsbs-performance-reports.charts.js';
+  drupal_add_js($charts, array(
+    'type' => 'file',
+    'group' => JS_DEFAULT,
+  ));
+
+  $dateObjMonth_start = DateTime::createFromFormat('!m', $_SESSION['performance_filters_advanced']['month_start']);
+  $dateObjMonth_end = DateTime::createFromFormat('!m', $_SESSION['performance_filters_advanced']['month_end']);
+  $month_start = $dateObjMonth_start->format('F') . ' ' . $_SESSION['performance_filters_advanced']['year_start'];
+  $month_end = $dateObjMonth_end->format('F') . ' ' . $_SESSION['performance_filters_advanced']['year_end'];
+
+  return $build['performance_transactions_table'] = array(
+    '#theme' => 'table',
+    '#header' => $header,
+    '#rows' => $rows,
+    '#empty' => t('No transactions found.'),
+    '#caption' => t('<h3>' . $month_start . ' - ' . $month_end . ' Transactions</h3>'),
   );
 }
 
