@@ -140,7 +140,6 @@
   </div>
 </div>
 
-<<<<<<< HEAD
 <footer id="site-footer">
   <div class="container">
     <div class="row">
@@ -149,18 +148,6 @@
       </div>
       <div id="footer-right" class="col-xs-12 col-sm-12 col-md-4">
         <?php print render($page['footer_right']); ?>
-=======
-  <footer id="site-footer">
-    <div class="container">
-      <div class="row">
-        <div id="footer-left" class="col-xs-12 col-sm-12 col-md-8">
-          <?php print render($page['footer_left']); ?>
-        </div>
-        <div id="footer-right" class="col-xs-12 col-sm-12 col-md-4">
-          <?php print render($page['footer_right']); ?>
-          <?php print $site_seals; ?>
-        </div>
->>>>>>> a02849feafe4c0f6a9e9ccf0988273e3396708c8
       </div>
     </div>
   </div>

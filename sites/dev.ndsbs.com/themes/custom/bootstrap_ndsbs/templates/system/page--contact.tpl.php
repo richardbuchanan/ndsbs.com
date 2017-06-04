@@ -140,7 +140,6 @@
         </div>
         <div class="col-xs-12 col-sm-12 col-md-4">
           <?php print render($page['footer_right']); ?>
-          <?php print $site_seals; ?>
         </div>
       </div>
     </div>
