@@ -1,0 +1,290 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function ndsbs_statistics_menu() {
+  $items['admin/statistics'] = array(
+    'title' => 'Performance statistics',
+    'description' => 'View and generate performance statistics.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('ndsbs_statistics_admin_content'),
+    'access arguments' => array('access statistics overview'),
+    'weight' => -100,
+    'file' => 'ndsbs_statistics.admin.inc',
+    'type' => MENU_NORMAL_ITEM,
+  );
+  $items['admin/statistics/basic'] = array(
+    'title' => 'Basic',
+    'weight' => 0,
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+  );
+  $items['admin/statistics/advanced'] = array(
+    'title' => 'Advanced',
+    'description' => 'View and generate advanced performance statistics.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('ndsbs_statistics_advanced_content'),
+    'access arguments' => array('access advanced statistics'),
+    'weight' => 1,
+    'file' => 'ndsbs_statistics.admin.inc',
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function ndsbs_statistics_permission() {
+  $perms = array(
+    'bypass statistics access' => array(
+      'title' => t('Bypass statistics access control'),
+      'description' => t('View all statistics regardless of permission restrictions.'),
+      'restrict access' => TRUE,
+    ),
+    'access statistics overview' => array(
+      'title' => t('Access the statistics overview page'),
+      'description' => t('Get an overview of <a href="@url">all statistics</a>.', array('@url' => url('admin/statistics'))),
+    ),
+    'access advanced statistics' => array(
+      'title' => t('Access the advanced statistics page'),
+      'description' => t('Get an advanced view of <a href="@url">all statistics</a>.', array('@url' => url('admin/statistics/advanced'))),
+    ),
+  );
+
+  return $perms;
+}
+
+/**
+ * Implements hook_element_info_alter().
+ */
+function ndsbs_statistics_element_info_alter(&$type) {
+  foreach ($elements as $type => $value) {
+    $elements[$type]['#pre_render'][] = 'ndsbs_statistics_element_error_check';
+  }
+}
+
+function ndsbs_statistics_element_error_check($element) {
+  if (isset($element['#parents']) && form_get_error($element)) {
+    $element['#suffix'] = t('error!');
+  }
+  return $element;
+}
+
+function ndsbs_statistics_get_therapists() {
+  global $user;
+  $roles = array_keys($user->roles);
+  $full_access = in_array(3, $roles) || in_array(7, $roles) || in_array(8, $roles);
+  $own_access = in_array(4, $roles);
+
+  if ($full_access) {
+    $role = user_role_load_by_name('therapist');
+    $query = 'SELECT ur.uid FROM {users_roles} AS ur WHERE ur.rid = :rid';
+    $result = db_query($query, array(':rid' => $role->rid));
+    $uids = $result->fetchCol();
+    $users = array('[all]' => t('All'));
+
+    $therapists = user_load_multiple($uids);
+
+    foreach ($therapists as $therapist) {
+      $name = array(
+        $therapist->field_first_name['und'][0]['value'],
+        $therapist->field_last_name['und'][0]['value'],
+      );
+      $users[$therapist->uid] = implode(' ', $name);
+    }
+  }
+  elseif ($own_access) {
+    $therapist = user_load($user->uid);
+    $name = array(
+      $therapist->field_first_name['und'][0]['value'],
+      $therapist->field_last_name['und'][0]['value'],
+    );
+    $users[$therapist->uid] = implode(' ', $name);
+  }
+
+  return $users;
+}
+
+function ndsbs_statistics_get_therapist_totals($transactions) {
+  $therapists = ndsbs_statistics_get_therapists();
+  $totals = array(
+    0 => array(
+      'therapist' => t('Unassigned'),
+      'cost' => 0,
+      'rush' => 0,
+      'refund' => 0,
+      'total' => 0,
+      'assessments' => array(),
+    ),
+  );
+
+  foreach ($therapists as $uid => $therapist) {
+    if ($uid != '[all]') {
+      $totals[$uid] = [
+        'therapist' => $therapist,
+        'cost' => 0,
+        'rush' => 0,
+        'refund' => 0,
+        'total' => 0,
+        'assessments' => array(),
+      ];
+    }
+  }
+
+  foreach ($transactions as $transaction) {
+    $refunded = transaction_refunded($transaction);
+    $transaction_amounts = transaction_get_amounts($transaction, $refunded);
+    $cost = $transaction_amounts['cost'];
+    $rush = $transaction_amounts['rush_cost'];
+    $refund = $transaction_amounts['refund'];
+    $total = $transaction_amounts['total'];
+    $therapist_uid = $transaction->therapist;
+
+    if ($therapist_uid) {
+      $totals[$therapist_uid]['cost'] = $totals[$therapist_uid]['cost'] + $cost;
+      $totals[$therapist_uid]['rush'] = $totals[$therapist_uid]['rush'] + $rush;
+      $totals[$therapist_uid]['refund'] = $totals[$therapist_uid]['refund'] + $refund;
+      $totals[$therapist_uid]['total'] = $totals[$therapist_uid]['total'] + $total;
+
+      if ($cost > 0) {
+        $totals[$therapist_uid]['assessments'][$transaction->order_id] = $transaction->order_id;
+      }
+    }
+    else {
+      $totals[0]['cost'] = $totals[0]['cost'] + $cost;
+      $totals[0]['rush'] = $totals[0]['rush'] + $rush;
+      $totals[0]['refund'] = $totals[0]['refund'] + $refund;
+      $totals[0]['total'] = $totals[0]['total'] + $total;
+
+      if ($cost > 0) {
+        $totals[0]['assessments'][$transaction->order_id] = $transaction->order_id;
+      }
+    }
+  }
+
+  return $totals;
+}
+
+function transactions_load_multiple($oids = array()) {
+  $transactions = array();
+
+  foreach ($oids as $oid) {
+    $transactions[] = db_query("SELECT * FROM {users_transactions} WHERE order_id = :oid", array(':oid' => $oid))->fetchObject();
+  }
+
+  return $transactions;
+}
+
+function transactions_get_formatted_totals($transaction_totals) {
+  $formatted_transaction_totals = '<span class="pull-left"><b>Assessments</b>:</span>';
+  $formatted_transaction_totals .= '<span class="pull-right">' . transaction_money_format($transaction_totals['assessments']) . '</span><br>';
+  $formatted_transaction_totals .= '<span class="pull-left"><b>Rush services</b>:</span>';
+  $formatted_transaction_totals .= '<span class="pull-right">' . transaction_money_format($transaction_totals['rush']) . '</span><br>';
+  $formatted_transaction_totals .= '<span class="pull-left"><b>Refunds</b>:</span>';
+  $formatted_transaction_totals .= '<span class="pull-right">' . transaction_money_format($transaction_totals['refunds']) . '</span><br>';
+  $formatted_transaction_totals .= '<span class="pull-left"><b>Total</b>:</span>';
+  $formatted_transaction_totals .= '<span class="pull-right">' . transaction_money_format($transaction_totals['total']) . '</span><br>';
+
+  return $formatted_transaction_totals;
+}
+
+function transaction_refunded($transaction) {
+  $tid = 0;
+  $refund_query = new EntityFieldQuery();
+  $entities = $refund_query->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', 'refund_payment')
+    ->execute();
+
+  foreach ($entities['node'] as $node_entity) {
+    $node = node_load($node_entity->nid);
+
+    if ($node->field_request_status['und'][0]['value']) {
+      if ($transaction->uid == $node->uid) {
+        $tid = $node->field_refund_for_service['und'][0]['tid'];
+      }
+    }
+  }
+
+  return $tid;
+}
+
+function transaction_get_details($transaction) {
+  $node = node_load($transaction->nid);
+
+  return array(
+    'transaction_id' => t('<strong>Transaction ID</strong>: ') . $transaction->transaction_id,
+    'service_title' => t('<strong>Service</strong>: ') . $node->title,
+  );
+}
+
+function transaction_get_amounts($transaction, $refunded, $formatted = FALSE) {
+  $refund_amount = 0.00;
+  if ($refunded == 49) {
+    $refund_amount = $transaction->rush_cost;
+  }
+  elseif ($refunded) {
+    $refund_amount = $transaction->cost;
+  }
+
+  $cost = $transaction->cost;
+  $rush = $transaction->rush_cost;
+  $total = $transaction->cost + $transaction->rush_cost;
+  $refund = $refunded ? (-1 * abs($refund_amount)) : 0.00;
+  $total_refunded = $total + $refund;
+
+  $t_args = array(
+    '@cost' => transaction_money_format($cost),
+    '@rush_cost' => transaction_money_format($rush),
+    '@refund' => transaction_money_format($refund),
+    '@total' => transaction_money_format($total_refunded),
+  );
+
+  if ($formatted) {
+    return array(
+      'assessment' => t('<span class="pull-left"><strong>Assessment</strong>:</span><span class="pull-right">@cost</span>', $t_args),
+      'rush' => t('<span class="pull-left"><strong>Rush service</strong>:</span><span class="pull-right">@rush_cost</span>', $t_args),
+      'refund' => t('<span class="pull-left"><strong>Refund</strong>:</span><span class="pull-right">@refund</span>', $t_args),
+      'total' => t('<span class="pull-left"><strong>Total</strong>:</span><span class="pull-right">@total</span>', $t_args),
+    );
+  }
+  else {
+    return array(
+      'cost' => $cost,
+      'rush_cost' => $rush,
+      'refund' => $refund,
+      'total' => $total_refunded,
+    );
+  }
+}
+
+function transaction_money_format($number, $locale = 'en_US.UTF-8') {
+  setlocale(LC_MONETARY, $locale);
+  return money_format('%.2n', $number);
+}
+
+function transaction_get_client_details($uid, $therapist_uid = NULL) {
+  $user = user_load($uid);
+  $therapist_name = array('Unassigned');
+
+  if ($therapist_uid) {
+    $therapist = user_load($therapist_uid);
+    $therapist_name = array(
+      $therapist->field_first_name['und'][0]['value'],
+      $therapist->field_last_name['und'][0]['value']
+    );
+  }
+
+  $name = array(
+    $user->field_first_name['und'][0]['value'],
+    $user->field_last_name['und'][0]['value']
+  );
+
+  return array(
+    'name' => '<strong>' . implode(' ', $name) . '</strong>',
+    'email' => $user->mail,
+    'phone' => $user->field_phone['und'][0]['value'],
+    'therapist' => t('<strong>Therapist</strong>: ') . implode(' ', $therapist_name),
+  );
+}

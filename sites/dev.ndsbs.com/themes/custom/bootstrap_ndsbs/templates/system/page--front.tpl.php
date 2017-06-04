@@ -72,166 +72,83 @@
  * @ingroup themeable
  */
 ?>
-<?php hide($page['content']['system_main']); ?>
-<?php print render($page['header']); ?>
+<div id="front-page-container">
+  <div id="top-wrapper">
+    <div class="container">
+      <div class="row first">
+        <?php print render($page['header']); ?>
+      </div>
 
+      <?php print render($title_prefix); ?>
+      <meta itemscope itemprop="mainEntityOfPage"  itemType="https://schema.org/WebPage" itemid="https://www.ndsbs.com"/>
+      <h1 class="title hidden" id="page-title" itemprop="headline"><?php print $site_name; ?></h1>
+      <?php print render($title_suffix); ?>
+    </div>
+  </div>
 
-<div id="page-container">
-  <div id="main-container" class="container">
-    <div class="row">
-      <a id="content"></a>
-
-      <div<?php print $left_col_attributes; ?>>
-
-        <?php if ($breadcrumb): ?>
-          <div<?php print $breadcrumb_attributes; ?>>
-            <?php print $breadcrumb; ?>
-          </div>
-        <?php endif; ?>
-
-        <?php if ($tabs = render($tabs)): ?>
-          <a href="/node/1670/edit" title="Edit front page content" class="front-page-edit"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a>
-        <?php endif; ?>
-
-        <div id="front-carousel" class="container-fluid">
-          <?php print render($page['field_carousel']); ?>
-        </div>
-
-        <?php print render($title_prefix); ?>
-        <meta itemscope itemprop="mainEntityOfPage"  itemType="https://schema.org/WebPage" itemid="https://www.ndsbs.com"/>
-        <h1 class="title hidden" id="page-title" itemprop="headline"><?php print $site_name; ?></h1>
-        <?php print render($title_suffix); ?>
-
-        <?php if ($messages): ?>
-          <div class="container">
-            <?php print $messages; ?>
-          </div>
-        <?php endif; ?>
-
-        <div id="professional-reviews">
-          <?php print views_embed_view('professional_reviews', $display_id = 'block'); ?>
-        </div>
-
-        <div id="front-welcome" class="container">
-
-          <div id="faq-video-row" class="row is-table-row">
-            <div id="faq-and-services" class="col-xs-12 is-table-col">
-              <div id="faq-videos" class="row">
-                <?php print render($faq_videos); ?>
-              </div>
-            </div>
-          </div>
-
-          <div id="welcome-message-row" class="row is-table-row">
-            <div id="front-welcome-wrapper" class="col-xs-12 col-sm-12 col-md-9 is-table-col">
-              <div id="front-welcome-message" class="row">
-                <div id="welcome-image" class="col-xs-4 col-sm-3 col-md-3">
-                  <a href="/staff"><?php print render($page['field_welcome_image']); ?></a>
-                  <h4><a href="/staff">Brian T. Davis, CEO, LISW-S, SAP</a></h4>
-                </div>
-
-                <div id="welcome-message" class="col-xs-12 col-sm-9 col-md-9">
-                  <h2>Welcome to New Directions</h2>
-                  <?php print render($page['field_welcome_message']); ?>
-                </div>
-              </div>
-            </div>
-
-            <div id="states-map" class="col-xs-12 col-sm-12 col-md-3 is-table-col">
-              <h2>Check My State</h2>
-              <?php $theme = drupal_get_path('theme', 'bootstrap_ndsbs'); ?>
-              <a href="/state-map" style="display: inline-block; width: 100%; text-align: center;">
-                <img src="<?php print $theme ?>/css/images/state-map.jpg" style="width: 100%;" />
-              </a>
-            </div>
-          </div>
-
-          <div id="faq-row" class="row is-table-row">
-            <div id="faq-and-services" class="col-xs-12 col-sm-12 col-md-9 is-table-col">
-
-              <div id="our-team-services" class="row">
-                <div id="our-team" class="col-xs-12 col-sm-6 col-md-6">
-                  <h2><a href="/staff">Our Team</a></h2>
-                  <a href="/staff"><?php print render($page['field_our_team_image']); ?></a>
-                  <?php print render($page['field_our_team_message']); ?>
-                </div>
-                <div id="our-services" class="col-xs-12 col-sm-6 col-md-6">
-                  <h2><a href="/our-services">Our Services</a></h2>
-                  <a href="/our-services"><?php print render($page['field_our_services_image']); ?></a>
-                  <?php print render($page['field_our_services_message']); ?>
-                </div>
-              </div>
-
-            </div>
-
-            <div id="front-testimonials" class="col-xs-12 col-sm-12 col-md-3 is-table-col">
-
-              <h2>Reviews</h2>
-              <?php print views_embed_view('testimonials', $display_id = 'block_1'); ?>
-
-              <div id="bbb">
-                <a href="https://www.bbb.org/centralohio/business-reviews/marriage-family-child-individual-counselors/directions-counseling-group-in-worthington-oh-70078980/#bbbonlineclick">
-                  <?php print render($page['field_better_business_bureau']); ?>
-                </a>
-              </div>
-
-              <div id="payment-cards">
-                <?php print render($page['field_accepted_payments']); ?>
-              </div>
-
-            </div>
-          </div>
-
-          <div id="recent-blogs-row" class="row">
-            <div id="front-recent-blogs" class="col-xs-12">
-              <?php print render($page['content']); ?>
-            </div>
-          </div>
-
-        </div>
-
-        <div id="sub-footer">
-          <div class="container">
-            <div class="col-md-12">
-              <div class="row">
-                <div id="choose-us" class="col-xs-12 col-sm-4 col-md-4">
-                  <h2>Why Clients Choose Us?</h2>
-                  <?php print render($page['field_choose_us']); ?>
-                </div>
-                <div id="front-main-menu" class="col-xs-12 col-sm-4 col-md-4">
-                  <h2>Assessments</h2>
-                  <?php print render($page['front_main_menu']); ?>
-                </div>
-                <div id="contact-us" class="col-xs-12 col-sm-4 col-md-4">
-                  <h2>Contact Us</h2>
-                  <ul id="front-contact-menu">
-                    <li class="mail"><a href="mailto:info@ndsbs.com">info@ndsbs.com</a>, <a href="mailto:support@ndsbs.com">support@ndsbs.com</a></li>
-                    <li class="phone">1-800-671-8589</li>
-                    <li class="fax">614-888-3239</li>
-                    <li class="facebook"><a href="https://www.facebook.com/onlinealcoholdrugassessment" target="_blank">Facebook</a></li>
-                    <li class="twitter"><a href="https://twitter.com/DUIevaluation" target="_blank">Twitter</a></li>
-                    <li class="google"><a href="https://plus.google.com/100444795766134346734" rel="publisher" target="_blank">Google+</a></li>
-                    <li class="contact"><a href="https://www.ndsbs.com/contact">Map</a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+  <div id="professional-reviews">
+    <div class="container">
+      <div class="row">
+        <?php print views_embed_view('professional_reviews', $display_id = 'block'); ?>
       </div>
     </div>
   </div>
 
-  <footer id="site-footer">
+  <div id="faq-videos">
     <div class="container">
       <div class="row">
-        <div id="footer-left" class="col-xs-12 col-sm-12 col-md-8">
-          <?php print render($page['footer_left']); ?>
-        </div>
-        <div id="footer-right" class="col-xs-12 col-sm-12 col-md-4">
-          <?php print render($page['footer_right']); ?>
-        </div>
+        <?php print render($faq_videos); ?>
       </div>
     </div>
-  </footer>
+  </div>
+
+  <div id="main-container">
+    <a id="content"></a>
+
+    <?php if ($messages): ?>
+      <div class="container">
+        <?php print $messages; ?>
+      </div>
+    <?php endif; ?>
+  </div>
 </div>
+
+<div id="sub-footer">
+  <div class="container">
+    <div class="row">
+      <div id="choose-us" class="col-xs-12 col-sm-4 col-md-4">
+        <h2>Why Clients Choose Us?</h2>
+        <?php print render($page['field_choose_us']); ?>
+      </div>
+      <div id="front-main-menu" class="col-xs-12 col-sm-4 col-md-4">
+        <h2>Assessments</h2>
+        <?php print render($page['front_main_menu']); ?>
+      </div>
+      <div id="contact-us" class="col-xs-12 col-sm-4 col-md-4">
+        <h2>Contact Us</h2>
+        <ul id="front-contact-menu">
+          <li class="mail"><a href="mailto:info@ndsbs.com">info@ndsbs.com</a>, <a href="mailto:support@ndsbs.com">support@ndsbs.com</a></li>
+          <li class="phone">1-800-671-8589</li>
+          <li class="fax">614-888-3239</li>
+          <li class="facebook"><a href="https://www.facebook.com/onlinealcoholdrugassessment" target="_blank">Facebook</a></li>
+          <li class="twitter"><a href="https://twitter.com/DUIevaluation" target="_blank">Twitter</a></li>
+          <li class="google"><a href="https://plus.google.com/100444795766134346734" rel="publisher" target="_blank">Google+</a></li>
+          <li class="contact"><a href="https://www.ndsbs.com/contact">Map</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer id="site-footer">
+  <div class="container">
+    <div class="row">
+      <div id="footer-left" class="col-xs-12 col-sm-12 col-md-8">
+        <?php print render($page['footer_left']); ?>
+      </div>
+      <div id="footer-right" class="col-xs-12 col-sm-12 col-md-4">
+        <?php print render($page['footer_right']); ?>
+      </div>
+    </div>
+  </div>
+</footer>

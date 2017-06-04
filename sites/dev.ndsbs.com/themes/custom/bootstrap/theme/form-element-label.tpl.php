@@ -13,14 +13,14 @@ $required = !empty($element['#required']) ? theme('form_required_marker', array(
 
 $title = filter_xss_admin($element['#title']);
 
-$attributes = array();
+$attributes = array('class' => array('control-label'));
 // Style the label as class option to display inline with the element.
 if ($element['#title_display'] == 'after') {
-  $attributes['class'] = 'option';
+  $attributes['class'][] = 'option';
 }
 // Show label only to screen readers to avoid disruption in visual flows.
 elseif ($element['#title_display'] == 'invisible') {
-  $attributes['class'] = 'sr-only';
+  $attributes['class'][] = 'sr-only';
 }
 
 if (!empty($element['#id'])) {

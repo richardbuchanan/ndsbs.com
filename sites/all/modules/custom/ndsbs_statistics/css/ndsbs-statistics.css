@@ -1,0 +1,26 @@
+.exposed-filters > .form-wrapper > .form-group,
+.exposed-filters > .form-wrapper > .container-inline-date > .form-item {
+  margin: 0 0 15px !important;
+}
+.exposed-filters > #edit-left,
+.exposed-filters > #edit-right {
+  float: left;
+  margin-right: 15px;
+}
+.exposed-filters > .form-actions,
+.exposed-filters > .form-actions > button[type="submit"],
+.exposed-filters > .form-actions > input[type="submit"] {
+  margin: 0;
+}
+.exposed-filters > .form-actions {
+  float: left;
+  width: auto;
+}
+.form-type-date-popup .form-item > label,
+.form-type-date-popup .form-item > .help-block {
+  display: none;
+}
+#edit-statistics table,
+#edit-statistics table > caption > h3 {
+  margin-top: 0;
+}

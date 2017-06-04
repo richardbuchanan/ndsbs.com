@@ -1,0 +1,5 @@
+name = 'NDSBS Statistics'
+description = 'View various statistics for ndsbs.com'
+core = 7.x
+
+stylesheets[all][] = 'css/ndsbs-statistics.css'
