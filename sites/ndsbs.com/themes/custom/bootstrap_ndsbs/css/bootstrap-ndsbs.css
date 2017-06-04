@@ -34,6 +34,9 @@ body {
     margin: 0 !important;
   }
 }
+body > .table {
+  margin: 0;
+}
 blockquote .small,
 blockquote footer,
 blockquote small {
@@ -49,13 +52,12 @@ blockquote small:before {
   min-height: 100%;
 }
 #main-container {
-  padding-bottom: 90px;
+  padding-bottom: 185px;
 }
 #site-footer {
   position: absolute;
   bottom: 0;
   width: 100%;
-  height: 75px;
 }
 a {
   color: #966A48;
@@ -203,7 +205,7 @@ body.front .header-nav {
   border: none;
 }
 body.front #main-container {
-  padding: 0 0 75px 0;
+  padding: 0 0 160px 0;
   max-width: 100%;
   width: 100%;
 }
@@ -685,10 +687,21 @@ body.front .faq-videos-title {
 #site-footer {
   margin-top: 25px;
   background: #e3e4e5;
+  height: 160px;
 }
 #site-footer #block-bdg-ndsbs-ndsbs-copyright {
-  padding: 25px 0;
+  padding: 25px 0 10px;
   text-align: right;
+}
+#site-footer #siteseal {
+  display: block;
+  padding: 10px 0;
+  text-align: center;
+}
+@media (min-width: 992px) {
+  #site-footer #siteseal {
+    text-align: right;
+  }
 }
 #site-footer #block-bdg-ndsbs-ndsbs-copyright small {
   font-size: 13px;

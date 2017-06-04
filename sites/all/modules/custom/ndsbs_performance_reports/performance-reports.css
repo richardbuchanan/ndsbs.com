@@ -1,6 +1,7 @@
 #performance-report-filters > .form-item,
 #performance-report-filters > #edit-submit,
-#performance-report-filters > #edit-reset {
+#performance-report-filters > #edit-reset,
+#performance-report-filters > .form-wrapper > .panel > .panel-body > .form-group {
   display: inline-block;
   margin-bottom: 15px;
 }
