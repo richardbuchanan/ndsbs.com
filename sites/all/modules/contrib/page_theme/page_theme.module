@@ -186,7 +186,7 @@ function page_theme_get_themes_options() {
       $options[$theme['theme']] = page_theme_get_theme_name($theme['theme'], TRUE);
     }
 
-    asort($options, SORT_NATURAL | SORT_FLAG_CASE);
+    natcasesort($options);
   }
 
   return $options;
