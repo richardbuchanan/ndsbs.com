@@ -278,6 +278,9 @@ function bdg_ndsbs_staff_profile_node_form_submit() {
  * @ingroup forms
  */
 function bdg_ndsbs_developer_modules() {
+  global $conf;
+  $developer_modules = $conf['admin_menu_devel_modules'];
+
   $form = array();
   $form['bdg_ndsbs_developer_modules_heading'] = array(
     '#markup' => '<h1>Developer modules</h1>',
@@ -287,8 +290,6 @@ function bdg_ndsbs_developer_modules() {
   );
 
   if (module_exists('views_ui')) {
-    global $conf;
-    $developer_modules = $conf['admin_menu_devel_modules'];
     $items = array();
 
     foreach ($developer_modules as $key => $module) {
@@ -329,7 +330,7 @@ function bdg_ndsbs_developer_modules_submit($form, &$form_state) {
   global $conf;
   $developer_modules = $conf['admin_menu_devel_modules'];
 
-  if (module_exists('devel')) {
+  if (module_exists('views_ui')) {
     module_disable($developer_modules);
     drupal_set_message('The developer modules have been disabled.');
   }
