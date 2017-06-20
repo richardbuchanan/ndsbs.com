@@ -31,6 +31,7 @@
 # Ignore configuration files that may contain sensitive information.
 /.idea
 sites/default/settings*.php
+sites/localhost.ndsbs/settings*.php
 sites/dev.ndsbs.com/settings*.php
 sites/ndsbs.com/settings*.php
 sites/ohioduieval.com/settings*.php
