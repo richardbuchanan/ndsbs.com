@@ -1,0 +1,18 @@
+name = NDSBS
+description = UIkit sub-theme for ndsbs.com
+core = 7.x
+base theme = uikit
+
+stylesheets[all][] = css/ndsbs.base.css
+stylesheets[all][] = css/ndsbs.layout.css
+stylesheets[all][] = css/ndsbs.component.css
+stylesheets[all][] = css/ndsbs.theme.css
+scripts[] = js/ndsbs.js
+
+regions[header] = 'Page heading'
+regions[highlighted] = 'Highlighted'
+regions[help] = 'Help'
+regions[content] = 'Content'
+regions[sidebar_first] = 'Sidebar first'
+regions[sidebar_second] = 'Sidebar second'
+regions[footer] = 'Footer'

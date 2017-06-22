@@ -1,0 +1,58 @@
+/**
+ * @file
+ * Purely visual styling (“look-and-feel”) for a component.
+ */
+
+/**
+ * Page header.
+ */
+#page-header {
+  background: transparent url(images/city-sunny-people-street.jpg) no-repeat center 25%;
+  -webkit-background-size: cover;
+  background-size: cover;
+  min-height: 420px;
+}
+
+/**
+ * Navbar.
+ */
+.uk-logo {
+  height: auto;
+  padding: 10px;
+}
+.uk-navbar-right {
+  margin-left: 0;
+}
+.uk-navbar-left,
+.uk-navbar-right {
+  background: rgba(0, 0, 0, 0.5);
+}
+.uk-navbar-nav>li>a,
+.uk-navbar-dropdown-nav>li>a {
+  color: #e5e5e5;
+  text-transform: uppercase;
+}
+.uk-navbar-nav>li:hover>a,
+.uk-navbar-nav>li>a.uk-open,
+.uk-navbar-nav>li>a:focus,
+.uk-navbar-dropdown-nav>li>a:focus,
+.uk-navbar-dropdown-nav>li>a:hover {
+  color: #fff;
+}
+.uk-navbar-dropdown {
+  width: auto;
+  background: rgba(0, 0, 0, 0.6);
+  color: #e5e5e5;
+  box-shadow: none;
+  top: 115px !important;
+  left: 40px !important;
+  right: 55px !important;
+}
+.uk-navbar-dropdown-nav>.uk-grid-margin {
+  margin-top: 10px;
+}
+@media (min-width: 1200px) {
+  .uk-navbar-dropdown-nav>.uk-grid-margin {
+    margin-top: 15px;
+  }
+}
