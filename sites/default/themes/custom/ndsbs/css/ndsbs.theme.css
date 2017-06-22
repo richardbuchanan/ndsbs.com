@@ -16,6 +16,10 @@
 .uk-container {
   max-width: 1220px;
 }
+.uk-navbar-container {
+  background: rgba(0, 0, 0, 0.5);
+  max-width: 1240px;
+}
 
 /**
  * Navbar.
@@ -29,9 +33,9 @@
 }
 .uk-navbar-left,
 .uk-navbar-right {
-  background: rgba(0, 0, 0, 0.5);
 }
 .uk-navbar-nav>li>a,
+.uk-navbar-nav>li.uk-active>a,
 .uk-navbar-dropdown-nav>li>a {
   color: #e5e5e5;
   text-transform: uppercase;
@@ -49,8 +53,8 @@
   color: #e5e5e5;
   box-shadow: none;
   top: 115px !important;
-  left: 40px !important;
-  right: 55px !important;
+  left: 0 !important;
+  right: 0 !important;
 }
 .uk-navbar-dropdown-nav>.uk-grid-margin {
   margin-top: 10px;
