@@ -459,13 +459,13 @@ function ndsbs_statistics_admin_statistics() {
       'date_beginning' => date('Y-m-d H:i:s', $first_of_this_month),
       'date_ending' => date('Y-m-d H:i:s'),
     );
-  }
 
-  if (ndsbs_statistics_user_can_view_all_stats($user)) {
-    $session['therapist'] = '[all]';
-  }
-  elseif (ndsbs_statistics_user_can_view_own_stats($user)) {
-    $session['therapist'] = $user->uid;
+    if (ndsbs_statistics_user_can_view_all_stats($user)) {
+      $session['therapist'] = '[all]';
+    }
+    elseif (ndsbs_statistics_user_can_view_own_stats($user)) {
+      $session['therapist'] = $user->uid;
+    }
   }
 
   // Build the table headers.
