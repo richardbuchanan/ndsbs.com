@@ -448,16 +448,24 @@ function ndsbs_statistics_advanced_content($form, $form_state) {
  * @ingroup forms
  */
 function ndsbs_statistics_admin_statistics() {
+  global $user;
   $session = $_SESSION['ndsbs_statistics_overview_filter'];
   if (!$session) {
     $date = new DateTime();
     $first_of_this_month  = mktime(0, 0, 0, $date->format('m'), 1, $date->format('Y'));
+
     $session = array(
-      'therapist' => '[all]',
       'date' => 'range',
       'date_beginning' => date('Y-m-d H:i:s', $first_of_this_month),
       'date_ending' => date('Y-m-d H:i:s'),
     );
+  }
+
+  if (ndsbs_statistics_user_can_view_all_stats($user)) {
+    $session['therapist'] = '[all]';
+  }
+  elseif (ndsbs_statistics_user_can_view_own_stats($user)) {
+    $session['therapist'] = $user->uid;
   }
 
   // Build the table headers.

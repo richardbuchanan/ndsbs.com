@@ -73,11 +73,20 @@ function ndsbs_statistics_element_error_check($element) {
   return $element;
 }
 
+function ndsbs_statistics_user_can_view_all_stats($user) {
+  $roles = array_keys($user->roles);
+  return in_array(3, $roles) || in_array(7, $roles) || in_array(8, $roles);
+}
+
+function ndsbs_statistics_user_can_view_own_stats($user) {
+  $roles = array_keys($user->roles);
+  return in_array(4, $roles);
+}
+
 function ndsbs_statistics_get_therapists() {
   global $user;
-  $roles = array_keys($user->roles);
-  $full_access = in_array(3, $roles) || in_array(7, $roles) || in_array(8, $roles);
-  $own_access = in_array(4, $roles);
+  $full_access = ndsbs_statistics_user_can_view_all_stats($user);
+  $own_access = ndsbs_statistics_user_can_view_own_stats($user);
 
   if ($full_access) {
     $role = user_role_load_by_name('therapist');
