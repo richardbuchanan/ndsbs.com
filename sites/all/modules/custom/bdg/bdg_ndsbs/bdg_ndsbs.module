@@ -124,21 +124,6 @@ function bdg_ndsbs_menu() {
 }
 
 /**
- * Implements hook_menu_alter().
- */
-function bdg_ndsbs_menu_alter(&$items) {
-  $items['admin/config/development']['access arguments'] = array('access development pages');
-  $items['admin/index']['access arguments'] = array('access development pages');
-}
-
-/**
- * Callback for redirection to admin dashboard.
- */
-function _bdg_ndsbs_redirect_all_assessment() {
-  drupal_goto('admin/dashboard');
-}
-
-/**
  * Implements hook_exit().
  *
  * @see drupal_serve_page_from_cache()
