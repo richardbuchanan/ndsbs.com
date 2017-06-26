@@ -27,7 +27,7 @@ function bootstrap_ndsbs_admin_preprocess_page(&$variables) {
     ),
     'performance' => array(
       'title' => t('Performance statistics'),
-      'href' => 'admin/dashboard/performance',
+      'href' => 'admin/statistics',
     ),
     'logout' => array(
       'title' => t('Log out'),

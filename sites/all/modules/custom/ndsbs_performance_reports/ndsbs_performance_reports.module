@@ -9,49 +9,6 @@
  */
 
 /**
- * Implements hook_help().
- */
-function ndsbs_performance_reports_help($path, $arg) {
-  switch ($path) {
-    case 'admin/dashboard/performance':
-      return '<p>' . t('This page allows you to view and generate performance statistics.') . '</p>';
-  }
-}
-
-/**
- * Implements hook_menu().
- */
-function ndsbs_performance_reports_menu() {
-  $items = array();
-
-  $items['admin/dashboard/performance'] = array(
-    'title' => 'Performance Statistics',
-    'description' => 'View and generate performance statistics.',
-    'page callback' => 'ndsbs_performance_reports_dashboard',
-    'access arguments' => array('view performance stats'),
-    'type' => MENU_NORMAL_ITEM,
-  );
-  $items['admin/dashboard/performance/monthly'] = array(
-    'title' => 'Monthly',
-    'description' => 'View and generate monthly performance statistics.',
-    'page callback' => 'ndsbs_performance_reports_dashboard',
-    'access arguments' => array('view performance stats'),
-    'weight' => 0,
-    'type' => MENU_DEFAULT_LOCAL_TASK,
-  );
-  $items['admin/dashboard/performance/advanced'] = array(
-    'title' => 'Advanced',
-    'description' => 'View and generate advanced performance statistics.',
-    'page callback' => 'ndsbs_performance_reports_dashboard_advanced',
-    'access arguments' => array('view performance stats'),
-    'weight' => 1,
-    'type' => MENU_LOCAL_TASK,
-  );
-
-  return $items;
-}
-
-/**
  * Implements hook_permission().
  */
 function ndsbs_performance_reports_permission() {

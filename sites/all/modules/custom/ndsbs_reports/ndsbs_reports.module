@@ -152,12 +152,6 @@ function ndsbs_reports_menu() {
     'page callback' => 'generate_other_report',
     'access arguments' => array('access content'),
   );
-  $items['request/therapist-report/individual'] = array(
-    'title' => 'My Therapist Report',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('ndsbs_reports_therapist_report_individual'),
-    'access arguments' => array('view own therapist report'),
-  );
 
   return $items;
 }

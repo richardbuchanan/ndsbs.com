@@ -872,30 +872,6 @@ function get_assigned_therapist($uid) {
 }
 
 /**
- *  Implementation of hook_menu_alter()
- *  Function ndsbs_user_confirm_menu_alter() defined
- *  Parameter no
- */
-/*function ndsbs_transactions_menu_alter(&$items) {
-  $items['admin/dashboard'] = array(
-    'title' => 'Dashboard',
-    'description' => 'Dashboard',
-    //'page callback' => 'admin_dashboard_page',
-    'access callback' => 'request_permission',
-    'weight' => -12,
-  );
-}*/
-
-/**
- * Function admin_dashboard_page() Implemented
- * to get the admin dashboard
- * @return type
- */
-/*function admin_dashboard_page() {
-  return theme('dashboard');
-}*/
-
-/**
  * Function _assign_therapist() Defined
  * to get the rendered drupal form
  *
