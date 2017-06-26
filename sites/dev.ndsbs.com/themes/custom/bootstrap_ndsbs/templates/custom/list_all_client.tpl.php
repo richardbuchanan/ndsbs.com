@@ -109,7 +109,7 @@ drupal_add_js('misc/tableheader.js');
             }
           ?>
         </td>
-        <td style="white-space:nowrap;">
+        <td>
           <?php $more_than_three_hours = get_user_created_compared($user_info->created, time(), 10800); ?>
           <?php $contacted = get_user_contacted_status($user_info->uid); ?>
 
