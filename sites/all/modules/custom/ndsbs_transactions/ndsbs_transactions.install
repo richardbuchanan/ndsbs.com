@@ -17,3 +17,17 @@ function ndsbs_transactions_update_7100() {
   );
   db_add_field('users_transactions', 'service_completed', $spec);
 }
+
+/**
+ * Add contacted field to {users} table.
+ */
+function ndsbs_transactions_update_7200() {
+  $spec = array(
+    'type' => 'int',
+    'not null' => TRUE,
+    'default' => 0,
+    'size' => 'tiny',
+    'description' => 'User contacted status. (1 = contacted, 0 = not contacted)',
+  );
+  db_add_field('users', 'contacted', $spec);
+}

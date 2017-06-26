@@ -94,6 +94,13 @@ function ndsbs_transactions_menu() {
     'access arguments' => array('access content'),
   );
 
+  $items['call-user/%'] = array(
+    'title' => 'Call user',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('call_user_form', 1),
+    'access arguments' => array('access content'),
+  );
+
   $items['user/complete/resume/questionnaire'] = array(
     'title' => 'Complete Questionnaire',
     'description' => 'Complete Questionnaire',
@@ -1547,4 +1554,88 @@ function get_transaction_data_by_transid($trans_id) {
   $execute = $result->execute();
   $date = $execute->fetchAll();
   return $date;
+}
+
+function get_user_transaction_status($uid) {
+  $status = 0;
+
+  if ($uid) {
+    $query = db_select('users_transactions', 'ut')
+      ->fields('ut', array(
+        'payment_status',
+        'order_date',
+        'action_date',
+      ))
+      ->condition('ut.uid', $uid, '=');
+    $execute = $query->execute();
+    $result = $execute->fetchAll();
+    $status = !empty($result);
+  }
+
+  return $status;
+}
+
+function get_user_transaction_date($uid) {
+  $date = '';
+
+  if ($uid) {
+    $query = db_select('users_transactions', 'ut')
+      ->fields('ut', array(
+        'order_date',
+      ))
+      ->condition('ut.uid', $uid, '=');
+    $execute = $query->execute();
+    $result = $execute->fetchAll();
+    $date = format_date($result[0]->order_date, 'blog_date');
+  }
+
+  return $date;
+}
+
+function get_user_contacted_status($uid) {
+  $contacted = 0;
+
+  if ($uid) {
+    $query = db_select('users', 'u')
+      ->fields('u', array(
+        'contacted',
+      ))
+      ->condition('u.uid', $uid, '=');
+    $execute = $query->execute();
+    $result = $execute->fetchAll();
+    $contacted = $result[0]->contacted;
+  }
+
+  return $contacted;
+}
+
+function call_user_form($form, &$form_state, $uid) {
+  $user = user_load($uid);
+  $first_name = $user->field_first_name['und'][0]['value'];
+  $last_name = $user->field_last_name['und'][0]['value'];
+  $name = "$first_name $last_name";
+  $phone = $user->field_phone['und'][0]['value'];
+
+  drupal_set_message(t('If @name has not been contacted, you can reach them at: <strong>@phone</strong>', array('@name' => $name, '@phone' => $phone)), 'info');
+  $description = t('Select <em class="placeholder">Yes</em> if @name has been contacted, <em class="placeholder">No</em> to return to the user list page.', array('@name' => $name));
+
+  $form_state['uid'] = $uid;
+  $form_state['client_name'] = $name;
+
+  return confirm_form($form, t('Has @name been called about completing a transaction?', array('@name' => $name)), 'user/clients/list', $description, t('Yes'), t('No'));
+}
+
+function call_user_form_submit(&$form, &$form_state) {
+  $uid = $form_state['uid'];
+  $name = $form_state['client_name'];
+  db_update('users')
+    ->fields(array(
+      'contacted' => 1,
+    ))
+    ->condition('uid', $uid, '=')
+    ->execute();
+  drupal_set_message(t('@name has been marked as contacted.', array('@name' => $name)));
+  cache_clear_all();
+  $form_state['redirect'] = 'user/clients/list';
+  return;
 }

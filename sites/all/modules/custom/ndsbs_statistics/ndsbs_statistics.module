@@ -288,3 +288,7 @@ function transaction_get_client_details($uid, $therapist_uid = NULL) {
     'therapist' => t('<strong>Therapist</strong>: ') . implode(' ', $therapist_name),
   );
 }
+
+function get_user_created_compared($timestamp, $compare_to, $more_than) {
+  return ($compare_to - $timestamp) > $more_than;
+}

@@ -245,6 +245,20 @@ jQuery(document).ready(function($) {
     });
   });
 
+  // Set attribute to ignore dropdown accordion animations for items that only
+  // have one child. Also make sure this item is expanded on page load.
+  $('ul.nav-staff-dropdown').each( function() {
+    var itemCount = $(this).children().length;
+
+    if (itemCount === 1) {
+      $(this).show();
+      $(this).prev().addClass('expanded').attr('data-dropdown-ignored', 'true');
+    }
+    else {
+      $(this).prev().attr('data-dropdown-ignored', 'false');
+    }
+  });
+
   // Show the active menu item in dashboard menus.
   $('ul.nav-staff-dropdown li.active').each(function() {
     $(this).parents('.dropdown-link').addClass('expanded');
@@ -262,19 +276,28 @@ jQuery(document).ready(function($) {
   $('ul.nav-staff-tree li .dropdown-link').click(function (e) {
     e.preventDefault();
 
-    if ($(this).hasClass('expanded')) {
-      $(this).removeClass('expanded');
-      $(this).next().children().show();
-      $(this).next().slideToggle();
-    }
-    else {
-      $('ul.nav-staff-tree li .dropdown-link.expanded').removeClass('expanded');
-      $(this).addClass('expanded');
-      $('ul.nav-staff-tree li ul.nav-staff-dropdown').slideUp();
-      $(".left_menu ul li ul li ul").show();
-      $(this).children().toggleClass('expanded');
-      $(this).next().children().show();
-      $(this).next().slideToggle();
+    if ($(this).attr('data-dropdown-ignored') === 'false') {
+      if ($(this).hasClass('expanded')) {
+        $(this).removeClass('expanded');
+        $(this).next().children().show();
+        $(this).next().slideToggle();
+      }
+      else {
+        // Only hide the items that have more than one child.
+        var expanded = $('ul.nav-staff-tree li .dropdown-link.expanded');
+        expanded.each( function() {
+          if ($(this).attr('data-dropdown-ignored') === 'false') {
+            $(this).removeClass('expanded');
+            $(this).next('.nav-staff-dropdown').slideUp();
+          }
+        });
+
+        $(".left_menu ul li ul li ul").show();
+        $(this).addClass('expanded');
+        $(this).children().toggleClass('expanded');
+        $(this).next().children().show();
+        $(this).next().slideToggle();
+      }
     }
   });
   $('ul.nav-client-tree li .dropdown-link').click(function (e) {

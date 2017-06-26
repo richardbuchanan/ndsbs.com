@@ -65,8 +65,6 @@ function bootstrap_ndsbs_admin_preprocess_dashboard_region(&$variables) {
  * Implements template_preprocess_block().
  */
 function bootstrap_ndsbs_admin_preprocess_block(&$variables) {
-  $delta = $variables['block']->delta;
-  $module = $variables['block']->module;
   $region = $variables['block']->region;
 
   if ($region == 'dashboard_main') {
@@ -78,10 +76,9 @@ function bootstrap_ndsbs_admin_preprocess_block(&$variables) {
       $variables['classes_array'][] = 'col-xs-12';
     }
   }
-  if ($delta == 'switch_user' && $module == 'devel') {
-    $variables['classes_array'][] = 'panel-body';
-    $variables['classes_array'][] = 'collapse';
-    $variables['title_attributes_array']['class'][] = 'panel-title';
+
+  if ($region == 'dashboard_sidebar') {
+    //$variables['classes_array'][] = 'col-xs-12';
   }
 }
 
