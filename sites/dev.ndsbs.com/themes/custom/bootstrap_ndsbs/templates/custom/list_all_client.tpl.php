@@ -26,6 +26,7 @@ drupal_add_js('misc/tableheader.js');
       <th>Contact Details</th>
       <?php if (user_access('administer users')): ?><th>Action</th><?php endif; ?>
       <th>Notes</th>
+      <th>Transaction Status</th>
     </tr>
   </thead>
   <tbody>
@@ -107,6 +108,21 @@ drupal_add_js('misc/tableheader.js');
               print 'No notes found. <a href="/node/add/notes?field_client_name=' . $user_info->uid . '">Add notes</a>?';
             }
           ?>
+        </td>
+        <td style="white-space:nowrap;">
+          <?php $more_than_three_hours = get_user_created_compared($user_info->created, time(), 10800); ?>
+          <?php $contacted = get_user_contacted_status($user_info->uid); ?>
+
+          <?php if (get_user_transaction_status($user_info->uid)): ?>
+            <?php $transaction_date = get_user_transaction_date($user_info->uid); ?>
+            <?php print t('Transaction completed'); ?>
+            <br>
+            <?php print t('<strong>Date</strong>: @date', array('@date' => $transaction_date)); ?>
+          <?php elseif ($more_than_three_hours && !$contacted): ?>
+            <?php print t('User registered more than three hours ago, <a href="/call-user/@uid">call user</a>?', array('@uid' => $user_info->uid)); ?>
+          <?php else: ?>
+            <?php print t('User has been contacted about purchasing a service.'); ?>
+          <?php endif; ?>
         </td>
       </tr>
       <?php $i++; ?>
