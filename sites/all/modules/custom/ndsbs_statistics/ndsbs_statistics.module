@@ -60,8 +60,8 @@ function ndsbs_statistics_permission() {
  * Implements hook_element_info_alter().
  */
 function ndsbs_statistics_element_info_alter(&$type) {
-  foreach ($elements as $type => $value) {
-    $elements[$type]['#pre_render'][] = 'ndsbs_statistics_element_error_check';
+  foreach ($type as $index => $value) {
+    $type[$index]['#pre_render'][] = 'ndsbs_statistics_element_error_check';
   }
 }
 
