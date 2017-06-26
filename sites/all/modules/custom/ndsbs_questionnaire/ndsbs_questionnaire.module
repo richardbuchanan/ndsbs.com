@@ -1300,7 +1300,7 @@ function ndsbs_questionnaire_email_to_therapist($assessment_id) {
   $client = user_load($user->uid);
   $order_data = get_transaction_info_orderid($transid);
   $superadmin = user_load($superadmin_uid);
-  $to = "Brian Davis <$superadmin->mail>, Stephen <Stephen@directionscounseling.com>";
+  $to = "Brian Davis <$superadmin->mail>";
   $node_info = node_load($order_data[0]->nid);
   $node_tid = $node_info->field_primary_service['und'][0]['tid'];
   $language = $edit['original']->language;
