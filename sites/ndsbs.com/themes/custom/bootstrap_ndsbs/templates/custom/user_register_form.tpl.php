@@ -61,6 +61,9 @@
   <?php print drupal_render($form['field_for_courts']); ?>
   <?php print drupal_render($form['field_for_probation']); ?>
 </div>
+<div class="form-group form-item form-type-select form-item-assessment-state">
+  <?php print drupal_render($form['field_assessment_state']); ?>
+</div>
 <div class="form-group form-item form-type-text-long form-item-pre-purchase-questions">
   <?php print drupal_render($form['field_pre_purchase_questions']); ?>
 </div>
