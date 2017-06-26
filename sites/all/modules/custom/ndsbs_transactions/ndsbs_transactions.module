@@ -87,6 +87,13 @@ function ndsbs_transactions_menu() {
     'access arguments' => array('access content'),
   );
 
+  $items['letter-ready/%'] = array(
+    'title' => 'Letter ready',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('letter_ready_form', 1),
+    'access arguments' => array('access content'),
+  );
+
   $items['user/complete/resume/questionnaire'] = array(
     'title' => 'Complete Questionnaire',
     'description' => 'Complete Questionnaire',
@@ -565,6 +572,7 @@ function action_on_transaction_form_submit(&$form, &$form_state) {
       'action_by' => $user->uid,
       'reason' => $form_state['values']['transaction_reason'],
       'action_date' => time(),
+      'service_completed' => 0,
     ))
     ->condition('order_id', $oid, '=')
     ->execute();
@@ -783,7 +791,8 @@ function get_all_assessment_users() {
     'action_date',
     'client_request',
     'requested_on',
-    'therapist'
+    'therapist',
+    'service_completed',
   ))->condition('ut.payment_status', 1, '=');
 
   if (isset($user->roles[4]) && $user->roles[4] == 'therapist') {
@@ -941,6 +950,51 @@ function assign_therapist_form_submit(&$form, &$form_state) {
     ->condition('order_id', $oid, '=')
     ->execute();
   drupal_set_message(t('Counselor assigned successfully.'));
+}
+
+/**
+ * Function letter_ready_form() Implemented
+ * to set the letter ready for particular assessment
+ *
+ * @param type $form
+ * @param type $form_state
+ * @return type
+ */
+function letter_ready_form($form, &$form_state, $oid) {
+  $query = db_select('users_transactions', 'ut')
+    ->fields('ut', array(
+      'uid',
+    ))
+    ->condition('ut.order_id', $oid, '=');
+  $execute = $query->execute();
+  $result = $execute->fetchAll();
+  $uid = $result[0]->uid;
+  $user = user_load($uid);
+  $first_name = $user->field_first_name['und'][0]['value'];
+  $last_name = $user->field_last_name['und'][0]['value'];
+  $name = "$first_name $last_name";
+  $form_state['oid'] = $oid;
+  $form_state['client_name'] = $name;
+
+  return confirm_form($form, t('Are you sure the letter is ready for @name?', array('@name' => $name)), 'all/assessment/users', '', t('Yes'), t('No'));
+}
+
+/**
+ *  Function Implemented to submit the request
+ */
+function letter_ready_form_submit(&$form, &$form_state) {
+  $oid = $form_state['oid'];
+  $name = $form_state['client_name'];
+  db_update('users_transactions')
+    ->fields(array(
+      'service_completed' => 1,
+    ))
+    ->condition('order_id', $oid, '=')
+    ->execute();
+  drupal_set_message(t('Letter successfully marked as ready for @name.', array('@name' => $name)));
+  cache_clear_all();
+  $form_state['redirect'] = 'all/assessment/users';
+  return;
 }
 
 /**

@@ -1,0 +1,19 @@
+<?php
+
+/**
+ * Install and update hooks for ndsbs_transactions module.
+ */
+
+/**
+ * Add service_completed field to {users_transactions} table.
+ */
+function ndsbs_transactions_update_7100() {
+  $spec = array(
+    'type' => 'int',
+    'not null' => TRUE,
+    'default' => 0,
+    'size' => 'tiny',
+    'description' => 'Service completed status. (1 = completed, 0 = not completed)',
+  );
+  db_add_field('users_transactions', 'service_completed', $spec);
+}
