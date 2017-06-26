@@ -67,7 +67,7 @@ function ndsbs_statistics_element_info_alter(&$type) {
 
 function ndsbs_statistics_element_error_check($element) {
   if (isset($element['#parents']) && form_get_error($element)) {
-    $element['#suffix'] = t('error!');
+    //$element['#suffix'] = t(' Error!');
   }
   return $element;
 }
@@ -287,6 +287,41 @@ function transaction_get_client_details($uid, $therapist_uid = NULL) {
     'phone' => $user->field_phone['und'][0]['value'],
     'therapist' => t('<strong>Therapist</strong>: ') . implode(' ', $therapist_name),
   );
+}
+
+function ndsbs_statistics_get_registration_totals($session) {
+  $days = array(
+    'monday' => 0,
+    'tuesday' => 0,
+    'wednesday' => 0,
+    'thursday' => 0,
+    'friday' => 0,
+    'saturday' => 0,
+    'sunday' => 0,
+  );
+
+  if ($session['date'] == 'range') {
+    $start = strtotime($session['date_beginning']);
+    $end = strtotime($session['date_ending']);
+  }
+  else {
+    $date_select = explode('-', $session['date_select']);
+    $start = mktime(0, 0, 0, $date_select[1], 1, $date_select[0]);
+    $end = mktime(23, 59, 59, $date_select[1] + 1, 0, $date_select[0]);
+  }
+
+  $query = db_select('users', 'u')
+    ->fields('u', array('created'))
+    ->condition('u.created', $start, '>=')
+    ->condition('u.created', $end, '<=');
+  $results = $query->execute();
+
+  foreach ($results as $result) {
+    $day = strtolower(date('l', $result->created));
+    $days[$day]++;
+  }
+
+  return $days;
 }
 
 function get_user_created_compared($timestamp, $compare_to, $more_than) {

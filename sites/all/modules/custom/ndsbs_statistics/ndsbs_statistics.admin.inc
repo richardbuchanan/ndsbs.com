@@ -153,8 +153,8 @@ function ndsbs_statistics_filter_form() {
  * @ingroup forms
  */
 function ndsbs_statistics_advanced_filter_form() {
-  $date = new DateTime();
-  $first_of_this_month  = mktime(0, 0, 0, $date->format('m'), 1, $date->format('Y'));
+  // $date = new DateTime();
+  // $first_of_this_month  = mktime(0, 0, 0, $date->format('m'), 1, $date->format('Y'));
   $session = isset($_SESSION['ndsbs_statistics_advanced_filter']) ? $_SESSION['ndsbs_statistics_advanced_filter'] : array();
   $filters = ndsbs_statistics_advanced_filters();
 
@@ -472,6 +472,10 @@ function ndsbs_statistics_admin_statistics() {
     'transactions' => t('Transactions'),
     'assessments' => t('No. of assessnents'),
   );
+  $registration_header = array(
+    'day' => t('Day'),
+    'registrations' => t('No. of registrations'),
+  );
 
   $transactions_query = db_select('users_transactions', 'ut');
   $transactions_query->addTag('ndsbs_statistics_admin_filter');
@@ -578,6 +582,19 @@ function ndsbs_statistics_admin_statistics() {
     $assessment_totals['assessments'],
   );
 
+  // Prepare the list of registrations.
+  $registration_options = array();
+  $registration_totals = ndsbs_statistics_get_registration_totals($session);
+
+  foreach ($registration_totals as $day => $registration_total) {
+    $day = ucfirst($day);
+
+    $registration_options[] = array(
+      ucfirst($day),
+      $registration_total,
+    );
+  }
+
   $form['statistics'] = array(
     '#type' => 'container',
     '#attributes' => array(
@@ -601,6 +618,16 @@ function ndsbs_statistics_admin_statistics() {
     '#caption' => t('<h3>Assessments</h3>'),
     '#empty' => t('No assessments available.'),
     '#attributes' => array('id' => 'ndsbs-statistics-assessments'),
+    '#prefix' => '<div class="col-xs-12 col-md-3">',
+    '#suffix' => '</div>',
+  );
+  $form['statistics']['registrations'] = array(
+    '#theme' => 'table',
+    '#header' => $registration_header,
+    '#rows' => $registration_options,
+    '#caption' => t('<h3>Registrations</h3>'),
+    '#empty' => t('No registration data available.'),
+    '#attributes' => array('id' => 'ndsbs-statistics-registrations'),
     '#prefix' => '<div class="col-xs-12 col-md-3">',
     '#suffix' => '</div>',
   );
@@ -655,15 +682,15 @@ function ndsbs_statistics_advanced_statistics() {
     $transactions_query->condition('ut.therapist', $session['therapist']);
   }
 
-  $oids = $transactions_query
+  /*$oids = $transactions_query
     ->fields('ut',array('order_id'))
     ->condition('cost', '0.00', '!=')
     ->execute()
-    ->fetchCol();
-  $transactions = transactions_load_multiple($oids);
+    ->fetchCol();*/
+  //$transactions = transactions_load_multiple($oids);
 
-  foreach ($transactions as $transaction) {
-  }
+  //foreach ($transactions as $transaction) {
+  //}
 
   $form = array();
 
