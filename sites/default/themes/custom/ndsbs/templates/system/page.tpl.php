@@ -65,6 +65,8 @@
  * - $page['sidebar_second']: Items for the second sidebar.
  * - $page['footer']: Items for the footer region.
  *
+ * Original front page node: 1670
+ *
  * @see template_preprocess()
  * @see template_preprocess_page()
  * @see template_process()
@@ -160,6 +162,7 @@
     <?php if ($page['footer']): ?>
       <div id="footer" class="uk-width-1-1">
         <?php print render($page['footer']); ?>
+        <?php print $site_seals; ?>
       </div>
     <?php endif; ?>
   </div>

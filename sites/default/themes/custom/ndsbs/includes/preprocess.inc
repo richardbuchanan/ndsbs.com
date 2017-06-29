@@ -33,4 +33,14 @@ function ndsbs_preprocess(&$variables) {
 function ndsbs_preprocess_page(&$variables) {
   $variables['navbar_attributes_array']['class'][] = 'uk-navbar-transparent';
   $variables['navbar_attributes_array']['class'][] = 'uk-container';
+
+  $variables['faq_videos'] = array();
+
+  if (function_exists('faq_videos_embed_promoted')) {
+    $variables['faq_videos']['#markup'] = faq_videos_embed_promoted();
+  }
+
+  $godaddy_seal = '<span id="siteseal"><script async type="text/javascript" src="https://seal.godaddy.com/getSeal?sealID=fPzyBVTYzEKessk4HA9jDt9ALuaThCsopCkEyyRc7mBTdwENhjRNDi"></script></span>';
+  $mcafee_seal = '<script type="text/javascript" src="https://cdn.ywxi.net/js/1.js" async></script>';
+  $variables['site_seals'] = $godaddy_seal . $mcafee_seal;
 }
