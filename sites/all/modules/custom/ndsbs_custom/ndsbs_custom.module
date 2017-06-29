@@ -52,13 +52,6 @@ function ndsbs_custom_menu() {
     'access arguments' => array('access content'),
   );
 
-  //$items['staff'] = array(
-  //'title' => 'Staff',
-  //'description' => 'Staff.',
-  //'page callback' => 'drupal_get_form',
-  //'access callback' => TRUE,
-  //);
-
   $items['user/paperwork/list'] = array(
     'title' => 'Client Paperwork',
     'description' => 'Client Paperwork list.',
@@ -1841,13 +1834,11 @@ function ndsbs_custom_node_insert($node) {
  *
  */
 function get_counseling_request_info_transid($tid) {
-  global $user;
   $type = 'counseling_request';
 
   //  Query to get the all node of paper work base on particular user
   $query = db_select('node', 'n')
     ->fields('n', array('nid'))
-    //->condition('n.uid', $user->uid, '=')
     ->condition('n.type', $type, '=')
     ->orderBy('n.created', 'DESC');
   $query->join('field_data_field_assess_trans_id', 'fat', 'fat.entity_id = n.nid');
