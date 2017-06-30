@@ -9,13 +9,6 @@
  * other functions.
  */
 
-include_once 'src/NDSBS.php';
-
-use Drupal\ndsbs\NDSBS;
-
-// Load the UIkit class definition.
-NDSBS::loadUIkitClass();
-
 /**
  * Loads an NDSBS include file.
  *
@@ -74,7 +67,7 @@ function ndsbs_load_include($type, $theme, $name = NULL, $sub_directory = '') {
 /**
  * Load NDSBS's include files for theme processing.
  */
-uikit_load_include('inc', 'ndsbs', 'preprocess', 'includes');
-uikit_load_include('inc', 'ndsbs', 'process', 'includes');
-uikit_load_include('inc', 'ndsbs', 'theme', 'includes');
-uikit_load_include('inc', 'ndsbs', 'alter', 'includes');
+ndsbs_load_include('inc', 'ndsbs', 'preprocess', 'includes');
+ndsbs_load_include('inc', 'ndsbs', 'process', 'includes');
+ndsbs_load_include('inc', 'ndsbs', 'theme', 'includes');
+ndsbs_load_include('inc', 'ndsbs', 'alter', 'includes');

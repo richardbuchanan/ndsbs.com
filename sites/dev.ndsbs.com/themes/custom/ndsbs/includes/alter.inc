@@ -16,18 +16,7 @@
  * @see theme()
  */
 
-use Drupal\ndsbs\NDSBS;
-use Drupal\uikit\UIkit;
-
 function ndsbs_js_alter(&$javascript) {
-  $fb = drupal_get_path('module', 'fb');
-
-  $fb_js = $fb . '/fb.js';
-  $fb_sdk = $fb . '/fb_sdk.js';
-  if (isset($javascript[$fb_js])) {
-    $javascript[$fb_js]['group'] = JS_THEME;
-  }
-  if (isset($javascript[$fb_sdk])) {
-    $javascript[$fb_sdk]['group'] = JS_THEME;
-  }
+  unset($javascript['//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js']);
+  unset($javascript['//cdnjs.cloudflare.com/ajax/libs/jquery-migrate/1.4.1/jquery-migrate.min.js']);
 }

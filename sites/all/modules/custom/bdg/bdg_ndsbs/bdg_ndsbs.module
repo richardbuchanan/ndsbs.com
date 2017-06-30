@@ -18,19 +18,19 @@
  * prohibited and offenders will be prosecuted to the fullest extent of the law.
  */
 
+define('SA_ADMIN_PHONE', '1-800-671-8589');
+define('SA_ADMIN_FAX', '614-888-3239');
+define('SA_ADMIN_EMAIL', 'nfo@ndsbs.com');
+define('SA_ADMIN_ADDRESS', '6797 N High Street Suite 350 Worthington OH 43085');
+
 /**
  * Implements hook_preprocess_HOOK().
  */
 function bdg_ndsbs_preprocess_textfield(&$variables) {
-  global $user;
   $name = isset($variables['element']['#field_name']) ? $variables['element']['#field_name'] : '';
 
   if (($name == 'field_phone' || $name == 'field_second_phone')) {
     $variables['theme_hook_suggestions'][] = 'textfield__phone';
-  }
-  if ($name == 'field_first_name' || $name == 'field_last_name') {
-    //$variables['element']['#default_value'] = '';
-    //$variables['element']['#value'] = '';
   }
 }
 
@@ -537,7 +537,7 @@ function bdg_ndsbs_assigned_therapist($uid) {
  * Gets the steps the client is currently at.
  */
 function bdg_ndsbs_get_steps_page() {
-  global $base_url, $user;
+  global $base_url;
   $data_left_asment = get_purchased_questionnaire_assessment_list_leftpanel();
 
   foreach ($data_left_asment as $key => $item) {
@@ -645,6 +645,11 @@ function bdg_ndsbs_menu_item_submit($form, &$form_state) {
 function bdg_ndsbs_block_info() {
   $blocks = array();
 
+  // Create a frontpage header block.
+  $blocks['ndsbs_frontpage_header'] = array(
+    'info' => t('NDSBS Frontpage Header'),
+  );
+
   // Create a copyright block.
   $blocks['ndsbs_copyright'] = array(
     'info' => t('NDSBS copyright'),
@@ -653,6 +658,11 @@ function bdg_ndsbs_block_info() {
   // Create a main menu block.
   $blocks['ndsbs_main_menu'] = array(
     'info' => t('NDSBS main menu'),
+  );
+
+  // Create a site seals block.
+  $blocks['ndsbs_site_seals'] = array(
+    'info' => t('NDSBS site seals'),
   );
 
   // Create interactive map block.
@@ -672,6 +682,11 @@ function bdg_ndsbs_block_view($delta = '') {
 
   // Define the rendering of custom blocks.
   switch ($delta) {
+    case 'ndsbs_frontpage_header':
+      $block['subject'] = '';
+      $block['content'] = _ndsbs_frontpage_header_content();
+      break;
+
     case 'ndsbs_copyright':
       $block['subject'] = '';
       $block['content'] = _ndsbs_copyright_content();
@@ -680,6 +695,11 @@ function bdg_ndsbs_block_view($delta = '') {
     case 'ndsbs_main_menu':
       $block['subject'] = '';
       $block['content'] = _ndsbs_main_menu_content();
+      break;
+
+    case 'ndsbs_site_seals':
+      $block['subject'] = '';
+      $block['content'] = _ndsbs_site_seals_content();
       break;
 
     case 'ndsbs_interactive_map':
@@ -703,8 +723,8 @@ function bdg_ndsbs_block_view($delta = '') {
         '#attached' => array(
           'css' => array(),
           'js' => array(
-            drupal_get_path('module', 'bdg_ndsbs') . '/us-map/lib/raphael.js',
-            drupal_get_path('module', 'bdg_ndsbs') . '/us-map/jquery.usmap.js',
+            drupal_add_js('//newsignature.github.io/us-map/js/libs/raphael.js', array('type' => 'external')),
+            drupal_add_js('https://newsignature.github.io/us-map/js/libs/jquery.usmap.js', array('type' => 'external')),
             drupal_add_js(array(
               'bdg_ndsbs' => array(
                 'accepted' => $accepted,
@@ -729,11 +749,86 @@ function bdg_ndsbs_block_view($delta = '') {
 }
 
 /**
+ * Outputs the frontpage header block.
+ */
+function _ndsbs_frontpage_header_content() {
+  $nids = array(
+    '328', // Alcohol
+    '259', // DUI Alcohol
+    '271', // Minor in possession
+
+    '1843', // Child custody alcohol
+    '1844', // Child custody drug and alcohol
+    '5675', // Nursing & Professionals Substance
+
+    '2622', // Mental health
+
+    '502', // Anger management
+  );
+
+  $assessments = node_load_multiple($nids);
+
+  $alcohol = bdg_ndsbs_get_assessment_link($assessments['328']);
+  $dui = bdg_ndsbs_get_assessment_link($assessments['259']);
+  $minor = bdg_ndsbs_get_assessment_link($assessments['271']);
+
+  $child_custody_alcohol = bdg_ndsbs_get_assessment_link($assessments['1843']);
+  $child_custody_drug = bdg_ndsbs_get_assessment_link($assessments['1844']);
+  $nursing = bdg_ndsbs_get_assessment_link($assessments['5675']);
+
+  $mental = bdg_ndsbs_get_assessment_link($assessments['2622']);
+
+  $anger = bdg_ndsbs_get_assessment_link($assessments['502']);
+
+  $output = '<ul class="uk-switcher">';
+  $output .= '<li class="uk-active uk-display-inline-block uk-width-1-1">';
+
+  $output .= '<ul class="uk-tab-right uk-tab uk-float-left" uk-tab uk-switcher>';
+  $output .= '<li class="uk-active" aria-expanded="true"><a href="#">Alcohol</a></li>';
+  $output .= '<li aria-expanded="false" class=""><a href="#">Drug and Alcohol</a></li>';
+  $output .= '<li aria-expanded="false" class=""><a href="#">Mental Health</a></li>';
+  $output .= '<li aria-expanded="false" class=""><a href="#">Anger Management</a></li>';
+  $output .= '</ul>';
+
+  $output .= '<ul class="uk-switcher uk-float-right">';
+  $output .= '<li>';
+  $output .= $alcohol . $dui . $minor;
+  $output .= '</li>';
+  $output .= '<li>';
+  $output .= $child_custody_alcohol . $child_custody_drug . $nursing;
+  $output .= '</li>';
+  $output .= "<li>$mental</li>";
+  $output .= "<li>$anger</li>";
+  $output .= '</ul>';
+
+  $output .= '</li>';
+  $output .= '</ul>';
+
+  $output .= '<div id="state-acceptance" class="uk-margin-large-top">';
+  $output .= '<hr style="border-top-width:3px;max-width:200px;">';
+  $output .= '<h2 class="uk-margin-top">Not Sure About Acceptance in Your State?</h2>';
+  $output .= '<a href="/state-map" class="uk-display-inline-block"><span class="uk-margin-small-right" uk-icon="icon: world"></span><span style="vertical-align:middle">Check My State</span></a>';
+  $output .= '</div>';
+  return $output;
+}
+
+function bdg_ndsbs_get_assessment_link($assessment) {
+  $title = $assessment->title;
+  $path = drupal_get_path_alias('node/' . $assessment->nid);
+  $options = array(
+    'attributes' => array('class' => array('uk-display-block')),
+  );
+  return l(t('@title', array('@title' => $title)), $path, $options);
+}
+
+/**
  * Sets the copyright date and wording.
  */
 function _ndsbs_copyright_content() {
   $years = '&copy; 2008-' . date('Y');
-  $output = "<small>$years www.ndsbs.com, All rights reserved</small>";
+  $output = '<div class="uk-flex uk-flex-center uk-flex-right@m">';
+  $output .= "<small class='uk-display-block'>$years NDSBS. All rights reserved</small>";
+  $output .= '</div>';
   return $output;
 }
 
@@ -744,6 +839,14 @@ function _ndsbs_main_menu_content() {
   $tree = menu_tree_all_data(variable_get('menu_footer_menu_links_source', 'menu-footer-menu'), NULL, 2);
   $menu = menu_tree_output($tree);
   return drupal_render($menu);
+}
+
+function _ndsbs_site_seals_content() {
+  $output = '<div class="uk-flex uk-flex-center uk-flex-right@m">';
+  $output .= '<span id="siteseal"><script async type="text/javascript" src="https://seal.godaddy.com/getSeal?sealID=fPzyBVTYzEKessk4HA9jDt9ALuaThCsopCkEyyRc7mBTdwENhjRNDi"></script></span>';
+  $output .= '<script type="text/javascript" src="https://cdn.ywxi.net/js/1.js" async></script>';
+  $output .= '</div>';
+  return $output;
 }
 
 /**

@@ -8,9 +8,6 @@
  * customized.
  */
 
-use Drupal\ndsbs\NDSBS;
-use Drupal\uikit\UIkit;
-
 /**
  * Implements theme_menu_link().
  */
@@ -59,11 +56,21 @@ function ndsbs_menu_link(array $variables) {
       $attributes['class'][] = 'uk-parent';
       $attributes['aria-expanded'] = 'false';
     }
-    elseif ((!empty($element['#original_link']['depth'])) && ($element['#original_link']['depth'] == 1)) {
+    elseif (!empty($element['#original_link']['depth']) && $element['#original_link']['depth'] == 1) {
       // Use our own theme wrapper.
       unset($element['#below']['#theme_wrappers']);
       $sub_menu = '<div class="uk-navbar-dropdown">';
-      $sub_menu .= '<ul class="uk-nav uk-navbar-dropdown-nav uk-child-width-1-4" uk-grid>' . drupal_render($element['#below']) . '</ul>';
+
+      if ($element['#original_link']['menu_name'] == 'main-menu') {
+        $sub_menu .= '<ul class="uk-nav uk-navbar-dropdown-nav uk-child-width-1-3" uk-grid>' . drupal_render($element['#below']) . '</ul>';
+      }
+      elseif ($element['#original_link']['menu_name'] == 'user-menu') {
+        $sub_menu .= '<ul class="uk-nav uk-navbar-dropdown-nav uk-child-width-expand" uk-grid>' . drupal_render($element['#below']) . '</ul>';
+      }
+      else {
+        $sub_menu .= '<ul class="uk-nav uk-navbar-dropdown-nav">' . drupal_render($element['#below']) . '</ul>';
+      }
+
       $sub_menu .= '</div>';
     }
     elseif ((!empty($element['#original_link']['depth'])) && ($element['#original_link']['depth'] == 2)) {
@@ -85,4 +92,25 @@ function ndsbs_menu_link(array $variables) {
     default:
       return '<li' . drupal_attributes($attributes) . '>' . l($title, $href, $options) . $sub_menu . "</li>\n";
   }
+}
+
+/**
+ * Implements theme_menu_tree() for navbar menus.
+ */
+function ndsbs_menu_tree__navbar($variables) {
+  return '<ul class="uk-navbar-nav uk-visible@l">' . $variables['tree'] . '</ul>';
+}
+
+/**
+ * Implements theme_menu_tree() for menu_footer_menu.
+ */
+function ndsbs_menu_tree__menu_footer_menu($variables) {
+  return '<ul id="footer-menu" class="uk-subnav uk-flex uk-flex-center uk-flex-left@m">' . $variables['tree'] . '</ul>';
+}
+
+/**
+ * Implements theme_menu_tree() for the compact user navbar menu.
+ */
+function ndsbs_menu_tree__navbar__user_compact($variables) {
+  return '<ul id="user-compact" class="uk-navbar-nav uk-visible@l">' . $variables['tree'] . '</ul>';
 }

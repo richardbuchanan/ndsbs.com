@@ -7,6 +7,7 @@ stylesheets[all][] = css/ndsbs.base.css
 stylesheets[all][] = css/ndsbs.layout.css
 stylesheets[all][] = css/ndsbs.component.css
 stylesheets[all][] = css/ndsbs.theme.css
+
 scripts[] = js/ndsbs.js
 
 regions[header] = 'Page heading'

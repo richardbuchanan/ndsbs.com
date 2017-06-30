@@ -10,6 +10,3 @@
  *
  * @see preprocess.inc
  */
-
-use Drupal\ndsbs\NDSBS;
-use Drupal\uikit\UIkit;

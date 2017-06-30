@@ -2,3 +2,12 @@
  * @file
  * CSS reset/normalize plus HTML element styling.
  */
+
+small {
+  font-size: 0.875rem;
+}
+@media (max-width: 1199px) {
+  small {
+    font-size: 0.8125rem;
+  }
+}
