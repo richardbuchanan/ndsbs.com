@@ -2,104 +2,18 @@
  * @file
  * Discrete, reusable UI elements.
  */
-.uk-card-title {
-  margin-top: 0;
-}
-.company-info-container {
-  position: absolute;
-  top: 28px;
-  right: 25px;
-  color: #e5e5e5;
-}
-@media (min-width: 1200px) {
-  .company-info-container {
-    top: 8px;
-  }
-}
-.uk-navbar-toggle {
-  color: #e5e5e5;
-}
-.uk-navbar-toggle:focus,
-.uk-navbar-toggle:hover {
-  color: #999;
-}
-#page-navbar {
-  position: relative;
-}
-.uk-offcanvas-bar {
-  background: -moz-linear-gradient(top,  rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.8) 100%);
-  background: -webkit-linear-gradient(top,  rgba(0,0,0,0.8) 0%,rgba(0,0,0,0.8) 100%);
-  background: linear-gradient(to bottom,  rgba(0,0,0,0.8) 0%,rgba(0,0,0,0.8) 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cc000000', endColorstr='#cc000000',GradientType=0 );
-  width: 400px;
-  max-width: 100%;
-}
-.uk-offcanvas-overlay::before {
-  position: static;
-}
-.uk-offcanvas-bar::-webkit-scrollbar {
-  display: none;
-}
 
 /**
  * Blocks.
  */
 #region-footer .block {
   color: #666;
-}
-@media (max-width: 960px) {
-  #region-footer .block {
-    margin-top: 20px;
-  }
+  margin-top: 20px;
 }
 
 /**
  * Development modules.
  */
 #themer-popup {
-  width: 800px;
-}
-@media (max-width: 960px) {
-  #themer-popup {
-    width: 90%;
-  }
-}
-
-/**
- * Menus.
- */
-.uk-navbar-right .uk-navbar-dropdown-nav {
-  text-align: center;
-}
-.uk-navbar-right .uk-navbar-dropdown-nav li {
-  padding-left: 0;
-}
-#user-compact>li:first-child>a {
-  position: absolute;
-  top: 20px;
-  right: 45px;
-}
-#footer-menu {
-  margin-bottom: 0;
-}
-#footer-menu>*>a,
-#footer-menu>*>:first-child {
-  color: #666;
-}
-#footer-menu>*>a:focus,
-#footer-menu>*>a:hover {
-  color: #333;
-}
-@media (max-width: 1199px) {
-  #footer-menu>* {
-    padding-left: 10px;
-  }
-  #footer-menu>*>:first-child {
-    font-size: 0.8125rem;
-  }
-}
-@media (max-width: 959px) {
-  #footer-menu>* {
-    padding-left: 20px;
-  }
+  width: 90%;
 }

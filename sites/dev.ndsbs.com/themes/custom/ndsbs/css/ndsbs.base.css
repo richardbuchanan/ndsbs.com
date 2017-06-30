@@ -2,12 +2,24 @@
  * @file
  * CSS reset/normalize plus HTML element styling.
  */
-
 small {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
 }
-@media (max-width: 1199px) {
+
+/**
+ * Media queries.
+ */
+@media (min-width: 640px) {
+}
+
+@media (min-width: 960px) {
+}
+
+@media (min-width: 1200px) {
   small {
-    font-size: 0.8125rem;
+    font-size: 0.875rem;
   }
+}
+
+@media (min-width: 1600px) {
 }

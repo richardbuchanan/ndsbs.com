@@ -3,6 +3,7 @@ description = UIkit sub-theme for ndsbs.com
 core = 7.x
 base theme = uikit
 
+stylesheets[all][] = css/ndsbs.uikit.components.css
 stylesheets[all][] = css/ndsbs.base.css
 stylesheets[all][] = css/ndsbs.layout.css
 stylesheets[all][] = css/ndsbs.component.css

@@ -1,0 +1,149 @@
+/**
+ * @file
+ * Discrete, reusable overrides of UIkit components.
+ */
+
+/**
+ * Card component.
+ *
+ * @see https://getuikit.com/docs/card
+ */
+.uk-card-title {
+  margin-top: 0;
+}
+
+/**
+ * Offcanvas component.
+ *
+ * @see https://getuikit.com/docs/offcanvas
+ */
+.uk-offcanvas-bar {
+  background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzAwMDAwMCIgc3RvcC1vcGFjaXR5PSIwLjciLz4KICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzAwMDAwMCIgc3RvcC1vcGFjaXR5PSIwLjciLz4KICA8L2xpbmVhckdyYWRpZW50PgogIDxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjZ3JhZC11Y2dnLWdlbmVyYXRlZCkiIC8+Cjwvc3ZnPg==);
+  background: -moz-linear-gradient(
+    top,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.7) 100%); /* FF3.6-15 */
+  background: -webkit-gradient(
+    linear, left top, left bottom,
+    color-stop(0%, rgba(0, 0, 0, 0.7)),
+    color-stop(100%, rgba(0, 0, 0, 0.7))); /* Chrome4-9,Safari4-5 */
+  background: -webkit-linear-gradient(
+    top,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.7) 100%); /* Chrome10-25,Safari5.1-6 */
+  background: -o-linear-gradient(
+    top,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.7) 100%); /* Opera 11.10-11.50 */
+  background: -ms-linear-gradient(
+    top,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.7) 100%); /* IE10 preview */
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.7) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient(
+    startColorstr='#b3000000',
+    endColorstr='#b3000000',GradientType=0); /* IE6-8 */
+  width: 400px;
+  max-width: 100%;
+}
+.uk-offcanvas-bar::-webkit-scrollbar {
+  display: none;
+}
+.uk-offcanvas-overlay::before {
+  position: static;
+}
+
+/**
+ * Navbar component.
+ *
+ * @see https://getuikit.com/docs/navbar
+ */
+.uk-logo {
+  height: auto;
+  padding: 10px;
+}
+.uk-navbar-dropdown {
+  width: auto;
+  background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzAwMDAwMCIgc3RvcC1vcGFjaXR5PSIwLjciLz4KICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzAwMDAwMCIgc3RvcC1vcGFjaXR5PSIwLjciLz4KICA8L2xpbmVhckdyYWRpZW50PgogIDxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9InVybCgjZ3JhZC11Y2dnLWdlbmVyYXRlZCkiIC8+Cjwvc3ZnPg==);
+  background: -moz-linear-gradient(
+    top,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.7) 100%); /* FF3.6-15 */
+  background: -webkit-gradient(
+    linear, left top, left bottom,
+    color-stop(0%, rgba(0, 0, 0, 0.7)),
+    color-stop(100%, rgba(0, 0, 0, 0.7))); /* Chrome4-9,Safari4-5 */
+  background: -webkit-linear-gradient(
+    top,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.7) 100%); /* Chrome10-25,Safari5.1-6 */
+  background: -o-linear-gradient(
+    top,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.7) 100%); /* Opera 11.10-11.50 */
+  background: -ms-linear-gradient(
+    top,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.7) 100%); /* IE10 preview */
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.7) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient(
+    startColorstr='#b3000000',
+    endColorstr='#b3000000',GradientType=0); /* IE6-8 */
+  color: #e5e5e5;
+  box-shadow: none;
+  top: 91px !important;
+  left: 0 !important;
+  right: 0 !important;
+}
+.uk-navbar-dropdown-nav>.uk-grid-margin {
+  margin-top: 10px;
+}
+.uk-navbar-nav>li>a,
+.uk-navbar-nav>li.uk-active>a,
+.uk-navbar-dropdown-nav>li>a {
+  color: #e5e5e5;
+  text-transform: uppercase;
+}
+.uk-navbar-nav>li:hover>a,
+.uk-navbar-nav>li>a.uk-open,
+.uk-navbar-nav>li>a:focus,
+.uk-navbar-dropdown-nav>li>a:focus,
+.uk-navbar-dropdown-nav>li>a:hover {
+  color: #fff;
+}
+.uk-navbar-right {
+  margin-left: 0;
+}
+.uk-navbar-right .uk-navbar-dropdown-nav {
+  text-align: center;
+}
+.uk-navbar-right .uk-navbar-dropdown-nav li {
+  padding-left: 0;
+}
+.uk-navbar-toggle {
+  color: #e5e5e5;
+}
+.uk-navbar-toggle:focus,
+.uk-navbar-toggle:hover {
+  color: #999;
+}
+@media (min-width: 1200px) {
+  .uk-navbar-dropdown-nav>.uk-grid-margin {
+    margin-top: 15px;
+  }
+}
+
+/**
+ * Container component.
+ *
+ * @see https://getuikit.com/docs/container
+ */
+.uk-container {
+  max-width: 1220px;
+}

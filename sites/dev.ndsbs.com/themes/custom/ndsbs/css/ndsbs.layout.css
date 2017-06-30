@@ -2,3 +2,21 @@
  * @file
  * Macro arrangement of a web page, including any grid systems.
  */
+
+/**
+ * Overflow classes.
+ */
+.ndsbs-overflow-auto {
+  overflow: auto !important;
+}
+.ndsbs-overflow-initial {
+  overflow: initial !important;
+}
+
+/**
+ * Media queries.
+ */
+@media (min-width: 640px) {}
+@media (min-width: 960px) {}
+@media (min-width: 1200px) {}
+@media (min-width: 1600px) {}

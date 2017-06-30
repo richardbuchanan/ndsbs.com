@@ -59,7 +59,7 @@ function ndsbs_menu_link(array $variables) {
     elseif (!empty($element['#original_link']['depth']) && $element['#original_link']['depth'] == 1) {
       // Use our own theme wrapper.
       unset($element['#below']['#theme_wrappers']);
-      $sub_menu = '<div class="uk-navbar-dropdown">';
+      $sub_menu = '<div class="uk-navbar-dropdown ie9-gradient">';
 
       if ($element['#original_link']['menu_name'] == 'main-menu') {
         $sub_menu .= '<ul class="uk-nav uk-navbar-dropdown-nav uk-child-width-1-3" uk-grid>' . drupal_render($element['#below']) . '</ul>';

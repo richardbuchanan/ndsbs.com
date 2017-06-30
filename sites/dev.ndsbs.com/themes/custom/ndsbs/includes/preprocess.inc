@@ -12,13 +12,30 @@
  */
 
 use Drupal\ndsbs\NdsbsBlock;
+use Drupal\ndsbs\NdsbsNode;
+
+/**
+ * Implements hook_preprocess_HOOK() for html.tpl.php.
+ */
+function ndsbs_preprocess_html(&$variables) {
+  drupal_add_css(path_to_theme() . '/css/ndsbs.ie-fix.css', array(
+    'weight' => CSS_THEME,
+    'browsers' => array(
+      'IE' => 'gte IE 9',
+      '!IE' => FALSE,
+    ),
+    'preprocess' => FALSE,
+  ));
+}
 
 /**
  * Implements hook_preprocess_HOOK() for page.tpl.php.
  */
 function ndsbs_preprocess_page(&$variables) {
+  $variables['header_attributes_array']['uk-parallax'] = 'bgy: -200; blur: 5;';
   $variables['navbar_attributes_array']['class'][] = 'uk-navbar-transparent';
   $variables['navbar_attributes_array']['class'][] = 'uk-container';
+  $variables['navbar_attributes_array']['class'][] = 'ie9-gradient';
 
   $variables['faq_videos'] = array();
 
@@ -46,16 +63,24 @@ function ndsbs_preprocess_page(&$variables) {
   $phone = '<span>' . SA_ADMIN_PHONE . '</span>';
   $variables['company_info'] = array(
     '#type' => 'container',
-    '#attributes' => array('class' => array('company-info-container')),
+    '#attributes' => array(
+      'id' => 'company-info-container',
+    ),
   );
   $variables['company_info']['phone'] = array(
     '#markup' => $phone,
   );
-}
 
-function ndsbs_preprocess_link(&$variables) {
-  if ($variables['text'] == '<span uk-icon=" user"></span>') {
-    $variables['text'] = '<span uk-icon="icon: user; ratio: 2"></span>';
+  // Create a description variable for node pages.
+  $variables['page_description'];
+
+  if (isset($variables['node'])) {
+    $node = $variables['node'];
+    $meta_tags = NdsbsNode::getMetaTags($node);
+
+    if ($meta_tags && $meta_tags['title']) {
+      $variables['page_description'] = $meta_tags['title'];
+    }
   }
 }
 
@@ -74,6 +99,20 @@ function ndsbs_preprocess_block(&$variables) {
   }
 
   $variables['title_attributes_array']['class'][] = 'block-title';
+
+  if ($region == 'header') {
+    $variables['classes_array'][] = 'ie9-gradient';
+  }
+}
+
+/**
+ * Implements template_preprocess_link().
+ */
+function ndsbs_preprocess_link(&$variables) {
+  // @todo Research why Drupal strips "icon:" from the uk-icon attribute.
+  if ($variables['text'] == '<span uk-icon=" user"></span>') {
+    $variables['text'] = '<span uk-icon="icon: user; ratio: 2"></span>';
+  }
 }
 
 /**
@@ -81,7 +120,12 @@ function ndsbs_preprocess_block(&$variables) {
  */
 function ndsbs_preprocess_region(&$variables) {
   switch ($variables['region']) {
+    case 'header':
+      $variables['attributes_array']['class'][] = 'uk-width-1-1';
+      break;
+
     case 'footer':
       $variables['attributes_array']['uk-grid'] = '';
+      break;
   }
 }

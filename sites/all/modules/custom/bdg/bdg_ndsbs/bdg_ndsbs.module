@@ -780,17 +780,17 @@ function _ndsbs_frontpage_header_content() {
 
   $anger = bdg_ndsbs_get_assessment_link($assessments['502']);
 
-  $output = '<ul class="uk-switcher">';
+  $output = '<ul id="assessments-switcher" class="uk-switcher">';
   $output .= '<li class="uk-active uk-display-inline-block uk-width-1-1">';
 
-  $output .= '<ul class="uk-tab-right uk-tab uk-float-left" uk-tab uk-switcher>';
+  $output .= '<ul class="uk-tab-right uk-tab switcher-left" uk-tab uk-switcher>';
   $output .= '<li class="uk-active" aria-expanded="true"><a href="#">Alcohol</a></li>';
   $output .= '<li aria-expanded="false" class=""><a href="#">Drug and Alcohol</a></li>';
   $output .= '<li aria-expanded="false" class=""><a href="#">Mental Health</a></li>';
   $output .= '<li aria-expanded="false" class=""><a href="#">Anger Management</a></li>';
   $output .= '</ul>';
 
-  $output .= '<ul class="uk-switcher uk-float-right">';
+  $output .= '<ul class="uk-switcher switcher-right">';
   $output .= '<li>';
   $output .= $alcohol . $dui . $minor;
   $output .= '</li>';

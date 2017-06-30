@@ -270,6 +270,7 @@ function ndsbs_custom_process_page(&$variables) {
 
   if ($variables['title'] == drupal_get_title() && drupal_is_front_page()) {
     $variables['title'] = $frontpage_title;
+    drupal_set_title($frontpage_title);
   }
 }
 

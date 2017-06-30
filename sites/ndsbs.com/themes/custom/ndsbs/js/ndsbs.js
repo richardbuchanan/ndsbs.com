@@ -9,6 +9,25 @@
 
   Drupal.behaviors.NDSBS = {
     attach: function () {
+      var loginLink = $('[href="/user/login"]');
+      var loginModal = $("#block-user-login");
+      var loginContent = loginModal.clone();
+      var modalOverflow = $('#modal-overflow');
+
+      loginModal.remove();
+
+      loginLink
+        .prop('href', '#block-user-login')
+        .attr('uk-toggle', '')
+        .after(loginContent)
+        .click(function () {
+          UIkit.modal('#block-user-login').toggle();
+        });
+
+      modalOverflow.on('beforeshow', function () {
+      }).on('hidden', function () {
+        $('html').removeClass('ndsbs-overflow-initial');
+      });
     }
   };
 
@@ -46,8 +65,7 @@
             },
             showLabels: true,
             'click': function (event, data) {
-              var mainContainer = $('#page');
-              var popoverWidth = mainContainer.outerWidth();
+              var modalContainer = $('#modal-overflow');
               var title = data.name;
               var statename = title.toUpperCase();
               var stateabbr = title.toLowerCase();
@@ -55,6 +73,12 @@
               var line_two = '';
               var line_three = '';
               var line_four = '';
+
+              $('html').addClass('ndsbs-overflow-initial');
+
+              if (modalContainer.find('.uk-modal-dialog').length) {
+                modalContainer.find('.uk-modal-dialog').remove();
+              }
 
               if (lineOne[statename]) {
                 line_one = '<li>' + lineOne[statename] + '</li>';
@@ -80,9 +104,8 @@
               text += '<div class="uk-modal-body">' + statelist + '</div>';
               text += '</div>';
 
-              $('<div id="states-dropdown" uk-modal="center: true"></div>').html(text)
-                .appendTo('body');
-              UIkit.modal('#states-dropdown').toggle();
+              modalContainer.append(text);
+              UIkit.modal('#modal-overflow').toggle();
             }
           });
         }

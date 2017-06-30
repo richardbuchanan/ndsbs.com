@@ -109,10 +109,38 @@
     </div>
   </nav>
 
-  <?php if ($page['header']): ?>
+  <?php if ($page['header'] || ($title && !$is_front)): ?>
     <div id="header-below" class="uk-navbar-transparent">
+      <?php print render($title_prefix); ?>
+      <?php if ($title && !$is_front): ?>
+        <div id="page-title-wrapper" uk-grid>
+          <div class="uk-width-1-1">
+            <div class="block uk-width-1-1 uk-width-1-1@m uk-width-4-5@l ie9-gradient">
+              <h1 id="page-title" class="uk-article-title"><?php print $title; ?></h1>
+
+              <?php if ($page_description): ?>
+                <div class="page-description"><?php print $page_description; ?></div>
+              <?php endif; ?>
+            </div>
+          </div>
+        </div>
+      <?php endif; ?>
+      <?php print render($title_suffix); ?>
+
       <?php print render($page['header']); ?>
     </div>
+
+    <?php if ($breadcrumb && $display_breadcrumb): ?>
+      <div id="header-breadcrumbs" class="uk-navbar-transparent">
+        <div id="breadcrumb-wrapper" uk-grid>
+          <div class="uk-width-1-1">
+            <div class="block uk-width-1-1 uk-width-1-1@m uk-width-4-5@l ie9-gradient">
+              <?php print $breadcrumb; ?>
+            </div>
+          </div>
+        </div>
+      </div>
+    <?php endif; ?>
   <?php endif; ?>
 </header>
 
@@ -125,18 +153,6 @@
     <?php endif; ?>
 
     <div<?php print $content_attributes; ?>>
-      <?php print render($title_prefix); ?>
-      <?php if ($title): ?>
-        <h1 id="page-title" class="uk-article-title"><?php print $title; ?></h1><?php
-      endif; ?>
-      <?php print render($title_suffix); ?>
-
-      <?php if ($breadcrumb && $display_breadcrumb): ?>
-        <div id="breadcrumbs">
-          <?php print $breadcrumb; ?>
-        </div>
-      <?php endif; ?>
-
       <?php if ($tabs): ?>
         <?php print render($tabs); ?>
       <?php endif; ?>
@@ -181,9 +197,12 @@
 
 <?php if ($offcanvas_primary || $offcanvas_secondary): ?>
   <div id="offcanvas" uk-offcanvas="mode: push; overlay: true" class="uk-offcanvas">
-    <div class="uk-offcanvas-bar">
+    <div class="uk-offcanvas-bar ie9-gradient">
       <?php print render($offcanvas_primary); ?>
       <?php print render($offcanvas_secondary); ?>
     </div>
   </div>
 <?php endif; ?>
+
+<!-- Modal container -->
+<div id="modal-overflow" uk-modal="center: true"></div>

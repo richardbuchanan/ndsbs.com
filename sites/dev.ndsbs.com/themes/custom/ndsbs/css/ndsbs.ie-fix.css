@@ -1,0 +1,19 @@
+/**
+ * @file
+ * Conditional stylesheet for IE+9.
+ *
+ * Support for full multi-stop gradients with IE9+ (using SVG).
+ *
+ * @see http://www.colorzilla.com/gradient-editor/#000000+0,000000+100&0.7+0,0.7+100
+ */
+
+/**
+ * Gradient filters in IE9+ are only partially supported. Since the filter
+ * property needs to be last for IE8 and below, this will override the filter
+ * property for IE9+.
+ *
+ * @see https://msdn.microsoft.com/en-us/library/ms532997(v=vs.85).aspx
+ */
+.ie9-gradient {
+  filter: none;
+}
