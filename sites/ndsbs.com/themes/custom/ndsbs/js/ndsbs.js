@@ -15,6 +15,7 @@
       var loginContent = loginModal.clone();
       var modalOverflow = $('#modal-overflow');
       var pageHeader = $('#page-header');
+      var pageHighlighted = $('#page-highlighted');
       var viewportHeight = $(window).height();
       var adminMenuHeight = $('#admin-menu').length ? 29 : 0;
 
@@ -35,6 +36,10 @@
       if ($('body').hasClass('front')) {
         pageHeader.css('min-height', viewportHeight - adminMenuHeight);
       }
+
+      if (pageHighlighted.length) {
+        pageHighlighted.css('min-height', viewportHeight - adminMenuHeight);
+      }
     }
   };
 
@@ -42,6 +47,7 @@
     attach: function () {
       var body = $('body');
       var pageNavbar = $('#page-navbar');
+      var offcanvas = $('#offcanvas');
 
       pageNavbar.on('beforeshow', function () {
         body.addClass('navbar-open');
@@ -49,6 +55,14 @@
       }).on('hidden', function () {
         body.removeClass('navbar-open');
         body.addClass('navbar-closed');
+      });
+
+      offcanvas.on('beforeshow', function () {
+        body.addClass('offcanvas-open');
+        body.removeClass('offcanvas-closed');
+      }).on('hidden', function () {
+        body.removeClass('offcanvas-open');
+        body.addClass('offcanvas-closed');
       });
     }
   };

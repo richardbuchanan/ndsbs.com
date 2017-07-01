@@ -109,8 +109,10 @@
     </div>
   </nav>
 
+  <?php print render($company_info_small); ?>
+
   <?php if ($page['header'] || ($title && !$is_front)): ?>
-    <div id="header-below" class="uk-navbar-transparent">
+    <div id="header-below">
       <?php print render($title_prefix); ?>
       <?php if ($title && !$is_front): ?>
         <div id="page-title-wrapper" uk-grid>
@@ -132,13 +134,14 @@
   <?php endif; ?>
 </header>
 
+<?php if ($page['highlighted']): ?>
+  <div<?php print $highlighted_attributes; ?>>
+    <?php print render($page['highlighted']); ?>
+  </div>
+<?php endif; ?>
+
 <div<?php print $page_container_attributes; ?>>
   <div class="uk-grid" uk-grid>
-    <?php if ($page['highlighted']): ?>
-      <div id="highlighted" class="uk-width-1-1">
-        <?php print render($page['highlighted']); ?>
-      </div>
-    <?php endif; ?>
 
     <div<?php print $content_attributes; ?>>
       <?php if ($tabs): ?>

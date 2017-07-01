@@ -55,6 +55,23 @@
 .uk-offcanvas-overlay::before {
   position: static;
 }
+.uk-offcanvas-bar .uk-nav-default>li>a {
+  color: #e5e5e5;
+}
+.uk-offcanvas-bar .uk-nav-default>li>a:focus,
+.uk-offcanvas-bar .uk-nav-default>li>a:hover {
+  color: #fff;
+}
+.uk-offcanvas-bar .uk-nav-default>li>a>.uk-icon {
+  display: none;
+}
+.uk-offcanvas-bar .uk-nav-default .uk-nav-sub a {
+  color: #d5d5d5;
+}
+.uk-offcanvas-bar .uk-nav-default .uk-nav-sub a:focus,
+.uk-offcanvas-bar .uk-nav-default .uk-nav-sub a:hover {
+  color: #eee;
+}
 
 /**
  * Navbar component.

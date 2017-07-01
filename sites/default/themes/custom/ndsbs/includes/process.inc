@@ -10,3 +10,11 @@
  *
  * @see preprocess.inc
  */
+
+/**
+ * Implements hook_preprocess_HOOK() for page.tpl.php.
+ */
+function ndsbs_process_page(&$variables) {
+  $highlighted_attributes_array = $variables['highlighted_attributes_array'];
+  $variables['highlighted_attributes'] = drupal_attributes($highlighted_attributes_array);
+}

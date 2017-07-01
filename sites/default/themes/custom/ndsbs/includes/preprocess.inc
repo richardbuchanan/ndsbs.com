@@ -38,6 +38,11 @@ function ndsbs_preprocess_page(&$variables) {
   $variables['navbar_attributes_array']['class'][] = 'ie9-gradient';
   $variables['navbar_attributes_array']['uk-navbar'] = 'mode: click';
 
+  $variables['highlighted_attributes_array'] = array(
+    'id' => 'page-highlighted',
+    'uk-parallax' => 'bgy: -200',
+  );
+
   $variables['faq_videos'] = array();
 
   if (function_exists('faq_videos_embed_promoted')) {
@@ -70,10 +75,21 @@ function ndsbs_preprocess_page(&$variables) {
     '#type' => 'container',
     '#attributes' => array(
       'id' => 'company-info-container',
+      'class' => array('uk-visible@l'),
+    ),
+    'phone' => array(
+      '#markup' => $phone,
     ),
   );
-  $variables['company_info']['phone'] = array(
-    '#markup' => $phone,
+  $variables['company_info_small'] = array(
+    '#type' => 'container',
+    '#attributes' => array(
+      'id' => 'company-info-container--small',
+      'class' => array('uk-hidden@l'),
+    ),
+    'phone' => array(
+      '#markup' => $phone,
+    ),
   );
 
   // Create a description variable for node pages.
