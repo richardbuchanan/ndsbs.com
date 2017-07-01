@@ -280,11 +280,13 @@ body.navbar-closed #page-header>*:not(.uk-navbar) {
  * Media queries.
  */
 @media (min-width: 640px) {
-  #header-below .block h2.block-title {
+  #header-below .block {
+    min-width: 400px;
   }
 }
 @media (min-width: 960px) {
-  #header-below .block h2.block-title {
+  #header-below .block {
+    min-width: 640px;
   }
   #assessments-switcher .switcher-left,
   #assessments-switcher .switcher-right {
