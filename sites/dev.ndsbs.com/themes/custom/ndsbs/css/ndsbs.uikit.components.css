@@ -24,6 +24,15 @@
 }
 
 /**
+ * Container component.
+ *
+ * @see https://getuikit.com/docs/container
+ */
+.uk-container {
+  max-width: 1220px;
+}
+
+/**
  * Offcanvas component.
  *
  * @see https://getuikit.com/docs/offcanvas
@@ -137,6 +146,9 @@
 .uk-navbar-toggle {
   font-family: Raleway, "Segoe UI", Candara, "Bitstream Vera Sans", "DejaVu Sans", "Bitstream Vera Sans", "Trebuchet MS", Verdana, "Verdana Ref", sans-serif;
 }
+.uk-navbar-toggle {
+
+}
 .uk-navbar-nav>li>a,
 .uk-navbar-nav>li.uk-active>a,
 .uk-navbar-dropdown-nav>li>a,
@@ -171,13 +183,4 @@
   .uk-navbar-dropdown-nav>.uk-grid-margin {
     margin-top: 15px;
   }
-}
-
-/**
- * Container component.
- *
- * @see https://getuikit.com/docs/container
- */
-.uk-container {
-  max-width: 1220px;
 }

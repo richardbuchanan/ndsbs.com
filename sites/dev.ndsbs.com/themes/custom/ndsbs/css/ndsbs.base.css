@@ -2,8 +2,16 @@
  * @file
  * CSS reset/normalize plus HTML element styling.
  */
+
+/**
+ * Google fonts.
+ */
 @import url(https://fonts.googleapis.com/css?family=Raleway);
 @import url(https://fonts.googleapis.com/css?family=Ubuntu);
+
+html {
+  overflow-x: hidden;
+}
 body{
   font-family: Raleway, "Segoe UI", Candara, "Bitstream Vera Sans", "DejaVu Sans", "Bitstream Vera Sans", "Trebuchet MS", Verdana, "Verdana Ref", sans-serif;
 }

@@ -783,11 +783,11 @@ function _ndsbs_frontpage_header_content() {
   $output = '<ul id="assessments-switcher" class="uk-switcher">';
   $output .= '<li class="uk-active uk-display-inline-block uk-width-1-1">';
 
-  $output .= '<ul class="uk-tab-right uk-tab switcher-left" uk-tab uk-switcher>';
-  $output .= '<li class="uk-active" aria-expanded="true"><a href="#">Alcohol</a></li>';
-  $output .= '<li aria-expanded="false" class=""><a href="#">Drug and Alcohol</a></li>';
-  $output .= '<li aria-expanded="false" class=""><a href="#">Mental Health</a></li>';
-  $output .= '<li aria-expanded="false" class=""><a href="#">Anger Management</a></li>';
+  $output .= '<ul class="uk-tab-right uk-tab uk-child-width-expand@s uk-child-width-auto@l switcher-left" uk-tab uk-switcher>';
+  $output .= '<li class="uk-active" aria-expanded="true"><a href="#" class="uk-text-center uk-text-left@l">Alcohol</a></li>';
+  $output .= '<li aria-expanded="false" class=""><a href="#" class="uk-text-center uk-text-left@l">Drug and Alcohol</a></li>';
+  $output .= '<li aria-expanded="false" class=""><a href="#" class="uk-text-center uk-text-left@l">Mental Health</a></li>';
+  $output .= '<li aria-expanded="false" class=""><a href="#" class="uk-text-center uk-text-left@l">Anger Management</a></li>';
   $output .= '</ul>';
 
   $output .= '<ul class="uk-switcher switcher-right">';

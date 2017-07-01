@@ -107,9 +107,9 @@
         <?php print render($navbar_secondary_compact); ?>
       <?php endif; ?>
     </div>
-  </nav>
 
-  <?php print render($company_info_small); ?>
+    <?php print render($company_info_small); ?>
+  </nav>
 
   <?php if ($page['header'] || ($title && !$is_front)): ?>
     <div id="header-below">
