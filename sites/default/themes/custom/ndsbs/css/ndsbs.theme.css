@@ -17,14 +17,39 @@
  * @see page.tpl.php
  */
 #page-header {
+  background: transparent url(images/city-sunny-people-street.jpg) no-repeat center bottom;
+  -webkit-background-size: cover;
+  background-size: cover;
+}
+body.navbar-open #page-header {
+  background: linear-gradient(
+    rgba(0, 0, 0, 0.5),
+    rgba(0, 0, 0, 0.5)),
+  url(images/city-sunny-people-street.jpg) no-repeat center bottom;
+}
+body.navbar-open #page-header>*:not(.uk-navbar) {
+  animation: 0.2s ease 0s normal forwards 1 fadeOut;
+  -webkit-animation: 0.2s ease 0s normal forwards 1 fadeOut;
+}
+body.front #page-header {
   background: transparent url(images/city-sunny-people-street.jpg) no-repeat center 25%;
   -webkit-background-size: cover;
   background-size: cover;
-  min-height: 420px;
+}
+body.front.navbar-open #page-header {
+  background: linear-gradient(
+    rgba(0, 0, 0, 0.5),
+    rgba(0, 0, 0, 0.5)),
+  url(images/city-sunny-people-street.jpg) no-repeat center 25%;
+}
+body.navbar-closed #page-header>*:not(.uk-navbar) {
+  animation: 0.3s ease 0s normal forwards 1 fadeIn;
+  -webkit-animation: 0.3s ease 0s normal forwards 1 fadeIn;
 }
 #header-below {
   margin: 0 auto;
   max-width: 1320px;
+  opacity: 1;
 }
 #page-navbar {
   position: relative;
@@ -223,11 +248,6 @@
 /**
  * Menus.
  */
-#user-compact>li:first-child>a {
-  position: absolute;
-  top: 20px;
-  right: 45px;
-}
 #footer-menu {
   margin-bottom: 0;
 }
@@ -241,6 +261,19 @@
 }
 #footer-menu>*>:first-child {
   font-size: 0.8125rem;
+}
+#primary-menu>li>a>[uk-icon] {
+  transform: rotate( -360deg );
+  transition: transform 150ms ease;
+}
+#primary-menu>li>a.uk-open>[uk-icon] {
+  transform: rotate( -180deg );
+  transition: transform 150ms ease;
+}
+#user-compact>li:first-child>a {
+  position: absolute;
+  top: 20px;
+  right: 45px;
 }
 
 /**
@@ -332,5 +365,89 @@
 }
 @media (min-width: 1600px) {
   #header-below .block h2.block-title {
+  }
+}
+
+/**
+ * Keyframe animations.
+ */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.2;
+  }
+  40% {
+    opacity: 0.4;
+  }
+  60% {
+    opacity: 0.6;
+  }
+  80% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@-webkit-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.2;
+  }
+  40% {
+    opacity: 0.4;
+  }
+  60% {
+    opacity: 0.6;
+  }
+  80% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  20% {
+    opacity: 0.8;
+  }
+  40% {
+    opacity: 0.6;
+  }
+  60% {
+    opacity: 0.4;
+  }
+  80% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@-webkit-keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  20% {
+    opacity: 0.8;
+  }
+  40% {
+    opacity: 0.6;
+  }
+  60% {
+    opacity: 0.4;
+  }
+  80% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 0;
   }
 }

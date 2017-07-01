@@ -9,6 +9,39 @@
  */
 
 /**
+ * Implements theme_link().
+ */
+function ndsbs_link($variables) {
+  $path = $variables['path'];
+  $options = $variables['options'];
+  $attributes = $variables['options']['attributes'];
+  $text = $variables['options']['html'] ? $variables['text'] : check_plain($variables['text']);
+
+  switch ($path) {
+    case '<uk-nav-header>':
+      return $text;
+
+    case '<uk-parent>':
+      $identifier = isset($variables['options']['identifier']) ? $variables['options']['identifier'] : '';
+      $pattern = '/^main-menu/';
+      preg_match($pattern, substr($identifier,0), $matches, PREG_OFFSET_CAPTURE);
+      $dropper = '';
+
+      if ($matches) {
+        $dropper = '<span class="uk-margin-small-left" uk-icon="icon: chevron-down"></span>';
+      }
+
+      return '<a href="#" ' . drupal_attributes($attributes) . '>' . $text . $dropper . '</a>';
+
+    case '<uk-nav-divider>':
+      return '';
+
+    default:
+      return '<a href="' . check_plain(url($path, $options)) . '" ' . drupal_attributes($attributes) . '>' . $text . '</a>';
+  }
+}
+
+/**
  * Implements theme_menu_link().
  */
 function ndsbs_menu_link(array $variables) {
@@ -99,6 +132,13 @@ function ndsbs_menu_link(array $variables) {
  */
 function ndsbs_menu_tree__navbar($variables) {
   return '<ul class="uk-navbar-nav uk-visible@l">' . $variables['tree'] . '</ul>';
+}
+
+/**
+ * Implements theme_menu_tree() for the primary navbar menu.
+ */
+function ndsbs_menu_tree__navbar__primary($variables) {
+  return '<ul id="primary-menu" class="uk-navbar-nav uk-visible@l">' . $variables['tree'] . '</ul>';
 }
 
 /**

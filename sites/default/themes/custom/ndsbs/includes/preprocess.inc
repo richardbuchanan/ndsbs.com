@@ -32,15 +32,20 @@ function ndsbs_preprocess_html(&$variables) {
  * Implements hook_preprocess_HOOK() for page.tpl.php.
  */
 function ndsbs_preprocess_page(&$variables) {
-  $variables['header_attributes_array']['uk-parallax'] = 'bgy: -200; blur: 5;';
+  $variables['header_attributes_array']['uk-parallax'] = 'bgy: -200;';
   $variables['navbar_attributes_array']['class'][] = 'uk-navbar-transparent';
   $variables['navbar_attributes_array']['class'][] = 'uk-container';
   $variables['navbar_attributes_array']['class'][] = 'ie9-gradient';
+  $variables['navbar_attributes_array']['uk-navbar'] = 'mode: click';
 
   $variables['faq_videos'] = array();
 
   if (function_exists('faq_videos_embed_promoted')) {
     $variables['faq_videos']['#markup'] = faq_videos_embed_promoted();
+  }
+
+  if ($variables['main_menu']) {
+    $variables['navbar_primary']['#theme_wrappers'] = array('menu_tree__navbar__primary');
   }
 
   // Create a more compact user menu.
