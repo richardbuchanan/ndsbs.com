@@ -13,6 +13,17 @@
 }
 
 /**
+ * Close component.
+ *
+ * @todo Firefox adds a second close icon for some reason.
+ *
+ * @see https://getuikit.com/docs/card
+ */
+.uk-close>svg~svg {
+  display: none;
+}
+
+/**
  * Offcanvas component.
  *
  * @see https://getuikit.com/docs/offcanvas
