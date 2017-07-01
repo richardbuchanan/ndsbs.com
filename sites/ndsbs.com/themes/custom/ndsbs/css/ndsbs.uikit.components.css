@@ -106,7 +106,8 @@
 }
 .uk-navbar-nav>li>a,
 .uk-navbar-nav>li.uk-active>a,
-.uk-navbar-dropdown-nav>li>a {
+.uk-navbar-dropdown-nav>li>a,
+.uk-navbar-dropdown-nav>li.uk-active>a {
   color: #e5e5e5;
   text-transform: uppercase;
 }

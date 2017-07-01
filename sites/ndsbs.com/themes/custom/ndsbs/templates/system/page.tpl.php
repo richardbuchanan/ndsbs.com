@@ -115,7 +115,7 @@
       <?php if ($title && !$is_front): ?>
         <div id="page-title-wrapper" uk-grid>
           <div class="uk-width-1-1">
-            <div class="block uk-width-1-1 uk-width-1-1@m uk-width-4-5@l ie9-gradient">
+            <div class="block uk-width-1-1 ie9-gradient">
               <h1 id="page-title" class="uk-article-title"><?php print $title; ?></h1>
 
               <?php if ($page_description): ?>
@@ -129,18 +129,6 @@
 
       <?php print render($page['header']); ?>
     </div>
-
-    <?php if ($breadcrumb && $display_breadcrumb): ?>
-      <div id="header-breadcrumbs" class="uk-navbar-transparent">
-        <div id="breadcrumb-wrapper" uk-grid>
-          <div class="uk-width-1-1">
-            <div class="block uk-width-1-1 uk-width-1-1@m uk-width-4-5@l ie9-gradient">
-              <?php print $breadcrumb; ?>
-            </div>
-          </div>
-        </div>
-      </div>
-    <?php endif; ?>
   <?php endif; ?>
 </header>
 

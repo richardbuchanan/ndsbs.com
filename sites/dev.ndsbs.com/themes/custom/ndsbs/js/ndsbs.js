@@ -9,10 +9,14 @@
 
   Drupal.behaviors.NDSBS = {
     attach: function () {
+      var html = $('html');
       var loginLink = $('[href="/user/login"]');
       var loginModal = $("#block-user-login");
       var loginContent = loginModal.clone();
       var modalOverflow = $('#modal-overflow');
+      var pageHeader = $('#page-header');
+      var viewportHeight = $(window).height();
+      var adminMenuHeight = $('#admin-menu').length ? 29 : 0;
 
       loginModal.remove();
 
@@ -24,9 +28,27 @@
           UIkit.modal('#block-user-login').toggle();
         });
 
-      modalOverflow.on('beforeshow', function () {
+      modalOverflow.on('hidden', function () {
+        html.removeClass('ndsbs-overflow-initial');
+      });
+
+      if ($('body').hasClass('front')) {
+        pageHeader.css('min-height', viewportHeight - adminMenuHeight);
+      }
+    }
+  };
+
+  Drupal.behaviors.NdsbsNavbar = {
+    attach: function () {
+      var body = $('body');
+      var pageNavbar = $('#page-navbar');
+
+      pageNavbar.on('beforeshow', function () {
+        body.addClass('navbar-open');
+        body.removeClass('navbar-closed');
       }).on('hidden', function () {
-        $('html').removeClass('ndsbs-overflow-initial');
+        body.removeClass('navbar-open');
+        body.addClass('navbar-closed');
       });
     }
   };
