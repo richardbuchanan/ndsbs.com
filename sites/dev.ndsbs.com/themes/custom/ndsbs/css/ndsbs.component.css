@@ -12,6 +12,20 @@
 }
 
 /**
+ * Views slideshow.
+ *
+ * The width of each slideshow slide is arbitrarily set, causing each slide to
+ * have a different width. Content inside each slide is then wrapped in a weird
+ * way with no apparent correlation to the widths of the other slides in the
+ * slideshow. This is a simple hack, ugly as it may be.
+ *
+ * @see https://www.drupal.org/node/1611744
+ */
+.views_slideshow_cycle_main .views_slideshow_slide {
+  width: 100% !important;
+}
+
+/**
  * Development modules.
  */
 #themer-popup {

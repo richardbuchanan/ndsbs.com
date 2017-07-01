@@ -132,6 +132,11 @@
 .uk-navbar-dropdown-nav>.uk-grid-margin {
   margin-top: 10px;
 }
+.uk-navbar-item,
+.uk-navbar-nav>li>a,
+.uk-navbar-toggle {
+  font-family: Raleway, "Segoe UI", Candara, "Bitstream Vera Sans", "DejaVu Sans", "Bitstream Vera Sans", "Trebuchet MS", Verdana, "Verdana Ref", sans-serif;
+}
 .uk-navbar-nav>li>a,
 .uk-navbar-nav>li.uk-active>a,
 .uk-navbar-dropdown-nav>li>a,

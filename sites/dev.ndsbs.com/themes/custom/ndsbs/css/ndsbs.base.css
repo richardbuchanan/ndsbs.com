@@ -2,6 +2,35 @@
  * @file
  * CSS reset/normalize plus HTML element styling.
  */
+@import url(https://fonts.googleapis.com/css?family=Raleway);
+@import url(https://fonts.googleapis.com/css?family=Ubuntu);
+body{
+  font-family: Raleway, "Segoe UI", Candara, "Bitstream Vera Sans", "DejaVu Sans", "Bitstream Vera Sans", "Trebuchet MS", Verdana, "Verdana Ref", sans-serif;
+}
+h1, h2, h3, h4, h5, h6,
+.uk-h1, .uk-h2, .uk-h3, .uk-h4, .uk-h5, .uk-h6 {
+  font-family: Ubuntu, "Segoe UI", Candara, "Bitstream Vera Sans", "DejaVu Sans", "Bitstream Vera Sans", "Trebuchet MS", Verdana, "Verdana Ref", sans-serif;
+}
+blockquote {
+  position: relative;
+  padding-left: 65px;
+}
+blockquote:before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-family: FontAwesome;
+  display: inline-block;
+  content: "\f10d";
+  font-weight: 400;
+  font-size: 250%;
+  font-style: normal;
+  line-height: 1;
+  margin-right: 15px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  vertical-align: -22%;
+}
 small {
   font-size: 0.8125rem;
 }

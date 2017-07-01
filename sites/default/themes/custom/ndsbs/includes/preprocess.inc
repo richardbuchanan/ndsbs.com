@@ -26,6 +26,8 @@ function ndsbs_preprocess_html(&$variables) {
     ),
     'preprocess' => FALSE,
   ));
+  //drupal_add_css('//fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,500,500i,600,600i,700,700i', array('type' => 'external'));
+  //drupal_add_css('//fonts.googleapis.com/css?family=Ubuntu:300,300i,400,400i,500,500i,700,700i', array('type' => 'external'));
 }
 
 /**
