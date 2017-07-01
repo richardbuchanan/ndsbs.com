@@ -445,6 +445,9 @@ body.offcanvas-closed #page-header>* {
     margin-bottom: 40px;
     text-align: left;
   }
+  #header-below .block #state-acceptance {
+    text-align: left;
+  }
   #assessments-switcher .switcher-left,
   #assessments-switcher .switcher-right {
     -ms-flex-direction: column;
