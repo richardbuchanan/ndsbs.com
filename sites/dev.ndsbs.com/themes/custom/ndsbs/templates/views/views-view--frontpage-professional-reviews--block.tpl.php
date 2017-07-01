@@ -34,7 +34,7 @@
   <?php endif; ?>
   <?php print render($title_suffix); ?>
 
-  <div id="professional-reviews-grid">
+  <div id="professional-reviews-grid" class="uk-position-relative">
     <?php if ($rows): ?>
       <div class="view-content">
         <?php print $rows; ?>
