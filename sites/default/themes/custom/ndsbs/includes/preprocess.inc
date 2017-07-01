@@ -49,6 +49,10 @@ function ndsbs_preprocess_page(&$variables) {
     $variables['faq_videos']['#markup'] = faq_videos_embed_promoted();
   }
 
+  if (drupal_is_front_page()) {
+    unset($variables['page']['content']['system_main']['default_message']);
+  }
+
   if ($variables['main_menu']) {
     $variables['navbar_primary']['#theme_wrappers'] = array('menu_tree__navbar__primary');
   }

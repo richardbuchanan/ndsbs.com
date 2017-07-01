@@ -158,10 +158,8 @@
         <ul class="action-links uk-subnav uk-subnav-pill"><?php print render($action_links); ?></ul>
       <?php endif; ?>
 
-      <?php if (!$is_front): ?>
-        <?php print render($page['content']); ?>
-        <?php print $feed_icons; ?>
-      <?php endif; ?>
+      <?php print render($page['content']); ?>
+      <?php print $feed_icons; ?>
     </div>
 
     <?php if ($page['sidebar_first']): ?>
