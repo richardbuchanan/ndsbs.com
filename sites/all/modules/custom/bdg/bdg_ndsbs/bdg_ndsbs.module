@@ -806,7 +806,7 @@ function _ndsbs_frontpage_header_content() {
 
   $output .= '<div id="state-acceptance" class="uk-margin-large-top">';
   $output .= '<hr style="border-top-width:3px;">';
-  $output .= '<h2 class="block-title uk-margin-top">Not Sure About Acceptance in Your State?</h2>';
+  $output .= '<h3 class="uk-margin-top">Not Sure About Acceptance in Your State?</h3>';
   $output .= '<a href="/state-map" class="uk-display-inline-block"><span class="uk-margin-small-right" uk-icon="icon: world"></span><span style="vertical-align:middle">Check My State</span></a>';
   $output .= '</div>';
   return $output;

@@ -189,6 +189,7 @@ body.offcanvas-closed #page-header>* {
 }
 #header-below .block h1,
 #header-below .block h2,
+#header-below .block h3,
 #header-below .block a:not(.uk-button) {
   color: #e5e5e5;
 }

@@ -118,6 +118,18 @@ function ndsbs_preprocess_block(&$variables) {
   $delta = str_replace('-', '_', $variables['elements']['#block']->delta);
   $region = str_replace('-', '_', $variables['elements']['#block']->region);
   $classes = NdsbsBlock::getBlockClasses($region, $delta);
+  $title = $variables['block']->subject;
+
+  if (!empty($title)) {
+    $title = explode('&lt;br&gt;', $title);
+    $title = implode('<br>', $title);
+  }
+
+  $block_title = array(
+    '#markup' => $title,
+  );
+
+  $variables['block_title'] = render($block_title);
 
   if ($classes) {
     foreach ($classes as $class) {

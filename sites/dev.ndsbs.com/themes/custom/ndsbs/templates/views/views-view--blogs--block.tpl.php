@@ -34,18 +34,16 @@
   <?php endif; ?>
   <?php print render($title_suffix); ?>
 
-  <div id="professional-reviews-grid" class="uk-position-relative">
-    <?php if ($rows): ?>
-      <div class="view-content">
-        <?php print $rows; ?>
-      </div>
-    <?php endif; ?>
+  <?php if ($rows): ?>
+    <div class="view-content">
+      <?php print $rows; ?>
+    </div>
+  <?php endif; ?>
 
-    <?php if ($footer): ?>
-      <div class="view-footer uk-text-right">
-        <?php print $footer; ?>
-      </div>
-    <?php endif; ?>
-  </div>
+  <?php if ($footer): ?>
+    <div class="view-footer uk-text-right">
+      <?php print $footer; ?>
+    </div>
+  <?php endif; ?>
 
 </div><?php /* class view */ ?>
