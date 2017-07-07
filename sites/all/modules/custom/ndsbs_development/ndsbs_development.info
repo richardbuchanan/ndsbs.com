@@ -1,0 +1,3 @@
+name = NDSBS Development
+description = Custom module for development on dev.ndsbs.com only.
+core = 7.x

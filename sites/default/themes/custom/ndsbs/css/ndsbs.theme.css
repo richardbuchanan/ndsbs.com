@@ -638,3 +638,18 @@ body.offcanvas-closed #page-header>* {
     opacity: 0;
   }
 }
+
+#block-ndsbs-development-frontpage-development-links {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+body.page-node-two #page-title-wrapper,
+body.page-node-three #page-title-wrapper,
+body.page-node-two #region-content-wrapper,
+body.page-node-three #region-content-wrapper {
+  display: none;
+}
+body.page-node-two #region-header-wrapper,
+body.page-node-three #region-header-wrapper {
+  margin-top: 0 !important;
+}
