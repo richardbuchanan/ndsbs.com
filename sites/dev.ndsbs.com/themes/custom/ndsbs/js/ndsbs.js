@@ -10,6 +10,7 @@
   Drupal.behaviors.NDSBS = {
     attach: function () {
       var html = $('html');
+      var body = $('body');
       var loginLink = $('[href="/user/login"]');
       var loginModal = $("#block-user-login");
       var loginContent = loginModal.clone();
@@ -33,7 +34,7 @@
         html.removeClass('ndsbs-overflow-initial');
       });
 
-      if ($('body').hasClass('front')) {
+      if (body.hasClass('front') || body.hasClass('page-node-two') || body.hasClass('page-node-three')) {
         pageHeader.css('min-height', viewportHeight - adminMenuHeight);
       }
 
