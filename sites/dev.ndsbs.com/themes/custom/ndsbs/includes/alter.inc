@@ -17,12 +17,12 @@
  */
 
 function ndsbs_css_alter(&$css) {
-  $ndsbs = drupal_get_path('theme', 'ndsbs') . '/css/';
+  $ndsbs = drupal_get_path('theme', 'ndsbs');
   if (current_path() == 'node_two') {
-    $css['sites/localhost.ndsbs/themes/custom/ndsbs/css/ndsbs.theme.css']['data'] = $ndsbs . 'ndsbs.theme.demo_two.css';
+    $css[$ndsbs . '/css/ndsbs.theme.css']['data'] = $ndsbs . '/css/ndsbs.theme.demo_two.css';
   }
   elseif (current_path() == 'node_three') {
-    $css['sites/localhost.ndsbs/themes/custom/ndsbs/css/ndsbs.theme.css']['data'] = $ndsbs . 'ndsbs.theme.demo_three.css';
+    $css[$ndsbs . '/css/ndsbs.theme.css']['data'] = $ndsbs . '/css/ndsbs.theme.demo_three.css';
   }
 }
 
