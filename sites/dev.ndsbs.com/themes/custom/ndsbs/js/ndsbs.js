@@ -46,21 +46,23 @@
 
   Drupal.behaviors.NdsbsSwitcher = {
     attach: function () {
-      var switcherRightItems = $('.switcher-right li');
+      if ($('body').hasClass('front')) {
+        var switcherRightItems = $('.switcher-right li');
 
-      switcherInit(switcherRightItems);
-
-      $(window).on('resize', function () {
         switcherInit(switcherRightItems);
-      });
 
-      switcherRightItems.on('shown', function (e) {
-        switcherRightItems.each(function () {
-          $(this).removeClass('switcher-reveal');
+        $(window).on('resize', function () {
+          switcherInit(switcherRightItems);
         });
 
-        $(e.target).addClass('switcher-reveal');
-      });
+        switcherRightItems.on('shown', function (e) {
+          switcherRightItems.each(function () {
+            $(this).removeClass('switcher-reveal');
+          });
+
+          $(e.target).addClass('switcher-reveal');
+        });
+      }
     }
   };
 
