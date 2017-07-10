@@ -175,15 +175,15 @@
   function switcherInit(switcherItems) {
     if ($(window).width() > 1200) {
       switcherItems.each(function () {
-        $(this).css('display', 'inline-block');
-        $(this).width($(this).innerWidth() - 38);
-        $(this).height($(this).innerHeight() - 38);
-        $(this).css('position', 'absolute');
+        //$(this).css('display', 'inline-block');
+        //$(this).width($(this).innerWidth() - 38);
+        //$(this).height($(this).innerHeight() - 38);
+        //$(this).css('position', 'absolute');
       });
     }
     else {
       switcherItems.each(function () {
-        $(this).removeAttr('style');
+        //$(this).removeAttr('style');
       });
     }
   }

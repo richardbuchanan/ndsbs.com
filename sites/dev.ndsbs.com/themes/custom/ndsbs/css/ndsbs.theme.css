@@ -532,6 +532,11 @@ body.offcanvas-closed #page-header>* {
     -ms-transform: translate(100em, 0);
     transform: translate(100em, 0);
   }
+  #assessments-switcher .switcher-right li.switcher-animate {
+    position: absolute;
+    min-height: 80px;
+    min-width: 360px;
+  }
   #assessments-switcher .switcher-right li.switcher-reveal {
     opacity: 1;
     -webkit-transform: translate(0, 0);
