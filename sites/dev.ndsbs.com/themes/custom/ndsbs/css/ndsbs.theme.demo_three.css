@@ -446,7 +446,7 @@ body.offcanvas-closed #page-header>* {
   }
   #header-below .block,
   #region-highlighted-wrapper .block {
-    min-width: 640px;
+    min-width: 680px;
   }
   #header-below .block h2.block-title,
   #region-highlighted-wrapper h2.block-title {
