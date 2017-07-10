@@ -16,6 +16,16 @@
  * @see theme()
  */
 
+function ndsbs_css_alter(&$css) {
+  $ndsbs = drupal_get_path('theme', 'ndsbs') . '/css/';
+  if (current_path() == 'node_two') {
+    $css['sites/localhost.ndsbs/themes/custom/ndsbs/css/ndsbs.theme.css']['data'] = $ndsbs . 'ndsbs.theme.demo_two.css';
+  }
+  elseif (current_path() == 'node_three') {
+    $css['sites/localhost.ndsbs/themes/custom/ndsbs/css/ndsbs.theme.css']['data'] = $ndsbs . 'ndsbs.theme.demo_three.css';
+  }
+}
+
 function ndsbs_js_alter(&$javascript) {
   unset($javascript['//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js']);
   unset($javascript['//cdnjs.cloudflare.com/ajax/libs/jquery-migrate/1.4.1/jquery-migrate.min.js']);

@@ -752,6 +752,23 @@ function bdg_ndsbs_block_view($delta = '') {
  * Outputs the frontpage header block.
  */
 function _ndsbs_frontpage_header_content() {
+  switch (current_path()) {
+    case 'node':
+      $output = _node_one();
+      break;
+
+    case 'node_two':
+      $output = _node_two();
+      break;
+
+    case 'node_three':
+      $output = _node_three();
+      break;
+  }
+  return $output;
+}
+
+function _node_one() {
   $nids = array(
     '328', // Alcohol
     '259', // DUI Alcohol
@@ -781,10 +798,134 @@ function _ndsbs_frontpage_header_content() {
   $anger = bdg_ndsbs_get_assessment_link($assessments['502']);
 
   $output = '<ul id="assessments-switcher" class="uk-switcher">';
-  $output .= '<li class="uk-active uk-display-inline-block uk-width-1-1">';
+  $output .= '<li class="uk-active">';
+
+  $output .= '<div class="uk-width-1-1 switcher-left" uk-switcher="active: -1">';
+  $output .= '<div class="uk-flex uk-flex-center"><button class="uk-button uk-button-default" type="button" aria-expanded="false">Alcohol Assessment</button></div>';
+  $output .= '<div class="uk-flex uk-flex-center uk-margin"><button class="uk-button uk-button-default" type="button" aria-expanded="false">Drug and Alcohol</button></div>';
+  $output .= '<div class="uk-flex uk-flex-center uk-margin"><button class="uk-button uk-button-default" type="button" aria-expanded="false">Mental Health</button></div>';
+  $output .= '<div class="uk-flex uk-flex-center uk-margin"><button class="uk-button uk-button-default" type="button" aria-expanded="false">Anger Management</button></div>';
+  $output .= '<div class="switcher-init uk-hidden"></div>';
+  $output .= '</div>';
+
+  $output .= '<ul class="uk-switcher uk-margin switcher-right">';
+  $output .= '<li class="switcher-animate">';
+  $output .= $alcohol . $dui . $minor;
+  $output .= '</li>';
+  $output .= '<li class="switcher-animate">';
+  $output .= $child_custody_alcohol . $child_custody_drug . $nursing;
+  $output .= '</li>';
+  $output .= "<li class='switcher-animate'>$mental</li>";
+  $output .= "<li class='switcher-animate'>$anger</li>";
+  $output .= '<li class="switcher-init uk-hidden"></li>';
+  $output .= '</ul>';
+
+  $output .= '</li>';
+  $output .= '</ul>';
+
+  $output .= '<div id="state-acceptance" class="uk-margin-large-top">';
+  $output .= '<hr style="border-top-width:3px;">';
+  $output .= '<h3 class="uk-margin-top">Not Sure About Acceptance in Your State?</h3>';
+  $output .= '<a href="/state-map" class="uk-display-inline-block"><span class="uk-margin-small-right" uk-icon="icon: world"></span><span style="vertical-align:middle">Check My State</span></a>';
+  $output .= '</div>';
+  return $output;
+}
+
+function _node_two() {
+  $nids = array(
+    '328', // Alcohol
+    '259', // DUI Alcohol
+    '271', // Minor in possession
+
+    '1843', // Child custody alcohol
+    '1844', // Child custody drug and alcohol
+    '5675', // Nursing & Professionals Substance
+
+    '2622', // Mental health
+
+    '502', // Anger management
+  );
+
+  $assessments = node_load_multiple($nids);
+
+  $alcohol = bdg_ndsbs_get_assessment_link($assessments['328']);
+  $dui = bdg_ndsbs_get_assessment_link($assessments['259']);
+  $minor = bdg_ndsbs_get_assessment_link($assessments['271']);
+
+  $child_custody_alcohol = bdg_ndsbs_get_assessment_link($assessments['1843']);
+  $child_custody_drug = bdg_ndsbs_get_assessment_link($assessments['1844']);
+  $nursing = bdg_ndsbs_get_assessment_link($assessments['5675']);
+
+  $mental = bdg_ndsbs_get_assessment_link($assessments['2622']);
+
+  $anger = bdg_ndsbs_get_assessment_link($assessments['502']);
+
+  $output = '<ul id="assessments-switcher" class="uk-switcher">';
+  $output .= '<li class="uk-active uk-display-inline-block uk-width-1-1 uk-position-relative">';
 
   $output .= '<ul class="uk-tab-right uk-tab uk-child-width-expand@s uk-child-width-auto@l switcher-left" uk-tab uk-switcher>';
-  $output .= '<li class="uk-active" aria-expanded="true"><a href="#" class="uk-text-center uk-text-left@l">Alcohol</a></li>';
+  $output .= '<li class="uk-active" aria-expanded="true"><a href="#" class="uk-text-center uk-text-left@l">Alcohol Assessment</a></li>';
+  $output .= '<li aria-expanded="false" class=""><a href="#" class="uk-text-center uk-text-left@l">Drug and Alcohol</a></li>';
+  $output .= '<li aria-expanded="false" class=""><a href="#" class="uk-text-center uk-text-left@l">Mental Health</a></li>';
+  $output .= '<li aria-expanded="false" class=""><a href="#" class="uk-text-center uk-text-left@l">Anger Management</a></li>';
+  $output .= '</ul>';
+
+  $output .= '<ul class="uk-switcher switcher-right">';
+  $output .= '<li>';
+  $output .= $alcohol . $dui . $minor;
+  $output .= '</li>';
+  $output .= '<li>';
+  $output .= $child_custody_alcohol . $child_custody_drug . $nursing;
+  $output .= '</li>';
+  $output .= "<li>$mental</li>";
+  $output .= "<li>$anger</li>";
+  $output .= '</ul>';
+
+  $output .= '</li>';
+  $output .= '</ul>';
+
+  $output .= '<div id="state-acceptance" class="uk-margin-large-top">';
+  $output .= '<hr style="border-top-width:3px;">';
+  $output .= '<h3 class="uk-margin-top">Not Sure About Acceptance in Your State?</h3>';
+  $output .= '<a href="/state-map" class="uk-display-inline-block"><span class="uk-margin-small-right" uk-icon="icon: world"></span><span style="vertical-align:middle">Check My State</span></a>';
+  $output .= '</div>';
+  return $output;
+}
+
+function _node_three() {
+  $nids = array(
+    '328', // Alcohol
+    '259', // DUI Alcohol
+    '271', // Minor in possession
+
+    '1843', // Child custody alcohol
+    '1844', // Child custody drug and alcohol
+    '5675', // Nursing & Professionals Substance
+
+    '2622', // Mental health
+
+    '502', // Anger management
+  );
+
+  $assessments = node_load_multiple($nids);
+
+  $alcohol = bdg_ndsbs_get_assessment_link($assessments['328']);
+  $dui = bdg_ndsbs_get_assessment_link($assessments['259']);
+  $minor = bdg_ndsbs_get_assessment_link($assessments['271']);
+
+  $child_custody_alcohol = bdg_ndsbs_get_assessment_link($assessments['1843']);
+  $child_custody_drug = bdg_ndsbs_get_assessment_link($assessments['1844']);
+  $nursing = bdg_ndsbs_get_assessment_link($assessments['5675']);
+
+  $mental = bdg_ndsbs_get_assessment_link($assessments['2622']);
+
+  $anger = bdg_ndsbs_get_assessment_link($assessments['502']);
+
+  $output = '<ul id="assessments-switcher" class="uk-switcher">';
+  $output .= '<li class="uk-active uk-display-inline-block uk-width-1-1 uk-position-relative">';
+
+  $output .= '<ul class="uk-tab-right uk-tab uk-child-width-expand@s uk-child-width-auto@l switcher-left" uk-tab uk-switcher>';
+  $output .= '<li class="uk-active" aria-expanded="true"><a href="#" class="uk-text-center uk-text-left@l">Alcohol Assessment</a></li>';
   $output .= '<li aria-expanded="false" class=""><a href="#" class="uk-text-center uk-text-left@l">Drug and Alcohol</a></li>';
   $output .= '<li aria-expanded="false" class=""><a href="#" class="uk-text-center uk-text-left@l">Mental Health</a></li>';
   $output .= '<li aria-expanded="false" class=""><a href="#" class="uk-text-center uk-text-left@l">Anger Management</a></li>';
@@ -817,6 +958,7 @@ function bdg_ndsbs_get_assessment_link($assessment) {
   $path = drupal_get_path_alias('node/' . $assessment->nid);
   $options = array(
     'attributes' => array('class' => array('uk-display-block')),
+    'html' => TRUE,
   );
   return l(t('@title', array('@title' => $title)), $path, $options);
 }

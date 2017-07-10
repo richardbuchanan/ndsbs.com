@@ -44,6 +44,26 @@
     }
   };
 
+  Drupal.behaviors.NdsbsSwitcher = {
+    attach: function () {
+      var switcherRightItems = $('.switcher-right li');
+
+      switcherInit(switcherRightItems);
+
+      $(window).on('resize', function () {
+        switcherInit(switcherRightItems);
+      });
+
+      switcherRightItems.on('shown', function (e) {
+        switcherRightItems.each(function () {
+          $(this).removeClass('switcher-reveal');
+        });
+
+        $(e.target).addClass('switcher-reveal');
+      });
+    }
+  };
+
   Drupal.behaviors.NdsbsNavbar = {
     attach: function () {
       var body = $('body');
@@ -149,4 +169,20 @@
       }
     }
   };
+
+  function switcherInit(switcherItems) {
+    if ($(window).width() > 1200) {
+      switcherItems.each(function () {
+        $(this).css('display', 'inline-block');
+        $(this).width($(this).innerWidth() - 38);
+        $(this).height($(this).innerHeight() - 38);
+        $(this).css('position', 'absolute');
+      });
+    }
+    else {
+      switcherItems.each(function () {
+        $(this).removeAttr('style');
+      });
+    }
+  }
 })(jQuery);

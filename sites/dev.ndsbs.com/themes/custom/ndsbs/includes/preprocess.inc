@@ -161,6 +161,7 @@ function ndsbs_preprocess_region(&$variables) {
   switch ($variables['region']) {
     case 'header':
       $variables['attributes_array']['class'][] = 'uk-width-1-1';
+      $variables['attributes_array']['class'][] = 'uk-position-relative';
       break;
 
     case 'footer':
