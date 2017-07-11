@@ -41,7 +41,7 @@
 
   <?php if ($rows): ?>
     <ul id="assessments-switcher" class="uk-switcher">
-      <li class="uk-active">
+      <li class="uk-active uk-visible@l">
 
         <div class="uk-width-1-1 switcher-left" uk-switcher="active: -1">
           <?php foreach ($items as $index => $item): ?>
@@ -59,6 +59,27 @@
           <li class="switcher-init uk-hidden"></li>
         </ul>
 
+      </li>
+
+      <li class="uk-active uk-hidden@l">
+        <div class="uk-width-1-1 switcher-left">
+
+          <?php foreach ($items as $index => $item): ?>
+            <div class="uk-flex uk-flex-center<?php if ($index) print ' uk-margin'; ?>">
+              <button class="uk-button uk-button-default" type="button" uk-toggle="target: #switcher-modal-<?php print $index; ?>"><?php print $item['title']; ?></button>
+
+              <div id="switcher-modal-<?php print $index; ?>" uk-modal="center: true">
+                <div class="uk-modal-dialog uk-modal-body">
+                  <button class="uk-modal-close-default" type="button" uk-close></button>
+                  <h2 class="uk-modal-title"><?php print $item['title']; ?></h2>
+                  <?php print $item['content']; ?>
+                </div>
+              </div>
+
+            </div>
+          <?php endforeach; ?>
+
+        </div>
       </li>
     </ul>
   <?php endif; ?>
