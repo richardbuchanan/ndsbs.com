@@ -178,6 +178,14 @@ function ndsbs_preprocess_views_view(&$variables) {
   $current_display = $variables['view']->current_display;
 
   if ($view_name == 'homepage_switcher' && $current_display == 'block') {
+
+    switch (current_path()) {
+      case 'node_two':
+      case 'node_three':
+        $variables['theme_hook_suggestions'][] = 'views_view__homepage_switcher__block__' . current_path();
+        break;
+    }
+
     $result = $variables['view']->result;
     $items = array();
 

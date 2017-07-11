@@ -10,12 +10,14 @@
  */
 function ndsbs_development_menu() {
   $items['node_two'] = array(
+    'title' => t('Demo two'),
     'page callback' => 'node_page_default_clone',
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
   );
 
   $items['node_three'] = array(
+    'title' => t('Demo three'),
     'page callback' => 'node_page_default_clone',
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
@@ -113,6 +115,7 @@ function node_page_default_clone() {
     ->addTag('node_access');
 
   $nids = $select->execute()->fetchCol();
+  $title = variable_get('site_frontpage_title');
 
   if (!empty($nids)) {
     $nodes = node_load_multiple($nids);
@@ -124,10 +127,10 @@ function node_page_default_clone() {
       '#theme' => 'pager',
       '#weight' => 5,
     );
-    drupal_set_title('');
+    drupal_set_title(t('@title', array('@title' => $title)));
   }
   else {
-    drupal_set_title(t('Welcome to @site-name', array('@site-name' => variable_get('site_name', 'Drupal'))), PASS_THROUGH);
+    drupal_set_title(t('@title', array('@title' => $title)));
 
     $default_message = '<p>' . t('No front page content has been created yet.') . '</p>';
 
