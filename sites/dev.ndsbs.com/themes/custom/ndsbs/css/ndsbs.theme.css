@@ -364,6 +364,15 @@ body.offcanvas-closed #page-header>* {
   text-align: left;
   width: 100%;
 }
+[id*=switcher-modal] .uk-modal-title {
+  margin-bottom: 10px;
+}
+[id*=switcher-modal] p {
+  margin: 10px 0;
+}
+[id*=switcher-modal] ul {
+  margin-top: 10px;
+}
 
 /**
  * Interactive map.
