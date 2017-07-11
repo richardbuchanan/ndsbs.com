@@ -183,6 +183,7 @@ function ndsbs_preprocess_views_view(&$variables) {
       case 'node_two':
       case 'node_three':
         $variables['theme_hook_suggestions'][] = 'views_view__homepage_switcher__block__' . current_path();
+        $variables['theme_hook_suggestion'] = 'views_view__homepage_switcher__block__' . current_path();
         break;
     }
 

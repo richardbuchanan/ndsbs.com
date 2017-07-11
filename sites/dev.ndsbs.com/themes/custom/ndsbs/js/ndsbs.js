@@ -47,12 +47,10 @@
   Drupal.behaviors.NdsbsSwitcher = {
     attach: function () {
       var switcherRightItems = $('.switcher-right li');
+      var demoThree = switcherRightItems.parents('.switcher-demo-three');
+      var closeSwitcher = $('.close-switcher');
 
-      switcherInit(switcherRightItems);
-
-      $(window).on('resize', function () {
-        switcherInit(switcherRightItems);
-      });
+      demoThree.css('min-height', demoThree.height());
 
       switcherRightItems.on('shown', function (e) {
         switcherRightItems.each(function () {
@@ -60,6 +58,13 @@
         });
 
         $(e.target).addClass('switcher-reveal');
+        demoThree.addClass('open');
+      });
+
+      closeSwitcher.click(function () {
+        $(this).parents('.switcher-animate').removeClass('uk-active');
+        $(this).parents('.switcher-animate').removeClass('switcher-reveal');
+        demoThree.removeClass('open');
       });
     }
   };

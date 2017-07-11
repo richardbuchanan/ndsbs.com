@@ -364,6 +364,9 @@ body.offcanvas-closed #page-header>* {
   text-align: left;
   width: 100%;
 }
+#assessments-switcher.open .switcher-left {
+  display: none;
+}
 
 /**
  * Interactive map.
@@ -509,45 +512,6 @@ body.offcanvas-closed #page-header>* {
   #assessments-switcher .switcher-left>.uk-active>a {
     border-left: 1px solid #1e87f0;
     border-bottom: none;
-  }
-  #assessments-switcher .switcher-right {
-    position: absolute;
-    left: 580px;
-    margin-top: 0 !important;
-  }
-  #assessments-switcher .switcher-right li {
-    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJod…BoZWlnaHQ9IjEiIGZpbGw9InVybCgjZ3JhZC11Y2dnLWdlbmVyYXRlZCkiIC8+Cjwvc3ZnPg==);
-    background: -moz-linear-gradient( top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.7) 100%);
-    background: -webkit-gradient( linear, left top, left bottom, color-stop(0%, rgba(0, 0, 0, 0.7)), color-stop(100%, rgba(0, 0, 0, 0.7)));
-    background: -webkit-linear-gradient( top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.7) 100%);
-    background: -o-linear-gradient( top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.7) 100%);
-    background: -ms-linear-gradient( top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.7) 100%);
-    background: linear-gradient( to bottom, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.7) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b3000000', endColorstr='#b3000000',GradientType=0);
-    padding: 20px;
-    opacity: 0;
-    -webkit-transition: 1s ease-in-out;
-    -moz-transition: 1s ease-in-out;
-    -o-transition: 1s ease-in-out;
-    transition: 0.8s ease-in-out, opacity 0.3s ease;
-    -webkit-transform: translate(100em, 0);
-    -moz-transform: translate(100em, 0);
-    -o-transform: translate(100em, 0);
-    -ms-transform: translate(100em, 0);
-    transform: translate(100em, 0);
-  }
-  #assessments-switcher .switcher-right li.switcher-animate {
-    position: absolute;
-    min-height: 80px;
-    min-width: 360px;
-  }
-  #assessments-switcher .switcher-right li.switcher-reveal {
-    opacity: 1;
-    -webkit-transform: translate(0, 0);
-    -moz-transform: translate(0, 0);
-    -o-transform: translate(0, 0);
-    -ms-transform: translate(0, 0);
-    transform: translate(0, 0);
   }
   #company-info-container {
     top: 2px;
