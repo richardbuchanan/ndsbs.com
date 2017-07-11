@@ -617,6 +617,10 @@ body.offcanvas-closed #page-header>* {
   margin: 0 !important;
 }
 
+#region-header-wrapper {
+  margin-top: 0;
+}
+
 #page-title-wrapper,
 #page-content {
   display: none;
