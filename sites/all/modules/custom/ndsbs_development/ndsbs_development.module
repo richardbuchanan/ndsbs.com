@@ -44,12 +44,25 @@ function ndsbs_development_block_info() {
  */
 function ndsbs_development_block_view($delta = '') {
   $block = array();
+  $options_two = array();
+  $options_three = array();
+
+  switch (current_path()) {
+    case 'node_two':
+      $options_two['attributes']['class'][] = 'uk-active';
+      break;
+
+    case 'node_three':
+      $options_three['attributes']['class'][] = 'uk-active';
+      break;
+  }
+
   $items = array(
     0 => array(
-      'data' => l(t('Demo #2'), '/node_two'),
+      'data' => l(t('Demo #2'), '/node_two', $options_two),
     ),
     1 => array(
-      'data' => l(t('Demo #3'), '/node_three'),
+      'data' => l(t('Demo #3'), '/node_three', $options_three),
     ),
   );
   $item_list = theme('item_list', array(

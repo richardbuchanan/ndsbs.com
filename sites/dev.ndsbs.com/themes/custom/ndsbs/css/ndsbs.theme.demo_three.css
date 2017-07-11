@@ -644,6 +644,10 @@ body.offcanvas-closed #page-header>* {
   padding: 0 !important;
   margin: 0 !important;
 }
+#block-ndsbs-development-frontpage-development-links a.uk-active {
+  color: #1e87f0 !important;
+}
+
 #page-title-wrapper,
 #region-content-wrapper {
   display: none;

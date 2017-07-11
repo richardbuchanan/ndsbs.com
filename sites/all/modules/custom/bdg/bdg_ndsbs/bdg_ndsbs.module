@@ -24,29 +24,6 @@ define('SA_ADMIN_EMAIL', 'nfo@ndsbs.com');
 define('SA_ADMIN_ADDRESS', '6797 N High Street Suite 350 Worthington OH 43085');
 
 /**
- * Implements hook_preprocess_HOOK().
- */
-function bdg_ndsbs_preprocess_textfield(&$variables) {
-  $name = isset($variables['element']['#field_name']) ? $variables['element']['#field_name'] : '';
-
-  if (($name == 'field_phone' || $name == 'field_second_phone')) {
-    $variables['theme_hook_suggestions'][] = 'textfield__phone';
-  }
-}
-
-/**
- * Implements hook_theme().
- */
-function bdg_ndsbs_questionnaire_theme() {
-  $items = array();
-  $items['questionnaire_start'] = array(
-    'render element' => 'form',
-    'template' => 'questionnaire_start',
-  );
-  return $items;
-}
-
-/**
  * Implements hook_permission().
  *
  * Define user permissions.
@@ -124,6 +101,127 @@ function bdg_ndsbs_menu() {
 }
 
 /**
+ * Implements hook_theme().
+ */
+function bdg_ndsbs_questionnaire_theme() {
+  return array(
+    'questionnaire_start' => array(
+      'render element' => 'form',
+      'template' => 'questionnaire_start',
+    ),
+  );
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function bdg_ndsbs_block_info() {
+  $blocks = array();
+
+  // Create a frontpage header block.
+  $blocks['ndsbs_frontpage_header'] = array(
+    'info' => t('NDSBS Frontpage Header'),
+  );
+
+  // Create a copyright block.
+  $blocks['ndsbs_copyright'] = array(
+    'info' => t('NDSBS copyright'),
+  );
+
+  // Create a main menu block.
+  $blocks['ndsbs_main_menu'] = array(
+    'info' => t('NDSBS main menu'),
+  );
+
+  // Create a site seals block.
+  $blocks['ndsbs_site_seals'] = array(
+    'info' => t('NDSBS site seals'),
+  );
+
+  // Create interactive map block.
+  $blocks['ndsbs_interactive_map'] = array(
+    'info' => t('NDSBS Interactive Map'),
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function bdg_ndsbs_block_view($delta = '') {
+  global $_bdg_maps_states;
+  $block = array();
+
+  // Define the rendering of custom blocks.
+  switch ($delta) {
+    case 'ndsbs_frontpage_header':
+      $block['subject'] = '';
+      $block['content'] = _ndsbs_frontpage_header_content();
+      break;
+
+    case 'ndsbs_copyright':
+      $block['subject'] = '';
+      $block['content'] = _ndsbs_copyright_content();
+      break;
+
+    case 'ndsbs_main_menu':
+      $block['subject'] = '';
+      $block['content'] = _ndsbs_main_menu_content();
+      break;
+
+    case 'ndsbs_site_seals':
+      $block['subject'] = '';
+      $block['content'] = _ndsbs_site_seals_content();
+      break;
+
+    case 'ndsbs_interactive_map':
+      $line_one = array();
+      $line_two = array();
+      $line_three = array();
+      $line_four = array();
+
+      foreach ($_bdg_maps_states as $abbr => $state) {
+        $abbr_lower = strtolower($abbr);
+        $line_one[$abbr] = variable_get($abbr_lower . '_line_one');
+        $line_two[$abbr] = variable_get($abbr_lower . '_line_two');
+        $line_three[$abbr] = variable_get($abbr_lower . '_line_three');
+        $line_four[$abbr] = variable_get($abbr_lower . '_line_four');
+      }
+
+      $id = 'interactive-map';
+      $block['subject'] = '';
+      $block['content'] = array(
+        '#markup' => _ndsbs_interactive_map_content($id),
+        '#attached' => array(
+          'css' => array(),
+          'js' => array(
+            drupal_add_js('//newsignature.github.io/us-map/js/libs/raphael.js', array('type' => 'external')),
+            drupal_add_js('https://newsignature.github.io/us-map/js/libs/jquery.usmap.js', array('type' => 'external')),
+            drupal_add_js(array(
+              'bdg_ndsbs' => array(
+                'accepted' => $accepted,
+                'line_one' => $line_one,
+                'line_two' => $line_two,
+                'line_three' => $line_three,
+                'line_four' => $line_four,
+                'global_states' => $_bdg_maps_states,
+              ),
+            ),
+              array(
+                'type' => 'setting',
+              )
+            ),
+          ),
+        ),
+      );
+      break;
+  }
+
+  return $block;
+}
+
+/**
  * Implements hook_exit().
  *
  * @see drupal_serve_page_from_cache()
@@ -150,6 +248,52 @@ function bdg_ndsbs_node_update($node) {
       $term->field_assessment_amount['und'][0]['value'] = $cost;
       taxonomy_term_save($term);
     }
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function bdg_ndsbs_form_menu_edit_item_alter(&$form, &$form_state, $form_id) {
+  // Add a class field to the form so we can assign specific classes to each
+  // menu item.
+  // @see https://api.drupal.org/api/drupal/developer!topics!forms_api_reference.html/7
+  $form['link_class'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Link class'),
+    '#description' => 'The class to be used for this link, which will be added to the menu item for theming purposes. You can enter multiple classes, separating each with a space.',
+    '#weight' => 0.003,
+    '#default_value' => variable_get('link_class', ''),
+  );
+  $form['#validate'][] = 'bdg_ndsbs_menu_item_validate';
+  $form['#submit'][] = 'bdg_ndsbs_menu_item_submit';
+}
+
+/**
+ * Callback to validate menu items.
+ */
+function bdg_ndsbs_menu_item_validate($form, &$form_state) {
+  if ($error) {
+    form_set_error('link_class', 'test validation');
+  }
+}
+
+/**
+ * Callback when submitting menu items.
+ */
+function bdg_ndsbs_menu_item_submit($form, &$form_state) {
+  // Save the new value.
+  variable_set('link_class', $form_state['values']['link_class']);
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function bdg_ndsbs_preprocess_textfield(&$variables) {
+  $name = isset($variables['element']['#field_name']) ? $variables['element']['#field_name'] : '';
+
+  if (($name == 'field_phone' || $name == 'field_second_phone')) {
+    $variables['theme_hook_suggestions'][] = 'textfield__phone';
   }
 }
 
@@ -605,163 +749,23 @@ function bdg_ndsbs_get_steps_page_no_base_url() {
 }
 
 /**
- * Implements hook_form_FORM_ID_alter().
- */
-function bdg_ndsbs_form_menu_edit_item_alter(&$form, &$form_state, $form_id) {
-  // Add a class field to the form so we can assign specific classes to each
-  // menu item.
-  // @see https://api.drupal.org/api/drupal/developer!topics!forms_api_reference.html/7
-  $form['link_class'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Link class'),
-    '#description' => 'The class to be used for this link, which will be added to the menu item for theming purposes. You can enter multiple classes, separating each with a space.',
-    '#weight' => 0.003,
-    '#default_value' => variable_get('link_class', ''),
-  );
-  $form['#validate'][] = 'bdg_ndsbs_menu_item_validate';
-  $form['#submit'][] = 'bdg_ndsbs_menu_item_submit';
-}
-
-/**
- * Callback to validate menu items.
- */
-function bdg_ndsbs_menu_item_validate($form, &$form_state) {
-  if ($error) {
-    form_set_error('link_class', 'test validation');
-  }
-}
-
-/**
- * Callback when submitting menu items.
- */
-function bdg_ndsbs_menu_item_submit($form, &$form_state) {
-  // Save the new value.
-  variable_set('link_class', $form_state['values']['link_class']);
-}
-
-/**
- * Implements hook_block_info().
- */
-function bdg_ndsbs_block_info() {
-  $blocks = array();
-
-  // Create a frontpage header block.
-  $blocks['ndsbs_frontpage_header'] = array(
-    'info' => t('NDSBS Frontpage Header'),
-  );
-
-  // Create a copyright block.
-  $blocks['ndsbs_copyright'] = array(
-    'info' => t('NDSBS copyright'),
-  );
-
-  // Create a main menu block.
-  $blocks['ndsbs_main_menu'] = array(
-    'info' => t('NDSBS main menu'),
-  );
-
-  // Create a site seals block.
-  $blocks['ndsbs_site_seals'] = array(
-    'info' => t('NDSBS site seals'),
-  );
-
-  // Create interactive map block.
-  $blocks['ndsbs_interactive_map'] = array(
-    'info' => t('NDSBS Interactive Map'),
-  );
-
-  return $blocks;
-}
-
-/**
- * Implements hook_block_view().
- */
-function bdg_ndsbs_block_view($delta = '') {
-  global $_bdg_maps_states;
-  $block = array();
-
-  // Define the rendering of custom blocks.
-  switch ($delta) {
-    case 'ndsbs_frontpage_header':
-      $block['subject'] = '';
-      $block['content'] = _ndsbs_frontpage_header_content();
-      break;
-
-    case 'ndsbs_copyright':
-      $block['subject'] = '';
-      $block['content'] = _ndsbs_copyright_content();
-      break;
-
-    case 'ndsbs_main_menu':
-      $block['subject'] = '';
-      $block['content'] = _ndsbs_main_menu_content();
-      break;
-
-    case 'ndsbs_site_seals':
-      $block['subject'] = '';
-      $block['content'] = _ndsbs_site_seals_content();
-      break;
-
-    case 'ndsbs_interactive_map':
-      $line_one = array();
-      $line_two = array();
-      $line_three = array();
-      $line_four = array();
-
-      foreach ($_bdg_maps_states as $abbr => $state) {
-        $abbr_lower = strtolower($abbr);
-        $line_one[$abbr] = variable_get($abbr_lower . '_line_one');
-        $line_two[$abbr] = variable_get($abbr_lower . '_line_two');
-        $line_three[$abbr] = variable_get($abbr_lower . '_line_three');
-        $line_four[$abbr] = variable_get($abbr_lower . '_line_four');
-      }
-
-      $id = 'interactive-map';
-      $block['subject'] = '';
-      $block['content'] = array(
-        '#markup' => _ndsbs_interactive_map_content($id),
-        '#attached' => array(
-          'css' => array(),
-          'js' => array(
-            drupal_add_js('//newsignature.github.io/us-map/js/libs/raphael.js', array('type' => 'external')),
-            drupal_add_js('https://newsignature.github.io/us-map/js/libs/jquery.usmap.js', array('type' => 'external')),
-            drupal_add_js(array(
-              'bdg_ndsbs' => array(
-                'accepted' => $accepted,
-                'line_one' => $line_one,
-                'line_two' => $line_two,
-                'line_three' => $line_three,
-                'line_four' => $line_four,
-                'global_states' => $_bdg_maps_states,
-              ),
-            ),
-              array(
-                'type' => 'setting',
-              )
-            ),
-          ),
-        ),
-      );
-      break;
-  }
-
-  return $block;
-}
-
-/**
  * Outputs the frontpage header block.
  */
 function _ndsbs_frontpage_header_content() {
+  $homepage_title = variable_get('site_frontpage_title');
+
   switch (current_path()) {
     case 'node':
       $output = _node_one();
       break;
 
     case 'node_two':
+      drupal_set_title(t('@title', array('@title' => $homepage_title)));
       $output = _node_two();
       break;
 
     case 'node_three':
+      drupal_set_title(t('@title', array('@title' => $homepage_title)));
       $output = _node_three();
       break;
   }

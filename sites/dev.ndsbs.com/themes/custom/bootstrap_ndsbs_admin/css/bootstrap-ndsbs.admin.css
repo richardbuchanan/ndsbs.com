@@ -149,3 +149,28 @@
 html.js .module-filter-inputs-wrapper input[name="module_filter[name]"] {
   margin: 0;
 }
+table.draggable>thead>tr>th,
+table.draggable>tbody>tr>td {
+  vertical-align: middle;
+}
+table.draggable th.views-field-views-bulk-operations {
+  padding-left: 60px;
+}
+table.draggable th.views-field-views-bulk-operations .form-type-checkbox:after {
+  display: inline-block;
+  content: "Title";
+}
+table.draggable th.views-field-views-bulk-operations input[type="checkbox"] {
+  top: 2px;
+  margin: 0 6px 0 0;
+}
+table.draggable td.views-field-views-bulk-operations {
+  cursor: pointer;
+}
+table.draggable td.views-field-views-bulk-operations .tabledrag-handle .glyphicon {
+  top: 4px;
+}
+table.draggable td.views-field-views-bulk-operations input[type="checkbox"] {
+  top: 2px;
+  margin: 0 6px 0 22px;
+}

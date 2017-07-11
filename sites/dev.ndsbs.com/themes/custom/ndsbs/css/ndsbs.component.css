@@ -10,6 +10,14 @@
   color: #666;
   margin-top: 20px;
 }
+body.front #region-content .block-system,
+body.page_node_two #region-content .block-system,
+body.page_node_three #region-content .block-system,
+body.front .feed-icon,
+body.page_node_two .feed-icon,
+body.page_node_three .feed-icon {
+  display: none;
+}
 
 /**
  * Views slideshow.

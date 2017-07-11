@@ -169,3 +169,25 @@ function ndsbs_preprocess_region(&$variables) {
       break;
   }
 }
+
+/**
+ * Implements hook_preprocess_HOOK() for views-view.tpl.php.
+ */
+function ndsbs_preprocess_views_view(&$variables) {
+  $view_name = $variables['view']->name;
+  $current_display = $variables['view']->current_display;
+
+  if ($view_name == 'homepage_switcher' && $current_display == 'block') {
+    $result = $variables['view']->result;
+    $items = array();
+
+    foreach ($result as $index => $item) {
+      $items[$index] = array(
+        'title' => t($item->node_title),
+        'content' => $item->field_body[0]['rendered']['#markup'],
+      );
+    }
+
+    $variables['items'] = $items;
+  }
+}

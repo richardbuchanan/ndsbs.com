@@ -487,6 +487,10 @@ body.offcanvas-closed #page-header>* {
   #header-below .block #state-acceptance {
     text-align: left;
   }
+  #assessments-switcher {
+    display: inline-block;
+    width: 100%;
+  }
   #assessments-switcher .switcher-left {
     -ms-flex-direction: column;
     -webkit-flex-direction: column;
