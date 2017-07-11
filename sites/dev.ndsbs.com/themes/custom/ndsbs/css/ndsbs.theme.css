@@ -515,7 +515,10 @@ body.offcanvas-closed #page-header>* {
     left: 580px;
     margin-top: 0 !important;
   }
-  #assessments-switcher .switcher-right li {
+  #assessments-switcher .switcher-right li.switcher-animate {
+    position: absolute;
+    min-height: 80px;
+    min-width: 360px;
     background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJod…BoZWlnaHQ9IjEiIGZpbGw9InVybCgjZ3JhZC11Y2dnLWdlbmVyYXRlZCkiIC8+Cjwvc3ZnPg==);
     background: -moz-linear-gradient( top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.7) 100%);
     background: -webkit-gradient( linear, left top, left bottom, color-stop(0%, rgba(0, 0, 0, 0.7)), color-stop(100%, rgba(0, 0, 0, 0.7)));
@@ -535,11 +538,6 @@ body.offcanvas-closed #page-header>* {
     -o-transform: translate(100em, 0);
     -ms-transform: translate(100em, 0);
     transform: translate(100em, 0);
-  }
-  #assessments-switcher .switcher-right li.switcher-animate {
-    position: absolute;
-    min-height: 80px;
-    min-width: 360px;
   }
   #assessments-switcher .switcher-right li.switcher-reveal {
     opacity: 1;
