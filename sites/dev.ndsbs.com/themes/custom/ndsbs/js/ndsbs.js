@@ -34,7 +34,9 @@
         html.removeClass('ndsbs-overflow-initial');
       });
 
-      pageHeader.css('min-height', viewportHeight - adminMenuHeight);
+      if (body.hasClass('front')) {
+        pageHeader.css('min-height', viewportHeight - adminMenuHeight);
+      }
 
       if (pageHighlighted.length) {
         pageHighlighted.css('min-height', viewportHeight - adminMenuHeight);
