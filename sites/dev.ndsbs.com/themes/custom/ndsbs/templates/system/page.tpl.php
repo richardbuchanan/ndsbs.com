@@ -83,19 +83,11 @@
       <a href="#offcanvas" uk-toggle uk-navbar-toggle-icon class="uk-navbar-toggle uk-navbar-toggle-icon uk-icon uk-hidden@l"></a>
 
       <?php if ($logo): ?>
-        <a href="<?php print $front_page; ?>" id="site-logo" class="uk-navbar-item uk-logo uk-visible@l" title="<?php print t('Home'); ?>" rel="home">
+        <a href="<?php print $front_page; ?>" id="site-logo" class="uk-navbar-item uk-logo" title="<?php print t('Home'); ?>" rel="home">
           <img class="uk-margin-small-right" src="<?php print $logo; ?>" alt="<?php print t('Home'); ?>" />
         </a>
       <?php endif; ?>
     </div>
-
-    <?php if ($logo): ?>
-      <div class="uk-navbar-center uk-hidden@l">
-        <a href="<?php print $front_page; ?>" id="site-logo" class="uk-navbar-item uk-logo" title="<?php print t('Home'); ?>" rel="home">
-          <img class="logo--small" src="<?php print $logo; ?>" alt="<?php print t('Home'); ?>" />
-        </a>
-      </div>
-    <?php endif; ?>
 
     <div class="uk-navbar-right">
       <?php print render($company_info); ?>
@@ -108,7 +100,6 @@
       <?php endif; ?>
     </div>
 
-    <?php print render($company_info_small); ?>
   </nav>
 
   <?php if ($page['header'] || ($title && !$is_front)): ?>

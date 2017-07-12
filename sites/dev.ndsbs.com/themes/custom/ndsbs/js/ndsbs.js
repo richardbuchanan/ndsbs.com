@@ -50,17 +50,35 @@
       var c = faqView.find('.views-field:nth-child(3)');
       var d = faqView.find('.views-field:nth-child(4)');
 
-      if (b.length && (a.find('h3').height() !== b.find('h3').height())) {
-          var e = Math.max(a.find('h3').outerHeight(), b.find('h2').outerHeight());
-          a.find('h3').height(e);
-          b.find('h3').height(e);
+      matchHeight();
+      $(window).resize(function () {
+        matchHeight();
+      });
+
+      function matchHeight() {
+        if ($(window).width() >= 960) {
+          if (b.length && (a.find('h3').height() !== b.find('h3').height())) {
+            var e = Math.max(a.find('h3').outerHeight(), b.find('h2')
+              .outerHeight());
+            a.find('h3').height(e);
+            b.find('h3').height(e);
+          }
+
+          if (d.length && (c.find('h3').height() !== d.find('h3').height())) {
+            var f = Math.max(c.find('h3').outerHeight(), d.find('h3')
+              .outerHeight());
+            c.find('h3').height(f);
+            d.find('h3').height(f);
+          }
+        }
+        else {
+          a.find('h3').removeAttr('style');
+          b.find('h3').removeAttr('style');
+          c.find('h3').removeAttr('style');
+          d.find('h3').removeAttr('style');
+        }
       }
 
-      if (d.length && (c.find('h3').height() !== d.find('h3').height())) {
-        var f = Math.max(c.find('h3').outerHeight(), d.find('h3').outerHeight());
-        c.find('h3').height(f);
-        d.find('h3').height(f);
-      }
     }
   };
 

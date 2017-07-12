@@ -81,17 +81,6 @@ function ndsbs_preprocess_page(&$variables) {
     '#type' => 'container',
     '#attributes' => array(
       'id' => 'company-info-container',
-      'class' => array('uk-visible@l'),
-    ),
-    'phone' => array(
-      '#markup' => $phone,
-    ),
-  );
-  $variables['company_info_small'] = array(
-    '#type' => 'container',
-    '#attributes' => array(
-      'id' => 'company-info-container--small',
-      'class' => array('uk-hidden@l'),
     ),
     'phone' => array(
       '#markup' => $phone,
@@ -120,17 +109,6 @@ function ndsbs_preprocess_block(&$variables) {
   $classes = NdsbsBlock::getBlockClasses($region, $delta);
   $title = $variables['block']->subject;
 
-  if (!empty($title)) {
-    $title = explode('&lt;br&gt;', $title);
-    $title = implode('<br>', $title);
-  }
-
-  $block_title = array(
-    '#markup' => $title,
-  );
-
-  $variables['block_title'] = render($block_title);
-
   if ($classes) {
     foreach ($classes as $class) {
       $variables['classes_array'][] = $class;
@@ -142,6 +120,22 @@ function ndsbs_preprocess_block(&$variables) {
   if ($region == 'header') {
     $variables['classes_array'][] = 'ie9-gradient';
   }
+
+  if (!empty($title)) {
+    $title = explode('&lt;br&gt;', $title);
+    $title = implode(' <wbr>', $title);
+
+    if ($region == 'header') {
+      $title = str_replace('Trusted Court ', '<span class="highlight">Trusted Court </span>', $title);
+      $title = str_replace('Assessment', '<span class="highlight">Assessment</span>', $title);
+    }
+  }
+
+  $block_title = array(
+    '#markup' => $title,
+  );
+
+  $variables['block_title'] = render($block_title);
 }
 
 /**

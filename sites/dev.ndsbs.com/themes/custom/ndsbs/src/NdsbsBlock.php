@@ -33,7 +33,7 @@ class NdsbsBlock {
 
       case 'header':
         $classes[] = 'uk-width-1-1';
-        $classes[] = 'uk-width-1-1@m';
+        $classes[] = 'uk-width-1-2@m';
         $classes[] = 'uk-width-2-5@l';
         break;
     }
