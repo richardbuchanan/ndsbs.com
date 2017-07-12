@@ -139,16 +139,6 @@ function ndsbs_preprocess_block(&$variables) {
 }
 
 /**
- * Implements template_preprocess_link().
- */
-function ndsbs_preprocess_link(&$variables) {
-  // @todo Research why Drupal strips "icon:" from the uk-icon attribute.
-  if ($variables['text'] == '<span uk-icon=" user"></span>') {
-    $variables['text'] = '<span uk-icon="icon: user; ratio: 2"></span>';
-  }
-}
-
-/**
  * Implements hook_preprocess_HOOK() for region.tpl.php.
  */
 function ndsbs_preprocess_region(&$variables) {
@@ -161,6 +151,27 @@ function ndsbs_preprocess_region(&$variables) {
     case 'footer':
       $variables['attributes_array']['uk-grid'] = '';
       break;
+  }
+}
+
+/**
+ * Implements template_preprocess_link().
+ */
+function ndsbs_preprocess_link(&$variables) {
+  // @todo Research why Drupal strips "icon:" from the uk-icon attribute.
+  if ($variables['text'] == '<span uk-icon=" user"></span>') {
+    $variables['text'] = '<span uk-icon="icon: user; ratio: 2"></span>';
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for theme_links().
+ */
+function ndsbs_preprocess_links(&$variables) {
+  $node_links = isset($variables['theme_hook_suggestion']) && $variables['theme_hook_suggestion'] == 'links__node';
+
+  if ($node_links && !empty($variables['links']) && current_path() == 'node') {
+    $variables['links'] = array();
   }
 }
 
