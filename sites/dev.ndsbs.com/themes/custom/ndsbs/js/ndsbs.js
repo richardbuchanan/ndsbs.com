@@ -34,9 +34,7 @@
         html.removeClass('ndsbs-overflow-initial');
       });
 
-      if (body.hasClass('front') || body.hasClass('page-node-two') || body.hasClass('page-node-three')) {
-        pageHeader.css('min-height', viewportHeight - adminMenuHeight);
-      }
+      pageHeader.css('min-height', viewportHeight - adminMenuHeight);
 
       if (pageHighlighted.length) {
         pageHighlighted.css('min-height', viewportHeight - adminMenuHeight);
@@ -44,56 +42,29 @@
     }
   };
 
-  Drupal.behaviors.NdsbsSwitcher = {
+  Drupal.behaviors.NDSBSFaqVideos = {
     attach: function () {
-      var switcherRightItems = $('.switcher-right li');
-      var demoThree = switcherRightItems.parents('.switcher-demo-three');
-      var closeSwitcher = $('.close-switcher');
+      var faqView = $('.view-faq-videos');
+      var a = faqView.find('.views-field:nth-child(1)');
+      var b = faqView.find('.views-field:nth-child(2)');
+      var c = faqView.find('.views-field:nth-child(3)');
+      var d = faqView.find('.views-field:nth-child(4)');
 
-      demoThree.css('min-height', demoThree.height());
+      if (b.length && (a.find('h3').height() !== b.find('h3').height())) {
+          var e = Math.max(a.find('h3').outerHeight(), b.find('h2').outerHeight());
+          a.find('h3').height(e);
+          b.find('h3').height(e);
+      }
 
-      switcherRightItems.on('shown', function (e) {
-        switcherRightItems.each(function () {
-          $(this).removeClass('switcher-reveal');
-        });
-
-        $(e.target).addClass('switcher-reveal');
-        demoThree.addClass('open');
-      });
-
-      closeSwitcher.click(function () {
-        $(this).parents('.switcher-animate').removeClass('uk-active');
-        $(this).parents('.switcher-animate').removeClass('switcher-reveal');
-        demoThree.removeClass('open');
-      });
+      if (d.length && (c.find('h3').height() !== d.find('h3').height())) {
+        var f = Math.max(c.find('h3').outerHeight(), d.find('h3').outerHeight());
+        c.find('h3').height(f);
+        d.find('h3').height(f);
+      }
     }
   };
 
-  Drupal.behaviors.NdsbsNavbar = {
-    attach: function () {
-      var body = $('body');
-      var pageNavbar = $('#page-navbar');
-      var offcanvas = $('#offcanvas');
-
-      pageNavbar.on('beforeshow', function () {
-        body.addClass('navbar-open');
-        body.removeClass('navbar-closed');
-      }).on('hidden', function () {
-        body.removeClass('navbar-open');
-        body.addClass('navbar-closed');
-      });
-
-      offcanvas.on('beforeshow', function () {
-        body.addClass('offcanvas-open');
-        body.removeClass('offcanvas-closed');
-      }).on('hidden', function () {
-        body.removeClass('offcanvas-open');
-        body.addClass('offcanvas-closed');
-      });
-    }
-  };
-
-  Drupal.behaviors.NdsbsInteractiveMaps = {
+  Drupal.behaviors.NDSBSInteractiveMaps = {
     attach: function () {
 
       /**
@@ -172,6 +143,57 @@
           });
         }
       }
+    }
+  };
+
+  Drupal.behaviors.NDSBSNavbar = {
+    attach: function () {
+      var body = $('body');
+      var pageNavbar = $('#page-navbar');
+      var offcanvas = $('#offcanvas');
+
+      pageNavbar.on('beforeshow', function () {
+        body.addClass('navbar-open');
+        body.removeClass('navbar-closed');
+      }).on('hidden', function () {
+        body.removeClass('navbar-open');
+        body.addClass('navbar-closed');
+      });
+
+      offcanvas.on('beforeshow', function () {
+        body.addClass('offcanvas-open');
+        body.removeClass('offcanvas-closed');
+      }).on('hidden', function (e) {
+        if (!offcanvas.hasClass('uk-open')) {
+          body.removeClass('offcanvas-open');
+          body.addClass('offcanvas-closed');
+        }
+      });
+    }
+  };
+
+  Drupal.behaviors.NDSBSSwitcher = {
+    attach: function () {
+      var switcherRightItems = $('.switcher-right li');
+      var demoThree = switcherRightItems.parents('.switcher-demo-three');
+      var closeSwitcher = $('.close-switcher');
+
+      demoThree.css('min-height', demoThree.height());
+
+      switcherRightItems.on('shown', function (e) {
+        switcherRightItems.each(function () {
+          $(this).removeClass('switcher-reveal');
+        });
+
+        $(e.target).addClass('switcher-reveal');
+        demoThree.addClass('open');
+      });
+
+      closeSwitcher.click(function () {
+        $(this).parents('.switcher-animate').removeClass('uk-active');
+        $(this).parents('.switcher-animate').removeClass('switcher-reveal');
+        demoThree.removeClass('open');
+      });
     }
   };
 })(jQuery);

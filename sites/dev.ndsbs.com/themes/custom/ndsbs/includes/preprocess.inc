@@ -171,7 +171,7 @@ function ndsbs_preprocess_region(&$variables) {
 }
 
 /**
- * Implements hook_preprocess_HOOK() for views-view.tpl.php.
+ * Implements template_process_views_view().
  */
 function ndsbs_preprocess_views_view(&$variables) {
   $view_name = $variables['view']->name;
@@ -198,5 +198,27 @@ function ndsbs_preprocess_views_view(&$variables) {
     }
 
     $variables['items'] = $items;
+  }
+}
+
+/**
+ * Implements template_preprocess_views_view_field().
+ */
+function ndsbs_preprocess_views_view_field(&$variables) {
+  $view_name = $variables['view']->name;
+  $current_display = $variables['view']->current_display;
+
+  if ($view_name == 'faq_videos' && $current_display == 'frontpage_block') {
+    $output = $variables['output'];
+    preg_match("/<div>(.*?)<\/div>/", $output, $output_array);
+
+    if ($output_array) {
+      $search = $output_array[0];
+      $video_id = explode('https://vimeo.com/', $output_array[1]);
+      $replace = '<div class="uk-cover-container">';
+      $replace .= '<iframe src="https://player.vimeo.com/video/' . $video_id[1] . '?title=0&byline=0&portrait=0" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+      $replace .= '</div>';
+      $variables['output'] = str_replace($search, $replace, $output);
+    }
   }
 }

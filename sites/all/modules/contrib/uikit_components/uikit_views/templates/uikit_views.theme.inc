@@ -6,6 +6,67 @@
  */
 
 /**
+ * Prepares variables for UIkit Accordion templates.
+ *
+ * Default template: uikit-view-accordion.tpl.php.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - view: A ViewExecutable object.
+ *   - rows: The raw row data.
+ */
+function template_preprocess_uikit_view_accordion(&$variables) {
+  $view = $variables['view'];
+  $handler = $view->style_plugin;
+  $options = $handler->options;
+  $title_field = $options['title_field'];
+  $accordion_data = [];
+  $items = [];
+
+  if ($title_field) {
+    foreach ($variables['rows'] as $result_index => $item) {
+      $title_value = $handler->get_field($result_index, $title_field);
+      $title = preg_replace('/<a[^>]*?>([\\s\\S]*?)<\/a>/', '\\1', $title_value);
+      $items[$result_index]['content'] = $item;
+      $items[$result_index]['title'] = $title;
+    }
+  }
+
+  // Set items array for twig template.
+  $variables['items'] = $items;
+
+  // Create attributes for accordion.
+  $accordion_data[] = 'targets: ' . ($options['targets'] ? $options['targets'] : '> *');
+  $accordion_data[] = 'active: ' . ($options['active'] ? $options['active'] : 'false');
+  $accordion_data[] = 'collapsible: ' . ($options['collapsible'] ? 'true' : 'false');
+  $accordion_data[] = 'multiple: ' . ($options['multiple'] ? 'true' : 'false');
+  $accordion_data[] = 'animation: ' . ($options['animation'] ? 'true' : 'false');
+  $accordion_data[] = 'transition: ' . $options['transition'];
+  $accordion_data[] = 'duration: ' . $options['duration'];
+  $data_accordion = implode('; ', $accordion_data);
+
+  $accordion_attributes['class'][] = 'uk-accordion';
+  $accordion_attributes['uk-accordion'] = $data_accordion;
+
+  // Set accordion attributes for twig template.
+  $variables['accordion_attributes_array'] = $accordion_attributes;
+}
+
+/**
+ * Prepares variables for UIkit Accordion templates.
+ *
+ * Default template: uikit-view-accordion.tpl.php.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - view: A ViewExecutable object.
+ *   - rows: The raw row data.
+ */
+function template_process_uikit_view_accordion(&$variables) {
+  $variables['accordion_attributes'] = drupal_attributes($variables['accordion_attributes_array']);
+}
+
+/**
  * Prepares variables for UIkit Grid templates.
  *
  * Default template: uikit-view-grid.tpl.php.
