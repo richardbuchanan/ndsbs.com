@@ -46,15 +46,19 @@
 
           <?php foreach ($items as $index => $item): ?>
             <div class="uk-flex uk-flex-center<?php if ($index) print ' uk-margin'; ?>">
-              <button class="uk-button uk-button-default" type="button" uk-toggle="target: #switcher-modal-<?php print $index; ?>"><?php print $item['title']; ?></button>
+              <?php if ($item['direct_link']): ?>
+                <a href="/<?php print $item['direct_link']; ?>" class="uk-button uk-button-default"><?php print $item['title']; ?></a>
+              <?php else: ?>
+                <button class="uk-button uk-button-default" type="button" uk-toggle="target: #switcher-modal-<?php print $index; ?>"><?php print $item['title']; ?></button>
 
-              <div id="switcher-modal-<?php print $index; ?>" uk-modal="center: true">
-                <div class="uk-modal-dialog uk-modal-body">
-                  <button class="uk-modal-close-default" type="button" uk-close></button>
-                  <h2 class="uk-modal-title"><?php print $item['title']; ?></h2>
-                  <?php print $item['content']; ?>
+                <div id="switcher-modal-<?php print $index; ?>" uk-modal="center: true">
+                  <div class="uk-modal-dialog uk-modal-body">
+                    <button class="uk-modal-close-default" type="button" uk-close></button>
+                    <h2 class="uk-modal-title"><?php print $item['title']; ?></h2>
+                    <?php print $item['content']; ?>
+                  </div>
                 </div>
-              </div>
+              <?php endif; ?>
 
             </div>
           <?php endforeach; ?>

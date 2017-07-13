@@ -188,9 +188,20 @@ function ndsbs_preprocess_views_view(&$variables) {
     $items = array();
 
     foreach ($result as $index => $item) {
+      $node = node_load($item->nid);
+      $direct_link = isset($node->field_direct_link_to_assessment['und']);
+
+      if ($direct_link) {
+        $link_assessment = drupal_get_path_alias('node/' . $node->field_assessment_link['und'][0]['target_id']);
+      }
+      else {
+        $link_assessment = FALSE;
+      }
+
       $items[$index] = array(
         'title' => t($item->node_title),
         'content' => $item->field_body[0]['rendered']['#markup'],
+        'direct_link' => $link_assessment,
       );
     }
 
