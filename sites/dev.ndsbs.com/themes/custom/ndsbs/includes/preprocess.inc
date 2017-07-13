@@ -80,14 +80,14 @@ function ndsbs_preprocess_page(&$variables) {
   );
 
   // Create a description variable for node pages.
-  $variables['page_description'];
+  $variables['page_description'] = FALSE;
 
   if (isset($variables['node'])) {
     $node = $variables['node'];
-    $meta_tags = NdsbsNode::getMetaTags($node);
+    $subtitle = isset($node->field_sub_title['und']) ? $node->field_sub_title['und'][0]['value'] : FALSE;
 
-    if ($meta_tags && $meta_tags['title']) {
-      $variables['page_description'] = $meta_tags['title'];
+    if ($subtitle) {
+      $variables['page_description'] = $subtitle;
     }
   }
 }
