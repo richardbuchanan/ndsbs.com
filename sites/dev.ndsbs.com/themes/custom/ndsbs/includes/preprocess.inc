@@ -26,8 +26,6 @@ function ndsbs_preprocess_html(&$variables) {
     ),
     'preprocess' => FALSE,
   ));
-  //drupal_add_css('//fonts.googleapis.com/css?family=Raleway:300,300i,400,400i,500,500i,600,600i,700,700i', array('type' => 'external'));
-  //drupal_add_css('//fonts.googleapis.com/css?family=Ubuntu:300,300i,400,400i,500,500i,700,700i', array('type' => 'external'));
 }
 
 /**
@@ -44,12 +42,6 @@ function ndsbs_preprocess_page(&$variables) {
     'id' => 'page-highlighted',
     'uk-parallax' => 'bgy: -200',
   );
-
-  $variables['faq_videos'] = array();
-
-  if (function_exists('faq_videos_embed_promoted')) {
-    $variables['faq_videos']['#markup'] = faq_videos_embed_promoted();
-  }
 
   if (drupal_is_front_page()) {
     unset($variables['page']['content']['system_main']['default_message']);

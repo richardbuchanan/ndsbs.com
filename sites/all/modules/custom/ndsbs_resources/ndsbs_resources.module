@@ -24,14 +24,25 @@ function resources_page() {
   $tids = array();
 
   if (user_access('bypass node access')) {
-    $tabs = '<nav id="local-tasks" class="navbar">';
-    $tabs .= '<div id="primary-tasks">';
-    $tabs .= '<h2 class="sr-only">Primary tabs</h2>';
-    $tabs .= '<ul class="nav nav-tabs">';
-    $tabs .= '<li class="active"><a href="/resources" class="active">View<span class="sr-only">(active tab)</span></a></li>';
-    $tabs .= '<li><a href="/node/4846/edit?destination=resources">Edit</a></li>';
-    $tabs .= '<li><a href="/admin/structure/taxonomy/resource_category?destination=resources">Reorder categories</a></li>';
-    $tabs .= '</ul></div></nav>';
+    $theme = variable_get('theme_default');
+    if ($theme == 'ndsbs') {
+      $tabs = '<h2 class="uk-hidden">Primary tabs</h2>';
+      $tabs .= '<ul id="primary-local-tasks" class="uk-subnav uk-tab">';
+      $tabs .= '<li class="uk-active"><a href="/about/resources" class="active">View<span class="uk-hidden"> (active tab)</span></a></li>';
+      $tabs .= '<li><a href="/node/4846/edit?destination=about/resources">Edit</a></li>';
+      $tabs .= '<li><a href="/admin/structure/taxonomy/resource_category?destination=about/resources">Reorder categories</a></li>';
+      $tabs .= '</ul>';
+    }
+    else {
+      $tabs = '<nav id="local-tasks" class="navbar">';
+      $tabs .= '<div id="primary-tasks">';
+      $tabs .= '<h2 class="sr-only">Primary tabs</h2>';
+      $tabs .= '<ul class="nav nav-tabs">';
+      $tabs .= '<li class="active"><a href="/resources" class="active">View<span class="sr-only"> (active tab)</span></a></li>';
+      $tabs .= '<li><a href="/node/4846/edit?destination=resources">Edit</a></li>';
+      $tabs .= '<li><a href="/admin/structure/taxonomy/resource_category?destination=resources">Reorder categories</a></li>';
+      $tabs .= '</ul></div></nav>';
+    }
 
     $renderable_array['tabs'] = array(
       '#markup' => $tabs,

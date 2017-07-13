@@ -17,11 +17,22 @@
  * @see page.tpl.php
  */
 #page-header {
-  background: transparent url(images/city-sunny-people-street.jpg) no-repeat center 25%;
+  background: transparent url(images/city-sunny-people-street.jpg) no-repeat center 60%;
   -webkit-background-size: cover;
   background-size: cover;
 }
 body.navbar-open #page-header {
+  background: linear-gradient(
+    rgba(0, 0, 0, 0.5),
+    rgba(0, 0, 0, 0.5)),
+  url(images/city-sunny-people-street.jpg) no-repeat center 60%;
+}
+body.front #page-header {
+  background: transparent url(images/city-sunny-people-street.jpg) no-repeat center 25%;
+  -webkit-background-size: cover;
+  background-size: cover;
+}
+body.front.navbar-open #page-header {
   background: linear-gradient(
     rgba(0, 0, 0, 0.5),
     rgba(0, 0, 0, 0.5)),
