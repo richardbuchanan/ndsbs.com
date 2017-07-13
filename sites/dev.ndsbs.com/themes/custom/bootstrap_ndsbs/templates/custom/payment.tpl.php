@@ -128,7 +128,7 @@ if ($cstatus != 1) {
                     $result = node_load($node_id);
                     switch ($term_data->tid) {
                       case $result->field_primary_service['und'][0]['tid']:
-                        $report_title = $result->field_assessment_title['und'][0]['value'];
+                        $report_title = $result->title;
                         break;
                       case $result->field_rush_order_service_one['und'][0]['tid']:
                         $report_title = $result->field_rush_order_title_one['und'][0]['value'];

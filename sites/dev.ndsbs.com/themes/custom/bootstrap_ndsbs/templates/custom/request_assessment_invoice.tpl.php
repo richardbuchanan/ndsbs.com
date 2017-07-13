@@ -32,7 +32,7 @@ drupal_add_js('misc/tableheader.js');
       <td>
         <?php
         $assessment_info = node_load($rec->nid);
-        print $assessment_info->field_assessment_title['und'][0]['value'];
+        print $assessment_info->title;
         print '<br />';
         print 'Cost';
         print '  $';

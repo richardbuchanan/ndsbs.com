@@ -39,7 +39,7 @@ drupal_add_js('misc/tableheader.js');
     <tr>
       <td>
         <?php
-        print $rec->field_assessment_title['und'][0]['value'];
+        print $rec->title;
         print '<br />';
         print '<b>Cost:</b> $' . get_service_amount($rec->field_primary_service['und'][0]['tid']);
         print '<br />';

@@ -72,7 +72,7 @@ $data = get_purchased_items_reports_trans($assessment_id, 1, 0, $termid, $transi
 foreach($data as $report_info) {
 }
 
-drupal_set_title($nid->field_assessment_title['und'][0]['value']);
+drupal_set_title($nid->title);
 
 $report_status = empty($report_info->main_report);
 $eval_status = !empty($evaluation_status) && $report_status;

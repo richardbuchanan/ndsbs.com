@@ -14,7 +14,7 @@ questionnaire_move();
 include 'stepsheader.tpl.php';
 ?>
 <div class="wd_1">
-  <h2 style="color: #000; font-weight: 700;"><?php print $nid->field_assessment_title['und'][0]['value']; ?> Questionnaire</h2>
+  <h2 style="color: #000; font-weight: 700;"><?php print $nid->title; ?> Questionnaire</h2>
   <ul style="padding-left: 0; list-style: none !important;">
     <li><strong>Total Questions</strong> - <?php print $total_questions = get_total_questions_numbers($assessment_id, $transid); ?></li>
     <li><strong>Estimated Time to Complete</strong> - 15 minutes / your saved answers remain in your account if you need to stop and resume at another time.</li>

@@ -503,9 +503,7 @@ function bdg_ndsbs_therapist_reports_service($uid) {
   $nid = db_query('SELECT nid FROM {users_transactions} WHERE uid = :uid', array(':uid' => $uid))->fetchField();
   $node = node_load($nid);
 
-  if (isset($node->field_assessment_title['und'])) {
-    print $node->field_assessment_title['und'][0]['value'];
-  }
+  print $node->title;
 }
 
 /**
@@ -519,12 +517,7 @@ function bdg_ndsbs_therapist_reports_service_title($uid) {
     }
   }
   $node = node_load($nid);
-  if (isset($node->field_assessment_title['und'][0]['value'])) {
-    return $node->field_assessment_title['und'][0]['value'];
-  }
-  else {
-    return '';
-  }
+  return $node->title;
 }
 
 /**

@@ -211,7 +211,7 @@ $recipient_address = !empty($recipient_street) ? $recipient_street . '<br />' . 
     <?php foreach($data as $report_info_result): ?>
       <?php $termid_assessment = $report_info_result->termid; ?>
       <?php $result_report = node_load($report_info_result->nid); ?>
-      <h2 class="tab-title"><?php print $result_report->field_assessment_title['und'][0]['value']; ?></h2>
+      <h2 class="tab-title"><?php print $result_report->title; ?></h2>
       <?php $assigned_therapist = $report_info_result->therapist ? true : false; ?>
       <?php if ($assigned_therapist): ?>
         <?php $therapist_info = user_load($report_info_result->therapist); ?>

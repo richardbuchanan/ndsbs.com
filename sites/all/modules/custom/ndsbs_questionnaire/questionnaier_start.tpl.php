@@ -68,7 +68,7 @@ questionnaire_move();
 <br />
     <b>Assessment</b> - 
     <?php
-        print $nid->field_assessment_title['und'][0]['value'];
+        print $nid->title;
     ?>
     <br />
     <b>Total Questions</b> - 

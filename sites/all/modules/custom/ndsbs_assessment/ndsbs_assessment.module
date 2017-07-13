@@ -120,8 +120,7 @@ function get_all_assessment() {
   $result = db_select('node', 'n')
     ->fields('n', array('nid'))
     ->condition('n.type', $type, '=');
-  $result->innerJoin('field_data_field_assessment_title', 'assessment_title', 'assessment_title.entity_id = n.nid');
-  $result->orderBy('assessment_title.field_assessment_title_value', 'ASC');
+  $result->orderBy('n.title', 'ASC');
   $excute = $result->execute();
   $result = $excute->fetchAll();
   return $result;

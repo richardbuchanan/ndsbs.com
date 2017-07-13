@@ -392,7 +392,7 @@ function get_user_transactions_detail() {
 function get_purchased_service_title($node, $tid) {
   $title = '';
   if ($node->field_primary_service['und'][0]['tid'] == $tid) {
-    $title = $node->field_assessment_title['und'][0]['value'];
+    $title = $node->title;
     return $title;
   }
   if ($node->field_rush_order_service_one['und'][0]['tid'] == $tid) {
@@ -715,31 +715,31 @@ function get_mainservice_subservice_title($node, $tid) {
   //print_r($node);
   //echo '</pre>';
   if (isset($node->field_primary_service['und'][0]['tid']) && $node->field_primary_service['und'][0]['tid'] == $tid) {
-    $title = $node->field_assessment_title['und'][0]['value'];
+    $title = $node->title;
     $sub_title = 'NO';
     $service_join = $title . '||' . $sub_title;
     return $service_join;
   }
   if (isset($node->field_rush_order_service_one['und'][0]['tid']) && $node->field_rush_order_service_one['und'][0]['tid'] == $tid) {
-    $title = $node->field_assessment_title['und'][0]['value'];
+    $title = $node->title;
     $sub_title = $node->field_rush_order_title_one['und'][0]['value'];
     $service_join = $title . '||' . $sub_title;
     return $service_join;
   }
   if (isset($node->field_rush_order_service_two['und'][0]['tid']) && $node->field_rush_order_service_two['und'][0]['tid'] == $tid) {
-    $title = $node->field_assessment_title['und'][0]['value'];
+    $title = $node->title;
     $sub_title = $node->field_rush_order_title_two['und'][0]['value'];
     $service_join = $title . '||' . $sub_title;
     return $service_join;
   }
   if (isset($node->field_rush_order_service_three['und'][0]['tid']) && $node->field_rush_order_service_three['und'][0]['tid'] == $tid) {
-    $title = $node->field_assessment_title['und'][0]['value'];
+    $title = $node->title;
     $sub_title = $node->field_rush_order_title_three['und'][0]['value'];
     $service_join = $title . '||' . $sub_title;
     return $service_join;
   }
   if (isset($node->field_rush_order_service_four['und'][0]['tid']) && $node->field_rush_order_service_four['und'][0]['tid'] == $tid) {
-    $title = $node->field_assessment_title['und'][0]['value'];
+    $title = $node->title;
     $sub_title = $node->field_rush_order_title_four['und'][0]['value'];
     $service_join = $title . '||' . $sub_title;
     return $service_join;
