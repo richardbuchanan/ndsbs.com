@@ -105,7 +105,7 @@
       <?php endif; ?>
 
       <div id="puchase-card" class="uk-width-1-1 uk-width-1-1@s uk-width-1-3@m uk-width-1-3@l uk-width-1-4@xl">
-        <div class="uk-card uk-card-default uk-card-body uk-text-center">
+        <div class="uk-card uk-card-primary uk-card-hover uk-card-body uk-text-center">
           <div class="service-amount">
             <?php print $service_amount; ?>
           </div>

@@ -114,6 +114,10 @@ body.offcanvas-closed #page-header>* {
   align-items: center;
   color: #e5e5e5;
 }
+#company-info-container *,
+#company-info-container--small * {
+  color: #e5e5e5 !important;
+}
 #page-title {
   margin-bottom: 0;
 }

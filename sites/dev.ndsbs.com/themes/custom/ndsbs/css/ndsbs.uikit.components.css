@@ -4,6 +4,18 @@
  */
 
 /**
+ * Accordion component.
+ *
+ * @see https://getuikit.com/docs/accordion
+ */
+.uk-accordion-title::after {
+  float: left;
+}
+.uk-accordion-content {
+  padding-left: 28px;
+}
+
+/**
  * Card component.
  *
  * @see https://getuikit.com/docs/card
