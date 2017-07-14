@@ -2044,7 +2044,7 @@ div.table-responsive {
   font-size: 20px;
   font-weight: bold;
   line-height: normal;
-  padding-bottom: 5px;
+  padding: 0 5px 5px;
   text-shadow: 1px 1px 0 #fff;
 }
 .node-type-assessment .purchase-wrapper .field-name-field-primary-service-amount {
