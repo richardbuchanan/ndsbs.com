@@ -305,6 +305,12 @@ function bootstrap_ndsbs_preprocess_node(&$variables) {
   if ($variables['nid'] == '2622') {
     $variables['theme_hook_suggestions'][] = 'node__assessment__general_mental_health';
   }
+  if ($variables['nid'] == '1843') {
+    $variables['theme_hook_suggestions'][] = 'node__assessment__child_custody_alcohol';
+  }
+  if ($variables['nid'] == '1844') {
+    $variables['theme_hook_suggestions'][] = 'node__assessment__child_custody_drug_alcohol';
+  }
 }
 
 /**
