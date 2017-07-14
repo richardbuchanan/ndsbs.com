@@ -127,7 +127,7 @@
       </div>
       <div class="col-md-4">
         <div class="purchase-wrapper general-mental-health">
-          <span class="service-no-amount"> To Order a General Mental Health Assessment</span>
+          <span class="service-no-amount"> To Order a Child Custody Drug & Alcohol Assessment</span>
           <a href="tel:1-800-671-8589" class="btn btn-primary">Call 1-800-671-8589</a>
         </div>
       </div>
