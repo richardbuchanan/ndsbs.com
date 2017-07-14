@@ -80,8 +80,6 @@ function ndsbs_preprocess_page(&$variables) {
   );
 
   // Create a description variable for node pages.
-  $variables['page_description'] = FALSE;
-
   if (isset($variables['node'])) {
     $node = $variables['node'];
     $subtitle = isset($node->field_sub_title['und']) ? $node->field_sub_title['und'][0]['value'] : FALSE;
@@ -89,6 +87,9 @@ function ndsbs_preprocess_page(&$variables) {
     if ($subtitle) {
       $variables['page_description'] = $subtitle;
     }
+  }
+  elseif (!isset($variables['page_description'])) {
+    $variables['page_description'] = FALSE;
   }
 }
 

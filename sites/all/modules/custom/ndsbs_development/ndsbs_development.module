@@ -15,15 +15,32 @@ function ndsbs_development_menu() {
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
   );
-
   $items['node_three'] = array(
     'title' => t('Demo three'),
     'page callback' => 'node_page_default_clone',
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK,
   );
+  $items['admin/appearance/examples'] = array(
+    'title' => t('Examples'),
+    'page callback' => 'ndsbs_development_examples',
+    'access arguments' => array('access content'),
+    'menu_name' => 'management',
+    'type' => MENU_NORMAL_ITEM,
+  );
 
   return $items;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function ndsbs_development_theme($existing, $type, $theme, $path) {
+  return array(
+    'examples' => array(
+      'template' => 'examples',
+    ),
+  );
 }
 
 /**
@@ -90,7 +107,7 @@ function ndsbs_development_block_view($delta = '') {
  * @return array
  *   An array in the format expected by drupal_render().
  *
- * @see node_menu()
+ * @see ndsbs_development_menu()
  */
 function node_page_default_clone() {
   $select = db_select('node', 'n')
@@ -138,4 +155,25 @@ function node_page_default_clone() {
     );
   }
   return $build;
+}
+
+/**
+ * Menu callback: Generates a page showing examples of UIkit components.
+ *
+ * @return array
+ *   An array in the format expected by drupal_render().
+ *
+ * @see ndsbs_development_menu()
+ */
+function ndsbs_development_examples() {
+  return theme('examples');
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function ndsbs_development_preprocess_page(&$variables) {
+  if (current_path() == 'admin/appearance/examples') {
+    $variables['page_description'] = t('View examples of various color schemes on UIkit components');
+  }
 }

@@ -1,0 +1,211 @@
+.page-admin-appearance-examples .uk-container .uk-container {
+  padding-left: 15px;
+  padding-right: 15px
+}
+@media (min-width: 640px) {
+  .page-admin-appearance-examples .uk-container .uk-container {
+    padding-left:30px;
+    padding-right: 30px
+  }
+}
+@media (min-width: 960px) {
+  .page-admin-appearance-examples .uk-container .uk-container {
+    padding-left:40px;
+    padding-right: 40px
+  }
+}
+.page-admin-appearance-examples #header-below {
+  background: transparent url(images/city-sunny-people-street.jpg) no-repeat center 60%;
+  -webkit-background-size: cover;
+  background-size: cover;
+}
+
+/**
+ * Alternative one.
+ */
+[active-color-scheme="alt-one"] .uk-badge,
+[active-color-scheme="alt-one"] .uk-button-primary,
+[active-color-scheme="alt-one"] .uk-card-primary,
+[active-color-scheme="alt-one"] .uk-label,
+[active-color-scheme="alt-one"] .uk-section-primary,
+[active-color-scheme="alt-one"] .uk-subnav-pill>.uk-active>a,
+[active-color-scheme="alt-one"] .uk-tile-primary {
+  background-color: #5faaf2 !important;
+}
+[active-color-scheme="alt-one"] .uk-progress::-webkit-progress-value {
+  background-color: #5faaf2 !important;
+}
+[active-color-scheme="alt-one"] .uk-progress::-moz-progress-bar {
+  background-color: #5faaf2 !important;
+}
+[active-color-scheme="alt-one"] .uk-progress::-ms-fill {
+  background-color: #5faaf2 !important;
+}
+[active-color-scheme="alt-one"] .uk-divider-icon {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Ccircle%20fill%3D%22none%22%20stroke%3D%22%235faaf2%22%20stroke-width%3D%222%22%20cx%3D%2210%22%20cy%3D%2210%22%20r%3D%227%22%3E%3C%2Fcircle%3E%0A%3C%2Fsvg%3E%0A");
+}
+[active-color-scheme="alt-one"] .uk-divider-icon::after,
+[active-color-scheme="alt-one"] .uk-divider-icon::before,
+[active-color-scheme="alt-one"] .uk-tab>.uk-active>a,
+[active-color-scheme="alt-one"] #assessments-switcher .uk-button-default:before,
+[active-color-scheme="alt-one"] #assessments-switcher .uk-button-default:after {
+  border-color: #5faaf2 !important;
+}
+[active-color-scheme="alt-one"] .uk-alert-primary,
+[active-color-scheme="alt-one"] .uk-text-primary,
+[active-color-scheme="alt-one"] #header-below .block h2.block-title .highlight,
+[active-color-scheme="alt-one"] #header-below .block h3 {
+  color: #5faaf2 !important;
+}
+
+/**
+ * Alternative two.
+ */
+[active-color-scheme="alt-two"] .uk-badge,
+[active-color-scheme="alt-two"] .uk-button-primary,
+[active-color-scheme="alt-two"] .uk-card-primary,
+[active-color-scheme="alt-two"] .uk-label,
+[active-color-scheme="alt-two"] .uk-section-primary,
+[active-color-scheme="alt-two"] .uk-subnav-pill>.uk-active>a,
+[active-color-scheme="alt-two"] .uk-tile-primary {
+  background-color: #5a8fc3 !important;
+}
+[active-color-scheme="alt-two"] .uk-progress::-webkit-progress-value {
+  background-color: #5a8fc3 !important;
+}
+[active-color-scheme="alt-two"] .uk-progress::-moz-progress-bar {
+  background-color: #5a8fc3 !important;
+}
+[active-color-scheme="alt-two"] .uk-progress::-ms-fill {
+  background-color: #5a8fc3 !important;
+}
+[active-color-scheme="alt-two"] .uk-divider-icon {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Ccircle%20fill%3D%22none%22%20stroke%3D%22%235a8fc3%22%20stroke-width%3D%222%22%20cx%3D%2210%22%20cy%3D%2210%22%20r%3D%227%22%3E%3C%2Fcircle%3E%0A%3C%2Fsvg%3E%0A");
+}
+[active-color-scheme="alt-two"] .uk-divider-icon::after,
+[active-color-scheme="alt-two"] .uk-divider-icon::before,
+[active-color-scheme="alt-two"] .uk-tab>.uk-active>a,
+[active-color-scheme="alt-two"] #assessments-switcher .uk-button-default:before,
+[active-color-scheme="alt-two"] #assessments-switcher .uk-button-default:after {
+  border-color: #5a8fc3 !important;
+}
+[active-color-scheme="alt-two"] .uk-alert-primary,
+[active-color-scheme="alt-two"] .uk-text-primary,
+[active-color-scheme="alt-two"] #header-below .block h2.block-title .highlight,
+[active-color-scheme="alt-two"] #header-below .block h3 {
+  color: #5a8fc3 !important;
+}
+
+/**
+ * Alternative three.
+ */
+[active-color-scheme="alt-three"] .uk-badge,
+[active-color-scheme="alt-three"] .uk-button-primary,
+[active-color-scheme="alt-three"] .uk-card-primary,
+[active-color-scheme="alt-three"] .uk-label,
+[active-color-scheme="alt-three"] .uk-section-primary,
+[active-color-scheme="alt-three"] .uk-subnav-pill>.uk-active>a,
+[active-color-scheme="alt-three"] .uk-tile-primary {
+  background-color: #356089 !important;
+}
+[active-color-scheme="alt-three"] .uk-progress::-webkit-progress-value {
+  background-color: #356089 !important;
+}
+[active-color-scheme="alt-three"] .uk-progress::-moz-progress-bar {
+  background-color: #356089 !important;
+}
+[active-color-scheme="alt-three"] .uk-progress::-ms-fill {
+  background-color: #356089 !important;
+}
+[active-color-scheme="alt-three"] .uk-divider-icon {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Ccircle%20fill%3D%22none%22%20stroke%3D%22%23356089%22%20stroke-width%3D%222%22%20cx%3D%2210%22%20cy%3D%2210%22%20r%3D%227%22%3E%3C%2Fcircle%3E%0A%3C%2Fsvg%3E%0A");
+}
+[active-color-scheme="alt-three"] .uk-divider-icon::after,
+[active-color-scheme="alt-three"] .uk-divider-icon::before,
+[active-color-scheme="alt-three"] .uk-tab>.uk-active>a,
+[active-color-scheme="alt-three"] #assessments-switcher .uk-button-default:before,
+[active-color-scheme="alt-three"] #assessments-switcher .uk-button-default:after {
+  border-color: #356089 !important;
+}
+[active-color-scheme="alt-three"] .uk-alert-primary,
+[active-color-scheme="alt-three"] .uk-text-primary,
+[active-color-scheme="alt-three"] #header-below .block h2.block-title .highlight,
+[active-color-scheme="alt-three"] #header-below .block h3 {
+  color: #356089 !important;
+}
+
+/**
+ * Alternative four.
+ */
+[active-color-scheme="alt-four"] .uk-badge,
+[active-color-scheme="alt-four"] .uk-button-primary,
+[active-color-scheme="alt-four"] .uk-card-primary,
+[active-color-scheme="alt-four"] .uk-label,
+[active-color-scheme="alt-four"] .uk-section-primary,
+[active-color-scheme="alt-four"] .uk-subnav-pill>.uk-active>a,
+[active-color-scheme="alt-four"] .uk-tile-primary {
+  background-color: #2a4d6e !important;
+}
+[active-color-scheme="alt-four"] .uk-progress::-webkit-progress-value {
+  background-color: #2a4d6e !important;
+}
+[active-color-scheme="alt-four"] .uk-progress::-moz-progress-bar {
+  background-color: #2a4d6e !important;
+}
+[active-color-scheme="alt-four"] .uk-progress::-ms-fill {
+  background-color: #2a4d6e !important;
+}
+[active-color-scheme="alt-four"] .uk-divider-icon {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Ccircle%20fill%3D%22none%22%20stroke%3D%22%232a4d6e%22%20stroke-width%3D%222%22%20cx%3D%2210%22%20cy%3D%2210%22%20r%3D%227%22%3E%3C%2Fcircle%3E%0A%3C%2Fsvg%3E%0A");
+}
+[active-color-scheme="alt-four"] .uk-divider-icon::after,
+[active-color-scheme="alt-four"] .uk-divider-icon::before,
+[active-color-scheme="alt-four"] .uk-tab>.uk-active>a,
+[active-color-scheme="alt-four"] #assessments-switcher .uk-button-default:before,
+[active-color-scheme="alt-four"] #assessments-switcher .uk-button-default:after {
+  border-color: #2a4d6e !important;
+}
+[active-color-scheme="alt-four"] .uk-alert-primary,
+[active-color-scheme="alt-four"] .uk-text-primary,
+[active-color-scheme="alt-four"] #header-below .block h2.block-title .highlight,
+[active-color-scheme="alt-four"] #header-below .block h3 {
+  color: #2a4d6e !important;
+}
+
+/**
+ * Alternative five.
+ */
+[active-color-scheme="alt-five"] .uk-badge,
+[active-color-scheme="alt-five"] .uk-button-primary,
+[active-color-scheme="alt-five"] .uk-card-primary,
+[active-color-scheme="alt-five"] .uk-label,
+[active-color-scheme="alt-five"] .uk-section-primary,
+[active-color-scheme="alt-five"] .uk-subnav-pill>.uk-active>a,
+[active-color-scheme="alt-five"] .uk-tile-primary {
+  background-color: #0c5aa6 !important;
+}
+[active-color-scheme="alt-five"] .uk-progress::-webkit-progress-value {
+  background-color: #0c5aa6 !important;
+}
+[active-color-scheme="alt-five"] .uk-progress::-moz-progress-bar {
+  background-color: #0c5aa6 !important;
+}
+[active-color-scheme="alt-five"] .uk-progress::-ms-fill {
+  background-color: #0c5aa6 !important;
+}
+[active-color-scheme="alt-five"] .uk-divider-icon {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Ccircle%20fill%3D%22none%22%20stroke%3D%22%230c5aa6%22%20stroke-width%3D%222%22%20cx%3D%2210%22%20cy%3D%2210%22%20r%3D%227%22%3E%3C%2Fcircle%3E%0A%3C%2Fsvg%3E%0A");
+}
+[active-color-scheme="alt-five"] .uk-divider-icon::after,
+[active-color-scheme="alt-five"] .uk-divider-icon::before,
+[active-color-scheme="alt-five"] .uk-tab>.uk-active>a,
+[active-color-scheme="alt-five"] #assessments-switcher .uk-button-default:before,
+[active-color-scheme="alt-five"] #assessments-switcher .uk-button-default:after {
+  border-color: #0c5aa6 !important;
+}
+[active-color-scheme="alt-five"] .uk-alert-primary,
+[active-color-scheme="alt-five"] .uk-text-primary,
+[active-color-scheme="alt-five"] #header-below .block h2.block-title .highlight,
+[active-color-scheme="alt-five"] #header-below .block h3 {
+  color: #0c5aa6 !important;
+}
