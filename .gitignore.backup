@@ -11,6 +11,7 @@
 /INSTALL.txt
 /LICENSE.txt
 /MAINTAINERS.txt
+/MODERNIZATION_CHANGES.txt
 /README.txt
 /UPGRADE.txt
 /authorize.php
@@ -30,7 +31,6 @@
 
 # Ignore configuration files that may contain sensitive information.
 /.idea
-sites/default/settings*.php
 sites/dev.ndsbs.com/settings*.php
 sites/ndsbs.com/settings*.php
 sites/ohioduieval.com/settings*.php
@@ -43,6 +43,7 @@ sites/*/logs
 sites/*/mysqldump
 
 # Ignore developer-only directories.
+sites/localhost*
 sites/all/modules/contrib/devel
 sites/all/modules/contrib/devel_themer
 sites/all/modules/contrib/simplehtmldom
