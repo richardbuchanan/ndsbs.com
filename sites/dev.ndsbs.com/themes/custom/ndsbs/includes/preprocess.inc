@@ -148,6 +148,18 @@ function ndsbs_preprocess_region(&$variables) {
 }
 
 /**
+ * Implements template_preprocess_image().
+ */
+function ndsbs_preprocess_image(&$variables) {
+  $style = isset($variables['style_name']) ? $variables['style_name'] : FALSE;
+
+  if ($style == 'staff_resize') {
+    $variables['attributes']['uk-cover'] = '';
+    $variables['theme_hook_suggestions'][] = 'image__staff_resize';
+  }
+}
+
+/**
  * Implements template_preprocess_link().
  */
 function ndsbs_preprocess_link(&$variables) {
@@ -172,6 +184,30 @@ function ndsbs_preprocess_links(&$variables) {
  * Implements hook_preprocess_HOOK() for node.tpl.php.
  */
 function ndsbs_preprocess_node(&$variables) {
+  $type = $variables['type'];
+  $teaser = $variables['teaser'];
+  $display_submitted = $variables['display_submitted'];
+
+  $variables['theme_hook_suggestions'] = array(
+    'node',
+    'node__' . $type,
+  );
+
+  if ($teaser) {
+    $variables['theme_hook_suggestions'][] = 'node__teaser';
+    $variables['theme_hook_suggestions'][] = 'node__' . $type . '__teaser';
+  }
+
+  if ($display_submitted) {
+    $variables['theme_hook_suggestions'][] = 'node__display_submitted';
+    $variables['theme_hook_suggestions'][] = 'node__' . $type . '__display_submitted';
+
+    if ($teaser) {
+      $variables['theme_hook_suggestions'][] = 'node__teaser__display_submitted';
+      $variables['theme_hook_suggestions'][] = 'node__' . $type . '__teaser__display_submitted';
+    }
+  }
+
   // Create the service amount variable.
   $service_amount = $variables['field_primary_service_amount'][0]['value'];
   $variables['service_amount'] = '<h3>$'. $service_amount . '</h3>';

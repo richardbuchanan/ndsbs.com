@@ -14,18 +14,20 @@
     }
   }, 1000);
 
-  $(function() {
-    // Prevent navbar parent links from being used as a link when clicked.
-    $('#examples').on('click', '[href="#"], [href=""]', function (e) {
+  // Prevent navbar parent links from being used as a link when clicked.
+  var examples = $('#examples');
+  if (examples.length) {
+    examples.on('click', '[href="#"], [href=""]', function (e) {
       e.preventDefault();
-    }).find('[href="#"]').prop('href', '');
-  });
+    }).find('[href="#"]').prop('href', '')
+  }
 
-  $(function() {
-    // Prevent navbar parent links from being used as a link when clicked.
-    $('.color-scheme-dropdown').on('click', '[href="#"], [href=""]', function (e) {
+  // Prevent navbar parent links from being used as a link when clicked.
+  var colorSchemeDropdown = $('.color-scheme-dropdown');
+  if (colorSchemeDropdown.length) {
+    colorSchemeDropdown.on('click', '[href="#"], [href=""]', function (e) {
       var colorScheme = $(e.target).attr('color-scheme');
       $('#examples').attr('active-color-scheme', colorScheme);
     })
-  });
+  }
 })(jQuery);

@@ -9,6 +9,27 @@
  */
 
 /**
+ * Implements theme_image().
+ */
+function ndsbs_image__staff_resize($variables) {
+  $attributes = $variables['attributes'];
+  $attributes['src'] = file_create_url($variables['path']);
+  $height = $variables['height'] / 4;
+  $width = $variables['width'] / 4;
+
+  foreach (array('width', 'height', 'alt', 'title') as $key) {
+    if (isset($variables[$key])) {
+      $attributes[$key] = $variables[$key];
+    }
+  }
+
+  $output = '<img' . drupal_attributes($attributes) . ' />';
+  $output .= '<canvas width="' . $width . '" height="' . $height . '"></canvas>';
+
+  return $output;
+}
+
+/**
  * Implements theme_link().
  */
 function ndsbs_link($variables) {

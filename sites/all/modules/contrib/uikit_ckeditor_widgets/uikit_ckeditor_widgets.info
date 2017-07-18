@@ -1,0 +1,14 @@
+name = UIkit CKEditor Widgets
+description = Provides UIkit components as CKEditor widgets and plugins.
+core = 7.x
+package = UIkit
+
+dependencies[] = ckeditor
+dependencies[] = xautoload
+
+; Information added by Drupal.org packaging script on 2017-07-18
+version = "7.x-2.x-dev"
+core = "7.x"
+project = "uikit_ckeditor_widgets"
+datestamp = "1500351848"
+
