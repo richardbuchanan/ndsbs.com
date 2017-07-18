@@ -57,6 +57,19 @@
 }
 
 /**
+ * Form component.
+ *
+ * @see https://getuikit.com/docs/form
+ */
+.uk-input,
+.uk-select,
+.uk-textarea,
+.uk-checkbox,
+.uk-radio {
+  border-color: #999;
+}
+
+/**
  * Offcanvas component.
  *
  * @see https://getuikit.com/docs/offcanvas
@@ -215,4 +228,13 @@
   .uk-navbar-dropdown-nav>.uk-grid-margin {
     margin-top: 15px;
   }
+}
+
+/**
+ * Text component.
+ *
+ * @see https://getuikit.com/docs/text
+ */
+.uk-text-muted {
+  color: #555!important;
 }

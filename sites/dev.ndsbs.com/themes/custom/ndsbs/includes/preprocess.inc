@@ -11,8 +11,8 @@
  * @see process.inc
  */
 
+use Drupal\ndsbs\Ndsbs;
 use Drupal\ndsbs\NdsbsBlock;
-use Drupal\ndsbs\NdsbsNode;
 
 /**
  * Implements hook_preprocess_HOOK() for html.tpl.php.
@@ -26,6 +26,9 @@ function ndsbs_preprocess_html(&$variables) {
     ),
     'preprocess' => FALSE,
   ));
+
+  $variables['head_title_array']['title'] = t('@title', array('@title' => NDSBS::getTitle()));
+  $variables['head_title'] = implode(' | ', $variables['head_title_array']);
 }
 
 /**
@@ -91,6 +94,8 @@ function ndsbs_preprocess_page(&$variables) {
   elseif (!isset($variables['page_description'])) {
     $variables['page_description'] = FALSE;
   }
+
+  drupal_set_title(t('@title', array('@title' => NDSBS::getTitle())));
 }
 
 /**
@@ -145,6 +150,13 @@ function ndsbs_preprocess_region(&$variables) {
       $variables['attributes_array']['uk-grid'] = '';
       break;
   }
+}
+
+/**
+ * Implements template_preprocess_form().
+ */
+function ndsbs_preprocess_form(&$variables) {
+  //dpm($variables);
 }
 
 /**
@@ -218,6 +230,42 @@ function ndsbs_preprocess_node(&$variables) {
   $cart_url = "/user/cart/nid/$nid/tid/$tid";
   $cart_url_options = array('attributes' => array('class' => array('uk-button', 'uk-button-primary')));
   $variables['purchase_link'] = l(t('Purchase Now'), $cart_url, $cart_url_options);
+}
+
+/**
+ * Implements template_preprocess_user_profile().
+ */
+function ndsbs_preprocess_user_profile(&$variables) {
+  $variables['attributes_array']['id'] = 'user-profile';
+  $variables['attributes_array']['class'] = array(
+    'uk-section',
+    'uk-section-muted',
+  );
+
+  $user_name = array();
+  $user_name['first'] = $variables['user_profile']['field_first_name'][0]['#markup'];
+  $user_name['last'] = $variables['user_profile']['field_last_name'][0]['#markup'];
+  $variables['user_name'] = implode(' ', $user_name);
+
+  $variables['user_email'] = $variables['elements']['#account']->mail;
+  $variables['user_gender'] = $variables['user_profile']['field_gender'][0]['#markup'];
+
+  $dob = array();
+  $month = $variables['user_profile']['field_month'][0]['#markup'];
+  $date = $variables['user_profile']['field_dobdate'][0]['#markup'];
+  $dob['month_date'] = "$month $date";
+  $dob['year'] = $variables['user_profile']['field_year'][0]['#markup'];
+  $variables['user_dob'] = implode(', ', $dob);
+
+  $variables['user_phone'] = $variables['user_profile']['field_phone'][0]['#markup'];
+
+  $variables['user_street'] = $variables['user_profile']['field_address'][0]['#markup'];
+  $address = array();
+  $city = $variables['user_profile']['field_city'][0]['#markup'];
+  $state = $variables['user_profile']['field_state'][0]['#markup'];
+  $address['city_state'] = "$city, $state";
+  $address['zip'] = $variables['user_profile']['field_zip'][0]['#markup'];
+  $variables['user_address'] = implode(' ', $address);
 }
 
 /**

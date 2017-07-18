@@ -479,6 +479,14 @@ body.offcanvas-closed #page-header>* {
 }
 
 /**
+ * User profiles.
+ */
+#user-profile {
+  border: 1px solid #ccc;
+  padding: 20px;
+}
+
+/**
  * Media queries.
  */
 @media (min-width: 640px) {
@@ -722,6 +730,9 @@ body.offcanvas-closed #page-header>* {
   }
 }
 
+/**
+ * Only used during development.
+ */
 #header-below #block-ndsbs-development-frontpage-development-links {
   padding: 0 !important;
   margin: 0 !important;

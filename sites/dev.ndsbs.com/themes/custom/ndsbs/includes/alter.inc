@@ -18,12 +18,15 @@
 
 function ndsbs_css_alter(&$css) {
   $ndsbs = drupal_get_path('theme', 'ndsbs');
+
   if (current_path() == 'node_two') {
     $css[$ndsbs . '/css/ndsbs.theme.css']['data'] = $ndsbs . '/css/ndsbs.theme.demo_two.css';
   }
   elseif (current_path() == 'node_three') {
     $css[$ndsbs . '/css/ndsbs.theme.css']['data'] = $ndsbs . '/css/ndsbs.theme.demo_three.css';
   }
+
+  unset($css['modules/user/user.css']);
 }
 
 function ndsbs_js_alter(&$javascript) {

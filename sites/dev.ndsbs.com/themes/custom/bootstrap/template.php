@@ -104,7 +104,7 @@ function bootstrap_preprocess_page(&$variables) {
     switch ($path) {
       case 'user':
       case 'user/' . $user->uid . '/edit':
-        drupal_set_title('My profile');
+        //drupal_set_title('My profile');
         break;
 
       case 'user/' . $user->uid . '/shortcuts':
