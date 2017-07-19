@@ -67,7 +67,7 @@ function ndsbs_form_alter(&$form, &$form_state, $form_id) {
     $form['form_id']['#weight'] = 103;
   }
 
-  if ($form_id == 'user_register_form') {
+  if ($form_id == 'user_register_form' || $form_id == 'user_profile_form') {
     $form['field_for_courts']['#states'] = array(
       'visible' => array(
         array(':input[name="field_reason_for_assessment[und][0]"]' => array('checked' => TRUE)),
@@ -85,5 +85,8 @@ function ndsbs_form_alter(&$form, &$form_state, $form_id) {
         ':input[name="field_terms_of_use[und]"]' => array('value' => 'I do not agree with NDSBS Terms of Use'),
       ),
     );
+  }
+  if ($form_id == 'user_profile_form') {
+    unset($form['#fieldgroups']['group_terms_of_use']);
   }
 }
