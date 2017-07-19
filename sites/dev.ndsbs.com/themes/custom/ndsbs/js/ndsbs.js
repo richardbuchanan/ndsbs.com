@@ -42,6 +42,10 @@
       if (pageHighlighted.length) {
         pageHighlighted.css('min-height', viewportHeight - adminMenuHeight);
       }
+
+      $('.uk-accordion').each(function () {
+        UIkit.accordion($(this));
+      });
     }
   };
 
