@@ -46,7 +46,7 @@
 
         // Define the template of a new UIkit Accordion widget.
         // The template will be used when creating new instances of the widget.
-        template: '<div class="uk-accordion" uk-accordion>' +
+        template: '<div uk-accordion>' +
         '<h3 class="uk-accordion-title">Title</h3>' +
         '<div class="uk-accordion-content">Content...</div>' +
         '</div>',
