@@ -100,6 +100,14 @@ function ndsbs_preprocess_page(&$variables) {
       $variables['page_description'] = $subtitle;
     }
   }
+  elseif (current_path() == 'resources') {
+    $node = node_load('4846');
+    $subtitle = isset($node->field_sub_title['und']) ? $node->field_sub_title['und'][0]['value'] : FALSE;
+
+    if ($subtitle) {
+      $variables['page_description'] = $subtitle;
+    }
+  }
   elseif (!isset($variables['page_description'])) {
     $variables['page_description'] = FALSE;
   }
