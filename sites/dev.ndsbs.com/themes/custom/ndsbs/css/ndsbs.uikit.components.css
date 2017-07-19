@@ -68,6 +68,22 @@
 .uk-radio {
   border-color: #999;
 }
+.uk-select {
+  width: auto;
+}
+.uk-form-label {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+/**
+ * Modal component.
+ *
+ * @see https://getuikit.com/docs/modal
+ */
+.uk-modal {
+  z-index: 1020;
+}
 
 /**
  * Offcanvas component.

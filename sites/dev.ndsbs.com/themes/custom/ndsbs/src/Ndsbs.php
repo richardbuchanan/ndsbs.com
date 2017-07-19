@@ -50,9 +50,39 @@ class Ndsbs {
       case "user/$uid/contact":
         $title = "Contact $username";
         break;
+
+      case 'user':
+      case 'user/login':
+        $title = 'Log in';
+        break;
+
+      case 'user/password':
+        $title = 'Request new password';
+        break;
+
+      case 'user/register':
+        $title = 'Create new account';
+        break;
     }
 
-    return $title;
+    if (current_path() == 'user' && user_is_logged_in()) {
+      $title = $username;
+    }
+
+    return html_entity_decode($title);
+  }
+
+  public static function getUserRoleClasses() {
+    global $user;
+    $classes = array();
+    $roles = $user->roles;
+
+    foreach ($roles as $role) {
+      $role = str_replace(' ', '-', $role);
+      $classes[] = "role-$role";
+    }
+
+    return $classes;
   }
 
 }

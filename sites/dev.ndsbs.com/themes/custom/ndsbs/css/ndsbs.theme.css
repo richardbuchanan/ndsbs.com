@@ -54,7 +54,7 @@ body.offcanvas-closed #page-header>* {
   /* background: transparent url(https://static.pexels.com/photos/308663/pexels-photo-308663.jpeg) no-repeat center 25%; */
   /* background: transparent url(https://static.pexels.com/photos/28756/pexels-photo.jpg) no-repeat center 25%; */
   /* background: transparent url(https://static.pexels.com/photos/1984/black-and-white-city-man-people.jpg) no-repeat center 25%; */
-  background: transparent url(https://static.pexels.com/photos/196700/pexels-photo-196700.jpeg) no-repeat center 25%;
+  background: transparent url(images/pexels-photo-302769.jpeg) no-repeat center 25%;
   -webkit-background-size: cover;
   background-size: cover;
 }
@@ -479,11 +479,47 @@ body.offcanvas-closed #page-header>* {
 }
 
 /**
+ * Forms.
+ */
+form .field-group-div {
+  display: inline-block;
+  width: 100%;
+}
+
+/**
  * User profiles.
  */
 #user-profile {
   border: 1px solid #ccc;
   padding: 20px;
+}
+#user-profile-form .field-name-field-month,
+#user-profile-form .field-name-field-dobdate,
+#user-profile-form .field-name-field-year,
+#user-register-form .field-name-field-month,
+#user-register-form .field-name-field-dobdate,
+#user-register-form .field-name-field-year {
+  float: none;
+  padding-left: 0;
+}
+#user-profile-form .group-terms-of-use .uk-overflow-auto,
+#user-register-form .group-terms-of-use .uk-overflow-auto {
+  border: 1px solid #ccc;
+  padding: 20px;
+}
+#user-profile-form ul.group-user-account-therapist,
+#user-profile-form ul.group-user-account-hidden,
+#user-profile-form ul.group-additional-settings,
+#user-register-form ul.group-user-account-therapist,
+#user-register-form ul.group-user-account-hidden,
+#user-register-form ul.group-additional-settings {
+  display: none;
+}
+body.role-super-admin #user-profile-form ul.group-user-account-therapist,
+body.role-super-admin #user-profile-form ul.group-user-account-hidden,
+body.role-super-admin #user-profile-form ul.group-additional-settings,
+body.role-super-therapist #user-profile-form ul.group-user-account-therapist {
+  display: block;
 }
 
 /**
@@ -501,6 +537,20 @@ body.offcanvas-closed #page-header>* {
   #interactive-map {
     height: 350px;
     width: 565px;
+  }
+  #user-profile-form .field-name-field-month,
+  #user-profile-form .field-name-field-dobdate,
+  #user-profile-form .field-name-field-year,
+  #user-register-form .field-name-field-month,
+  #user-register-form .field-name-field-dobdate,
+  #user-register-form .field-name-field-year {
+    float: left;
+  }
+  #user-profile-form .field-name-field-dobdate,
+  #user-profile-form .field-name-field-year,
+  #user-register-form .field-name-field-dobdate,
+  #user-register-form .field-name-field-year {
+    padding-left: 15px;
   }
 }
 @media (min-width: 960px) {
@@ -545,6 +595,12 @@ body.offcanvas-closed #page-header>* {
   }
   #region-footer .block:not(:last-child) {
     margin-top: 0;
+  }
+  #user-profile-form .field-name-field-middle-name,
+  #user-profile-form .field-name-field-last-name,
+  #user-register-form .field-name-field-middle-name,
+  #user-register-form .field-name-field-last-name {
+    padding-left: 15px;
   }
   #themer-popup {
     width: 800px;

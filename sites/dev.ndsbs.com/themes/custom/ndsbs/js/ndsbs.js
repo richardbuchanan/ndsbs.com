@@ -12,23 +12,24 @@
       var html = $('html');
       var body = $('body');
       var loginLink = $('[href="/user/login"]');
-      var loginModal = $("#block-user-login");
-      var loginContent = loginModal.clone();
+      var loginModal = $("#login");
       var modalOverflow = $('#modal-overflow');
       var pageHeader = $('#page-header');
       var pageHighlighted = $('#page-highlighted');
       var viewportHeight = $(window).height();
       var adminMenuHeight = $('#admin-menu').length ? 29 : 0;
+      var path = window.location.pathname;
+      var userPaths = path === '/user' || path === '/user/login' || path === '/user/password' || path === '/user/register';
 
-      loginModal.remove();
-
-      loginLink
-        .prop('href', '#block-user-login')
-        .attr('uk-toggle', '')
-        .after(loginContent)
-        .click(function () {
-          UIkit.modal('#block-user-login').toggle();
-        });
+      if (!userPaths) {
+        loginLink
+          .removeAttr('href')
+          .attr('uk-toggle', '')
+          .click(function (e) {
+            e.preventDefault();
+            UIkit.modal('#login').toggle();
+          });
+      }
 
       modalOverflow.on('hidden', function () {
         html.removeClass('ndsbs-overflow-initial');

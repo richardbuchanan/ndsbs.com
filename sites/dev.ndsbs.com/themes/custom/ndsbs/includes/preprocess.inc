@@ -27,8 +27,14 @@ function ndsbs_preprocess_html(&$variables) {
     'preprocess' => FALSE,
   ));
 
-  $variables['head_title_array']['title'] = t('@title', array('@title' => NDSBS::getTitle()));
+  $variables['head_title_array']['title'] = NDSBS::getTitle();
   $variables['head_title'] = implode(' | ', $variables['head_title_array']);
+
+  $user_role_classes = NDSBS::getUserRoleClasses();
+
+  foreach ($user_role_classes as $class) {
+    $variables['classes_array'][] = $class;
+  }
 }
 
 /**
@@ -39,7 +45,7 @@ function ndsbs_preprocess_page(&$variables) {
   $variables['navbar_attributes_array']['class'][] = 'uk-navbar-transparent';
   $variables['navbar_attributes_array']['class'][] = 'uk-container';
   $variables['navbar_attributes_array']['class'][] = 'ie9-gradient';
-  $variables['navbar_attributes_array']['uk-navbar'] = 'mode: click';
+  $variables['navbar_attributes_array']['uk-navbar'] = 'mode: click; boundary: #page-header';
 
   $variables['highlighted_attributes_array'] = array(
     'id' => 'page-highlighted',
@@ -95,7 +101,7 @@ function ndsbs_preprocess_page(&$variables) {
     $variables['page_description'] = FALSE;
   }
 
-  drupal_set_title(t('@title', array('@title' => NDSBS::getTitle())));
+  drupal_set_title(NDSBS::getTitle());
 }
 
 /**
@@ -153,10 +159,38 @@ function ndsbs_preprocess_region(&$variables) {
 }
 
 /**
- * Implements template_preprocess_form().
+ * Implements hook_preprocess_HOOK() for theme_button().
  */
-function ndsbs_preprocess_form(&$variables) {
-  //dpm($variables);
+function ndsbs_preprocess_button(&$variables) {
+  $value = $variables['element']['#value'];
+  $variables['element']['#attributes']['class'] = array('uk-button');
+
+  switch ($value) {
+    case 'Create new account':
+    case 'E-mail new password':
+    case 'Log in':
+    case 'Save':
+    case 'Upload':
+    $variables['element']['#attributes']['class'][] = 'uk-button-primary';
+      break;
+
+    case 'Cancel account':
+      $variables['element']['#attributes']['class'][] = 'uk-button-danger';
+      break;
+  }
+}
+
+/**
+ * Implements template_preprocess_fieldset().
+ */
+function ndsbs_preprocess_fieldset(&$variables) {
+  $terms_of_use = isset($variables['element']['field_terms_of_use']);
+
+  if ($terms_of_use) {
+    $variables['theme_hook_suggestions'][] = 'fieldset__terms_of_use';
+    $variables['terms'] = render($variables['element']['field_terms_of_use_register']);
+    $variables['terms_agree'] = render($variables['element']['field_terms_of_use']);
+  }
 }
 
 /**

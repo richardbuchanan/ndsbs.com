@@ -20,6 +20,22 @@ body.page_node_three .feed-icon {
 }
 
 /**
+ * Forms.
+ */
+[class*=field-group] > h3 {
+  font-family: Raleway, "Segoe UI", Candara, "Bitstream Vera Sans", "DejaVu Sans", "Bitstream Vera Sans", "Trebuchet MS", Verdana, "Verdana Ref", sans-serif;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+[class*=field-group] .uk-form-label {
+  font-size: .875rem;
+}
+.form-actions button:not(:first-child) {
+  margin-left: 4px;
+}
+
+/**
  * Views slideshow.
  *
  * The width of each slideshow slide is arbitrarily set, causing each slide to
