@@ -238,6 +238,14 @@ function ndsbs_preprocess_links(&$variables) {
 }
 
 /**
+ * Implements hook_preprocess_HOOK().
+ */
+function ndsbs_preprocess_menu_local_tasks(&$variables) {
+  $variables['primary_attributes_array']['class'] = array('uk-tab');
+  $variables['secondary_attributes_array']['class'] = array('uk-subnav', 'uk-subnav-divider');
+}
+
+/**
  * Implements hook_preprocess_HOOK() for node.tpl.php.
  */
 function ndsbs_preprocess_node(&$variables) {

@@ -266,6 +266,32 @@
 }
 
 /**
+ * Subnav component.
+ *
+ * @see https://getuikit.com/docs/subnav
+ */
+.uk-subnav>*>:first-child {
+  color: #666;
+}
+.uk-subnav>*>a:focus,
+.uk-subnav>*>a:hover {
+  color: #333;
+}
+
+/**
+ * Tab component.
+ *
+ * @see https://getuikit.com/docs/tab
+ */
+.uk-tab>*>a {
+  color: #666;
+}
+.uk-tab>*>a:focus,
+.uk-tab>*>a:hover {
+  color: #333;
+}
+
+/**
  * Text component.
  *
  * @see https://getuikit.com/docs/text
