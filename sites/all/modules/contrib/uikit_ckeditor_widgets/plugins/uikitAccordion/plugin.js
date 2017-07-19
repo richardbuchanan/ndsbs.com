@@ -21,10 +21,10 @@
         // Read more about the Advanced Content Filter here:
         // * http://docs.ckeditor.com/#!/guide/dev_advanced_content_filter
         // * http://docs.ckeditor.com/#!/guide/plugin_sdk_integration_with_acf
-        allowedContent: 'div(!uk-accordion); div(!uk-accordion-content); h3(!uk-accordion-title)',
+        allowedContent: 'ul(!uk-accordion); div(!uk-accordion-content); h3(!uk-accordion-title)',
 
         // Minimum HTML which is required by this widget to work.
-        requiredContent: 'div(uk-accordion)',
+        requiredContent: 'ul(uk-accordion)',
 
         // Define two nested editable areas.
         editables: {
@@ -46,10 +46,12 @@
 
         // Define the template of a new UIkit Accordion widget.
         // The template will be used when creating new instances of the widget.
-        template: '<div class="uk-accordion" uk-accordion>' +
+        template: '<ul uk-accordion>' +
+        '<li>' +
         '<h3 class="uk-accordion-title">Title</h3>' +
         '<div class="uk-accordion-content">Content...</div>' +
-        '</div>',
+        '</li>' +
+        '</ul>',
 
         // Define the label for a widget toolbar button which will be
         // automatically created by the Widgets System. This button will insert
@@ -68,7 +70,7 @@
         upcast: function (element) {
           // Return "true" (that element needs to converted to a UIkit Accordion
           // widget) for all <ul> elements with a "uk-accordion" class.
-          return element.name === 'div' && element.hasClass('uk-accordion');
+          return element.name === 'ul' && element.hasClass('uk-accordion');
         }
       });
 

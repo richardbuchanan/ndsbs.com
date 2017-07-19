@@ -8,9 +8,8 @@
 
   Drupal.behaviors.uikitCKEditorWidgets = {
     attach: function (context, settings) {
-      $('.uk-accordion').each(function () {
-        UIkit.accordion($(this));
-      });
+      var accordions = $('.uk-accordion');
+      var accordion = UIkit.accordion(accordions, { /* options */ });
     }
   }
 })(jQuery);

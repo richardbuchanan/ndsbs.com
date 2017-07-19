@@ -7,8 +7,8 @@ dependencies[] = ckeditor
 dependencies[] = xautoload
 
 ; Information added by Drupal.org packaging script on 2017-07-18
-version = "7.x-2.x-dev"
+version = "7.x-3.x-dev"
 core = "7.x"
 project = "uikit_ckeditor_widgets"
-datestamp = "1500351848"
+datestamp = "1500352144"
 
