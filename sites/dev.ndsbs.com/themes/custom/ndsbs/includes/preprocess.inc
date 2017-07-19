@@ -41,7 +41,10 @@ function ndsbs_preprocess_html(&$variables) {
  * Implements hook_preprocess_HOOK() for page.tpl.php.
  */
 function ndsbs_preprocess_page(&$variables) {
-  $variables['header_attributes_array']['uk-parallax'] = 'bgy: -200;';
+  if (drupal_is_front_page()) {
+    $variables['header_attributes_array']['uk-parallax'] = 'bgy: -200;';
+  }
+
   $variables['navbar_attributes_array']['class'][] = 'uk-navbar-transparent';
   $variables['navbar_attributes_array']['class'][] = 'uk-container';
   $variables['navbar_attributes_array']['class'][] = 'ie9-gradient';
