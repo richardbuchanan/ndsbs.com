@@ -43,9 +43,7 @@
         pageHighlighted.css('min-height', viewportHeight - adminMenuHeight);
       }
 
-      $('.uk-accordion').each(function () {
-        UIkit.accordion($(this));
-      });
+      UIkit.accordion($('.uk-accordion'));
     }
   };
 
