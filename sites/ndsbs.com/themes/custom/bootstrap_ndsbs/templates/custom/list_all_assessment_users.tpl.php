@@ -26,7 +26,7 @@ print search_assessment_client();
       <th>Client</th>
       <th>Service & Status</th>
       <th>Questionnaire</th>
-      <th>Letter Ready</th>
+      <th>Letter Status</th>
       <th>Assign Counselor</th>
       <th>Action</th>
     </tr>
@@ -116,7 +116,7 @@ print search_assessment_client();
                 <span class="table-cell-clear">Letter is ready</span>
               <?php else: ?>
                 <span class="table-cell-clear">
-                  Letter not marked as ready, <a href="/letter-ready/<?php print $data_info->order_id; ?>">change letter status</a>.
+                  Awaiting letter, <a href="/letter-ready/<?php print $data_info->order_id; ?>">change letter status</a>.
                 </span>
               <?php endif; ?>
             </td>

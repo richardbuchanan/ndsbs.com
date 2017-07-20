@@ -26,7 +26,7 @@ drupal_add_js('misc/tableheader.js');
       <th>Contact Details</th>
       <?php if (user_access('administer users')): ?><th>Action</th><?php endif; ?>
       <th>Notes</th>
-      <th>Transaction Status</th>
+      <th>Status</th>
     </tr>
   </thead>
   <tbody>
@@ -119,7 +119,7 @@ drupal_add_js('misc/tableheader.js');
             <br>
             <?php print t('<strong>Date</strong>: @date', array('@date' => $transaction_date)); ?>
           <?php elseif ($more_than_three_hours && !$contacted): ?>
-            <?php print t('User registered more than three hours ago, <a href="/call-user/@uid">call user</a>?', array('@uid' => $user_info->uid)); ?>
+            <?php print t('3+ hrs., <a href="/call-user/@uid">call user</a>?', array('@uid' => $user_info->uid)); ?>
           <?php else: ?>
             <?php print t('User has been contacted about purchasing a service.'); ?>
           <?php endif; ?>
