@@ -181,6 +181,7 @@ function ndsbs_preprocess_button(&$variables) {
     case 'E-mail new password':
     case 'Log in':
     case 'Save':
+    case 'Send message':
     case 'Upload':
     $variables['element']['#attributes']['class'][] = 'uk-button-primary';
       break;

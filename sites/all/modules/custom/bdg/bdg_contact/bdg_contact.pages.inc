@@ -62,10 +62,9 @@ function bdg_contact_site_form($form, &$form_state) {
   }
 
   $assessment_need = drupal_map_assoc(array(
-    t('Criminal Court or Attorney Requested <span class="underline">for DUI</span>'),
-    t('Criminal Court or Attorney Requested <span class="underline">for Non-DUI charge</span> (e.g. Underage/Minor in Possession, Public Intox., Assault, DV, Possession, Disorderly Conduct, , etc.)'),
+    t('Criminal Court or Attorney Requested (e.g. DUI, Underage, Assault, DV, Possession, Disorderly Conduct, Public Intox, etc.)'),
     t('Domestic Court or Attorney Requested (e.g. Custody, Divorce, etc.)'),
-    t('State Motor Vehicle Bureau  (BMV/ DMV License Reinstatement Process)'),
+    t('State Motor Vehicle Bureau (BMV/ DMV License Reinstatement Process)'),
     t('Employer'),
     t('FAA'),
     t('Professional Board (Nursing, Medical, Pharmacy)'),
@@ -91,11 +90,10 @@ function bdg_contact_site_form($form, &$form_state) {
     '#type' => 'textfield',
     '#title' => t('Phone'),
     '#maxlength' => 255,
-    '#required' => TRUE,
   );
   $form['assessment_needs'] = array(
     '#type' => 'checkboxes',
-    '#title' => t('PLEASE INDICATE WHY YOU NEED THIS ASSESSMENT (Check all that apply)'),
+    '#title' => t('Please indicate why you need this assessment (Check all that apply)'),
     '#options' => $assessment_need,
     '#description' => t('IMPORTANT:  If your assessment is needed for more than one court, employer or agency please ask our staff about a discount for additional assessments.'),
   );
@@ -105,6 +103,10 @@ function bdg_contact_site_form($form, &$form_state) {
     '#maxlength' => 50,
     '#default_value' => 'Message from NDSBS contact form',
     '#required' => TRUE,
+    '#attributes' => array(
+      'disabled' => 'disabled',
+    ),
+    '#access' => FALSE,
   );
   $form['cid'] = array(
     '#type' => 'select',
@@ -119,11 +121,21 @@ function bdg_contact_site_form($form, &$form_state) {
     '#title' => t('Message'),
     '#required' => TRUE,
   );
+  $contact = array(
+    'phone' => 'Phone',
+    'email' => 'Email',
+    'text' => 'Text',
+  );
+  $form['preferred_contact'] = array(
+    '#type' => 'checkboxes',
+    '#title' => 'Preferred way for us to follow up with you',
+    '#options' => drupal_map_assoc($contact),
+  );
   // We do not allow anonymous users to send themselves a copy
   // because it can be abused to spam people.
   $form['copy'] = array(
     '#type' => 'checkbox',
-    '#title' => t('Send yourself a copy.'),
+    '#title' => t('Send yourself a copy'),
     '#access' => $user->uid,
   );
   $form['actions'] = array('#type' => 'actions');

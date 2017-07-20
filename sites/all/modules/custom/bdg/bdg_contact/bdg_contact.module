@@ -93,7 +93,7 @@ function bdg_contact_menu() {
     'type' => MENU_SUGGESTED_ITEM,
     'file' => 'bdg_contact.pages.inc',
   );
-  $items['user/%user/contact'] = array(
+  /*$items['user/%user/contact'] = array(
     'title' => 'Contact',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('bdg_contact_personal_form', 1),
@@ -102,7 +102,7 @@ function bdg_contact_menu() {
     'access arguments' => array(1),
     'weight' => 2,
     'file' => 'bdg_contact.pages.inc',
-  );
+  );*/
   return $items;
 }
 
@@ -172,6 +172,7 @@ function bdg_contact_mail($key, &$message, $params) {
     '!subject' => $params['subject'],
     '!category' => isset($params['category']['category']) ? $params['category']['category'] : '',
     '!assessment-needs' => array_filter($params['assessment_needs']),
+    '!preferred-contact' => array_filter($params['preferred_contact']),
     '!form-url' => url($_GET['q'], array('absolute' => TRUE, 'language' => $language)),
     '!sender-name' => format_username($params['sender']),
     '!sender-url' => $params['sender']->uid ? url('user/' . $params['sender']->uid, array('absolute' => TRUE, 'language' => $language)) : $params['sender']->mail,
@@ -182,7 +183,8 @@ function bdg_contact_mail($key, &$message, $params) {
     case 'page_copy':
       $message['subject'] .= t('[!category] !subject', $variables, array('langcode' => $language->language));
       $message['body'][] = t("!sender-name (!sender-url) sent a message using the contact form at !form-url.", $variables, array('langcode' => $language->language));
-      $message['body'][] = t("!sender-name's assessment needs:<br />!assessment-needs");
+      $message['body'][] = t("!sender-name's assessment needs: !assessment-needs<br />", $variables, array('langcode' => $language->language));
+      $message['body'][] = t("!sender-name's preferred contact: !preferred-contact<br />", $variables, array('langcode' => $language->language));
       $message['body'][] = $params['message'];
       break;
 
