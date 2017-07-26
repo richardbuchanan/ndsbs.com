@@ -34,7 +34,7 @@ sites/ndsbs.com/settings*.php
 sites/ohioduieval.com/settings*.php
 
 # Ignore paths that contain user-generated content.
-sites/*/files
+sites/*/files/*
 sites/*/private
 sites/*/.sass-cache
 sites/*/logs
