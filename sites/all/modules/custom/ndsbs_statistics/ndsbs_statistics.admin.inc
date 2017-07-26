@@ -593,6 +593,7 @@ function ndsbs_statistics_admin_statistics() {
   // Prepare the list of registrations.
   $registration_options = array();
   $registration_totals = ndsbs_statistics_get_registration_totals($session);
+  $total_registrations = 0;
 
   foreach ($registration_totals as $day => $registration_total) {
     $day = ucfirst($day);
@@ -601,7 +602,15 @@ function ndsbs_statistics_admin_statistics() {
       ucfirst($day),
       $registration_total,
     );
+
+    $total_registrations = $total_registrations + $registration_total;
   }
+
+  $registration_options[] = array(
+    t('<strong>Total</strong>'),
+    $total_registrations,
+  );
+  dpm($registration_options);
 
   $form['statistics'] = array(
     '#type' => 'container',
