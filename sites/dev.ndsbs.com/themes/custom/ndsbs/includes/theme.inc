@@ -88,6 +88,24 @@ function ndsbs_container__form_element__form_controls($variables) {
 }
 
 /**
+ * Implements theme_credit_card().
+ */
+function ndsbs_credit_card($variables) {
+  $element = $variables['element'];
+  $element['#attributes']['type'] = 'number';
+  $element['#attributes']['maxlength'] = '19';
+  element_set_attributes($element, array('id', 'name', 'value', 'size'));
+  _form_set_class($element, array('form-control', 'form-credit-card', 'uk-input'));
+
+  $output = '<div class="input-group">';
+  $output .= '<input' . drupal_attributes($element['#attributes']) . ' />';
+  $output .= '<span class="input-group-addon"><i class="fa fa-credit-card"></i></span>';
+  $output .= '</div>';
+
+  return $output;
+}
+
+/**
  * Implements theme_fieldset().
  */
 function ndsbs_fieldset__terms_of_use($variables) {

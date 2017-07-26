@@ -101,3 +101,112 @@ function ndsbs_form_alter(&$form, &$form_state, $form_id) {
     $form['remember_me']['#suffix'] = '</div>';
   }
 }
+
+/**
+ * Implements hook_form_FORM_ID_alter() for bluepay_payment_form().
+ */
+function ndsbs_form_bluepay_payment_form_alter(&$form, &$form_state, $form_id) {
+  // Attach the payment script to the form.
+  $form['#attached']['js'] = array();
+  $form['#attached']['js'][] = drupal_get_path('theme', 'ndsbs') . '/js/payment.js';
+  $form['#attached']['js'][] = drupal_get_path('theme', 'ndsbs') . '/js/creditcard.js';
+  $cart_items = get_cart_items();
+
+  // BluePay's test mode requires an odd value for the total amount, so we set
+  // the rush service to 75 in order to get an approved transaction response.
+  $host = $_SERVER['HTTP_HOST'];
+  $dev_env = $host == 'localhost.ndsbs' || $host == 'dev.ndsbs.com';
+  $node = node_load($cart_items[0]->nid);
+
+  if ($dev_env) {
+    $title['#markup'] = $node->title;
+  }
+  else{
+    $title = field_get_items('node', $node, 'field_assessment_title');
+    $title = field_view_value('node', $node, 'field_assessment_title', $title[0]);
+  }
+
+  $amount = field_get_items('node', $node, 'field_primary_service_amount');
+  $amount = field_view_value('node', $node, 'field_primary_service_amount', $amount[0]);
+  $assessment_amount = (int)$amount['#markup'];
+
+  foreach ($cart_items as $cart_item) {
+    $node_id = $cart_item->nid;
+
+    if ($cart_item->sub_report != 1) {
+      $custom_special_amount = get_special_assessment_custom_amount($node_id);
+
+      if ($_SESSION['misc_service_price'] > 0) {
+        $assessment_amount = $_SESSION['misc_service_price'];
+      }
+      elseif ($custom_special_amount > 0) {
+        $assessment_amount = $custom_special_amount;
+      }
+    }
+  }
+
+  $form['form_wrapper']['#attributes']['class'] = array('');
+  $form['form_wrapper']['#attributes']['uk-grid'] = '';
+
+  $rush_amount = isset($form_state['values']['rush_service']) ? $form_state['values']['rush_service'] : 0;
+  $total = number_format($assessment_amount + $rush_amount, 2);
+
+  $rush_prefix = '<div id="rush-details" class="uk-width-1-1 uk-width-1-2@m">';
+  $rush_prefix .= '<div class="uk-card uk-card-default rush-service-box">';
+  $rush_prefix .= '<div class="uk-card-header">';
+  $rush_prefix .= '<h3 class="uk-card-title">Rush Services</h3>';
+  $rush_prefix .= '</div>';
+  $rush_prefix .= '<div class="uk-card-body" data-form-state="enabled">';
+
+  $form['form_wrapper']['rush_service']['#prefix'] = $rush_prefix;
+  $rush_suffix = '<p class="about-rush">Not sure if you need a rush order?<br>Call <a href="tel:6148887274">614-888-7274</a> or email <a href="mailto:support@ndsbs.com">support@ndsbs.com</a></p>';
+  $rush_suffix .= '</div>';
+  $rush_suffix .= '<div class="uk-card-footer">';
+  $rush_suffix .= '<h4>About Rush Services</h4>';
+  $rush_suffix .= '<p>We will make an effort to schedule you as soon as we can. The time frames for rush orders begin once your interview with the evaluator is completed.</p>';
+  $rush_suffix .= '</div>';
+  $rush_suffix .= '</div>';
+  $rush_suffix .= '</div>';
+  $form['form_wrapper']['rush_service']['#suffix'] = $rush_suffix;
+
+  $summary_markup = '<div id="order-summary" class="uk-width-1-1 uk-width-1-2@m">';
+  $summary_markup .= '<div class="uk-card uk-card-default rush-service-box">';
+  $summary_markup .= '<div class="uk-card-header">';
+  $summary_markup .= '<h3 class="uk-card-title">Order Summary</h3>';
+  $summary_markup .= '</div>';
+  $summary_markup .= '<div class="uk-card-body">';
+  $summary_markup .= '<div uk-grid>';
+
+  if ($assessment_amount) {
+    $assessment_summary = '<div class="order-summary-assessment uk-width-1-1">';
+    $assessment_summary .= '<span class="uk-float-left">' . $title['#markup'] . ':</span>';
+    $assessment_summary .= '<span class="uk-float-right">$' . number_format($assessment_amount, 2) . '</span>';
+    $assessment_summary .= '</div>';
+  }
+
+  $summary_markup .= $assessment_summary;
+  $summary_markup .= '<div class="order-summary-rush-service uk-width-1-1">';
+  $summary_markup .= '<span class="uk-float-left">Rush service:</span>';
+  $summary_markup .= '<span class="uk-float-right">$' . number_format($rush_amount, 2) . '</span>';
+  $summary_markup .= '</div>';
+  $summary_markup .= '</div>';
+  $summary_markup .= '</div>';
+  $summary_markup .= '<div class="order-summary-total uk-card-footer">';
+  $summary_markup .= '<span class="uk-float-left"><h4>Order Total:</h4></span>';
+  $summary_markup .= '<span class="uk-float-right"><h4>$' . $total . '</h4></span>';
+  $summary_markup .= '</div>';
+  $summary_markup .= '</div>';
+  $summary_markup .= '</div>';
+  $form['form_wrapper']['summary']['#markup'] = $summary_markup;
+
+  $cc_prefix = '<div id="payment-details" class="uk-width-1-1 uk-width-1-2@m">';
+  $cc_prefix .= '<div class="uk-card uk-card-default credit-card-box">';
+  $cc_prefix .= '<div class="uk-card-header">';
+  $cc_prefix .= '<h3 class="uk-card-title display-td">Payment Details</h3>';
+  $cc_prefix .= '</div>';
+  $cc_prefix .= '<div class="uk-card-body">';
+  $cc_prefix .= '<img class="img-responsive pull-right" src="/' . drupal_get_path('theme', 'ndsbs') . '/css/images/accepted.png" />';
+  $form['form_wrapper']['cc']['#prefix'] = $cc_prefix;
+
+  $form['form_wrapper']['submit']['#prefix'] = '<div class="uk-width-1-1">';
+}
