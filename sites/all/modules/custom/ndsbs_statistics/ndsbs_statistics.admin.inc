@@ -610,7 +610,6 @@ function ndsbs_statistics_admin_statistics() {
     t('<strong>Total</strong>'),
     $total_registrations,
   );
-  dpm($registration_options);
 
   $form['statistics'] = array(
     '#type' => 'container',
