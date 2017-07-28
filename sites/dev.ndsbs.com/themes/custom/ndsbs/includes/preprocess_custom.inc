@@ -9,13 +9,6 @@
  */
 
 /**
- * Implements hook_preprocess_HOOK() for stepsheader.tpl.php.
- */
-function ndsbs_preprocess_stepsheader(&$variables) {
-  dpm($variables);
-}
-
-/**
  * Implements hook_preprocess_HOOK() for questionnaire_start.tpl.php
  */
 function ndsbs_preprocess_questionnaier_start(&$variables) {
