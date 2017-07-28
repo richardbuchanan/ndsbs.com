@@ -365,6 +365,7 @@ function ndsbs_menu_link(array $variables) {
     elseif (!empty($element['#original_link']['depth']) && $element['#original_link']['depth'] == 1) {
       // Use our own theme wrapper.
       unset($element['#below']['#theme_wrappers']);
+
       $sub_menu = '<div class="uk-navbar-dropdown ie9-gradient">';
 
       if ($element['#original_link']['menu_name'] == 'main-menu') {
@@ -389,15 +390,94 @@ function ndsbs_menu_link(array $variables) {
   switch ($href) {
     case '<uk-nav-header>':
       $attributes['class'][] = 'uk-nav-header';
-      return '<li' . drupal_attributes($attributes) . '>' . $title . "</li>\n";
+      return '<li' . drupal_attributes($attributes) . '>' . $title . '</li>';
 
     case '<uk-nav-divider>':
       $attributes['class'][] = 'uk-nav-divider';
-      return '<li' . drupal_attributes($attributes) . '>' . l($title, $href, $options) . $sub_menu . "</li>\n";
+      return '<li' . drupal_attributes($attributes) . '>' . l($title, $href, $options) . $sub_menu . '</li>';
 
     default:
-      return '<li' . drupal_attributes($attributes) . '>' . l($title, $href, $options) . $sub_menu . "</li>\n";
+      return '<li' . drupal_attributes($attributes) . '>' . l($title, $href, $options) . $sub_menu . '</li>';
   }
+}
+
+/**
+ * Implements theme_menu_link() for client dashboard.
+ */
+function ndsbs_menu_link__menu_client_navigation($variables) {
+  $element = $variables['element'];
+  $element['#attributes']['class'] = array();
+  $depth = $element['#original_link']['depth'];
+  $sub_menu = '';
+
+  if ($element['#below']) {
+    unset($element['#below']['#theme_wrappers']);
+    $sub_menu = '<div class="uk-accordion-content"><ul class="uk-list">';
+    $sub_menu .= drupal_render($element['#below']);
+    $sub_menu .= '</ul></div>';
+  }
+
+  if ($depth == 1) {
+    $output = '<h3 class="uk-accordion-title">' . $element['#title'] . '</h3>';
+    return '<li>' . $output . $sub_menu . '</li>';
+  }
+  else {
+    $output = l($element['#title'], $element['#href'], $element['#localized_options']);
+    return '<li>' . $output . '</li>';
+  }
+}
+
+/**
+ * Implements theme_menu_link() for staff dashboard.
+ */
+function ndsbs_menu_link__menu_staff_navigation($variables) {
+  $element = $variables['element'];
+  $element['#attributes']['class'] = array();
+  $depth = $element['#original_link']['depth'];
+  $count = 0;
+  $sub_menu = '';
+
+  if ($element['#below']) {
+    foreach ($element['#below'] as $below) {
+      if (is_array($below) && isset($below['#theme'])) {
+        $count++;
+      }
+    }
+
+    unset($element['#below']['#theme_wrappers']);
+    $sub_menu = '<div class="uk-accordion-content"><ul class="uk-list">';
+    $sub_menu .= drupal_render($element['#below']);
+    $sub_menu .= '</ul></div>';
+  }
+
+  if ($depth == 1) {
+    $attributes = array();
+
+    if ($count == 1) {
+      $attributes['class'][] = 'uk-open';
+    }
+
+    $output = '<h3 class="uk-accordion-title">' . $element['#title'] . '</h3>';
+    return '<li' . drupal_attributes($attributes) . '>' . $output . $sub_menu . '</li>';
+  }
+  else {
+    $output = l($element['#title'], $element['#href'], $element['#localized_options']);
+    return '<li>' . $output . '</li>';
+  }
+}
+
+/**
+ * Implements theme_menu_tree() for client dashboard.
+ */
+function ndsbs_menu_tree__menu_client_navigation($variables) {
+  return '<ul uk-accordion="multiple: true">' . $variables['tree'] . '</ul>';
+}
+
+/**
+ * Implements theme_menu_tree() for client dashboard.
+ */
+function ndsbs_menu_tree__menu_staff_navigation($variables) {
+  return '<ul uk-accordion="multiple: true">' . $variables['tree'] . '</ul>';
 }
 
 /**
