@@ -92,6 +92,9 @@ function ndsbs_questionnaire_theme() {
   $items['questionnaier_start'] = array(
     'render element' => 'form',
     'template' => 'questionnaier_start',
+    'preprocess functions' => array(
+      'template_preprocess_questionnaier_start'
+    ),
   );
   $items['assessment_questionnaire_form'] = array(
     'render element' => 'form',

@@ -181,14 +181,22 @@
   <?php print render($dashboard_modal); ?>
 <?php endif; ?>
 
-<?php if ($offcanvas_primary || $offcanvas_secondary): ?>
-  <div id="offcanvas" uk-offcanvas="mode: push; overlay: true" class="uk-offcanvas">
-    <div class="uk-offcanvas-bar ie9-gradient">
-      <?php print render($offcanvas_primary); ?>
-      <?php print render($offcanvas_secondary); ?>
-    </div>
+<div id="offcanvas" uk-offcanvas="mode: push; overlay: true" class="uk-offcanvas">
+  <div class="uk-offcanvas-bar ie9-gradient">
+    <?php print render($offcanvas_primary); ?>
+    <?php print render($offcanvas_secondary); ?>
+
+    <?php if ($offcanvas_client_dashboard): ?>
+      <h3>Client Dashboard</h3>
+      <?php print render($offcanvas_client_dashboard); ?>
+    <?php endif; ?>
+
+    <?php if ($offcanvas_staff_dashboard): ?>
+      <h3>Staff Dashboard</h3>
+      <?php print render($offcanvas_staff_dashboard); ?>
+    <?php endif; ?>
   </div>
-<?php endif; ?>
+</div>
 
 <!-- Modal container -->
 <div id="modal-overflow" uk-modal="center: true"></div>

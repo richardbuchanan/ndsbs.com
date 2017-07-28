@@ -137,6 +137,50 @@ function ndsbs_preprocess_page(&$variables) {
   $variables['dashboard_modal'] = array(
     '#markup' => $dashboard_modal,
   );
+
+  if ($client) {
+    // Client dashboard offcanvas menu.
+    $variables['offcanvas_client_dashboard'] = menu_tree(variable_get('menu_main_links_source', 'menu-client-navigation'));
+    $variables['offcanvas_client_dashboard']['#theme_wrappers'] = ['menu_tree__offcanvas'];
+
+    // Client dashboard offcanvas below menus.
+    foreach ($variables['offcanvas_client_dashboard'] as $key => $value) {
+      if (is_array($value) && isset($value['#theme'])) {
+        $variables['offcanvas_client_dashboard'][$key]['#theme'] = 'menu_link';
+      }
+      if (is_array($value) && isset($value['#below']) && !empty($value['#below'])) {
+        $variables['offcanvas_client_dashboard'][$key]['#below']['#theme_wrappers'] = ['menu_tree__offcanvas__below'];
+
+        foreach ($value['#below'] as $below_key => $below_value) {
+          if (is_array($below_value) && isset($below_value['#theme'])) {
+            $variables['offcanvas_client_dashboard'][$key]['#below'][$below_key]['#theme'] = 'menu_link';
+          }
+        }
+      }
+    }
+  }
+
+  if ($staff) {
+    // Staff dashboard offcanvas menu.
+    $variables['offcanvas_staff_dashboard'] = menu_tree(variable_get('menu_main_links_source', 'menu-staff-navigation'));
+    $variables['offcanvas_staff_dashboard']['#theme_wrappers'] = ['menu_tree__offcanvas'];
+
+    // Staff dashboard offcanvas below menus.
+    foreach ($variables['offcanvas_staff_dashboard'] as $key => $value) {
+      if (is_array($value) && isset($value['#theme'])) {
+        $variables['offcanvas_staff_dashboard'][$key]['#theme'] = 'menu_link';
+      }
+      if (is_array($value) && isset($value['#below']) && !empty($value['#below'])) {
+        $variables['offcanvas_staff_dashboard'][$key]['#below']['#theme_wrappers'] = ['menu_tree__offcanvas__below'];
+
+        foreach ($value['#below'] as $below_key => $below_value) {
+          if (is_array($below_value) && isset($below_value['#theme'])) {
+            $variables['offcanvas_staff_dashboard'][$key]['#below'][$below_key]['#theme'] = 'menu_link';
+          }
+        }
+      }
+    }
+  }
 }
 
 /**
