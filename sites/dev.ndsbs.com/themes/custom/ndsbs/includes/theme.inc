@@ -470,7 +470,7 @@ function ndsbs_menu_link__menu_staff_navigation($variables) {
  * Implements theme_menu_tree() for client dashboard.
  */
 function ndsbs_menu_tree__menu_client_navigation($variables) {
-  return '<ul uk-accordion="multiple: true">' . $variables['tree'] . '</ul>';
+  return '<ul uk-accordion>' . $variables['tree'] . '</ul>';
 }
 
 /**
