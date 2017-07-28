@@ -57,6 +57,17 @@ function ndsbs_preprocess_page(&$variables) {
     'uk-parallax' => 'bgy: -200',
   );
 
+  $variables['sidebar_first_attributes_array']['class'] = array(
+    'uk-width-1-4@l',
+    'uk-pull-3-4@l',
+    'uk-visible@l',
+  );
+  $variables['content_attributes_array']['class'] = array(
+    'uk-width-1-1',
+    'uk-width-3-4@l',
+    'uk-push-1-4@l',
+  );
+
   if (drupal_is_front_page()) {
     unset($variables['page']['content']['system_main']['default_message']);
   }

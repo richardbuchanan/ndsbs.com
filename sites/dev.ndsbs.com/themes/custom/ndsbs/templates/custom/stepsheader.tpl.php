@@ -79,11 +79,56 @@ $eval_status = !empty($evaluation_status) && $report_status;
 $attempt_status = empty($counseling_data->field_attempted_on['und'][0]['value']) && $report_status;
 $paperwork_status = empty($rec_data_steps->field_paperwork_status['und'][0]['value']) && $report_status;
 
-$step_one_class = $eval_status ? 'step step-one' : 'step step-one active';
-$step_two_class = $attempt_status ? 'step step-two' : 'step step-two active';
-$step_three_class = $paperwork_status ? 'step step-three' : 'step step-three active';
-$step_four_class = $report_status ? 'step step-four' : 'step step-four active';
-$complete_class = $report_status ? 'steps' : 'steps active';
+$step_one_attributes = array(
+  'class' => array(
+    'uk-text-center',
+    'step-one',
+  ),
+);
+if (!empty($eval_status)) {
+  $step_one_attributes['class'][] = 'uk-active';
+}
+
+$step_two_attributes = array(
+  'class' => array(
+    'uk-text-center',
+    'step-two',
+  ),
+);
+if (!empty($attempt_status)) {
+  $step_two_attributes['class'][] = 'uk-active';
+}
+
+$step_three_attributes = array(
+  'class' => array(
+    'uk-text-center',
+    'step-three',
+  ),
+);
+if (!empty($paperwork_status)) {
+  $step_three_attributes['class'][] = 'uk-active';
+}
+
+$step_four_attributes = array(
+  'class' => array(
+    'uk-text-center',
+    'step-four',
+  ),
+);
+if (!empty($report_status)) {
+  $step_four_attributes['class'][] = 'uk-active';
+}
+
+$steps_attributes = array(
+  'class' => array(
+    'uk-child-width-1-4',
+    'steps',
+  ),
+  'uk-grid' => '',
+);
+if ($report_status) {
+  $steps_attributes['class'][] = 'uk-active';
+}
 
 $current_step = explode('/', current_path());
 $step = arg(0);
@@ -113,92 +158,86 @@ switch ($step) {
 <span id="steps-header-order-date">Order date: <?php print $order_date; ?></span>
 <div id="steps-container" class="steps-container-col-4">
   <nav id="steps-wrapper">
-    <ul class="<?php print $complete_class; ?>">
-      <li class="<?php print $step_one_class; ?>">
-        <div class="shift"><a href="<?php print $questionnaire_url; ?>"><span>1</span></a></div>
+    <ul<?php print drupal_attributes($steps_attributes); ?>>
+      <li<?php print drupal_attributes($step_one_attributes); ?>>
+        <a href="<?php print $questionnaire_url; ?>">
+          <button class="uk-button uk-button-default uk-button-large">1</button>
+          <?php $badge_class = arg(0) == 'questionnaire' && arg(1) == 'start' ? 'badge-link active' : 'badge-link'; ?>
+          <h3 class="badge-heading uk-text-left">
+            <a href="<?php print $questionnaire_url; ?>" class="<?php print $badge_class; ?>">Complete<br />My Questionnaire</a>
+          </h3>
+
+          <div class="step-badge-bottom uk-text-left">
+            <?php $attempts_badge = $evaluation_status == 1 ? 'Completed' : 'Pending'; ?>
+            <p>No. Of Attempts: <b><?php print $times; ?></b></p>
+            <p>Status: <b><?php print $attempts_badge; ?></b></p>
+          </div>
+        </a>
       </li>
-      <li class="<?php print $step_two_class; ?>">
-        <div class="shift"><a href="<?php print $counseling_url; ?>"><span>2</span></a></div>
+      <li<?php print drupal_attributes($step_two_attributes); ?>>
+        <a href="<?php print $counseling_url; ?>">
+          <button class="uk-button uk-button-default uk-button-large">2</button>
+          <?php $badge_class = arg(0) == 'node' && arg(1) == 'add' && arg(2) == 'counseling-request' ? 'badge-link active' : 'badge-link'; ?>
+          <h3 class="badge-heading uk-text-left">
+            <a href="<?php print $counseling_url; ?>" class="<?php print $badge_class; ?>">Schedule<br/>My Interview</a>
+          </h3>
+
+          <div class="step-badge-bottom uk-text-left">
+            <?php $attendance = isset($counseling_data->field_attempted_on['und']) ? $counseling_data->field_attempted_on['und'][0]['value'] : 0; ?>
+            <?php $attended_badge = $attendance != 0 ? 'Attended' : 'Not Attended'; ?>
+            <p>Status: <b><?php print $attended_badge; ?></b></p>
+            <?php if ($attendance == 0): ?>
+              <p>Call Now to Schedule (9 a.m. – 5 p.m. EST) OR indicate & Save appt. request below</p>
+            <?php endif; ?>
+          </div>
+        </a>
       </li>
-      <li class="<?php print $step_three_class; ?>">
-        <div class="shift"><a href="<?php print $necessary_docs_url; ?>"><span>3</span></a></div>
+      <li<?php print drupal_attributes($step_three_attributes); ?>>
+        <a href="<?php print $necessary_docs_url; ?>">
+          <button class="uk-button uk-button-default uk-button-large">3</button>
+          <?php $user_paperwork = arg(0) == 'user' && arg(1) == 'paperwork' && arg(2) == 'list' ? true : false; ?>
+          <?php $node_paperwork = arg(0) == 'node' && arg(2) == 'paper-work' ? true : false; ?>
+          <?php $node_edit = arg(0) == 'node' && arg(2) == 'edit' ? true : false; ?>
+          <?php $badge_class = $user_paperwork || $node_paperwork || $node_edit ? 'badge-link active' : 'badge-link'; ?>
+          <h3 class="badge-heading uk-text-left">
+            <a href="<?php print $necessary_docs_url; ?>" class="<?php print $badge_class; ?>">Upload or Fax Documents<br>(If your evaluator requests)</a>
+          </h3>
+
+          <div class="step-badge-bottom uk-text-left">
+            <?php $verify_date = !empty($verified_date) ? $verified_date : 'Unverified'; ?>
+            <p>Verified On: <b><?php print $verify_date; ?></b></p>
+            <?php if (empty($verified_date)): ?>
+              <p>Submit documents requested by your counselor</p>
+            <?php endif; ?>
+          </div>
+        </a>
       </li>
-      <li class="<?php print $step_four_class; ?>">
-        <div class="shift"><a href="<?php print $report_url; ?>"><span>4</span></a></div>
+      <li<?php print drupal_attributes($step_four_attributes); ?>>
+        <a href="<?php print $report_url; ?>">
+          <button class="uk-button uk-button-default uk-button-large">4</button>
+          <?php $user_report = arg(0) == 'view' && arg(1) == 'assessment' && arg(2) == 'report' ? true : false; ?>
+          <?php $email_report = arg(0) == 'user' && arg(1) == 'email' && arg(2) == 'report' ? true : false; ?>
+          <?php $badge_class = $user_report || $email_report ? 'badge-link active' : 'badge-link'; ?>
+          <h3 class="badge-heading uk-text-left">
+            <a href="<?php print $report_url; ?>" class="<?php print $badge_class; ?>">View My<br/>Assessment Report</a>
+          </h3>
+
+          <div class="step-badge-bottom uk-text-left">
+            <?php if ($report_info->main_report == ''): ?>
+              <p>Status: <b>Pending</b></p>
+              <p>Must complete the 3 Steps to the left to receive a report.</p>
+            <?php else: ?>
+              <?php $fname = $report_info->main_report; ?>
+              <?php $file_name_path = 'public://reports/' . $fname; ?>
+              <?php $file_time = date("n/j/Y @ g:i a", $report_info->updated_on); ?>
+              <p>Status: <b>Uploaded <?php print $file_time; ?></b></p>
+              <div class="status-complete add-testimonial">
+                <p>Would you like to <a href="https://www.ndsbs.com/testimonials/add?destination=<?php print bdg_ndsbs_get_steps_page_no_base_url(); ?>">add a testimonial</a>?</p>
+              </div>
+            <?php endif; ?>
+          </div>
+        </a>
       </li>
     </ul>
   </nav>
-
-  <div id="steps-badge-wrapper" class="row">
-    <div class="steps-col col-xs-6 col-sm-3 col-md-3">
-      <?php $badge_class = arg(0) == 'questionnaire' && arg(1) == 'start' ? 'badge-link active' : 'badge-link'; ?>
-      <h3 class="badge-heading">
-        <a href="<?php print $questionnaire_url; ?>" class="<?php print $badge_class; ?>">Complete<br />My Questionnaire</a>
-      </h3>
-
-      <div class="step-badge-bottom">
-        <?php $attempts_badge = $evaluation_status == 1 ? 'Completed' : 'Pending'; ?>
-        <span>No. Of Attempts: <b><?php print $times; ?></b></span>
-        <span>Status: <b><?php print $attempts_badge; ?></b></span>
-      </div>
-    </div>
-
-    <div class="steps-col col-xs-6 col-sm-3 col-md-3">
-      <?php $badge_class = arg(0) == 'node' && arg(1) == 'add' && arg(2) == 'counseling-request' ? 'badge-link active' : 'badge-link'; ?>
-      <h3 class="badge-heading">
-        <a href="<?php print $counseling_url; ?>" class="<?php print $badge_class; ?>">Schedule<br/>My Interview</a>
-      </h3>
-
-      <div class="step-badge-bottom">
-        <?php $attendance = isset($counseling_data->field_attempted_on['und']) ? $counseling_data->field_attempted_on['und'][0]['value'] : 0; ?>
-        <?php $attended_badge = $attendance != 0 ? 'Attended' : 'Not Attended'; ?>
-        <span>Status: <b><?php print $attended_badge; ?></b></span>
-        <?php if ($attendance == 0): ?>
-          <span>Call Now to Schedule (9 a.m. – 5 p.m. EST) OR indicate & Save appt. request below</span>
-        <?php endif; ?>
-      </div>
-    </div>
-
-    <div class="steps-col col-xs-6 col-sm-3 col-md-3">
-      <?php $user_paperwork = arg(0) == 'user' && arg(1) == 'paperwork' && arg(2) == 'list' ? true : false; ?>
-      <?php $node_paperwork = arg(0) == 'node' && arg(2) == 'paper-work' ? true : false; ?>
-      <?php $node_edit = arg(0) == 'node' && arg(2) == 'edit' ? true : false; ?>
-      <?php $badge_class = $user_paperwork || $node_paperwork || $node_edit ? 'badge-link active' : 'badge-link'; ?>
-      <h3 class="badge-heading">
-        <a href="<?php print $necessary_docs_url; ?>" class="<?php print $badge_class; ?>">Upload or Fax Documents<br>(If your evaluator requests)</a>
-      </h3>
-
-      <div class="step-badge-bottom">
-        <?php $verify_date = !empty($verified_date) ? $verified_date : 'Unverified'; ?>
-        <span>Verified On: <b><?php print $verify_date; ?></b></span>
-        <?php if (empty($verified_date)): ?>
-          <span>Submit documents requested by your counselor</span>
-        <?php endif; ?>
-      </div>
-    </div>
-
-    <div class="steps-col col-xs-6 col-sm-3 col-md-3">
-      <?php $user_report = arg(0) == 'view' && arg(1) == 'assessment' && arg(2) == 'report' ? true : false; ?>
-      <?php $email_report = arg(0) == 'user' && arg(1) == 'email' && arg(2) == 'report' ? true : false; ?>
-      <?php $badge_class = $user_report || $email_report ? 'badge-link active' : 'badge-link'; ?>
-      <h3 class="badge-heading">
-        <a href="<?php print $report_url; ?>" class="<?php print $badge_class; ?>">View My<br/>Assessment Report</a>
-      </h3>
-
-      <div class="step-badge-bottom">
-        <?php if ($report_info->main_report == ''): ?>
-          <span>Status: <b>Pending</b></span>
-          <span>Must complete the 3 Steps to the left to receive a report.</span>
-        <?php else: ?>
-          <?php $fname = $report_info->main_report; ?>
-          <?php $file_name_path = 'public://reports/' . $fname; ?>
-          <?php $file_time = date("n/j/Y @ g:i a", $report_info->updated_on); ?>
-          <span>Status: <b>Uploaded <?php print $file_time; ?></b></span>
-          <div class="status-complete add-testimonial">
-            <span>Would you like to <a href="https://www.ndsbs.com/testimonials/add?destination=<?php print bdg_ndsbs_get_steps_page_no_base_url(); ?>">add a testimonial</a>?</span>
-          </div>
-        <?php endif; ?>
-      </div>
-    </div>
-  </div>
 </div>
