@@ -285,10 +285,13 @@ function ndsbs_image__staff_resize($variables) {
  * Implements theme_link().
  */
 function ndsbs_link($variables) {
+  global $user;
   $path = $variables['path'];
   $options = $variables['options'];
   $attributes = $variables['options']['attributes'];
   $text = $variables['options']['html'] ? $variables['text'] : check_plain($variables['text']);
+  $staff = user_has_role('4', $user) || user_has_role('7', $user) || user_has_role('3', $user) || user_has_role('8', $user) || user_has_role('5', $user);
+  $client = user_has_role('6', $user);
 
   switch ($path) {
     case '<uk-nav-header>':
@@ -308,6 +311,16 @@ function ndsbs_link($variables) {
 
     case '<uk-nav-divider>':
       return '';
+
+    case 'questionnaire/start/trans':
+      if ($staff && $client) {
+
+        return '<a href="#dashboard-modal" uk-toggle>' . $text . '</a>';
+      }
+      else {
+        return '<a href="' . check_plain(url($path, $options)) . '" ' . drupal_attributes($attributes) . '>' . $text . '</a>';
+      }
+      break;
 
     default:
       return '<a href="' . check_plain(url($path, $options)) . '" ' . drupal_attributes($attributes) . '>' . $text . '</a>';

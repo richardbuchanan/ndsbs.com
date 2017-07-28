@@ -41,6 +41,8 @@ function ndsbs_preprocess_html(&$variables) {
  * Implements hook_preprocess_HOOK() for page.tpl.php.
  */
 function ndsbs_preprocess_page(&$variables) {
+  global $user;
+
   if (drupal_is_front_page()) {
     $variables['header_attributes_array']['uk-parallax'] = 'bgy: -200;';
   }
@@ -113,6 +115,28 @@ function ndsbs_preprocess_page(&$variables) {
   }
 
   drupal_set_title(NDSBS::getTitle());
+
+  $staff = user_has_role('4', $user) || user_has_role('7', $user) || user_has_role('3', $user) || user_has_role('8', $user) || user_has_role('5', $user);
+  $client = user_has_role('6', $user);
+
+  if ($staff && $client) {
+    $dashboard_modal = '<div id="dashboard-modal" uk-modal="center: true">';
+    $dashboard_modal .= '<div class="uk-modal-dialog uk-modal-body">';
+    $dashboard_modal .= '<button class="uk-modal-close-full uk-close-large" type="button" uk-close></button>';
+    $dashboard_modal .= '<h2 class="uk-modal-title">Dashboard</h2>';
+    $dashboard_modal .= '<p>Since you have both a staff role and a client role assigned to your account, please select which dashboard should be opened.</p>';
+    $dashboard_modal .= '<div class="uk-text-right">';
+    $dashboard_modal .= '<a href="/questionnaire/start/trans" class="uk-button uk-button-primary">Client dashboard</a>';
+    $dashboard_modal .= '<a href="/user/clients/list" class="uk-button uk-button-primary uk-margin-small-left">Staff dashboard</a>';
+    $dashboard_modal .= '</div></div></div>';
+  }
+  else {
+    $dashboard_modal = '';
+  }
+
+  $variables['dashboard_modal'] = array(
+    '#markup' => $dashboard_modal,
+  );
 }
 
 /**
