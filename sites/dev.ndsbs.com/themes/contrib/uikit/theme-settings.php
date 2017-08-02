@@ -45,33 +45,33 @@ function uikit_form_system_theme_settings_alter(&$form, &$form_state, $form_id =
 
   // Set the charset options.
   $charsets = array(
-    'utf-8' => 'UTF-8: All languages (Recommended)',
-    'ISO-8859-1' => 'ISO 8859-1: Latin 1',
-    'ISO-8859-2' => 'ISO 8859-2: Central & East European',
-    'ISO-8859-3' => 'ISO 8859-3: South European, Maltese & Esperanto',
-    'ISO-8859-4' => 'ISO 8859-4: North European',
-    'ISO-8859-5' => 'ISO 8859-5: Cyrillic',
-    'ISO-8859-6' => 'ISO 8859-6: Arabic',
-    'ISO-8859-7' => 'ISO 8859-7: Modern Greek',
-    'ISO-8859-8' => 'ISO 8859-8: Hebrew & Yiddish',
-    'ISO-8859-9' => 'ISO 8859-9: Turkish',
-    'ISO-8859-10' => 'ISO 8859-10: Nordic (Lappish, Inuit, Icelandic)',
-    'ISO-8859-11' => 'ISO 8859-11: Thai',
-    'ISO-8859-13' => 'ISO 8859-13: Baltic Rim',
-    'ISO-8859-14' => 'ISO 8859-14: Celtic',
-    'ISO-8859-16' => 'ISO 8859-16: South-Eastern Europe',
+    'utf-8' => t('UTF-8: All languages (Recommended)'),
+    'ISO-8859-1' => t('ISO 8859-1: Latin 1'),
+    'ISO-8859-2' => t('ISO 8859-2: Central & East European'),
+    'ISO-8859-3' => t('ISO 8859-3: South European, Maltese & Esperanto'),
+    'ISO-8859-4' => t('ISO 8859-4: North European'),
+    'ISO-8859-5' => t('ISO 8859-5: Cyrillic'),
+    'ISO-8859-6' => t('ISO 8859-6: Arabic'),
+    'ISO-8859-7' => t('ISO 8859-7: Modern Greek'),
+    'ISO-8859-8' => t('ISO 8859-8: Hebrew & Yiddish'),
+    'ISO-8859-9' => t('ISO 8859-9: Turkish'),
+    'ISO-8859-10' => t('ISO 8859-10: Nordic (Lappish, Inuit, Icelandic)'),
+    'ISO-8859-11' => t('ISO 8859-11: Thai'),
+    'ISO-8859-13' => t('ISO 8859-13: Baltic Rim'),
+    'ISO-8859-14' => t('ISO 8859-14: Celtic'),
+    'ISO-8859-16' => t('ISO 8859-16: South-Eastern Europe'),
   );
 
   // Set the x-ua-compatible options.
   $x_ua_compatible_ie_options = array(
-    0 => 'None (Recommended)',
-    'edge' => 'Highest supported document mode',
-    '5' => 'Quirks Mode',
-    '7' => 'IE7 mode',
-    '8' => 'IE8 mode',
-    '9' => 'IE9 mode',
-    '10' => 'IE10 mode',
-    '11' => 'IE11 mode',
+    0 => t('None (Recommended)'),
+    'edge' => t('Highest supported document mode'),
+    '5' => t('Quirks Mode'),
+    '7' => t('IE7 mode'),
+    '8' => t('IE8 mode'),
+    '9' => t('IE9 mode'),
+    '10' => t('IE10 mode'),
+    '11' => t('IE11 mode'),
   );
 
   // Build the markup for the local task demos.
@@ -84,25 +84,25 @@ function uikit_form_system_theme_settings_alter(&$form, &$form_state, $form_id =
 
   // Set the subnav options for primary and secondary tasks.
   $primary_subnav_options = array(
-    0 => 'Basic subnav',
-    'uk-subnav-pill' => 'Subnav pill',
-    'uk-tab' => 'Tabbed',
+    0 => t('Basic subnav'),
+    'uk-subnav-pill' => t('Subnav pill'),
+    'uk-tab' => t('Tabbed'),
   );
   $secondary_subnav_options = array(
-    0 => 'Basic subnav',
-    'uk-subnav-pill' => 'Subnav pill',
+    0 => t('Basic subnav'),
+    'uk-subnav-pill' => t('Subnav pill'),
   );
 
   // Set the region style options.
   $region_style_options = array(
-    0 => 'No style',
-    'card' => 'Card',
+    0 => t('No style'),
+    'card' => t('Card'),
   );
   $region_card_style_options = array(
-    0 => 'No card style',
-    'default' => 'Default',
-    'primary' => 'Primary',
-    'secondary' => 'Secondary',
+    0 => t('No card style'),
+    'default' => t('Default'),
+    'primary' => t('Primary'),
+    'secondary' => t('Secondary'),
   );
 
   // Set the viewport scale options.
@@ -124,28 +124,41 @@ function uikit_form_system_theme_settings_alter(&$form, &$form_state, $form_id =
   // Fetch a list of regions for the current theme.
   $all_regions = system_region_list($theme_key);
 
-  // Create markup for UIkit theme information.
+  // Retrieve the theme info for currently installed version of UIkit.
   $uikit_theme_info = drupal_parse_info_file(drupal_get_path('theme', 'uikit') . '/uikit.info');
   $uikit_version = isset($uikit_theme_info['version']) ? $uikit_theme_info['version'] : UIkit::UIKIT_PROJECT_BRANCH;
+  $uikit_description = $uikit_theme_info['description'];
+
+  // Warn users about the future requirement of the X Autoload module.
+  if (!module_exists('xautoload')) {
+    $message = t('<strong>Please be advised</strong>: UIkit will soon require the <a href="@xautoload" target="_blank">X Autoload</a> module in order to work properly. This will occur before the 7.x-3.0-beta7 release (installed: @uikit_version). Please be sure to install the X Autoload module before then. <a href="@issue" target="_blank">More information</a>', array(
+      '@xautoload' => 'https://www.drupal.org/project/xautoload',
+      '@uikit_version' => $uikit_version,
+      '@issue' => 'https://www.drupal.org/node/2893149',
+    ));
+    drupal_set_message($message, 'warning');
+  }
+
+  // Create markup for UIkit theme information.
   $uikit_info = '<div class="uk-container uk-container-center uk-margin-top">';
   $uikit_info .= '<div class="uk-grid">';
   $uikit_info .= '<div class="uk-width-1-1">';
   $uikit_info .= '<div class="uk-text-center"><img src="/' . drupal_get_path('theme', 'uikit') . '/images/uikit-small.png" /></div>';
   $uikit_info .= '<blockquote class="uk-text-small">';
-  $uikit_info .= '<p><i class="uk-icon-quote-left uk-icon-large uk-align-left"></i> ' . $uikit_theme_info['description'] . '</p>';
+  $uikit_info .= t('<p><i class="uk-icon-quote-left uk-icon-large uk-align-left"></i> @description</p>', array('@description' => $uikit_description));
   $uikit_info .= '</blockquote>';
   $uikit_info .= '</div>';
   $uikit_info .= '<div class="uk-width-1-1 uk-margin">';
   $uikit_info .= '<div class="uk-grid">';
   $uikit_info .= '<ul class="uk-list uk-width-1-1 uk-text-center">';
-  $uikit_info .= '<li class="uk-width-small-1-1 uk-width-medium-1-3 uk-float-left"><a href="' . UIkit::UIKIT_LIBRARY . '" target="_blank">UIkit homepage</a></li>';
-  $uikit_info .= '<li class="uk-width-small-1-1 uk-width-medium-1-3 uk-float-left"><a href="' . UIkit::UIKIT_PROJECT . '" target="_blank">Drupal.org project page</a></li>';
-  $uikit_info .= '<li class="uk-width-small-1-1 uk-width-medium-1-3 uk-float-left"><a href="' . UIkit::UIKIT_PROJECT_API . '" target="_blank">UIkit API site</a></li>';
-  $uikit_info .= '<li class="uk-width-small-1-1 uk-width-medium-1-3 uk-float-left"><strong>UIkit library version</strong>: v' . UIkit::UIKIT_LIBRARY_VERSION . '</li>';
-  $uikit_info .= '<li class="uk-width-small-1-1 uk-width-medium-1-3 uk-float-left"><strong>UIkit Drupal version</strong>: ' . $uikit_version . '</li>';
-  $uikit_info .= '<li class="uk-width-small-1-1 uk-width-medium-1-3 uk-float-left"><strong>Ported to Drupal by</strong>: <a href="http://richardbuchanan.com" target="_blank">Richard Buchanan</a></li>';
-  $uikit_info .= '<li class="uk-width-small-1-1 uk-float-left uk-margin-top">UIkit <i class="uk-icon-copyright"></i> <a href="http://www.yootheme.com/" target="_blank">YOOtheme</a>, with love and caffeine, under the <a href="http://opensource.org/licenses/MIT" target="_blank">MIT license</a>.</li>';
-  $uikit_info .= '<li class="uk-width-small-1-1 uk-float-left">UIkit for Drupal <i class="uk-icon-copyright"></i> <a href="http://richardbuchanan.com" target="_blank">Richard Buchanan</a></li>';
+  $uikit_info .= '<li class="uk-width-small-1-1 uk-width-medium-1-3 uk-float-left"><a href="' . UIkit::UIKIT_LIBRARY . '" target="_blank">' . t('UIkit homepage') . '</a></li>';
+  $uikit_info .= '<li class="uk-width-small-1-1 uk-width-medium-1-3 uk-float-left"><a href="' . UIkit::UIKIT_PROJECT . '" target="_blank">' . t('Drupal.org project page') . '</a></li>';
+  $uikit_info .= '<li class="uk-width-small-1-1 uk-width-medium-1-3 uk-float-left"><a href="' . UIkit::UIKIT_PROJECT_API . '" target="_blank">' . t('UIkit API site') . '</a></li>';
+  $uikit_info .= '<li class="uk-width-small-1-1 uk-width-medium-1-3 uk-float-left"><strong>' . t('UIkit library version') . '</strong>: v' . UIkit::UIKIT_LIBRARY_VERSION . '</li>';
+  $uikit_info .= t('<li class="uk-width-small-1-1 uk-width-medium-1-3 uk-float-left"><strong>UIkit Drupal version</strong>: @version</li>', array('@version' => $uikit_version));
+  $uikit_info .= t('<li class="uk-width-small-1-1 uk-width-medium-1-3 uk-float-left"><strong>Ported to Drupal by</strong>: <a href="@richardbuchanan" target="_blank">Richard Buchanan</a></li>', array('@richardbuchanan' => 'http://richardbuchanan.com'));
+  $uikit_info .= t('<li class="uk-width-small-1-1 uk-float-left uk-margin-top">UIkit <i class="uk-icon-copyright"></i> <a href="@yootheme" target="_blank">YOOtheme</a>, with love and caffeine, under the <a href="@license" target="_blank">MIT license</a>.</li>', array('@yootheme' => 'http://www.yootheme.com', '@license' => 'http://opensource.org/licenses/MIT'));
+  $uikit_info .= t('<li class="uk-width-small-1-1 uk-float-left">UIkit for Drupal <i class="uk-icon-copyright"></i> <a href="@richardbuchanan" target="_blank">Richard Buchanan</a></li>', array('@richardbuchanan' => 'http://richardbuchanan.com'));
   $uikit_info .= '</ul>';
   $uikit_info .= '</div></div></div></div>';
 

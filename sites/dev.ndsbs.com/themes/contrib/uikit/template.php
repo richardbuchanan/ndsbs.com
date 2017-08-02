@@ -74,7 +74,6 @@ function uikit_load_include($type, $theme, $name = NULL, $sub_directory = '') {
 /**
  * Load UIkit's include files for theme processing.
  */
-uikit_load_include('inc', 'uikit', 'get', 'includes');
 uikit_load_include('inc', 'uikit', 'preprocess', 'includes');
 uikit_load_include('inc', 'uikit', 'process', 'includes');
 uikit_load_include('inc', 'uikit', 'theme', 'includes');

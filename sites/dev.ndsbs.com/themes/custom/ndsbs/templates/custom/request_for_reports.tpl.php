@@ -42,7 +42,7 @@ foreach ($taxonomy_main as $taxo_data) {
 // Add sticky table header library.
 drupal_add_js('misc/tableheader.js');
 ?>
-<table class="table table-striped table-responsive sticky-enabled">
+<table class="uk-table uk-table-striped sticky-enabled">
   <caption>Requests</caption>
   <thead>
     <tr class="bkg_b">
@@ -242,7 +242,7 @@ drupal_add_js('misc/tableheader.js');
 </table>
 <div class="mb_20">
   <?php $link = $base_url . '/user/requested/reports/356'; ?>
-  <?php $message = 'All letters and reports will be accessible directly from user account once prepared. Click on <a href="' . $link . '" class="alert-link">Download My Letter.'; ?>
+  <?php $message = 'All letters and reports will be accessible directly from user account once prepared. Click on <a href="' . $link . '" class="alert-link">Download My Letter.</a>'; ?>
   <div class="alert alert-info" role="alert"><?php print $message; ?></div>
   <h2></h2>
   <br/> If you need a letter or report by regular mail choose from options below, purchase and provide the mailing address
@@ -259,4 +259,4 @@ drupal_add_js('misc/tableheader.js');
     ?>
     <a href="javascript:void(0);" class="btn btn-primary" id="makepaymentnow">Make Payment Now</a>
   </div>
-</div></div></div>
+</div>

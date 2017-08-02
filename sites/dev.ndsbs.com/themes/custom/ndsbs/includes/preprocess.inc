@@ -62,11 +62,18 @@ function ndsbs_preprocess_page(&$variables) {
     'uk-pull-3-4@l',
     'uk-visible@l',
   );
-  $variables['content_attributes_array']['class'] = array(
-    'uk-width-1-1',
-    'uk-width-3-4@l',
-    'uk-push-1-4@l',
-  );
+  $variables['content_attributes_array']['class'] = array('uk-width-1-1');
+
+  if (!empty($variables['page']['sidebar_first'])) {
+    $variables['content_attributes_array']['class'][] = 'uk-width-3-4@l';
+    $variables['content_attributes_array']['class'][] = 'uk-push-1-4@l';
+
+    $client_dashboard_page = isset($variables['page']['sidebar_first']['menu_menu-client-navigation']);
+    $staff_dashboard_page = isset($variables['page']['sidebar_first']['menu_menu-staff-navigation']);
+    if ($client_dashboard_page || $staff_dashboard_page) {
+      $variables['page_container_attributes_array']['class'][] = 'uk-container-expand';
+    }
+  }
 
   if (drupal_is_front_page()) {
     unset($variables['page']['content']['system_main']['default_message']);
@@ -261,6 +268,8 @@ function ndsbs_preprocess_button(&$variables) {
     case 'Log in':
     case 'Save':
     case 'Send message':
+    case 'Start Questionnaire':
+    case 'Submit':
     case 'Submit payment':
     case 'Upload':
     $variables['element']['#attributes']['class'][] = 'uk-button-primary';

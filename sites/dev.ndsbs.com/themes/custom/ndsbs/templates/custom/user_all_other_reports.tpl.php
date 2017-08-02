@@ -19,7 +19,7 @@ drupal_add_js('misc/tableheader.js');
 print search_all_other_services();
 ?>
 
-<table class="table table-striped table-responsive sticky-enabled">
+<table class="uk-table uk-table-striped sticky-enabled">
   <thead>
     <tr class="bkg_b">
       <th>Client</th>

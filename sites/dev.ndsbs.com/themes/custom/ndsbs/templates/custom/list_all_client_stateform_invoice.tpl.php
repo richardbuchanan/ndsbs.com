@@ -25,7 +25,7 @@ $result = node_load_multiple($nid_array);
 drupal_add_js('misc/tableheader.js');
 ?>
 <?php print search_requested_stateform(); ?>
-<table class="table table-striped table-responsive sticky-enabled">
+<table class="uk-table uk-table-striped sticky-enabled">
   <tr class="bkg_b">
     <th>Client</th>
     <th>Requested Service</th>

@@ -63,7 +63,7 @@ if ($cstatus != 1) {
 
   <div class="row">
     <div class="col-xs-12 col-md-5 ndsbs-push-right">
-      <table class="table table-striped table-responsive sticky-enabled">
+      <table class="uk-table uk-table-striped sticky-enabled">
         <thead>
         <tr>
           <th class="text-left">Assessment</th>

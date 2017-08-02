@@ -25,7 +25,7 @@ drupal_add_js('misc/tableheader.js');
   <form id="stateform-frm" method="post"
         action="<?php print $base_url; ?>/save/stateform/verification"
         enctype="multipart/form-data">
-    <table class="table table-striped table-responsive sticky-enabled">
+    <table class="uk-table uk-table-striped sticky-enabled">
       <thead>
       <tr class="bkg_b">
         <th>Requested State/DMV forms</th>

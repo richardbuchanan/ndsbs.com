@@ -25,7 +25,7 @@ $result = node_load_multiple($nid_array);
 drupal_add_js('misc/tableheader.js');
 ?>
 <?php print search_client_paymentrefund(); ?>
-<table class="table table-striped table-responsive sticky-enabled">
+<table class="uk-table uk-table-striped sticky-enabled">
   <thead>
   <tr class="bkg_b">
     <th>S. No.</th>

@@ -15,7 +15,7 @@ $trans_data = get_failed_requested_transaction();
 // Add sticky table header library.
 drupal_add_js('misc/tableheader.js');
 ?>
-<table class="table table-striped table-responsive sticky-enabled">
+<table class="uk-table uk-table-striped sticky-enabled">
   <caption>All Requests</caption>
   <thead>
     <tr>

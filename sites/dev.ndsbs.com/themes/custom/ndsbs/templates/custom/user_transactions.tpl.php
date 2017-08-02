@@ -14,7 +14,7 @@ $transactio_data = get_user_transactions($payment_status);
     print 'Failed Transaction';
   } ?>
 </h1>
-<table class="table table-striped table-responsive sticky-enabled">
+<table class="uk-table uk-table-striped sticky-enabled">
   <thead>
   <tr class="bkg_b">
     <th>S. No.</th>

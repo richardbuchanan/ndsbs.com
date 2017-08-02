@@ -16,7 +16,7 @@ $host = str_replace('www.', '', $_SERVER['HTTP_HOST']);
 // Add sticky table header library.
 drupal_add_js('misc/tableheader.js');
 ?>
-<table class="table table-striped table-responsive sticky-enabled">
+<table class="uk-table uk-table-striped sticky-enabled">
   <thead>
   <tr>
     <th>Assessment</th>

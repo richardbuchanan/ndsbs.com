@@ -19,7 +19,7 @@ $title = arg(3) == 1 ? 'Successful Transactions' : 'Failed Transactions';
 drupal_set_title($title);
 ?>
 <?php print search_transactions(); ?>
-  <table class="table table-striped table-responsive sticky-enabled">
+  <table class="uk-table uk-table-striped sticky-enabled">
     <thead>
     <tr class="bkg_b">
       <th>S. No.</th>

@@ -62,7 +62,7 @@
  *
  * @see https://getuikit.com/docs/container
  */
-.uk-container {
+.uk-container:not(.uk-container-small):not(.uk-container-large):not(.uk-container-expand) {
   max-width: 1400px;
 }
 

@@ -995,6 +995,7 @@ function uikit_pager($variables) {
   $element = $variables['element'];
   $parameters = $variables['parameters'];
   $quantity = $variables['quantity'];
+  $tags = $variables['tags'];
 
   // Middle is used to "center" pages around the current page.
   $pager_middle = ceil($quantity / 2);
@@ -1027,27 +1028,27 @@ function uikit_pager($variables) {
   }
 
   $li_first = theme('pager_first', array(
-    'text' => t('<span><i uk-icon="icon:angle-double-left"></i> First</span>'),
+    'text' => (isset($tags[0]) ? $tags[0] : t('First')),
     'element' => $element,
     'parameters' => $parameters,
   ));
 
   $li_previous = theme('pager_previous', array(
-    'text' => t('<span><i uk-icon="icon:angle-left"></i> Previous</span>'),
+    'text' => (isset($tags[1]) ? $tags[1] : t('Previous')),
     'element' => $element,
     'interval' => 1,
     'parameters' => $parameters,
   ));
 
   $li_next = theme('pager_next', array(
-    'text' => t('<span>Next <i uk-icon="icon:angle-right"></i></span>'),
+    'text' => (isset($tags[3]) ? $tags[3] : t('Next')),
     'element' => $element,
     'interval' => 1,
     'parameters' => $parameters,
   ));
 
   $li_last = theme('pager_last', array(
-    'text' => t('<span>Last <i uk-icon="icon:angle-double-right"></i></span>'),
+    'text' => (isset($tags[4]) ? $tags[4] : t('Last')),
     'element' => $element,
     'parameters' => $parameters,
   ));
@@ -1135,6 +1136,7 @@ function uikit_pager($variables) {
     $pagination = theme('item_list', array(
       'items' => $items,
       'attributes' => array('class' => array('uk-pagination')),
+      'pagination' => TRUE,
     ));
 
     return '<h2 class="element-invisible">' . t('Pages') . '</h2>' . $pagination;
@@ -1150,32 +1152,34 @@ function uikit_pager_link($variables) {
   $element = $variables['element'];
   $parameters = $variables['parameters'];
   $attributes = $variables['attributes'];
-  $page = isset($_GET['page']) ? $_GET['page'] : '';
 
+  $page = isset($_GET['page']) ? $_GET['page'] : '';
   if ($new_page = implode(',', pager_load_array($page_new[$element], $element, explode(',', $page)))) {
     $parameters['page'] = $new_page;
   }
 
   $query = array();
-
   if (count($parameters)) {
     $query = drupal_get_query_parameters($parameters, array());
   }
-
   if ($query_pager = pager_get_query_parameters()) {
     $query = array_merge($query, $query_pager);
   }
 
-  // Set each pager link title.
+  // Set each pager link title
   if (!isset($attributes['title'])) {
     static $titles = NULL;
 
     if (!isset($titles)) {
       $titles = array(
-        t('<span><i uk-icon="icon:angle-double-left"></i> First</span>') => t('Go to first page'),
-        t('<span><i uk-icon="icon:angle-left"></i> Previous</span>') => t('Go to previous page'),
-        t('<span>Next <i uk-icon="icon:angle-right"></i></span>') => t('Go to next page'),
-        t('<span>Last <i uk-icon="icon:angle-double-right"></i></span>') => t('Go to last page'),
+        t('First') => t('Go to first page'),
+        t('Previous') => t('Go to previous page'),
+        t('Next') => t('Go to next page'),
+        t('Last') => t('Go to last page'),
+        t('« first') => t('Go to first page'),
+        t('‹ previous') => t('Go to previous page'),
+        t('next ›') => t('Go to next page'),
+        t('last »') => t('Go to last page'),
       );
     }
 
@@ -1187,8 +1191,13 @@ function uikit_pager_link($variables) {
     }
   }
 
+  // @todo l() cannot be used here, since it adds an 'active' class based on the
+  //   path only (which is always the current path for pager links). Apparently,
+  //   none of the pager links is active at any time - but it should still be
+  //   possible to use l() here.
+  // @see http://drupal.org/node/1410574
   $attributes['href'] = url($_GET['q'], array('query' => $query));
-  return '<a' . drupal_attributes($attributes) . '>' . $text . '</a>';
+  return '<a' . drupal_attributes($attributes) . '>' . check_plain($text) . '</a>';
 }
 
 /**

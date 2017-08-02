@@ -23,7 +23,7 @@ drupal_add_js('misc/tableheader.js');
     <a href="/node/add/assessment"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add assessment</a>
   </div>
 </div>
-<table class="table table-striped table-responsive sticky-enabled">
+<table class="uk-table uk-table-striped sticky-enabled">
   <thead>
     <tr>
       <th>Assessment Details</th>

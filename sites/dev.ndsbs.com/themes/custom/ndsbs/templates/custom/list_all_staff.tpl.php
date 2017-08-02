@@ -8,7 +8,7 @@ $clients_id = get_all_staff();
 // Add sticky table header library.
 drupal_add_js('misc/tableheader.js');
 ?>
-<table class="table table-striped table-responsive sticky-enabled">
+<table class="uk-table uk-table-striped sticky-enabled">
   <tr class="bkg_b">
     <th>Profile Picture</th>
     <th>Name</th>

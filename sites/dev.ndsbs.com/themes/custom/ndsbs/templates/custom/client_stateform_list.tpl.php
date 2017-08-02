@@ -9,7 +9,7 @@ include_once 'headerstate.tpl.php';
 // Add sticky table header library.
 drupal_add_js('misc/tableheader.js');
 ?>
-<table class="table table-striped table-responsive sticky-enabled">
+<table class="uk-table uk-table-striped sticky-enabled">
   <thead>
   <tr>
     <th>Title</th>

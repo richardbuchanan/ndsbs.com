@@ -6,7 +6,7 @@
 
 $transactio_data = get_transactions_detail();
 ?>
-<table class="table table-striped table-responsive sticky-enabled">
+<table class="uk-table uk-table-striped sticky-enabled">
   <?php
   $i = 0;
   foreach ($transactio_data as $data) {
@@ -65,7 +65,7 @@ $transactio_data = get_transactions_detail();
 </table>
 <div class="pro_wrapinn">
   <div class="table_wrap">
-    <table class="table table-striped table-responsive sticky-enabled">
+    <table class="uk-table uk-table-striped sticky-enabled">
       <tr class="bkg_b">
         <th>Service</th>
         <th>Details</th>

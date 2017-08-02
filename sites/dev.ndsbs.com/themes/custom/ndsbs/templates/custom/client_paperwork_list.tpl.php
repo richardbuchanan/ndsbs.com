@@ -27,7 +27,7 @@ drupal_add_js('misc/tableheader.js');
 <br /><br />
 <b>Or Submit: </b><?php print $upload_link; ?>
 <br /><br />
-<table class="table table-striped table-responsive sticky-enabled">
+<table class="uk-table uk-table-striped sticky-enabled">
   <thead>
     <tr>
       <th>S.No.</th>

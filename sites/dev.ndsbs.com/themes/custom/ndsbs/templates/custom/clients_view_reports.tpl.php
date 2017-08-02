@@ -113,7 +113,7 @@ $recipient_address = !empty($recipient_street) ? $recipient_street . '<br />' . 
     <div class="row">
       <div class="col-xs-12 col-sm-12 col-md-12">
         <form id="paperwork-frm" method="POST" enctype="multipart/form-data" action="<?php print $base_url.'/save/paperwork/verification';?>">
-          <table class="table table-striped table-responsive sticky-enabled">
+          <table class="uk-table uk-table-striped sticky-enabled">
             <thead>
               <tr>
                 <th>Title</th>
@@ -227,7 +227,7 @@ $recipient_address = !empty($recipient_street) ? $recipient_street . '<br />' . 
       <?php endif; ?>
     <?php endforeach; ?>
     <form id="assessment-frm" method="post" action="<?php print $base_url; ?>/save/assessmentform/verification" enctype="multipart/form-data">
-      <table class="table table-striped table-responsive sticky-enabled">
+      <table class="uk-table uk-table-striped sticky-enabled">
         <thead>
           <tr>
             <th>Requested Document</th>
@@ -439,7 +439,7 @@ $recipient_address = !empty($recipient_street) ? $recipient_street . '<br />' . 
       $nid_array[] = $data->nid;
     }
     $result = node_load_multiple($nid_array); ?>
-    <table class="table table-striped table-responsive sticky-enabled">
+    <table class="uk-table uk-table-striped sticky-enabled">
       <thead>
         <tr>
           <th>Client</th>
