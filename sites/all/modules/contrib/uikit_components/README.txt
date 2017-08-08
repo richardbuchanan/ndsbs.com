@@ -25,6 +25,7 @@ REQUIREMENTS
 ------------
 
 Menu (Drupal core)
+Elements (https://www.drupal.org/project/elements)
 
 
 INSTALLATION

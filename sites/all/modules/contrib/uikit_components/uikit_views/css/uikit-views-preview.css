@@ -468,50 +468,153 @@
 /**
  * UIkit Table component.
  */
+#views-live-preview .preview-section table {
+  font-size: 15px;
+  margin: 0;
+  border: 0;
+}
+#views-live-preview .preview-section table th {
+  text-transform: none;
+  background: initial;
+  font-weight: normal;
+  border: 0;
+  padding: 0;
+}
+#views-live-preview .preview-section tr.even,
+#views-live-preview .preview-section tr.odd {
+  border: 0;
+  background: initial;
+}
+#views-live-preview .preview-section tr.odd {
+  background: initial;
+}
 #views-live-preview .preview-section .uk-table {
   border-collapse: collapse;
   border-spacing: 0;
   width: 100%;
-  margin-bottom: 15px
+  margin-bottom: 20px
 }
 #views-live-preview .preview-section *+.uk-table {
-  margin-top: 15px
-}
-#views-live-preview .preview-section .uk-table td,
-#views-live-preview .preview-section .uk-table th {
-  padding: 8px 8px
+  margin-top: 20px
 }
 #views-live-preview .preview-section .uk-table th {
-  text-align: left
+  padding: 16px 12px;
+  text-align: left;
+  vertical-align: bottom;
+  font-size: .875rem;
+  font-weight: 400;
+  color: #999;
+  text-transform: uppercase;
 }
 #views-live-preview .preview-section .uk-table td {
+  padding: 16px 12px;
   vertical-align: top
 }
-#views-live-preview .preview-section .uk-table thead th {
-  vertical-align: bottom
+#views-live-preview .preview-section .uk-table td>:last-child {
+  margin-bottom: 0
 }
-#views-live-preview .preview-section .uk-table caption,
 #views-live-preview .preview-section .uk-table tfoot {
-  font-size: 12px;
-  font-style: italic
+  font-size: 14px
 }
 #views-live-preview .preview-section .uk-table caption {
+  font-size: 14px;
   text-align: left;
   color: #999
 }
+#views-live-preview .preview-section .uk-table>tr.uk-active,
 #views-live-preview .preview-section .uk-table tbody tr.uk-active {
-  background: #EEE
+  background: #ffd
 }
 #views-live-preview .preview-section .uk-table-middle,
 #views-live-preview .preview-section .uk-table-middle td {
-  vertical-align: middle!important
+  vertical-align: middle !important
 }
+#views-live-preview .preview-section .uk-table-divider>tr:not(:first-child),
+#views-live-preview .preview-section .uk-table-divider>:not(:first-child)>tr,
+#views-live-preview .preview-section .uk-table-divider>:first-child>tr:not(:first-child) {
+  border-top: 1px solid #e5e5e5
+}
+#views-live-preview .preview-section .uk-table-striped>tr:nth-of-type(odd),
 #views-live-preview .preview-section .uk-table-striped tbody tr:nth-of-type(odd) {
-  background: #f5f5f5
+  background: #f8f8f8;
+  border-top: 1px solid #e5e5e5;
+  border-bottom: 1px solid #e5e5e5
 }
-#views-live-preview .preview-section .uk-table-condensed td {
-  padding: 4px 8px
-}
+#views-live-preview .preview-section .uk-table-hover>tr:hover,
 #views-live-preview .preview-section .uk-table-hover tbody tr:hover {
-  background: #EEE
+  background: #ffd
+}
+#views-live-preview .preview-section .uk-table-small th,
+#views-live-preview .preview-section .uk-table-small td {
+  padding: 10px 12px
+}
+#views-live-preview .preview-section .uk-table-justify th:first-child,
+#views-live-preview .preview-section .uk-table-justify td:first-child {
+  padding-left: 0
+}
+#views-live-preview .preview-section .uk-table-justify th:last-child,
+#views-live-preview .preview-section .uk-table-justify td:last-child {
+  padding-right: 0
+}
+#views-live-preview .preview-section .uk-table-shrink {
+  width: 1px
+}
+#views-live-preview .preview-section .uk-table-expand {
+  min-width: 300px
+}
+#views-live-preview .preview-section .uk-table-link {
+  padding: 0 !important
+}
+#views-live-preview .preview-section .uk-table-link>a {
+  display: block;
+  padding: 16px 12px
+}
+#views-live-preview .preview-section .uk-table-small .uk-table-link>a {
+  padding: 10px 12px
+}
+@media (max-width: 959px) {
+  #views-live-preview .preview-section .uk-table-responsive,
+  #views-live-preview .preview-section .uk-table-responsive tbody,
+  #views-live-preview .preview-section .uk-table-responsive th,
+  #views-live-preview .preview-section .uk-table-responsive td,
+  #views-live-preview .preview-section .uk-table-responsive tr {
+    display:block
+  }
+  #views-live-preview .preview-section .uk-table-responsive thead {
+    display: none
+  }
+  #views-live-preview .preview-section .uk-table-responsive th,
+  #views-live-preview .preview-section .uk-table-responsive td {
+    width: auto !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    overflow: visible !important;
+    white-space: normal !important
+  }
+  #views-live-preview .preview-section .uk-table-responsive th:not(:first-child):not(.uk-table-link),
+  #views-live-preview .preview-section .uk-table-responsive td:not(:first-child):not(.uk-table-link),
+  #views-live-preview .preview-section .uk-table-responsive .uk-table-link:not(:first-child)>a {
+    padding-top: 5px !important
+  }
+  #views-live-preview .preview-section .uk-table-responsive th:not(:last-child):not(.uk-table-link),
+  #views-live-preview .preview-section .uk-table-responsive td:not(:last-child):not(.uk-table-link),
+  #views-live-preview .preview-section .uk-table-responsive .uk-table-link:not(:last-child)>a {
+    padding-bottom: 5px !important
+  }
+  #views-live-preview .preview-section .uk-table-justify.uk-table-responsive th,
+  #views-live-preview .preview-section .uk-table-justify.uk-table-responsive td {
+    padding-left: 0;
+    padding-right: 0
+  }
+}
+#views-live-preview .preview-section .uk-table tbody tr {
+  -webkit-transition: background-color .1s linear;
+  transition: background-color .1s linear
+}
+#views-live-preview .preview-section .uk-overflow-auto {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch
+}
+#views-live-preview .preview-section .uk-overflow-auto>:last-child {
+  margin-bottom: 0
 }

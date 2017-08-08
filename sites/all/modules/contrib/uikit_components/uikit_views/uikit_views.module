@@ -18,12 +18,12 @@ function uikit_views_help($path, $arg) {
     '!uikit' => 'https://www.drupal.org/project/uikit',
 
     // Current plugin style components.
+    '!accordion' => 'https://getuikit.com/docs/accordion',
     '!grid' => 'https://getuikit.com/docs/grid',
     '!list' => 'https://getuikit.com/docs/list',
     '!table' => 'https://getuikit.com/docs/table',
 
     // @todo Future plugin style components.
-    '!accordion' => 'https://getuikit.com/docs/accordion',
     '!card' => 'https://getuikit.com/docs/card',
     '!cover' => 'https://getuikit.com/docs/cover',
     '!nav' => 'https://getuikit.com/docs/nav',
@@ -37,6 +37,7 @@ function uikit_views_help($path, $arg) {
       $output .= '<h3>' . t('Views plugins') . '</h3>';
       $output .= '<p>' . t('<strong>Style</strong>: Style plugins control how a view is displayed. For the most part they are object wrappers around theme templates. Styles UIkit Views provides:') . '</p>';
       $output .= '<ul>';
+      $output .= '<li>' . t('<a href="!accordion" target="_blank">Accordion</a>', $t_args) . '</li>';
       $output .= '<li>' . t('<a href="!grid" target="_blank">Grid</a>', $t_args) . '</li>';
       $output .= '<li>' . t('<a href="!list" target="_blank">List</a>', $t_args) . '</li>';
       $output .= '<li>' . t('<a href="!table" target="_blank">Table</a>', $t_args) . '</li>';
@@ -53,15 +54,24 @@ function uikit_views_help($path, $arg) {
 function uikit_views_theme($existing, $type, $theme, $path) {
   $uikit_views = drupal_get_path('module', 'uikit_views');
 
+  $hooks['uikit_view_accordion'] = array(
+    'variables' => array('view' => NULL, 'options' => NULL, 'rows' => NULL, 'title' => NULL),
+    'template' => 'templates/uikit-view-accordion',
+    'file' => 'templates/uikit_views.theme.inc',
+    'pattern' => 'uikit_view_accordion__',
+    'preprocess functions' => array(
+      'template_preprocess_uikit_view_accordion',
+    ),
+  );
   $hooks['uikit_view_grid'] = array(
     'variables' => array('view' => NULL, 'options' => NULL, 'rows' => NULL, 'title' => NULL),
     'path' => $uikit_views . '/templates',
     'template' => 'uikit-view-grid',
+    'file' => 'uikit_views.theme.inc',
     'pattern' => 'uikit_view_grid__',
     'preprocess functions' => array(
       'template_preprocess_uikit_view_grid',
     ),
-    'file' => 'uikit_views.theme.inc',
   );
   $hooks['uikit_view_list'] = array(
     'variables' => array('view' => NULL, 'options' => NULL, 'rows' => NULL, 'title' => NULL),
@@ -76,11 +86,11 @@ function uikit_views_theme($existing, $type, $theme, $path) {
     'variables' => array('view' => NULL, 'options' => NULL, 'rows' => NULL, 'title' => NULL),
     'path' => $uikit_views . '/templates',
     'template' => 'uikit-view-table',
+    'file' => 'uikit_views.theme.inc',
     'pattern' => 'uikit_view_table__',
     'preprocess functions' => array(
       'template_preprocess_uikit_view_table',
     ),
-    'file' => 'uikit_views.theme.inc',
   );
 
   return $hooks;

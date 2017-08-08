@@ -120,6 +120,27 @@ function theme_uikit_navbar($variables) {
 }
 
 /**
+ * Implements template_preprocess_html().
+ */
+function uikit_components_preprocess_html(&$variables) {
+  $t_args = array(
+    '@elements' => 'https://www.drupal.org/project/elements',
+    '@xautoload' => 'https://www.drupal.org/project/xautoload',
+    '@update' => '/update.php',
+  );
+
+  if (!module_exists('elements') && !module_enable(array('elements'))) {
+    $message = t('<em class="placeholder">UIkit Components</em> requires the <a href="@elements">Elements</a> module. Please download and install <em class="placeholder">Elements</em> and run <a href="@update">update.php</a>.', $t_args);
+    drupal_set_message($message, 'error');
+  }
+
+  if (!module_exists('xautoload') && !module_enable(array('xautoload'))) {
+    $message = t('<em class="placeholder">UIkit Components</em> requires the <a href="@xautoload">X Autoload</a> module. Please download and install <em class="placeholder">X Autoload</em> and run <a href="@update">update.php</a>.', $t_args);
+    drupal_set_message($message, 'error');
+  }
+}
+
+/**
  * System settings form builder for the uikit_components module.
  *
  * @return array

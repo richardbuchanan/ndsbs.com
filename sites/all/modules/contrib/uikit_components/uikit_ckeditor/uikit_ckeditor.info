@@ -1,6 +1,0 @@
-name = UIkit CKEditor
-description = Provides UIkit components as CKEditor plugins.
-core = 7.x
-package = UIkit
-
-dependencies[] = ckeditor

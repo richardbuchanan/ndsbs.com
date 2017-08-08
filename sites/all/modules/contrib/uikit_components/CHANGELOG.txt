@@ -1,0 +1,53 @@
+UIkit Components 7.x-3.x, 08-07-2017 (development version)
+-----------------------
+
+Added the X Autoload module as a dependency.
+ - The X Autoload module is now required by both UIkit Components and UIkit
+   Views. This adds support for Drupal-8-style PSR-4 autoloading of classes.
+ - https://www.drupal.org/project/xautoload
+
+   * If X Autoload is already installed and enabled, there is nothing you need
+     to do.
+   * Users who currently have the X Autoload module installed but not enabled
+     need to run Updates on their sites using update.php or drush up.
+   * Otherwise you will need to download and enable X Autoload.
+
+   See https://www.drupal.org/node/2893283
+
+
+UIkit Components 7.x-3.x, 08-07-2017 (development version)
+-----------------------
+
+Added the Elements module as a dependency.
+ - The Elements module is now required by both UIkit Components and UIkit Views.
+   This adds support for newer HTML5 elements, which will be added to both UIkit
+   Components and UIkit Views for various theming functions, Views plugins, etc.
+ - https://www.drupal.org/project/elements
+
+   * If Elements is already installed and enabled, there is nothing you need to
+     do.
+   * Users who currently have the Elements module installed but not enabled need
+     to run Updates on their sites using update.php or drush up.
+   * Otherwise you will need to download and enable Elements.
+
+   See https://www.drupal.org/node/2893280
+
+
+UIkit Components 7.x-3.x, 06-10-2017 (development version)
+-----------------------
+
+Provide separate branches to support both UIkit 2.x.x and 3.x.x library versions
+ - In order to support current versions of the UIkit library (v2.x.x and 3.x.x),
+   UIkit Components now has different branches to apply the correct theme
+   implementations based on the library version.
+
+   * 7.x-2.x/8.x-2.x branches support UIkit 2.x.x
+   * 7.x-3.x/8.x-3.x branches support UIkit 3.x.x
+
+   Users will need to install the branch of Uikit Components that supports the
+   same UIkit library version of the UIkit theme they have installed. Since many
+   of the classes and attributes used by UIkit differ in the two library
+   versions, x.x-2.x branches are not compatible with the x.x-3.x branches of
+   UIkit Components and the UIkit theme.
+
+   https://www.drupal.org/node/2885120
