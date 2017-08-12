@@ -419,7 +419,7 @@ function ndsbs_menu_link(array $variables) {
  */
 function ndsbs_menu_link__menu_client_navigation($variables) {
   $element = $variables['element'];
-  $element['#attributes']['class'] = array();
+  $attributes = $element['#attributes'];
   $depth = $element['#original_link']['depth'];
   $sub_menu = '';
 
@@ -432,11 +432,11 @@ function ndsbs_menu_link__menu_client_navigation($variables) {
 
   if ($depth == 1) {
     $output = '<h3 class="uk-accordion-title">' . $element['#title'] . '</h3>';
-    return '<li>' . $output . $sub_menu . '</li>';
+    return '<li' . drupal_attributes($attributes) . '>' . $output . $sub_menu . '</li>';
   }
   else {
     $output = l($element['#title'], $element['#href'], $element['#localized_options']);
-    return '<li>' . $output . '</li>';
+    return '<li' . drupal_attributes($attributes) . '>' . $output . '</li>';
   }
 }
 

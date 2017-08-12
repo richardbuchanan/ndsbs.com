@@ -118,8 +118,7 @@ function ndsbs_transactions_menu() {
   );
 
   $items['view/assessment/report'] = array(
-    'title' => 'View Report',
-    'description' => 'View Report.',
+    'title' => 'View My Assessment Report',
     'access callback' => 'user_is_logged_in',
     'page callback' => '_user_view_assessment_report',
     'access arguments' => array('access content'),

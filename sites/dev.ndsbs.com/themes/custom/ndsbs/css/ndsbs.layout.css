@@ -23,6 +23,29 @@
 }
 
 /**
+ * Steps header
+ */
+#steps-header-progress:before {
+  position: relative;
+  top: 22px;
+  content: "";
+  display: block;
+  background: #e5e5e5;
+  margin-left: 15px;
+  height: 8px;
+  width: 100%;
+  z-index: -1;
+}
+#steps-header-steps .steps-header-content h3 {
+  border-bottom: 1px solid #ddd;
+  margin: -10px -10px 0 -10px;
+  padding: 10px;
+}
+#steps-header-steps .steps-header-content .steps-header-footer {
+  margin-top: 10px;
+}
+
+/**
  * Media queries.
  */
 @media (min-width: 640px) {}

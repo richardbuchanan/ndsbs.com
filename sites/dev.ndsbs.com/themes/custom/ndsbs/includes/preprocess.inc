@@ -267,6 +267,8 @@ function ndsbs_preprocess_button(&$variables) {
     case 'E-mail new password':
     case 'Log in':
     case 'Save':
+    case 'Save My Answer and Continue Questionnaire':
+    case 'Save My Answer and Review Questionnaire':
     case 'Send message':
     case 'Start Questionnaire':
     case 'Submit':
@@ -333,6 +335,21 @@ function ndsbs_preprocess_links(&$variables) {
 function ndsbs_preprocess_menu_local_tasks(&$variables) {
   $variables['primary_attributes_array']['class'] = array('uk-tab');
   $variables['secondary_attributes_array']['class'] = array('uk-subnav', 'uk-subnav-divider');
+}
+
+/**
+ * Implements template_preprocess_menu_link().
+ */
+function ndsbs_preprocess_menu_link(&$variables) {
+  if ($variables['theme_hook_suggestion'] == 'menu_link__menu_client_navigation') {
+    $questionnaire_start = substr(current_path(), 0, 19) === 'questionnaire/start';
+    $assessment_page = $questionnaire_start || current_path() == 'schedule/interview' || current_path() == 'user/paperwork/list' || current_path() == 'view/assessment/report';
+    $assessment_link = $variables['element']['#original_link']['mlid'] == '7786';
+
+    if ($assessment_page && $assessment_link) {
+      $variables['element']['#attributes']['class'][] = 'uk-open';
+    }
+  }
 }
 
 /**

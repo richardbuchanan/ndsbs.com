@@ -811,7 +811,7 @@ function get_total_attempted_times($assessment_id, $transaction_id = NULL) {
   global $user;
 
   // Catch the transaction id modified for creating the steps of assessment.
-  if ($transaction_id <> '') {
+  if (!$transaction_id) {
     $transid = arg(4);
   }
   else {
@@ -977,23 +977,18 @@ function questionnaire_custom_pager($assessment_id) {
  * Function questionnaire_submit_for_evaluation() implemented.
  */
 function get_skipped_question_before_evaluation($assessment_id, $transid) {
-  global $user, $base_url;
+  global $user;
   $qlist = assessment_question_node_preview($assessment_id, $transid);
-  $destination = $_GET['q'] . '?page=' . $_GET['page'];
-  $destination = drupal_get_destination();
 
   $output = '<div class="list-group">';
+  $output .= '<ul class="uk-list">';
 
   // Creating links for user and admin.
   if ($user->roles[6] == 'client') {
     $user_id = $user->uid;
-    $questionnaire_link = $base_url . '/user/questionnaire/' . $assessment_id . '/trans/' . $transid;
-    $questionnaire_prevnext_link = $base_url . '/user/evaluation/questionnaire/' . $assessment_id . '/trans/' . $transid;
   }
   else {
     $user_id = arg(6);
-    $questionnaire_link = $base_url . '/user/questionnaire/' . $assessment_id . '/trans/' . $transid . '/uid/' . $user_id;
-    $questionnaire_prevnext_link = $base_url . '/user/evaluation/questionnaire/' . $assessment_id . '/trans/' . $transid . '/uid/' . $user_id;
   }
 
   // Get the attempted question's sequence.
@@ -1039,10 +1034,10 @@ function get_skipped_question_before_evaluation($assessment_id, $transid) {
         'class' => array('list-group-item'),
       ),
     ));
-    $output .= $question_link;
+    $output .= '<li>' . $question_link . '</li>';
   }
 
-  $output .= '</div>';
+  $output .= '</ul></div>';
   return $output;
 }
 

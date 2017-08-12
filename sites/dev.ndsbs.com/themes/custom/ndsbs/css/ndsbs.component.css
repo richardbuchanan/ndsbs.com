@@ -50,6 +50,11 @@ body.page_node_three .feed-icon {
   width: 100% !important;
 }
 
+.uk-button-success {
+  background: #019d66;
+  color: #fff;
+}
+
 /**
  * Development modules.
  */

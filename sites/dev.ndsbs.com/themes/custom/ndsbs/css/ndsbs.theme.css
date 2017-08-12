@@ -707,6 +707,42 @@ body.role-super-therapist #user-profile-form ul.group-user-account-therapist {
 }
 
 /**
+ * Steps header
+ */
+#steps-header-progress a,
+#steps-header-steps a,
+#steps-header-progress .uk-icon-button,
+#steps-header-steps .uk-icon-button {
+  text-decoration: none;
+}
+#steps-header-steps a:focus .uk-icon-button.uk-button-primary,
+#steps-header-steps a:hover .uk-icon-button.uk-button-primary {
+  background-color: #0f7ae5;
+}
+#steps-header-progress .uk-icon-button.uk-button-success:focus,
+#steps-header-progress .uk-icon-button.uk-button-success:hover,
+#steps-header-steps a:focus .uk-icon-button.uk-button-success,
+#steps-header-steps a:hover .uk-icon-button.uk-button-success {
+  background-color: #087d54;
+  color: #fff;
+}
+#steps-header-steps .steps-header-content {
+  border: 1px solid #ddd;
+  height: 100%;
+  padding: 10px;
+}
+#steps-header-steps .uk-active .steps-header-content {
+  background: #f5f5f5;
+}
+#steps-header-steps .steps-header-title.step-completed a {
+  color: #019d66;
+}
+#steps-header-steps .steps-header-title.step-completed a:focus,
+#steps-header-steps .steps-header-title.step-completed a:hover {
+  color: #087d54;
+}
+
+/**
  * Keyframe animations.
  */
 @keyframes fadeIn {

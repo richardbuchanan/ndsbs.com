@@ -1573,20 +1573,17 @@ function user_shipping_address_form($form, &$form_state) {
   $user_information = user_load($user->uid);
 
   // Custom form defined to get the shipping form.
-  $form['shipping_address_title'] = array(
-    '#type' => 'item',
-    '#title' => 'Shipping Address:',
-    // '#markup' => '<span></span>',.
-    '#prefix' => '<h2>',
-    '#suffix' => '</h2>',
+  $form['shipping_address'] = array(
+    '#type' => 'fieldset',
+    '#title' => 'Shipping Address',
   );
-  $form['user_shipping_address'] = array(
+  $form['shipping_address']['user_shipping_address'] = array(
     '#type' => 'textfield',
     '#title' => t('Address'),
     '#default_value' => $user_information->field_address['und'][0]['value'],
     '#size' => 30,
   );
-  $form['user_shipping_city'] = array(
+  $form['shipping_address']['user_shipping_city'] = array(
     '#type' => 'textfield',
     '#title' => t('City'),
     '#default_value' => $user_information->field_city['und'][0]['value'],
@@ -1596,13 +1593,13 @@ function user_shipping_address_form($form, &$form_state) {
   // Get the dropdown field values.
   $state_fields = field_info_fields();
   $allowed_values = list_allowed_values($state_fields['field_state']);
-  $form['user_shipping_state'] = array(
+  $form['shipping_address']['user_shipping_state'] = array(
     '#type' => 'select',
     '#title' => t('State'),
     '#options' => $allowed_values,
     '#default_value' => $user_information->field_state['und'][0]['value'],
   );
-  $form['user_shipping_zip'] = array(
+  $form['shipping_address']['user_shipping_zip'] = array(
     '#type' => 'textfield',
     '#title' => t('Zip'),
     '#default_value' => $user_information->field_zip['und'][0]['value'],

@@ -9,11 +9,8 @@ global $base_path, $base_url, $user; ?>
 <?php $ready_for_evaluation = $form['validate_evaluation_status']['#value'] == 'ready' ? 1 : 0; ?>
 
 <?php if ($last_question): ?>
-  <div class="alert alert-success alert-dismissible" role="alert" style="clear: left; display: inline-block; width: 100%;">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">×</span>
-    </button>
-    <span>You have answered all questions. Thank you! Please click the Submit All Answers for Evaluator Review button, then provide us with your preferred time to complete your interview. Someone from our support team will contact you to schedule.</span>
+  <div class="uk-alert-success" uk-alert>
+    <p>You have answered all questions. Thank you! Please click the Submit All Answers for Evaluator Review button, then provide us with your preferred time to complete your interview. Someone from our support team will contact you to schedule.</p>
   </div>
 <?php else: ?>
 <?php endif; ?>
@@ -23,10 +20,8 @@ global $base_path, $base_url, $user; ?>
   <?php $assessment_node_id = arg(2); ?>
   <?php $transid = arg(4); ?>
   <?php $qlist = get_skipped_question_before_evaluation($assessment_node_id, $transid); ?>
-  <div class="alert alert-warning alert-dismissible" role="alert" style="clear: left; display: inline-block; width: 100%;">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
-    <h2 class="sr-only">Warning message</h2>
-    <span>There are questions you need to answer before submitting your questionnaire. Please review the list of questions below.</span>
+  <div class="uk-alert-warning" uk-alert>
+    <p>There are questions you need to answer before submitting your questionnaire. Please review the list of questions below.</p>
   </div>
   <?php print $qlist; ?>
 <?php endif; ?>
@@ -41,12 +36,12 @@ global $base_path, $base_url, $user; ?>
 <?php $build['pager'] = array('#theme' => 'pager'); ?>
 <?php print drupal_render($build); ?>
 
-<?php $sub_eva_classes = array('btn', 'btn-primary'); ?>
+<?php $sub_eva_classes = array('uk-button', 'uk-button-primary'); ?>
 
 <?php if ($last_question): ?>
-  <?php $form['submit']['#attributes']['class'][] = 'hidden'; ?>
+  <?php $form['submit']['#attributes']['class'][] = 'uk-hidden'; ?>
 <?php else: ?>
-  <?php $sub_eva_classes[] = 'hidden'; ?>
+  <?php $sub_eva_classes[] = 'uk-hidden'; ?>
 <?php endif; ?>
 
 <?php if($user->roles[6] == 'client'): ?>
@@ -63,7 +58,7 @@ global $base_path, $base_url, $user; ?>
 
 <?php print l(t('Submit All Answers for Evaluator Review'), 'user/evaluation/questionnaire/'.arg(2).'/trans/'.arg(4), $sub_eva); ?>
 
-<div style='display:none;'>
+<div class="uk-hidden">
   <?php print drupal_render($form['data_question_id']); ?>
   <?php print drupal_render($form['question_sequesce']); ?>
   <?php print drupal_render($form['textarea_ans_id']); ?>

@@ -85,7 +85,6 @@ function bdg_ndsbs_menu() {
   );
   $items['questionnaire/start/trans'] = array(
     'title'           => 'My Assessment',
-    'description'     => 'Client\'s assessment',
     'access callback' => 'user_is_logged_in',
     'page callback'   => '_start_assessment_questionnaire',
     'access arguments' => array('access content'),
