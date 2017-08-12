@@ -9,6 +9,11 @@ use \Drupal\uikit\UIkit;
 
 /**
  * Retrieves UIkit, jQuery, jQuery Migrate and Font Awesome CDN assets.
+ *
+ * @deprecated in UIkit 7.x-3.0-beta6, will be removed before UIkit 7.x-3.0-beta7.
+ *   Use \Drupal\uikit\UIkit::getCdnAssets();
+ *
+ * @see https://www.drupal.org/node/2893149
  */
 function uikit_get_cdn_assets() {
   // Add the UIkit stylesheet.
@@ -66,6 +71,11 @@ function uikit_get_cdn_assets() {
  *
  * @return bool
  *   Returns true if the given path is the current path, false if otherwise.
+ *
+ * @deprecated in UIkit 7.x-3.0-beta6, will be removed before UIkit 7.x-3.0-beta7.
+ *   Use \Drupal\uikit\UIkit::getActivePath();
+ *
+ * @see https://www.drupal.org/node/2893149
  */
 function uikit_get_active_path($path) {
   $active_path = FALSE;

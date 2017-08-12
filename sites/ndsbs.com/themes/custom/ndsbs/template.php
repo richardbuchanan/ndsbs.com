@@ -68,6 +68,7 @@ function ndsbs_load_include($type, $theme, $name = NULL, $sub_directory = '') {
  * Load NDSBS's include files for theme processing.
  */
 ndsbs_load_include('inc', 'ndsbs', 'preprocess', 'includes');
+ndsbs_load_include('inc', 'ndsbs', 'preprocess_custom', 'includes');
 ndsbs_load_include('inc', 'ndsbs', 'process', 'includes');
 ndsbs_load_include('inc', 'ndsbs', 'theme', 'includes');
 ndsbs_load_include('inc', 'ndsbs', 'alter', 'includes');

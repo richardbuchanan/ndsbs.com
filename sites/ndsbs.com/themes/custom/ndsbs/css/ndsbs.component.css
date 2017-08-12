@@ -10,6 +10,30 @@
   color: #666;
   margin-top: 20px;
 }
+body.front #region-content .block-system,
+body.page_node_two #region-content .block-system,
+body.page_node_three #region-content .block-system,
+body.front .feed-icon,
+body.page_node_two .feed-icon,
+body.page_node_three .feed-icon {
+  display: none;
+}
+
+/**
+ * Forms.
+ */
+[class*=field-group] > h3 {
+  font-family: Raleway, "Segoe UI", Candara, "Bitstream Vera Sans", "DejaVu Sans", "Bitstream Vera Sans", "Trebuchet MS", Verdana, "Verdana Ref", sans-serif;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+[class*=field-group] .uk-form-label {
+  font-size: .875rem;
+}
+.form-actions button:not(:first-child) {
+  margin-left: 4px;
+}
 
 /**
  * Views slideshow.
@@ -24,6 +48,11 @@
 .views-slideshow-cycle-main-frame,
 .views_slideshow_cycle_main .views_slideshow_slide {
   width: 100% !important;
+}
+
+.uk-button-success {
+  background: #019d66;
+  color: #fff;
 }
 
 /**

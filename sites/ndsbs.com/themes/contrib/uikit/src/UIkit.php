@@ -19,7 +19,7 @@ class UIkit {
    *
    * @var string
    */
-  const UIKIT_LIBRARY_VERSION = '3.0.0-beta.25';
+  const UIKIT_LIBRARY_VERSION = '3.0.0-beta.27';
 
   /**
    * The Drupal project page for the UIkit base theme.
@@ -57,6 +57,36 @@ class UIkit {
   const UIKIT_JQUERY_MIGRATE_VERSION = '1.4.1';
 
   /**
+   * Checks whether the given path is the current path.
+   *
+   * @param string $path
+   *   The path to check against the current path.
+   *
+   * @return bool
+   *   Returns true if the given path is the current path, false if otherwise.
+   */
+  public static function getActivePath($path) {
+    $active_path = FALSE;
+
+    // Checks if the path is the current page.
+    $current_page = $path == $_GET['q'];
+
+    // Checks if the path and current page are the front page.
+    $front_page = $path == '<front>' && drupal_is_front_page();
+
+    // Checks if the path and current page are both a user page.
+    $exploded_path = explode('/', $_GET['q']);
+    $user_page = is_array($exploded_path) && $exploded_path[0] == 'user' && $exploded_path[0] == $path;
+
+    // Change $active_path to true if the given path is the current path.
+    if ($current_page || $front_page || $user_page) {
+      $active_path = TRUE;
+    }
+
+    return $active_path;
+  }
+
+  /**
    * Retrieves the active theme.
    *
    * @return
@@ -65,6 +95,57 @@ class UIkit {
   public static function getActiveTheme() {
     global $theme;
     return $theme;
+  }
+
+  /**
+   * Retrieves UIkit, jQuery, jQuery Migrate and Font Awesome CDN assets.
+   */
+  public static function getCdnAssets() {
+    // Add the UIkit stylesheet.
+    drupal_add_css('//cdnjs.cloudflare.com/ajax/libs/uikit/' . self::UIKIT_LIBRARY_VERSION . '/css/uikit.min.css', array(
+      'type' => 'external',
+      'group' => CSS_THEME,
+      'every_page' => TRUE,
+      'weight' => -100,
+      'version' => self::UIKIT_LIBRARY_VERSION,
+    ));
+
+    // Add the jQuery script.
+    drupal_add_js('//cdnjs.cloudflare.com/ajax/libs/jquery/' . self::UIKIT_JQUERY_VERSION . '/jquery.min.js', array(
+      'type' => 'external',
+      'group' => JS_THEME,
+      'every_page' => TRUE,
+      'weight' => -20,
+      'version' => self::UIKIT_JQUERY_VERSION,
+    ));
+
+    // Add the jQuery Migrate script so we can use multiple jQuery versions
+    // simultaneously.
+    drupal_add_js('//cdnjs.cloudflare.com/ajax/libs/jquery-migrate/' . self::UIKIT_JQUERY_MIGRATE_VERSION . '/jquery-migrate.min.js', array(
+      'type' => 'external',
+      'group' => JS_THEME,
+      'every_page' => TRUE,
+      'weight' => -20,
+      'version' => self::UIKIT_JQUERY_MIGRATE_VERSION,
+    ));
+
+    // Add the UIkit script.
+    drupal_add_js('//cdnjs.cloudflare.com/ajax/libs/uikit/' . self::UIKIT_LIBRARY_VERSION . '/js/uikit.min.js', array(
+      'type' => 'external',
+      'group' => JS_THEME,
+      'every_page' => TRUE,
+      'weight' => -20,
+      'version' => self::UIKIT_LIBRARY_VERSION,
+    ));
+
+    // Add the UIkit icons script.
+    drupal_add_js('//cdnjs.cloudflare.com/ajax/libs/uikit/' . UIkit::UIKIT_LIBRARY_VERSION . '/js/uikit-icons.min.js', array(
+      'type' => 'external',
+      'group' => JS_THEME,
+      'every_page' => TRUE,
+      'weight' => -20,
+      'version' => self::UIKIT_LIBRARY_VERSION,
+    ));
   }
 
   /**
@@ -80,7 +161,7 @@ class UIkit {
    */
   public static function getThemeSetting($setting, $theme = NULL) {
     if (empty($theme)) {
-      $theme = UIkit::getActiveTheme();
+      $theme = self::getActiveTheme();
     }
 
     if (!empty($setting)) {

@@ -44,7 +44,7 @@
  * @ingroup themeable
  */
 ?>
-<div id="<?php print $block_html_id; ?>" class="<?php print $classes; ?>"<?php print $attributes; ?> uk-modal>
+<div id="login" class="<?php print $classes; ?>"<?php print $attributes; ?> uk-modal="center: true">
   <div class="uk-modal-dialog uk-modal-body">
     <button class="uk-modal-close-full uk-close-large" type="button" uk-close></button>
 

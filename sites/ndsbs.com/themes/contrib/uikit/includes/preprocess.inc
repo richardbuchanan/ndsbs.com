@@ -17,10 +17,8 @@ use Drupal\uikit\UIkit;
  * Implements template_preprocess_html().
  */
 function uikit_preprocess_html(&$variables) {
-  global $theme_key;
-
   // Load UIkit assets, i.e. stylesheets and scripts.
-  uikit_get_cdn_assets();
+  UIkit::getCdnAssets();
 
   // Create an HTML5 doctype variable.
   $variables['doctype'] = '<!DOCTYPE html>' . "\n";
@@ -50,13 +48,13 @@ function uikit_preprocess_html(&$variables) {
   }
 
   // Add an http-equiv tag, if set.
-  if (UIkit::getThemeSetting('x_ua_compatible', $theme_key)) {
+  if (UIkit::getThemeSetting('x_ua_compatible')) {
     $meta_x_ua_compatible = array(
       '#type' => 'html_tag',
       '#tag' => 'meta',
       '#attributes' => array(
         'http-equiv' => 'x-ua-compatible',
-        'content' => 'IE=' . UIkit::getThemeSetting('x_ua_compatible', $theme_key),
+        'content' => 'IE=' . UIkit::getThemeSetting('x_ua_compatible'),
       ),
       '#weight' => -9998,
     );
@@ -65,14 +63,14 @@ function uikit_preprocess_html(&$variables) {
   }
 
   // Get viewport metadata settings for mobile devices.
-  $device_width_ratio = UIkit::getThemeSetting('viewport_device_width_ratio', $theme_key);
-  $custom_device_width = UIkit::getThemeSetting('viewport_custom_width', $theme_key);
-  $device_height_ratio = UIkit::getThemeSetting('viewport_device_height_ratio', $theme_key);
-  $custom_device_height = UIkit::getThemeSetting('viewport_custom_height', $theme_key);
-  $initial_scale = UIkit::getThemeSetting('viewport_initial_scale', $theme_key);
-  $maximum_scale = UIkit::getThemeSetting('viewport_maximum_scale', $theme_key);
-  $minimum_scale = UIkit::getThemeSetting('viewport_minimum_scale', $theme_key);
-  $user_scalable = UIkit::getThemeSetting('viewport_user_scalable', $theme_key);
+  $device_width_ratio = UIkit::getThemeSetting('viewport_device_width_ratio');
+  $custom_device_width = UIkit::getThemeSetting('viewport_custom_width');
+  $device_height_ratio = UIkit::getThemeSetting('viewport_device_height_ratio');
+  $custom_device_height = UIkit::getThemeSetting('viewport_custom_height');
+  $initial_scale = UIkit::getThemeSetting('viewport_initial_scale');
+  $maximum_scale = UIkit::getThemeSetting('viewport_maximum_scale');
+  $minimum_scale = UIkit::getThemeSetting('viewport_minimum_scale');
+  $user_scalable = UIkit::getThemeSetting('viewport_user_scalable');
   $viewport_array = array();
 
   // Add each, if set, to the viewport array.
@@ -120,14 +118,12 @@ function uikit_preprocess_html(&$variables) {
  * Implements template_preprocess_page().
  */
 function uikit_preprocess_page(&$variables) {
-  global $theme_key;
-
   // Get various theme settings to add the correct attributes.
   $sidebar_first = isset($variables['page']['sidebar_first']) ? $variables['page']['sidebar_first'] : '';
   $sidebar_second = isset($variables['page']['sidebar_second']) ? $variables['page']['sidebar_second'] : '';
-  $standard_layout = UIkit::getThemeSetting('standard_sidebar_positions', $theme_key);
-  $tablet_layout = UIkit::getThemeSetting('tablet_sidebar_positions', $theme_key);
-  $mobile_layout = UIkit::getThemeSetting('mobile_sidebar_positions', $theme_key);
+  $standard_layout = UIkit::getThemeSetting('standard_sidebar_positions');
+  $tablet_layout = UIkit::getThemeSetting('tablet_sidebar_positions');
+  $mobile_layout = UIkit::getThemeSetting('mobile_sidebar_positions');
 
   // Determine the standard layout.
   $standard_grail = $standard_layout === 'holy-grail';
@@ -147,11 +143,11 @@ function uikit_preprocess_page(&$variables) {
 
   // Assign page container attributes.
   $page_container_attributes['id'] = 'page';
-  if (UIkit::getThemeSetting('page_container', $theme_key)) {
+  if (UIkit::getThemeSetting('page_container')) {
     $page_container_attributes['class'][] = 'uk-container';
   }
-  if (UIkit::getThemeSetting('page_margin', $theme_key)) {
-    $page_container_attributes['class'][] = UIkit::getThemeSetting('page_margin', $theme_key);
+  if (UIkit::getThemeSetting('page_margin')) {
+    $page_container_attributes['class'][] = UIkit::getThemeSetting('page_margin');
   }
   $variables['page_container_attributes_array'] = $page_container_attributes;
 
@@ -372,7 +368,129 @@ function uikit_preprocess_page(&$variables) {
   }
 
   // Create variable for breadcrumb display setting.
-  $variables['display_breadcrumb'] = UIkit::getThemeSetting('display_breadcrumbs', $theme_key);
+  $variables['display_breadcrumb'] = UIkit::getThemeSetting('display_breadcrumbs');
+}
+
+/**
+ * Implements template_preprocess_maintenance_page().
+ */
+function uikit_preprocess_maintenance_page(&$variables) {
+  // Load UIkit assets, i.e. stylesheets and scripts.
+  UIkit::getCdnAssets();
+
+  // Add an http-equiv tag, if set.
+  if (UIkit::getThemeSetting('x_ua_compatible')) {
+    $meta_x_ua_compatible = array(
+      '#type' => 'html_tag',
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'http-equiv' => 'x-ua-compatible',
+        'content' => 'IE=' . UIkit::getThemeSetting('x_ua_compatible'),
+      ),
+      '#weight' => -9998,
+    );
+
+    drupal_add_html_head($meta_x_ua_compatible, 'uikit_x_ua_compatible');
+  }
+
+  // Get viewport metadata settings for mobile devices.
+  $device_width_ratio = UIkit::getThemeSetting('viewport_device_width_ratio', UIkit::getActiveTheme());
+  $custom_device_width = UIkit::getThemeSetting('viewport_custom_width', UIkit::getActiveTheme());
+  $device_height_ratio = UIkit::getThemeSetting('viewport_device_height_ratio', UIkit::getActiveTheme());
+  $custom_device_height = UIkit::getThemeSetting('viewport_custom_height', UIkit::getActiveTheme());
+  $initial_scale = UIkit::getThemeSetting('viewport_initial_scale', UIkit::getActiveTheme());
+  $maximum_scale = UIkit::getThemeSetting('viewport_maximum_scale', UIkit::getActiveTheme());
+  $minimum_scale = UIkit::getThemeSetting('viewport_minimum_scale', UIkit::getActiveTheme());
+  $user_scalable = UIkit::getThemeSetting('viewport_user_scalable', UIkit::getActiveTheme());
+  $viewport_array = array();
+
+  // Add each, if set, to the viewport array.
+  if ($device_width_ratio == 'device-width') {
+    $viewport_array['width'] = 'width=device-width';
+  }
+  elseif ($device_width_ratio) {
+    $viewport_array['width'] = 'width=' . $custom_device_width;
+  }
+  if ($device_height_ratio == 1) {
+    $viewport_array['height'] = 'height=' . $custom_device_height;
+  }
+  if ($initial_scale) {
+    $viewport_array['initial-scale'] = 'initial-scale=' . $initial_scale;
+  }
+  if ($maximum_scale) {
+    $viewport_array['maximum-scale'] = 'maximum-scale=' . $maximum_scale;
+  }
+  if ($minimum_scale) {
+    $viewport_array['minimum-scale'] = 'minimum-scale=' . $minimum_scale;
+  }
+  if ($viewport_array && !$user_scalable) {
+    $viewport_array['user-scalable'] = 'user-scalable=no';
+  }
+
+  if ($viewport_array) {
+    // Add the viewport options to the viewport meta tag.
+    $viewport_content = implode(', ', $viewport_array);
+
+    $meta_viewport = [
+      '#type' => 'html_tag',
+      '#tag' => 'meta',
+      '#attributes' => [
+        'name' => 'viewport',
+        'content' => $viewport_content,
+      ],
+      '#weight' => -9997,
+    ];
+
+    drupal_add_html_head($meta_viewport, 'uikit_viewport');
+  }
+
+  // Assign content attributes.
+  $content_attributes = array(
+    'id' => 'page-content',
+    'class' => array('uk-width-1-1@s'),
+  );
+
+  // Assign sidebar_first attributes.
+  $sidebar_first_attributes = array(
+    'id' => 'sidebar-first',
+    'class' => array('uk-width-1-1@s'),
+  );
+
+  // Assign sidebar_second attributes.
+  $sidebar_second_attributes = array(
+    'id' => 'sidebar-second',
+    'class' => array('uk-width-1-1@s'),
+  );
+
+  // Assign additional content attributes if either sidebar is not empty.
+  $sidebar_first = $variables['sidebar_first'];
+  $sidebar_second = $variables['sidebar_second'];
+  if (!empty($sidebar_first) && !empty($sidebar_second)) {
+    $content_attributes['class'][] = 'uk-width-1-2@m';
+    $content_attributes['class'][] = 'uk-push-1-4@m';
+    $sidebar_first_attributes['class'][] = 'uk-width-1-4@m';
+    $sidebar_first_attributes['class'][] = 'uk-pull-1-2@m';
+    $sidebar_second_attributes['class'][] = 'uk-width-1-4@m';
+    $sidebar_second_attributes['class'][] = 'uk-push-pull-@m';
+  }
+  elseif (!empty($sidebar_first)) {
+    $content_attributes['class'][] = 'uk-width-3-4@m';
+    $content_attributes['class'][] = 'uk-push-1-4@m';
+    $sidebar_first_attributes['class'][] = 'uk-width-1-4@m';
+    $sidebar_first_attributes['class'][] = 'uk-pull-3-4@m';
+  }
+  elseif (!empty($sidebar_second)) {
+    $content_attributes['class'][] = 'uk-width-3-4@m';
+    $content_attributes['class'][] = 'uk-push-pull-@m';
+    $sidebar_second_attributes['class'][] = 'uk-width-1-4@m';
+    $sidebar_second_attributes['class'][] = 'uk-push-pull-@m';
+  }
+
+  // Add attributes.
+  $variables['classes_array'][] = 'uk-height-1-1';
+  $variables['content_attributes_array'] = $content_attributes;
+  $variables['sidebar_first_attributes_array'] = $sidebar_first_attributes;
+  $variables['sidebar_second_attributes_array'] = $sidebar_second_attributes;
 }
 
 /**
@@ -416,8 +534,8 @@ function uikit_preprocess_region(&$variables) {
   foreach ($regions as $key => $value) {
     // Get the settings for each region being used.
     if ($region == $key) {
-      $style_setting = UIkit::getThemeSetting($key . '_style', $theme_key);
-      $card_style = UIkit::getThemeSetting($key . '_card_style', $theme_key);
+      $style_setting = UIkit::getThemeSetting($key . '_style');
+      $card_style = UIkit::getThemeSetting($key . '_card_style');
       $region_style = $style_setting ? $style_setting : 0;
       $region_card_style = $card_style ? $card_style : 0;
 
@@ -464,10 +582,8 @@ function uikit_preprocess_block(&$variables) {
  * Implements template_preprocess_HOOK().
  */
 function uikit_preprocess_breadcrumb(&$variables) {
-  global $theme_key;
-
   // Remove home link from breadcrumb if disabled in theme settings.
-  if (!UIkit::getThemeSetting('breakcrumbs_home_link', $theme_key)) {
+  if (!UIkit::getThemeSetting('breakcrumbs_home_link')) {
     array_shift($variables['breadcrumb']);
   }
 
@@ -492,12 +608,11 @@ function uikit_preprocess_button(&$variables) {
  * Implements template_preprocess_comment().
  */
 function uikit_preprocess_comment(&$variables) {
-  global $theme_key;
   $comment = $variables['elements']['#comment'];
   $node = $variables['elements']['#node'];
 
   // Check if user picture in comments is enabled.
-  $comment_picture = UIkit::getThemeSetting('toggle_comment_user_picture', $theme_key) ? 1 : 0;
+  $comment_picture = UIkit::getThemeSetting('toggle_comment_user_picture') ? 1 : 0;
 
   // Check if user pictures are enabled.
   $user_pictures = variable_get('user_pictures') ? 1 : 0;
@@ -651,8 +766,12 @@ function uikit_preprocess_form(&$variables) {
  * Implements hook_preprocess_HOOK() for theme_item_list().
  */
 function uikit_preprocess_item_list(&$variables) {
-  // Add the uk-list class to all item lists.
-  $variables['attributes']['class'][] = 'uk-list';
+  $pagination = isset($variables['pagination']) && $variables['pagination'];
+
+  // Add the uk-list class to all but pagination item lists.
+  if (!$pagination) {
+    $variables['attributes']['class'][] = 'uk-list';
+  }
 }
 
 /**
@@ -673,10 +792,9 @@ function uikit_preprocess_links(&$variables) {
  * Implements hook_preprocess_HOOK() for theme_menu_local_tasks().
  */
 function uikit_preprocess_menu_local_tasks(&$variables) {
-  global $theme_key;
   // Get the local task styles.
-  $primary_style = UIkit::getThemeSetting('primary_tasks_style', $theme_key);
-  $secondary_style = UIkit::getThemeSetting('secondary_tasks_style', $theme_key);
+  $primary_style = UIkit::getThemeSetting('primary_tasks_style');
+  $secondary_style = UIkit::getThemeSetting('secondary_tasks_style');
 
   // Set the default attributes.
   $variables['primary_attributes_array'] = array(

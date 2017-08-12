@@ -4,12 +4,46 @@
  */
 
 /**
+ * Accordion component.
+ *
+ * @see https://getuikit.com/docs/accordion
+ */
+.uk-accordion-title::before {
+  content: "";
+  margin: 1px;
+  width: 1.4em;
+  height: 1.4em;
+  float: left;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2213%22%20height%3D%2213%22%20viewBox%3D%220%200%2013%2013%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Crect%20fill%3D%22%23666%22%20width%3D%2213%22%20height%3D%221%22%20x%3D%220%22%20y%3D%226%22%3E%3C%2Frect%3E%0A%20%20%20%20%3Crect%20fill%3D%22%23666%22%20width%3D%221%22%20height%3D%2213%22%20x%3D%226%22%20y%3D%220%22%3E%3C%2Frect%3E%0A%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+}
+.uk-open>.uk-accordion-title::before {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2213%22%20height%3D%2213%22%20viewBox%3D%220%200%2013%2013%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Crect%20fill%3D%22%23666%22%20width%3D%2213%22%20height%3D%221%22%20x%3D%220%22%20y%3D%226%22%3E%3C%2Frect%3E%0A%3C%2Fsvg%3E");
+}
+.uk-accordion-title::after,
+.uk-open>.uk-accordion-title::after {
+  display: none;
+  background: none;
+  float: none;
+  height: 0;
+  width: 0;
+}
+.uk-accordion-content {
+  margin-top: 10px;
+  padding-left: 28px;
+}
+
+/**
  * Card component.
  *
  * @see https://getuikit.com/docs/card
  */
 .uk-card-title {
   margin-top: 0;
+}
+.uk-card-default {
+  border: 1px solid #ddd;
 }
 
 /**
@@ -28,8 +62,49 @@
  *
  * @see https://getuikit.com/docs/container
  */
-.uk-container {
-  max-width: 1220px;
+.uk-container:not(.uk-container-small):not(.uk-container-large):not(.uk-container-expand) {
+  max-width: 1400px;
+}
+
+/**
+ * Divider component.
+ *
+ * @see https://getuikit.com/docs/divider
+ */
+.uk-divider-icon {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20viewBox%3D%220%200%2020%2020%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%20%20%3Ccircle%20fill%3D%22none%22%20stroke%3D%22%231e87f0%22%20stroke-width%3D%222%22%20cx%3D%2210%22%20cy%3D%2210%22%20r%3D%227%22%3E%3C%2Fcircle%3E%0A%3C%2Fsvg%3E%0A");
+}
+.uk-divider-icon::after,.uk-divider-icon::before {
+  border-color: #1e87f0;
+}
+
+/**
+ * Form component.
+ *
+ * @see https://getuikit.com/docs/form
+ */
+.uk-input,
+.uk-select,
+.uk-textarea,
+.uk-checkbox,
+.uk-radio {
+  border-color: #999;
+}
+.uk-select {
+  width: auto;
+}
+.uk-form-label {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+/**
+ * Modal component.
+ *
+ * @see https://getuikit.com/docs/modal
+ */
+.uk-modal {
+  z-index: 1020;
 }
 
 /**
@@ -101,6 +176,14 @@
 .uk-logo {
   height: auto;
   padding: 10px;
+}
+.uk-logo img {
+  max-height: 60px;
+}
+@media (min-width: 1200px) {
+  .uk-logo img {
+    max-height: 86px;
+  }
 }
 .uk-navbar-dropdown {
   width: auto;
@@ -183,4 +266,39 @@
   .uk-navbar-dropdown-nav>.uk-grid-margin {
     margin-top: 15px;
   }
+}
+
+/**
+ * Subnav component.
+ *
+ * @see https://getuikit.com/docs/subnav
+ */
+.uk-subnav>*>:first-child {
+  color: #666;
+}
+.uk-subnav>*>a:focus,
+.uk-subnav>*>a:hover {
+  color: #333;
+}
+
+/**
+ * Tab component.
+ *
+ * @see https://getuikit.com/docs/tab
+ */
+.uk-tab>*>a {
+  color: #666;
+}
+.uk-tab>*>a:focus,
+.uk-tab>*>a:hover {
+  color: #333;
+}
+
+/**
+ * Text component.
+ *
+ * @see https://getuikit.com/docs/text
+ */
+.uk-text-muted {
+  color: #555!important;
 }

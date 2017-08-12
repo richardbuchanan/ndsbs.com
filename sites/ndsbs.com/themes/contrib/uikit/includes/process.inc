@@ -32,6 +32,15 @@ function uikit_process_page(&$variables) {
 }
 
 /**
+ * Implements template_process_maintenance_page().
+ */
+function uikit_process_maintenance_page(&$variables) {
+  $variables['content_attributes'] = drupal_attributes($variables['content_attributes_array']);
+  $variables['sidebar_first_attributes'] = drupal_attributes($variables['sidebar_first_attributes_array']);
+  $variables['sidebar_second_attributes'] = drupal_attributes($variables['sidebar_second_attributes_array']);
+}
+
+/**
  * Implements hook_process_HOOK() for region.tpl.php.
  */
 function uikit_process_region(&$variables) {

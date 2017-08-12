@@ -42,7 +42,7 @@
     <?php endif; ?>
 
     <?php if ($footer): ?>
-      <div class="view-footer uk-margin-right uk-margin-bottom uk-position-bottom-right">
+      <div class="view-footer uk-text-right">
         <?php print $footer; ?>
       </div>
     <?php endif; ?>

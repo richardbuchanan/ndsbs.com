@@ -83,19 +83,11 @@
       <a href="#offcanvas" uk-toggle uk-navbar-toggle-icon class="uk-navbar-toggle uk-navbar-toggle-icon uk-icon uk-hidden@l"></a>
 
       <?php if ($logo): ?>
-        <a href="<?php print $front_page; ?>" id="site-logo" class="uk-navbar-item uk-logo uk-visible@l" title="<?php print t('Home'); ?>" rel="home">
+        <a href="<?php print $front_page; ?>" id="site-logo" class="uk-navbar-item uk-logo" title="<?php print t('Home'); ?>" rel="home">
           <img class="uk-margin-small-right" src="<?php print $logo; ?>" alt="<?php print t('Home'); ?>" />
         </a>
       <?php endif; ?>
     </div>
-
-    <?php if ($logo): ?>
-      <div class="uk-navbar-center uk-hidden@l">
-        <a href="<?php print $front_page; ?>" id="site-logo" class="uk-navbar-item uk-logo" title="<?php print t('Home'); ?>" rel="home">
-          <img class="logo--small" src="<?php print $logo; ?>" alt="<?php print t('Home'); ?>" />
-        </a>
-      </div>
-    <?php endif; ?>
 
     <div class="uk-navbar-right">
       <?php print render($company_info); ?>
@@ -108,7 +100,6 @@
       <?php endif; ?>
     </div>
 
-    <?php print render($company_info_small); ?>
   </nav>
 
   <?php if ($page['header'] || ($title && !$is_front)): ?>
@@ -186,14 +177,26 @@
 
 </div>
 
-<?php if ($offcanvas_primary || $offcanvas_secondary): ?>
-  <div id="offcanvas" uk-offcanvas="mode: push; overlay: true" class="uk-offcanvas">
-    <div class="uk-offcanvas-bar ie9-gradient">
-      <?php print render($offcanvas_primary); ?>
-      <?php print render($offcanvas_secondary); ?>
-    </div>
-  </div>
+<?php if ($dashboard_modal): ?>
+  <?php print render($dashboard_modal); ?>
 <?php endif; ?>
+
+<div id="offcanvas" uk-offcanvas="mode: push; overlay: true" class="uk-offcanvas">
+  <div class="uk-offcanvas-bar ie9-gradient">
+    <?php print render($offcanvas_primary); ?>
+    <?php print render($offcanvas_secondary); ?>
+
+    <?php if ($offcanvas_client_dashboard): ?>
+      <h3>Client Dashboard</h3>
+      <?php print render($offcanvas_client_dashboard); ?>
+    <?php endif; ?>
+
+    <?php if ($offcanvas_staff_dashboard): ?>
+      <h3>Staff Dashboard</h3>
+      <?php print render($offcanvas_staff_dashboard); ?>
+    <?php endif; ?>
+  </div>
+</div>
 
 <!-- Modal container -->
 <div id="modal-overflow" uk-modal="center: true"></div>

@@ -9,13 +9,289 @@
  */
 
 /**
+ * Implements theme_checkboxes().
+ */
+function ndsbs_checkboxes($variables) {
+  $element = $variables['element'];
+  $attributes = array();
+
+  if (isset($element['#id'])) {
+    $attributes['id'] = $element['#id'];
+  }
+
+  $attributes['class'][] = 'form-checkboxes';
+  $attributes['class'][] = 'uk-form-controls';
+
+  if (!empty($element['#attributes']['class'])) {
+    $attributes['class'] = array_merge($attributes['class'], $element['#attributes']['class']);
+  }
+  if (isset($element['#attributes']['title'])) {
+    $attributes['title'] = $element['#attributes']['title'];
+  }
+
+  return '<div' . drupal_attributes($attributes) . '>' . (!empty($element['#children']) ? $element['#children'] : '') . '</div>';
+}
+
+/**
+ * Implements theme_container().
+ */
+function ndsbs_container($variables) {
+  $element = $variables['element'];
+  // Ensure #attributes is set.
+  $element += array('#attributes' => array());
+  $prefix = '';
+  $suffix = '';
+
+  // Special handling for form elements.
+  if (isset($element['#array_parents'])) {
+    // Assign an html ID.
+    if (!isset($element['#attributes']['id'])) {
+      $element['#attributes']['id'] = $element['#id'];
+    }
+
+    // Add the 'form-wrapper' class.
+    $element['#attributes']['class'][] = 'form-wrapper';
+  }
+
+  $field_first_name = $element['#id'] == 'edit-field-first-name';
+  $field_middle_name = $element['#id'] == 'edit-field-middle-name';
+  $field_last_name = $element['#id'] == 'edit-field-last-name';
+  if ($field_first_name || $field_middle_name || $field_last_name) {
+    $element['#attributes']['class'][] = 'uk-float-left';
+    $element['#attributes']['class'][] = 'uk-width-1-1';
+    $element['#attributes']['class'][] = 'uk-width-1-3@m';
+  }
+
+  $field_gender = $element['#id'] == 'edit-field-gender';
+  if ($field_gender) {
+    $element['#attributes']['class'][] = 'uk-width-1-1';
+    $element['#attributes']['class'][] = 'uk-width-1-3@m';
+  }
+
+  $field_month = $element['#id'] == 'edit-field-month';
+  $field_dobdate = $element['#id'] == 'edit-field-dobdate';
+  $field_year = $element['#id'] == 'edit-field-year';
+  if ($field_month || $field_dobdate || $field_year) {
+    $element['#attributes']['class'][] = 'uk-float-left';
+  }
+
+  return '<div' . drupal_attributes($element['#attributes']) . '>' . $prefix . $element['#children'] . $suffix . '</div>';
+}
+
+/**
+ * Implements theme_container().
+ */
+function ndsbs_container__form_element__form_controls($variables) {
+  $element = $variables['element'];
+  $children = str_replace('<label ', '<label class="uk-display-block" ', $element['#children']);
+  return $children;
+}
+
+/**
+ * Implements theme_credit_card().
+ */
+function ndsbs_credit_card($variables) {
+  $element = $variables['element'];
+  $element['#attributes']['type'] = 'number';
+  $element['#attributes']['maxlength'] = '19';
+  element_set_attributes($element, array('id', 'name', 'value', 'size'));
+  _form_set_class($element, array('form-control', 'form-credit-card', 'uk-input'));
+
+  $output = '<div class="input-group">';
+  $output .= '<input' . drupal_attributes($element['#attributes']) . ' />';
+  $output .= '<span class="input-group-addon"><i class="fa fa-credit-card"></i></span>';
+  $output .= '</div>';
+
+  return $output;
+}
+
+/**
+ * Implements theme_fieldset().
+ */
+function ndsbs_fieldset__terms_of_use($variables) {
+  $element = $variables['element'];
+  element_set_attributes($element, array('id'));
+  $element['#attributes']['class'] = array(
+    'group-terms-of-use',
+    'form-wrapper',
+  );
+
+  $output = '<div' . drupal_attributes($element['#attributes']) . '>';
+  $output .= '<label class="uk-form-label">' . $element['#title'] . '</label>';
+
+  if (!empty($element['#description'])) {
+    $output .= '<p class="uk-text-small uk-text-muted uk-margin-small-top">' . $element['#description'] . '</p>';
+  }
+
+  $output .= '<div class="uk-overflow-auto uk-height-large">';
+  $output .= $variables['terms'];
+  $output .= '</div><div class="uk-margin-top">';
+  $output .= $variables['terms_agree'];
+  $output .= '</div>';
+
+  if (isset($element['#value'])) {
+    $output .= $element['#value'];
+  }
+
+  $output .= '</div>';
+
+  return $output;
+}
+
+/**
+ * Implements theme_form_element().
+ */
+function ndsbs_form_element($variables) {
+  $element = &$variables['element'];
+  $name = !empty($element['#name']) ? $element['#name'] : FALSE;
+  $type = !empty($element['#type']) ? $element['#type'] : FALSE;
+  $prefix = isset($element['#field_prefix']) ? $element['#field_prefix'] : '';
+  $suffix = isset($element['#field_suffix']) ? $element['#field_suffix'] : '';
+  $checkbox = $type && $type === 'checkbox';
+  $radio = $type && $type === 'radio';
+
+  // Create an attributes array for the wrapping container.
+  if (empty($element['#wrapper_attributes'])) {
+    $element['#wrapper_attributes'] = array();
+  }
+
+  $wrapper_attributes = &$element['#wrapper_attributes'];
+
+  // This function is invoked as theme wrapper, but the rendered form element
+  // may not necessarily have been processed by form_builder().
+  $element += array(
+    '#title_display' => 'before',
+  );
+
+  // Add wrapper ID for 'item' type.
+  if ($type && $type === 'item' && !empty($element['#markup']) && !empty($element['#id'])) {
+    $wrapper_attributes['id'] = $element['#id'];
+  }
+
+  // Add necessary classes to wrapper container.
+  if ($name) {
+    $wrapper_attributes['class'][] = 'form-item-' . drupal_html_class($name);
+  }
+  if ($type) {
+    $wrapper_attributes['class'][] = 'form-type-' . drupal_html_class($type);
+  }
+  if (!empty($element['#attributes']['disabled'])) {
+    $wrapper_attributes['class'][] = 'form-disabled';
+  }
+  if (!empty($element['#autocomplete_path']) && drupal_valid_path($element['#autocomplete_path'])) {
+    $wrapper_attributes['class'][] = 'form-autocomplete';
+  }
+
+  if (!$checkbox && !$radio) {
+    $wrapper_attributes['class'][] = 'uk-margin';
+  }
+
+  // TODO: Add advanced password options in theme settings.
+  // Add a space before the labels of checkboxes and radios.
+  if (($checkbox || $radio) && isset($element['#title'])) {
+    $variables['element']['#title'] = ' ' . $element['#title'];
+  }
+
+  // Create a render array for the form element.
+  if ($checkbox || $radio) {
+    $build = [
+      '#theme_wrappers' => ['container__form_element__form_controls'],
+    ];
+  }
+  else {
+    $build = [
+      '#theme_wrappers' => ['container__form_element'],
+      '#attributes' => $wrapper_attributes,
+    ];
+  }
+
+  // Render the label for the form element.
+  $build['label'] = array(
+    '#markup' => theme('form_element_label', $variables),
+  );
+
+  // Increase the label weight if it should be displayed after the element.
+  if ($element['#title_display'] === 'after') {
+    $build['label']['#weight'] = 10;
+  }
+
+  // Checkboxes and radios render the input element inside the label. If the
+  // element is neither of those, then the input element must be rendered here.
+  if (!$checkbox && !$radio) {
+
+    if ((!empty($prefix) || !empty($suffix))) {
+      if (!empty($element['#field_prefix'])) {
+        $prefix = '<span class="form-item-prefix">' . $prefix . '</span>';
+      }
+      if (!empty($element['#field_suffix'])) {
+        $suffix = '<span class="form-item-suffix">' . $suffix . '</span>';
+      }
+
+      // Add a wrapping container around the elements.
+      $prefix .= '<div>' . $prefix;
+      $suffix .= '</div>';
+    }
+
+    // Build the form element.
+    $build['element'] = array(
+      '#markup' => $element['#children'],
+      '#prefix' => !empty($prefix) ? $prefix : NULL,
+      '#suffix' => !empty($suffix) ? $suffix : NULL,
+    );
+  }
+
+  // Construct the element's description markup.
+  if (!empty($element['#description'])) {
+    $build['description'] = array(
+      '#type' => 'container',
+      '#attributes' => array(
+        'class' => array(
+          'uk-text-small',
+          'uk-text-muted',
+          'uk-margin-small-top',
+        ),
+      ),
+      '#weight' => 20,
+      0 => array('#markup' => $element['#description']),
+    );
+  }
+
+  // Print the form element build array.
+  return drupal_render($build);
+}
+
+/**
+ * Implements theme_image().
+ */
+function ndsbs_image__staff_resize($variables) {
+  $attributes = $variables['attributes'];
+  $attributes['src'] = file_create_url($variables['path']);
+  $height = $variables['height'] / 4;
+  $width = $variables['width'] / 4;
+
+  foreach (array('width', 'height', 'alt', 'title') as $key) {
+    if (isset($variables[$key])) {
+      $attributes[$key] = $variables[$key];
+    }
+  }
+
+  $output = '<img' . drupal_attributes($attributes) . ' />';
+  $output .= '<canvas width="' . $width . '" height="' . $height . '"></canvas>';
+
+  return $output;
+}
+
+/**
  * Implements theme_link().
  */
 function ndsbs_link($variables) {
+  global $user;
   $path = $variables['path'];
   $options = $variables['options'];
   $attributes = $variables['options']['attributes'];
   $text = $variables['options']['html'] ? $variables['text'] : check_plain($variables['text']);
+  $staff = user_has_role('4', $user) || user_has_role('7', $user) || user_has_role('3', $user) || user_has_role('8', $user) || user_has_role('5', $user);
+  $client = user_has_role('6', $user);
 
   switch ($path) {
     case '<uk-nav-header>':
@@ -35,6 +311,16 @@ function ndsbs_link($variables) {
 
     case '<uk-nav-divider>':
       return '';
+
+    case 'questionnaire/start/trans':
+      if ($staff && $client) {
+
+        return '<a href="#dashboard-modal" uk-toggle>' . $text . '</a>';
+      }
+      else {
+        return '<a href="' . check_plain(url($path, $options)) . '" ' . drupal_attributes($attributes) . '>' . $text . '</a>';
+      }
+      break;
 
     default:
       return '<a href="' . check_plain(url($path, $options)) . '" ' . drupal_attributes($attributes) . '>' . $text . '</a>';
@@ -92,6 +378,7 @@ function ndsbs_menu_link(array $variables) {
     elseif (!empty($element['#original_link']['depth']) && $element['#original_link']['depth'] == 1) {
       // Use our own theme wrapper.
       unset($element['#below']['#theme_wrappers']);
+
       $sub_menu = '<div class="uk-navbar-dropdown ie9-gradient">';
 
       if ($element['#original_link']['menu_name'] == 'main-menu') {
@@ -116,15 +403,94 @@ function ndsbs_menu_link(array $variables) {
   switch ($href) {
     case '<uk-nav-header>':
       $attributes['class'][] = 'uk-nav-header';
-      return '<li' . drupal_attributes($attributes) . '>' . $title . "</li>\n";
+      return '<li' . drupal_attributes($attributes) . '>' . $title . '</li>';
 
     case '<uk-nav-divider>':
       $attributes['class'][] = 'uk-nav-divider';
-      return '<li' . drupal_attributes($attributes) . '>' . l($title, $href, $options) . $sub_menu . "</li>\n";
+      return '<li' . drupal_attributes($attributes) . '>' . l($title, $href, $options) . $sub_menu . '</li>';
 
     default:
-      return '<li' . drupal_attributes($attributes) . '>' . l($title, $href, $options) . $sub_menu . "</li>\n";
+      return '<li' . drupal_attributes($attributes) . '>' . l($title, $href, $options) . $sub_menu . '</li>';
   }
+}
+
+/**
+ * Implements theme_menu_link() for client dashboard.
+ */
+function ndsbs_menu_link__menu_client_navigation($variables) {
+  $element = $variables['element'];
+  $attributes = $element['#attributes'];
+  $depth = $element['#original_link']['depth'];
+  $sub_menu = '';
+
+  if ($element['#below']) {
+    unset($element['#below']['#theme_wrappers']);
+    $sub_menu = '<div class="uk-accordion-content"><ul class="uk-list">';
+    $sub_menu .= drupal_render($element['#below']);
+    $sub_menu .= '</ul></div>';
+  }
+
+  if ($depth == 1) {
+    $output = '<h3 class="uk-accordion-title">' . $element['#title'] . '</h3>';
+    return '<li' . drupal_attributes($attributes) . '>' . $output . $sub_menu . '</li>';
+  }
+  else {
+    $output = l($element['#title'], $element['#href'], $element['#localized_options']);
+    return '<li' . drupal_attributes($attributes) . '>' . $output . '</li>';
+  }
+}
+
+/**
+ * Implements theme_menu_link() for staff dashboard.
+ */
+function ndsbs_menu_link__menu_staff_navigation($variables) {
+  $element = $variables['element'];
+  $element['#attributes']['class'] = array();
+  $depth = $element['#original_link']['depth'];
+  $count = 0;
+  $sub_menu = '';
+
+  if ($element['#below']) {
+    foreach ($element['#below'] as $below) {
+      if (is_array($below) && isset($below['#theme'])) {
+        $count++;
+      }
+    }
+
+    unset($element['#below']['#theme_wrappers']);
+    $sub_menu = '<div class="uk-accordion-content"><ul class="uk-list">';
+    $sub_menu .= drupal_render($element['#below']);
+    $sub_menu .= '</ul></div>';
+  }
+
+  if ($depth == 1) {
+    $attributes = array();
+
+    if ($count == 1) {
+      $attributes['class'][] = 'uk-open';
+    }
+
+    $output = '<h3 class="uk-accordion-title">' . $element['#title'] . '</h3>';
+    return '<li' . drupal_attributes($attributes) . '>' . $output . $sub_menu . '</li>';
+  }
+  else {
+    $output = l($element['#title'], $element['#href'], $element['#localized_options']);
+    return '<li>' . $output . '</li>';
+  }
+}
+
+/**
+ * Implements theme_menu_tree() for client dashboard.
+ */
+function ndsbs_menu_tree__menu_client_navigation($variables) {
+  return '<ul uk-accordion>' . $variables['tree'] . '</ul>';
+}
+
+/**
+ * Implements theme_menu_tree() for client dashboard.
+ */
+function ndsbs_menu_tree__menu_staff_navigation($variables) {
+  return '<ul uk-accordion="multiple: true">' . $variables['tree'] . '</ul>';
 }
 
 /**
@@ -153,4 +519,28 @@ function ndsbs_menu_tree__menu_footer_menu($variables) {
  */
 function ndsbs_menu_tree__navbar__user_compact($variables) {
   return '<ul id="user-compact" class="uk-navbar-nav uk-visible@l">' . $variables['tree'] . '</ul>';
+}
+
+/**
+ * Implements theme_radios().
+ */
+function ndsbs_radios($variables) {
+  $element = $variables['element'];
+  $attributes = array();
+
+  if (isset($element['#id'])) {
+    $attributes['id'] = $element['#id'];
+  }
+
+  $attributes['class'][] = 'form-radios';
+  $attributes['class'][] = 'uk-form-controls';
+
+  if (!empty($element['#attributes']['class'])) {
+    $attributes['class'] .= ' ' . implode(' ', $element['#attributes']['class']);
+  }
+  if (isset($element['#attributes']['title'])) {
+    $attributes['title'] = $element['#attributes']['title'];
+  }
+
+  return '<div' . drupal_attributes($attributes) . '>' . (!empty($element['#children']) ? $element['#children'] : '') . '</div>';
 }
