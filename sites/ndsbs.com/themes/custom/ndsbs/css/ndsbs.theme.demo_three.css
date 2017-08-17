@@ -17,12 +17,12 @@
  * @see page.tpl.php
  */
 #page-header {
-  background: transparent url(images/city-sunny-people-street.jpg) no-repeat center bottom;
+  background: transparent url(images/csps-25.jpg) no-repeat center bottom;
   -webkit-background-size: cover;
   background-size: cover;
 }
 body.front #page-header {
-  background: transparent url(images/city-sunny-people-street.jpg) no-repeat center 25%;
+  background: transparent url(images/csps-25.jpg) no-repeat center 25%;
   -webkit-background-size: cover;
   background-size: cover;
 }
@@ -30,13 +30,13 @@ body.navbar-open #page-header {
   background: linear-gradient(
     rgba(0, 0, 0, 0.5),
     rgba(0, 0, 0, 0.5)),
-  url(images/city-sunny-people-street.jpg) no-repeat center bottom;
+  url(images/csps-25.jpg) no-repeat center bottom;
 }
 body.front.navbar-open #page-header {
   background: linear-gradient(
     rgba(0, 0, 0, 0.5),
     rgba(0, 0, 0, 0.5)),
-  url(images/city-sunny-people-street.jpg) no-repeat center 25%;
+  url(images/csps-25.jpg) no-repeat center 25%;
 }
 body.navbar-open #page-header>*:not(.uk-navbar) {
   animation: 0.2s ease 0s normal forwards 1 fadeOut;
