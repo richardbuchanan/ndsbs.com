@@ -21,7 +21,7 @@
       var path = window.location.pathname;
       var userPaths = path === '/user' || path === '/user/login' || path === '/user/password' || path === '/user/register';
 
-      if (!userPaths) {
+      /*if (!userPaths) {
         loginLink
           .removeAttr('href')
           .attr('uk-toggle', '')
@@ -29,7 +29,7 @@
             e.preventDefault();
             UIkit.modal('#login').toggle();
           });
-      }
+      }*/
 
       modalOverflow.on('hidden', function () {
         html.removeClass('ndsbs-overflow-initial');
