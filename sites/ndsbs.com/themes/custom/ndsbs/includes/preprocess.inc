@@ -451,8 +451,9 @@ function ndsbs_preprocess_views_view(&$variables) {
     foreach ($result as $index => $item) {
       $node = node_load($item->nid);
       $direct_link = isset($node->field_direct_link_to_assessment['und']);
+      $assessment_link = drupal_get_path_alias('node/' . $node->field_assessment_link['und'][0]['target_id']);
 
-      if ($direct_link) {
+      if ($direct_link && $assessment_link != 'node/') {
         $link_assessment = drupal_get_path_alias('node/' . $node->field_assessment_link['und'][0]['target_id']);
       }
       else {
