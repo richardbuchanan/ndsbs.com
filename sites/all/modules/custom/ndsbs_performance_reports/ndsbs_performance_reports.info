@@ -1,5 +1,0 @@
-name = NDSBS Performance Reports
-description = Allows administrators and therapists to view and generate perforamnce statistic reports.
-core = 7.x
-
-stylesheets[all][] = performance-reports.css
