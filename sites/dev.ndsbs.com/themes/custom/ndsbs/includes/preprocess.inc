@@ -27,9 +27,6 @@ function ndsbs_preprocess_html(&$variables) {
     'preprocess' => FALSE,
   ));
 
-  $variables['head_title_array']['title'] = NDSBS::getTitle();
-  $variables['head_title'] = implode(' | ', $variables['head_title_array']);
-
   $user_role_classes = NDSBS::getUserRoleClasses();
 
   foreach ($user_role_classes as $class) {
@@ -156,12 +153,6 @@ function ndsbs_preprocess_page(&$variables) {
   elseif (!isset($variables['page_description'])) {
     $variables['page_description'] = FALSE;
   }
-
-  //if (user_is_anonymous() && (current_path() == 'user' || current_path() == 'user/login')) {
-    //$variables['tabs'] = array();
-  //}
-
-  drupal_set_title(NDSBS::getTitle());
 
   $staff = user_has_role('4', $user) || user_has_role('7', $user) || user_has_role('3', $user) || user_has_role('8', $user) || user_has_role('5', $user);
   $client = user_has_role('6', $user);
