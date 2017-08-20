@@ -1,0 +1,18 @@
+Question,Answer  (Use || as a seperator),Field Type,Other (Questions having the other option text)
+Reason for this assessment: (mark all that apply),"Physician/Doctor required assessment||
+Self referred||
+Public Intoxication charge||
+Disorderly Conduct charge||
+Domestic Violence charge||
+Underage Drinking charge||
+Alcohol: Minor in Possession/ Underage Possession charge||
+Probation violation/ or probation officer requested||Other reason (specify)",checkbox,Other reason (specify)
+"Month and year of legal charge, work, school or other incident that lead to assessment request (or ""no incident"" involved)",,textarea,
+If assessment is for court please list the county where violation occurred or enter NA,,textarea,
+If assessment is for court please indicate the next date you expect to be in court or represented in court (use NA if not court related),,textarea,
+Current prescription medication use (mark all that apply),none||blood pressure||anti- anxiety||anti-depressant||other (Please list any other types or names of medication),checkbox,other (Please list any other types or names of medication)
+Select any conditions that have applied to you in the last 24 months (mark all that apply),heart condition||stomach problems||liver condition||emergency room visits||pregnancy||none of these,checkbox,
+Current body weight,75-100||100-125||125-150||150-175||175-200||200-225||225-250||250-275||275-300||300+,dropdown,
+Currently pregnant or within the last 24 months,Yes||No,radiobutton,
+Have you or someone else been injured because of your drinking ? ,"No||Yes, but not in the last year||Yes, during the last year",radiobutton,
+"Has a relative, friend, doctor, or other health care worker been concerned about your drinking or suggested you to cut down ?","No||Yes, but not in the last year||Yes, during the last year",radiobutton,

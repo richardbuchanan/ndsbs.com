@@ -60,20 +60,20 @@ $recipient_state = !empty($user_info->field_recipient_state['und'][0]['value']) 
 $recipient_zip = !empty($user_info->field_recipient_zip['und'][0]['value']) ? $user_info->field_recipient_zip['und'][0]['value'] : '';
 $recipient_address = !empty($recipient_street) ? $recipient_street . '<br />' . $recipient_city . ', ' . $recipient_state . ' ' . $recipient_zip : '';
 ?>
-<ul class="nav nav-tabs">
-  <li role="presentation" class="active">
-    <a data-toggle="tab" href="#paperwork">Client Info</a>
+<ul uk-tab>
+  <li class="uk-active">
+    <a href="#paperwork">Client Info</a>
   </li>
-  <li role="presentation">
-    <a data-toggle="tab" href="#assessment">Assessment</a>
+  <li>
+    <a href="#assessment">Assessment</a>
   </li>
-  <li role="presentation">
-    <a data-toggle="tab" href="#interview">Schedule Interview</a>
+  <li>
+    <a href="#interview">Schedule Interview</a>
   </li>
 </ul>
 
-<div class="tab-content">
-  <div id="paperwork" class="tab-pane fade in active">
+<ul class="uk-switcher uk-margin">
+  <li id="paperwork" class="tab-pane fade in active">
     <h2 class="tab-title"><?php print l(t($client_name), 'user/' . $user_info->uid . '/edit'); ?></h2>
     <div class="row">
       <div class="col-xs-12 col-sm-4 col-md-4">
@@ -203,9 +203,9 @@ $recipient_address = !empty($recipient_street) ? $recipient_street . '<br />' . 
         </form>
       </div>
     </div>
-  </div>
+  </li>
 
-  <div id="assessment" class="tab-pane fade">
+  <li id="assessment" class="tab-pane fade">
     <?php $subreport_data = get_purchased_items_subreports_report_section_trans($report_nid = arg(7), 1, 1, $report_tid = arg(5), $user_id, arg(9)); ?>
     <?php $data = get_purchased_items_reports_section_trans($report_nid = arg(7), 1, 0, $report_tid = arg(5), $user_id, arg(9)); ?>
     <?php foreach($data as $report_info_result): ?>
@@ -428,8 +428,8 @@ $recipient_address = !empty($recipient_street) ? $recipient_street . '<br />' . 
         </tbody>
       </table>
     </form>
-  </div>
-  <div id="interview" class="tab-pane fade">
+  </li>
+  <li id="interview" class="tab-pane fade">
     <h2 class="tab-title">Interview</h2>
     <?php
     $result = array();
@@ -478,5 +478,5 @@ $recipient_address = !empty($recipient_street) ? $recipient_street . '<br />' . 
         <?php endforeach; ?>
       </tbody>
     </table>
-  </div>
-</div>
+  </li>
+</ul>

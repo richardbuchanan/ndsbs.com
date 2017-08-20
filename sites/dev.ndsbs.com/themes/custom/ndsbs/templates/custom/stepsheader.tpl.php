@@ -26,26 +26,31 @@ foreach ($val as $data) {
 $result = node_load_multiple($nid_array);
 date_default_timezone_set('America/New_York');
 
+$paperwork_status = 0;
 foreach($result as $rec_data_steps) {
   if ($rec_data_steps->field_paperwork_status['und'][0]['value'] == 1) {
     $verified_date = date('m-d-Y', $rec_data_steps->changed);
+    $paperwork_status = 1;
   }
 }
 
 $coun_data = get_counseling_request_info_transid($transid);
 $counseling_data = is_array($coun_data) && isset($coun_data[0]->nid) ? node_load($coun_data[0]->nid) : 0;
+$attendance = isset($counseling_data->field_attempted_on['und']) ? $counseling_data->field_attempted_on['und'][0]['value'] : 0;
 
 $data_transaction = get_transaction_data_by_transid($transid);
 $order_date = date('m-d-Y', $data_transaction[0]->order_date);
 
 $nid = node_load($assessment_id);
-
 $data = get_purchased_items_reports_trans($assessment_id, 1, 0, $termid, $transid);
 
-$report_status = !empty($report_info->main_report);
-$eval_status = !empty($evaluation_status) && $report_status;
-$attempt_status = !empty($counseling_data->field_attempted_on['und'][0]['value']) && $report_status;
-$paperwork_status = !empty($rec_data_steps->field_paperwork_status['und'][0]['value']) && $report_status;
+$client_reports = get_all_client_reports($transid);
+$documents_status = $paperwork_status || !empty($client_reports);
+
+$report_info = array();
+foreach($data as $report) {
+  $report_info = $report;
+}
 
 $questionnaire_url = '/' . $_SESSION['COMPLETE_MY_QUESTIONNAIRE'];
 $counseling_url = '/schedule/interview';
@@ -92,15 +97,14 @@ $step_two_title_attributes = array(
     'uk-text-center@l',
   ),
 );
-if ($attempt_status) {
-  $step_two_attributes['class'][] = 'uk-active';
+if ($attendance) {
   $step_two_button_attributes['class'][] = 'uk-button-success';
   $step_two_title_attributes['class'][] = 'step-completed';
 }
 else {
   $step_two_button_attributes['class'][] = 'uk-button-primary';
 }
-if (current_path() == 'schedule/interview') {
+if (current_path() == 'node/add/counseling-request') {
   $step_two_attributes['class'][] = 'uk-active';
   drupal_set_title('Schedule My Interview');
 }
@@ -119,8 +123,7 @@ $step_three_title_attributes = array(
     'uk-text-center@l',
   ),
 );
-if ($paperwork_status) {
-  $step_three_attributes['class'][] = 'uk-active';
+if ($documents_status) {
   $step_three_button_attributes['class'][] = 'uk-button-success';
   $step_three_title_attributes['class'][] = 'step-completed';
 }
@@ -146,8 +149,7 @@ $step_four_title_attributes = array(
     'uk-text-center@l',
   ),
 );
-if ($report_status) {
-  $step_four_attributes['class'][] = 'uk-active';
+if (!empty($client_reports)) {
   $step_four_button_attributes['class'][] = 'uk-button-success';
   $step_four_title_attributes['class'][] = 'step-completed';
 }
@@ -165,9 +167,28 @@ $step_three_button_classes =  implode(' ', $step_three_button_attributes['class'
 $step_four_button_classes =  implode(' ', $step_four_button_attributes['class']) . ' uk-hidden@l uk-margin-right';
 ?>
 
-<div id="steps-header-order-date" class="uk-display-inline-block uk-margin-bottom uk-width-1-1">
+<div id="steps-header-order-date" class="uk-display-inline-block uk-margin-bottom uk-width-1-1 uk-visible@l">
   <span class="uk-float-right">Order date: <?php print $order_date; ?></span>
 </div>
+
+<ul class="uk-nav uk-nav-default uk-margin-bottom uk-hidden@l">
+  <li<?php print drupal_attributes($step_one_attributes); ?>>
+    <a href="<?php print $questionnaire_url; ?>">1. Complete My Questionnaire</a>
+  </li>
+
+  <li<?php print drupal_attributes($step_two_attributes); ?>>
+    <a href="<?php print $counseling_url; ?>">2. Schedule My Interview</a>
+  </li>
+
+  <li<?php print drupal_attributes($step_three_attributes); ?>>
+    <a href="<?php print $necessary_docs_url; ?>">3. Upload or Fax Documents</a>
+  </li>
+
+  <li<?php print drupal_attributes($step_four_attributes); ?>>
+    <a href="<?php print $report_url; ?>">4. View My Assessment Report</a>
+  </li>
+
+</ul>
 
 <ul id="steps-header-progress" class="uk-child-width-1-4@l uk-grid-small uk-visible@l" uk-grid>
   <li class="uk-text-center">
@@ -184,7 +205,7 @@ $step_four_button_classes =  implode(' ', $step_four_button_attributes['class'])
   </li>
 </ul>
 
-<ul id="steps-header-steps" class="uk-child-width-1-1 uk-child-width-1-4@l uk-grid-small uk-margin-bottom" uk-grid>
+<ul id="steps-header-steps" class="uk-child-width-1-1 uk-child-width-1-4@l uk-grid-small uk-margin-bottom uk-visible@l" uk-grid>
   <li<?php print drupal_attributes($step_one_attributes); ?>>
     <div class="steps-header-content uk-height-1-1@l">
       <h3<?php print drupal_attributes($step_one_title_attributes); ?>>
@@ -209,7 +230,6 @@ $step_four_button_classes =  implode(' ', $step_four_button_attributes['class'])
         </a>
       </h3>
 
-      <?php $attendance = isset($counseling_data->field_attempted_on['und']) ? $counseling_data->field_attempted_on['und'][0]['value'] : 0; ?>
       <?php $attended_badge = $attendance != 0 ? 'Attended' : 'Not Attended'; ?>
 
       <div class="steps-header-footer">
@@ -258,8 +278,8 @@ $step_four_button_classes =  implode(' ', $step_four_button_attributes['class'])
       </h3>
 
       <div class="steps-header-footer">
-        <?php if ($report_info->main_report == ''): ?>
-          <div><strong>Status</strong>: Pending</div>
+        <?php if (empty($client_reports)): ?>
+          <p><strong>Status</strong>: Pending</p>
           <p class="uk-margin-remove-bottom">Must complete first three steps to receive a report.</p>
         <?php else: ?>
           <?php $fname = $report_info->main_report; ?>

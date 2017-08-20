@@ -1,4 +1,3 @@
-<?php //hide($form['field_paperwork_status']); ?>
 <?php hide($form['field_paperwork_note']); ?>
 <?php hide($form['field_paperwork_user_reference']); ?>
 <?php hide($form['field_assessment']); ?>

@@ -59,7 +59,7 @@ function ndsbs_assessment_theme() {
 
   $items['list_all_assessment'] = array(
     'render element' => 'assessment_data',
-    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
+    'path' => drupal_get_path('module', 'ndsbs_assessment'),
     'template' => 'list_all_assessment',
   );
 

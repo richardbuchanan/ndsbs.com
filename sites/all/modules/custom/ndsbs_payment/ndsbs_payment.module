@@ -132,7 +132,9 @@ function ndsbs_payment_theme($existing, $type, $theme, $path) {
     'template' => 'request_assessment_invoice',
   );
   $items['payment_confirmation'] = array(
-    'variables' => array(),
+    'render element' => 'payment',
+    'path' => drupal_get_path('module', 'ndsbs_payment'),
+    'template' => 'payment_confirmation',
   );
 
   return $items;
