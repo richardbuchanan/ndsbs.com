@@ -135,6 +135,10 @@
   <div class="uk-grid" uk-grid>
 
     <div<?php print $content_attributes; ?>>
+      <?php if ($breadcrumb): ?>
+        <?php print render($breadcrumb); ?>
+      <?php endif; ?>
+
       <?php if ($tabs): ?>
         <?php print render($tabs); ?>
       <?php endif; ?>
@@ -200,3 +204,32 @@
 
 <!-- Modal container -->
 <div id="modal-overflow" uk-modal="center: true"></div>
+
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "url": "https://www.ndsbs.com",
+  "logo": "<?php print $logo; ?>",
+  "contactPoint": [{
+    "@type": "ContactPoint",
+    "telephone": "+1-800-671-8589",
+    "contactType": "customer service",
+    "areaServed": "US",
+    "contactOption": "TollFree"
+  }],
+  "sameAs": [
+    "https://www.facebook.com/onlinealcoholdrugassessment/"
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "WebSite",
+  "name": "<?php print $site_name; ?>",
+  "alternateName": "NDSBS",
+  "url": "https://www.ndsbs.com"
+}
+</script>

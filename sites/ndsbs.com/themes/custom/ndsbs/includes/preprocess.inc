@@ -272,6 +272,54 @@ function ndsbs_preprocess_region(&$variables) {
 }
 
 /**
+ * Implements hook_preprocess_HOOK() for theme_breadcrumb().
+ */
+function ndsbs_preprocess_breadcrumb(&$variables) {
+  $breadcrumbs = $variables['breadcrumb'];
+  $breadcrumb = array();
+
+  foreach ($breadcrumbs as $index => $crumb) {
+    $assessments = '<a href="#"  title="">Assessments<span class="uk-margin-small-left" uk-icon="icon: chevron-down"></span></a>';
+    $new_assessments = '<a href="/view/assessment/status">Assessments</a>';
+    $about = '<a href="#"  title="">About<span class="uk-margin-small-left" uk-icon="icon: chevron-down"></span></a>';
+    $new_about = '<a href="/about">About</a>';
+
+    $crumb = str_replace($assessments, $new_assessments, $crumb);
+    $crumb = str_replace($about, $new_about, $crumb);
+
+    if ($index == 0) {
+      $home = '<a href="/" property="item" typeof="WebPage">';
+      $home .= '<span class="uk-icon" uk-icon="icon: home; ratio: 0.9" style="vertical-align: top"></span>';
+      $home .= '<span class="uk-hidden" property="name">Home</span>';
+      $home .= '</a>';
+      $breadcrumb[] = $home;
+    }
+    else {
+      $text = strip_tags($crumb);
+      $link = strpos($crumb, '<a href="');
+
+      if ($link === 0) {
+        preg_match_all('/<a[^>]+href=([\'"])(?<href>.+?)\1[^>]*>/i', $crumb, $result);
+        $href = $result['href'][0];
+        $crumb = '<a href="' . $href . '" property="item" typeof="WebPage">';
+        $crumb .= '<span property="name">' . $text . '</span>';
+        $crumb .= '</a>';
+      }
+      else {
+        $path = drupal_get_path_alias(current_path());
+        $crumb = '<a href="/' . $path . '" property="item" typeof="WebPage">';
+        $crumb .= '<span property="name">' . $text . '</span>';
+        $crumb .= '</a>';
+      }
+
+      $breadcrumb[] = $crumb;
+    }
+  }
+
+  $variables['breadcrumb'] = $breadcrumb;
+}
+
+/**
  * Implements hook_preprocess_HOOK() for theme_button().
  */
 function ndsbs_preprocess_button(&$variables) {

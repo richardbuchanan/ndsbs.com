@@ -9,6 +9,30 @@
  */
 
 /**
+ * Implements theme_breadcrumb().
+ */
+function ndsbs_breadcrumb($variables) {
+  $breadcrumb = $variables['breadcrumb'];
+  $output = '';
+
+  if (!empty($breadcrumb)) {
+    $output .= '<ul class="uk-breadcrumb" vocab="http://schema.org/" typeof="BreadcrumbList">';
+
+    foreach ($breadcrumb as $index => $crumb) {
+      $position = $index + 1;
+      $output .= '<li property="itemListElement" typeof="ListItem">';
+      $output .= $crumb;
+      $output .= '<meta property="position" content="' . $position . '">';
+      $output .= '</li>';
+    }
+
+    $output .= '</ul>';
+  }
+
+  return $output;
+}
+
+/**
  * Implements theme_checkboxes().
  */
 function ndsbs_checkboxes($variables) {
