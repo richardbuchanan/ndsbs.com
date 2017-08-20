@@ -219,7 +219,8 @@
     "contactOption": "TollFree"
   }],
   "sameAs": [
-    "https://www.facebook.com/onlinealcoholdrugassessment/"
+    "https://www.facebook.com/onlinealcoholdrugassessment",
+    "https://twitter.com/DUIevaluation"
   ]
 }
 </script>
