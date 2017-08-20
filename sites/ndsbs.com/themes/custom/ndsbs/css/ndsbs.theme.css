@@ -63,10 +63,18 @@ body.offcanvas-closed #page-header>* {
   -webkit-background-size: cover;
   background-size: cover;
 }
+#header-below {
+  padding: 0;
+}
+body.front #header-below {
+  padding: 40px 0;
+}
 #header-below,
 #region-highlighted-wrapper {
   margin: 0 auto;
   max-width: 1400px;
+}
+#region-highlighted-wrapper {
   padding: 60px 0;
 }
 #header-below {
@@ -123,7 +131,13 @@ body.offcanvas-closed #page-header>* {
   color: #e5e5e5 !important;
 }
 #page-title {
+  font-size: 28px;
   margin-bottom: 0;
+}
+@media (min-width: 960px) {
+  #page-title {
+    font-size: 42px;
+  }
 }
 .logo--small {
   height: 60px;
@@ -201,7 +215,7 @@ body.offcanvas-closed #page-header>* {
 }
 #header-below .block h3,
 #region-highlighted-wrapper .block h2.block-title {
-  color: #1e87f0;
+  color: #73b4f3;
 }
 #header-below .block h3,
 #region-highlighted-wrapper .block h2.uk-text-lead,
@@ -210,7 +224,7 @@ body.offcanvas-closed #page-header>* {
   line-height: 1.1;
 }
 #header-below .block h2.block-title .highlight {
-  color: #1e87f0;
+  color: #73b4f3;
 }
 #header-below .block h2.block-title,
 #region-highlighted-wrapper h2.block-title {
@@ -530,7 +544,6 @@ body.role-super-therapist #user-profile-form ul.group-user-account-therapist {
  * Media queries.
  */
 @media (min-width: 640px) {
-  #header-below,
   #region-highlighted-wrapper {
     padding: 40px 0;
   }

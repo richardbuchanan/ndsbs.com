@@ -30,18 +30,15 @@ drupal_add_js('misc/tableheader.js');
       <?php $options = array('html' => TRUE); ?>
 
       <?php $view = '/sites/' . $host . '/files/reports/' . $report['report']; ?>
-      <?php $links[] = "<a href='$view' target='_blank' title='View report'><span class='glyphicon glyphicon-eye-open' aria-hidden='true'></span></a>"; ?>
+      <?php $links[] = "<a href='$view' target='_blank' title='View report'><span uk-icon='icon: file'></span> View</a>"; ?>
 
       <?php $download = '/download/report?file_name_path=%20public://reports/' . $report['report']; ?>
-      <?php $links[] = "<a href='$download' title='Download report'><span class='glyphicon glyphicon-download' aria-hidden='true'></span></a>"; ?>
-
-      <?php $print = '/sites/' . $host . '/files/reports/' . $report['report']; ?>
-      <?php $links[] = "<a href='$print' target='_blank' title='Print report'><span class='glyphicon glyphicon-print' aria-hidden='true'></span></a>"; ?>
+      <?php $links[] = "<a href='$download' title='Download report'><span uk-icon='icon: download'></span> Download</a>"; ?>
 
       <tr>
         <td><?php print $report['assessment']; ?></td>
         <td><?php print $report['report']; ?></td>
-        <td><span class="client-reports-links"><?php print implode('', $links); ?></span></td>
+        <td><span class="client-reports-links"><?php print implode('<br>', $links); ?></span></td>
       </tr>
     <?php endforeach; ?>
   </tbody>

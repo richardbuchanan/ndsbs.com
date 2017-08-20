@@ -10,7 +10,8 @@ include_once 'stepsheader.tpl.php';
   <?php print drupal_render($form['field_preferred_therapist']); ?>
   <?php print drupal_render($form['field_counselingrequest_comment']); ?>
   <?php print drupal_render($form['actions']['submit']); ?>
-  <div class="sr-only">
+
+  <div class="uk-hidden">
     <?php print drupal_render($form['field_assess_trans_id']); ?>
     <?php print drupal_render_children($form); ?>
   </div>
