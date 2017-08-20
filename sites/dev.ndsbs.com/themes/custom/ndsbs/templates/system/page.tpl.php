@@ -229,8 +229,8 @@
 {
   "@context": "http://schema.org",
   "@type": "WebSite",
-  "name": "<?php print $site_name; ?>",
-  "alternateName": "NDSBS",
+  "name": "NDSBS",
+  "alternateName": "<?php print $site_name; ?>",
   "url": "https://www.ndsbs.com"
 }
 </script>
