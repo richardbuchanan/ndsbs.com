@@ -35,6 +35,21 @@ function ndsbs_preprocess_html(&$variables) {
   foreach ($user_role_classes as $class) {
     $variables['classes_array'][] = $class;
   }
+
+  // Add an http-equiv tag, if set.
+  if ($_SERVER['HTTP_HOST'] != 'www.ndsbs.com') {
+    $meta_robots = array(
+      '#type' => 'html_tag',
+      '#tag' => 'meta',
+      '#attributes' => array(
+        'name' => 'robots',
+        'content' => 'noindex,nofollow',
+      ),
+      '#weight' => 100,
+    );
+
+    drupal_add_html_head($meta_robots, 'ndsbs_dev_robots');
+  }
 }
 
 /**
@@ -45,6 +60,7 @@ function ndsbs_preprocess_page(&$variables) {
 
   if (drupal_is_front_page()) {
     $variables['header_attributes_array']['uk-parallax'] = 'bgy: -200;';
+    unset($variables['page']['content']['system_main']['default_message']);
   }
 
   $variables['navbar_attributes_array']['class'][] = 'uk-navbar-transparent';
@@ -73,10 +89,6 @@ function ndsbs_preprocess_page(&$variables) {
     if ($client_dashboard_page || $staff_dashboard_page) {
       $variables['page_container_attributes_array']['class'][] = 'uk-container-expand';
     }
-  }
-
-  if (drupal_is_front_page()) {
-    unset($variables['page']['content']['system_main']['default_message']);
   }
 
   if ($variables['main_menu']) {
@@ -131,6 +143,10 @@ function ndsbs_preprocess_page(&$variables) {
   elseif (!isset($variables['page_description'])) {
     $variables['page_description'] = FALSE;
   }
+
+  //if (user_is_anonymous() && (current_path() == 'user' || current_path() == 'user/login')) {
+    //$variables['tabs'] = array();
+  //}
 
   drupal_set_title(NDSBS::getTitle());
 

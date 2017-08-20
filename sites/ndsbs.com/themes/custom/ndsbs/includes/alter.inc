@@ -100,6 +100,25 @@ function ndsbs_form_alter(&$form, &$form_state, $form_id) {
     $form['remember_me']['#prefix'] = '<div class="uk-margin">';
     $form['remember_me']['#suffix'] = '</div>';
   }
+
+  /*if ($form_id == 'user_login') {
+    $markup = t('<p>New here? <a href="@register">Create an NDSBS account</a>.</p>', array('@register' => '/user/register'));
+    $form['create_account'] = array(
+      '#markup' => $markup,
+      '#weight' => -10,
+    );
+
+    $form['name']['#weight'] = -9;
+    $form['pass']['#weight'] = -8;
+
+    $markup = t('<p>Forgot password? <a href="@reset">Reset password</a>.</p>', array('@reset' => '/user/password'));
+    $form['forgot_password'] = array(
+      '#markup' => $markup,
+      '#weight' => -7,
+    );
+
+    $form['remember_me']['#weight'] = -6;
+  }*/
 }
 
 /**
