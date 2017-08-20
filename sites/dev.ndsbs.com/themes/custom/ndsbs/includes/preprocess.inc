@@ -53,6 +53,19 @@ function ndsbs_preprocess_html(&$variables) {
 }
 
 /**
+ * Implements hook_preprocess_HOOK() for maintenance-page.tpl.php.
+ */
+function ndsbs_preprocess_maintenance_page(&$variables) {
+  $login_form = drupal_get_form('user_login');
+  $login_form['login_message'] = array(
+    '#markup' => t('<p>If you are a site administrator or developer, login below.'),
+    '#weight' => -10,
+  );
+
+  $variables['login_form'] = drupal_render($login_form);
+}
+
+/**
  * Implements hook_preprocess_HOOK() for page.tpl.php.
  */
 function ndsbs_preprocess_page(&$variables) {
