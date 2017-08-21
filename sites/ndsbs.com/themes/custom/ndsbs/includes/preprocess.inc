@@ -448,16 +448,27 @@ function ndsbs_preprocess_node(&$variables) {
     }
   }
 
-  // Create the service amount variable.
-  $service_amount = $variables['field_primary_service_amount'][0]['value'];
-  $variables['service_amount'] = '<h3>$'. $service_amount . '</h3>';
+  $variables['service_amount'] = FALSE;
 
-  // Create the purchase link variable.
-  $nid = $variables['nid'];
-  $tid = $variables['field_primary_service']['und'][0]['tid'];
-  $cart_url = "/user/cart/nid/$nid/tid/$tid";
-  $cart_url_options = array('attributes' => array('class' => array('uk-button', 'uk-button-primary')));
-  $variables['purchase_link'] = l(t('Purchase Now'), $cart_url, $cart_url_options);
+  if ($variables['field_primary_service_amount']) {
+    // Create the service amount variable.
+    $service_amount = $variables['field_primary_service_amount'][0]['value'];
+    $variables['service_amount'] = '<h3>$' . $service_amount . '</h3>';
+
+    // Create the purchase link variable.
+    $nid = $variables['nid'];
+    $tid = $variables['field_primary_service']['und'][0]['tid'];
+    $cart_url = "/user/cart/nid/$nid/tid/$tid";
+    $cart_url_options = array(
+      'attributes' => array(
+        'class' => array(
+          'uk-button',
+          'uk-button-primary'
+        ),
+      ),
+    );
+    $variables['purchase_link'] = l(t('Purchase Now'), $cart_url, $cart_url_options);
+  }
 }
 
 /**

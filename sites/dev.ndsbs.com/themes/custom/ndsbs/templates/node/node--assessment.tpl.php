@@ -92,39 +92,49 @@
     <div uk-grid>
 
       <?php if ($content['field_asmentinfo_section_one']): ?>
-        <div id="" class="uk-width-1-1">
+        <div id="assessment-section-one" class="uk-width-1-1">
           <?php print render($content['field_asmentinfo_section_one']); ?>
           <hr class="uk-divider-icon">
         </div>
       <?php endif; ?>
 
-      <?php if ($content['field_service_description']): ?>
-        <div id="" class="uk-width-1-1 uk-width-1-1@s uk-width-2-3@m uk-width-2-3@l uk-width-3-4@xl">
+      <div id="assessment-section-two" class="uk-width-1-1 uk-width-1-1@s uk-width-2-3@m uk-width-2-3@l uk-width-3-4@xl">
+        <?php if ($content['field_service_description']): ?>
           <?php print render($content['field_service_description']); ?>
-        </div>
-      <?php endif; ?>
+        <?php endif; ?>
+      </div>
 
       <div id="puchase-card" class="uk-width-1-1 uk-width-1-1@s uk-width-1-3@m uk-width-1-3@l uk-width-1-4@xl">
         <div class="uk-card uk-card-primary uk-card-hover uk-card-body uk-text-center">
-          <div class="service-amount">
-            <?php print $service_amount; ?>
-          </div>
 
-          <div class="purchase-link">
-            <?php print $purchase_link; ?>
-          </div>
+          <?php if ($service_amount): ?>
+            <div class="service-amount">
+              <?php print $service_amount; ?>
+            </div>
+
+            <div class="purchase-link">
+              <?php print $purchase_link; ?>
+            </div>
+          <?php else: ?>
+            <div class="call-for-service">
+              <h3>Call for Service</h3>
+            </div>
+            <div class="toll-free">
+              <a href="tel:+1-800-671-8589" class="uk-button uk-button-primary">1-800-671-8589</a>
+            </div>
+          <?php endif; ?>
         </div>
       </div>
 
       <?php if ($content['field_asmentinfo_section_two']): ?>
-        <div id="" class="uk-width-1-1">
+        <div id="assessment-section-three" class="uk-width-1-1">
           <hr class="uk-divider-icon">
           <?php print render($content['field_asmentinfo_section_two']); ?>
         </div>
       <?php endif; ?>
 
       <?php if ($content['field_asmentinfo_section_three']): ?>
-        <div id="" class="uk-width-1-1">
+        <div id="assessment-section-four" class="uk-width-1-1">
           <hr class="uk-divider-icon">
           <?php print render($content['field_asmentinfo_section_three']); ?>
         </div>
