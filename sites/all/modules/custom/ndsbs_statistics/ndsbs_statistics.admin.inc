@@ -614,7 +614,7 @@ function ndsbs_statistics_admin_statistics() {
   $form['statistics'] = array(
     '#type' => 'container',
     '#attributes' => array(
-      'class' => array('row'),
+      'class' => array('ndsbs-grid'),
     ),
   );
   $form['statistics']['transactions'] = array(
@@ -624,7 +624,7 @@ function ndsbs_statistics_admin_statistics() {
     '#caption' => t('<h3>Transactions</h3>'),
     '#empty' => t('No transactions available.'),
     '#attributes' => array('id' => 'ndsbs-statistics-transactions'),
-    '#prefix' => '<div class="col-xs-12 col-md-9">',
+    '#prefix' => '<div class="ndsbs-width-1-1@s ndsbs-width-2-3@m">',
     '#suffix' => '</div>',
   );
   $form['statistics']['assessments'] = array(
@@ -634,8 +634,7 @@ function ndsbs_statistics_admin_statistics() {
     '#caption' => t('<h3>Assessments</h3>'),
     '#empty' => t('No assessments available.'),
     '#attributes' => array('id' => 'ndsbs-statistics-assessments'),
-    '#prefix' => '<div class="col-xs-12 col-md-3">',
-    '#suffix' => '</div>',
+    '#prefix' => '<div class="ndsbs-width-1-1@s ndsbs-width-1-3@m">',
   );
   $form['statistics']['registrations'] = array(
     '#theme' => 'table',
@@ -644,7 +643,6 @@ function ndsbs_statistics_admin_statistics() {
     '#caption' => t('<h3>Registrations</h3>'),
     '#empty' => t('No registration data available.'),
     '#attributes' => array('id' => 'ndsbs-statistics-registrations'),
-    '#prefix' => '<div class="col-xs-12 col-md-3">',
     '#suffix' => '</div>',
   );
 

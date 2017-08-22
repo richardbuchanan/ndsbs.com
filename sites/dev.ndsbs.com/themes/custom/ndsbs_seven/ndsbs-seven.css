@@ -1,3 +1,459 @@
+.ndsbs-grid {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+  list-style: none
+}
+
+.ndsbs-grid>* {
+  margin: 0
+}
+
+.ndsbs-grid>*>:last-child {
+  margin-bottom: 0
+}
+
+.ndsbs-grid {
+  margin-left: -30px
+}
+
+.ndsbs-grid>* {
+  padding-left: 30px
+}
+
+@media (min-width: 1200px) {
+  .ndsbs-grid {
+    margin-left:-40px
+  }
+
+  .ndsbs-grid>* {
+    padding-left: 40px
+  }
+
+  .ndsbs-grid+.ndsbs-grid,.ndsbs-grid>.ndsbs-grid-margin,*+.ndsbs-grid-margin {
+    margin-top: 40px
+  }
+}
+
+[class*='ndsbs-width'] {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%
+}
+
+.ndsbs-width-1-2 {
+  width: 50%
+}
+
+.ndsbs-width-1-3 {
+  width: calc(100% * 1 / 3.001)
+}
+
+.ndsbs-width-2-3 {
+  width: calc(100% * 2 / 3.001)
+}
+
+.ndsbs-width-1-4 {
+  width: 25%
+}
+
+.ndsbs-width-3-4 {
+  width: 75%
+}
+
+.ndsbs-width-1-5 {
+  width: 20%
+}
+
+.ndsbs-width-2-5 {
+  width: 40%
+}
+
+.ndsbs-width-3-5 {
+  width: 60%
+}
+
+.ndsbs-width-4-5 {
+  width: 80%
+}
+
+.ndsbs-width-1-6 {
+  width: calc(100% * 1 / 6.001)
+}
+
+.ndsbs-width-5-6 {
+  width: calc(100% * 5 / 6.001)
+}
+
+.ndsbs-width-small {
+  width: 150px
+}
+
+.ndsbs-width-medium {
+  width: 300px
+}
+
+.ndsbs-width-large {
+  width: 450px
+}
+
+.ndsbs-width-xlarge {
+  width: 600px
+}
+
+.ndsbs-width-xxlarge {
+  width: 750px
+}
+
+.ndsbs-width-auto {
+  width: auto
+}
+
+.ndsbs-width-expand {
+  width: 1px;
+  -ms-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+  min-width: 0;
+  flex-basis: 1px
+}
+
+@media (min-width: 640px) {
+  .ndsbs-width-1-1\@s {
+    width:100%
+  }
+
+  .ndsbs-width-1-2\@s {
+    width: 50%
+  }
+
+  .ndsbs-width-1-3\@s {
+    width: calc(100% * 1 / 3.001)
+  }
+
+  .ndsbs-width-2-3\@s {
+    width: calc(100% * 2 / 3.001)
+  }
+
+  .ndsbs-width-1-4\@s {
+    width: 25%
+  }
+
+  .ndsbs-width-3-4\@s {
+    width: 75%
+  }
+
+  .ndsbs-width-1-5\@s {
+    width: 20%
+  }
+
+  .ndsbs-width-2-5\@s {
+    width: 40%
+  }
+
+  .ndsbs-width-3-5\@s {
+    width: 60%
+  }
+
+  .ndsbs-width-4-5\@s {
+    width: 80%
+  }
+
+  .ndsbs-width-1-6\@s {
+    width: calc(100% * 1 / 6.001)
+  }
+
+  .ndsbs-width-5-6\@s {
+    width: calc(100% * 5 / 6.001)
+  }
+
+  .ndsbs-width-small\@s {
+    width: 150px
+  }
+
+  .ndsbs-width-medium\@s {
+    width: 300px
+  }
+
+  .ndsbs-width-large\@s {
+    width: 450px
+  }
+
+  .ndsbs-width-xlarge\@s {
+    width: 600px
+  }
+
+  .ndsbs-width-xxlarge\@s {
+    width: 750px
+  }
+
+  .ndsbs-width-auto\@s {
+    width: auto
+  }
+
+  .ndsbs-width-expand\@s {
+    width: 1px;
+    -ms-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
+    min-width: 0;
+    flex-basis: 1px
+  }
+}
+
+@media (min-width: 960px) {
+  .ndsbs-width-1-1\@m {
+    width:100%
+  }
+
+  .ndsbs-width-1-2\@m {
+    width: 50%
+  }
+
+  .ndsbs-width-1-3\@m {
+    width: calc(100% * 1 / 3.001)
+  }
+
+  .ndsbs-width-2-3\@m {
+    width: calc(100% * 2 / 3.001)
+  }
+
+  .ndsbs-width-1-4\@m {
+    width: 25%
+  }
+
+  .ndsbs-width-3-4\@m {
+    width: 75%
+  }
+
+  .ndsbs-width-1-5\@m {
+    width: 20%
+  }
+
+  .ndsbs-width-2-5\@m {
+    width: 40%
+  }
+
+  .ndsbs-width-3-5\@m {
+    width: 60%
+  }
+
+  .ndsbs-width-4-5\@m {
+    width: 80%
+  }
+
+  .ndsbs-width-1-6\@m {
+    width: calc(100% * 1 / 6.001)
+  }
+
+  .ndsbs-width-5-6\@m {
+    width: calc(100% * 5 / 6.001)
+  }
+
+  .ndsbs-width-small\@m {
+    width: 150px
+  }
+
+  .ndsbs-width-medium\@m {
+    width: 300px
+  }
+
+  .ndsbs-width-large\@m {
+    width: 450px
+  }
+
+  .ndsbs-width-xlarge\@m {
+    width: 600px
+  }
+
+  .ndsbs-width-xxlarge\@m {
+    width: 750px
+  }
+
+  .ndsbs-width-auto\@m {
+    width: auto
+  }
+
+  .ndsbs-width-expand\@m {
+    width: 1px;
+    -ms-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
+    min-width: 0;
+    flex-basis: 1px
+  }
+}
+
+@media (min-width: 1200px) {
+  .ndsbs-width-1-1\@l {
+    width:100%
+  }
+
+  .ndsbs-width-1-2\@l {
+    width: 50%
+  }
+
+  .ndsbs-width-1-3\@l {
+    width: calc(100% * 1 / 3.001)
+  }
+
+  .ndsbs-width-2-3\@l {
+    width: calc(100% * 2 / 3.001)
+  }
+
+  .ndsbs-width-1-4\@l {
+    width: 25%
+  }
+
+  .ndsbs-width-3-4\@l {
+    width: 75%
+  }
+
+  .ndsbs-width-1-5\@l {
+    width: 20%
+  }
+
+  .ndsbs-width-2-5\@l {
+    width: 40%
+  }
+
+  .ndsbs-width-3-5\@l {
+    width: 60%
+  }
+
+  .ndsbs-width-4-5\@l {
+    width: 80%
+  }
+
+  .ndsbs-width-1-6\@l {
+    width: calc(100% * 1 / 6.001)
+  }
+
+  .ndsbs-width-5-6\@l {
+    width: calc(100% * 5 / 6.001)
+  }
+
+  .ndsbs-width-small\@l {
+    width: 150px
+  }
+
+  .ndsbs-width-medium\@l {
+    width: 300px
+  }
+
+  .ndsbs-width-large\@l {
+    width: 450px
+  }
+
+  .ndsbs-width-xlarge\@l {
+    width: 600px
+  }
+
+  .ndsbs-width-xxlarge\@l {
+    width: 750px
+  }
+
+  .ndsbs-width-auto\@l {
+    width: auto
+  }
+
+  .ndsbs-width-expand\@l {
+    width: 1px;
+    -ms-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
+    min-width: 0;
+    flex-basis: 1px
+  }
+}
+
+@media (min-width: 1600px) {
+  .ndsbs-width-1-1\@xl {
+    width:100%
+  }
+
+  .ndsbs-width-1-2\@xl {
+    width: 50%
+  }
+
+  .ndsbs-width-1-3\@xl {
+    width: calc(100% * 1 / 3.001)
+  }
+
+  .ndsbs-width-2-3\@xl {
+    width: calc(100% * 2 / 3.001)
+  }
+
+  .ndsbs-width-1-4\@xl {
+    width: 25%
+  }
+
+  .ndsbs-width-3-4\@xl {
+    width: 75%
+  }
+
+  .ndsbs-width-1-5\@xl {
+    width: 20%
+  }
+
+  .ndsbs-width-2-5\@xl {
+    width: 40%
+  }
+
+  .ndsbs-width-3-5\@xl {
+    width: 60%
+  }
+
+  .ndsbs-width-4-5\@xl {
+    width: 80%
+  }
+
+  .ndsbs-width-1-6\@xl {
+    width: calc(100% * 1 / 6.001)
+  }
+
+  .ndsbs-width-5-6\@xl {
+    width: calc(100% * 5 / 6.001)
+  }
+
+  .ndsbs-width-small\@xl {
+    width: 150px
+  }
+
+  .ndsbs-width-medium\@xl {
+    width: 300px
+  }
+
+  .ndsbs-width-large\@xl {
+    width: 450px
+  }
+
+  .ndsbs-width-xlarge\@xl {
+    width: 600px
+  }
+
+  .ndsbs-width-xxlarge\@xl {
+    width: 750px
+  }
+
+  .ndsbs-width-auto\@xl {
+    width: auto
+  }
+
+  .ndsbs-width-expand\@xl {
+    width: 1px;
+    -ms-flex: 1;
+    -webkit-flex: 1;
+    flex: 1;
+    min-width: 0;
+    flex-basis: 1px
+  }
+}
 table.draggable thead th.views-field-views-bulk-operations > .form-type-checkbox {
   margin-left: 25px;
 }
