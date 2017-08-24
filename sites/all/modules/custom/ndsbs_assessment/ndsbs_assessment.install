@@ -1,0 +1,80 @@
+<?php
+
+function ndsbs_assessment_schema() {
+  $schema['release_authorization'] = array(
+    'description' => 'The base table for authorization releases.',
+    'fields' => array(
+      'rid' => array(
+        'description' => 'The primary identifier for an authorization release.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'uid' => array(
+        'description' => 'The {users}.uid that owns this node; initially, this is the user that created it.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'created' => array(
+        'description' => 'The Unix timestamp when the node was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'authorization_data' => array(
+        'description' => 'The authorization release data.',
+        'type' => 'blob',
+        'serialize' => TRUE,
+      ),
+    ),
+    'indexes' => array(
+      'authorization_created' => array('created'),
+    ),
+    'primary key' => array('rid'),
+  );
+
+  return $schema;
+}
+
+/**
+ * Creates the {release_authorization} table.
+ */
+function ndsbs_assessment_update_7100(&$sandbox) {
+  $schema['release_authorization'] = array(
+    'description' => 'The base table for authorization releases.',
+    'fields' => array(
+      'rid' => array(
+        'description' => 'The primary identifier for an authorization release.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'uid' => array(
+        'description' => 'The {users}.uid that owns this node; initially, this is the user that created it.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'created' => array(
+        'description' => 'The Unix timestamp when the node was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'authorization_data' => array(
+        'description' => 'The authorization release data.',
+        'type' => 'blob',
+        'serialize' => TRUE,
+      ),
+    ),
+    'indexes' => array(
+      'authorization_created' => array('created'),
+    ),
+    'primary key' => array('rid'),
+  );
+
+  if(!db_table_exists('release_authorization')) {
+    db_create_table('release_authorization', $schema['release_authorization']);
+  }
+}

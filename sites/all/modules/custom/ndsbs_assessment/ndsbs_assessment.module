@@ -23,7 +23,6 @@ function ndsbs_assessment_menu() {
     'access arguments' => array('access content'),
     'type' => MENU_LOCAL_TASK,
   );
-
   $items['assessment/getprice'] = array(
     'title' => 'Get Assessment',
     'description' => 'Get Assessment price.',
@@ -31,13 +30,20 @@ function ndsbs_assessment_menu() {
     'page callback' => '_get_assessment_price',
     'access arguments' => array('access content'),
   );
-
   $items['otherservices/getprice'] = array(
     'title' => 'Get Assessment',
     'description' => 'Get Assessment price.',
     'access callback' => 'admin_request_permission',
     'page callback' => '_get_otherservice_price',
     'access arguments' => array('access content'),
+  );
+  $items['user/%user/release-authorization'] = array(
+    'title' => 'Authorization to Release',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('user_release_authorization_form', 1),
+    'access callback' => TRUE,
+    'access arguments' => array(1),
+    'file' => 'ndsbs_assessment.pages.inc',
   );
 
   return $items;
@@ -50,38 +56,31 @@ function ndsbs_assessment_menu() {
  */
 function ndsbs_assessment_theme() {
   $items = array();
-
   $items['assessment_node_form'] = array(
     'render element' => 'form',
     'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'assessment_node_form',
   );
-
   $items['list_all_assessment'] = array(
     'render element' => 'assessment_data',
     'path' => drupal_get_path('module', 'ndsbs_assessment'),
     'template' => 'list_all_assessment',
   );
-
   $items['list_other_services'] = array(
     'render element' => 'form',
     'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'list_other_services',
   );
-
   $items['other_services_node_form'] = array(
     'render element' => 'form',
     'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'other_services_node_form',
   );
-
-  //  Page added for assessment Start
   $items['page__assessment'] = array(
     'render element' => 'form',
     'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'page__assessment',
   );
-  //  Page added for assessment End
 
   return $items;
 }
