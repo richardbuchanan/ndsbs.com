@@ -328,7 +328,11 @@ function ndsbs_link($variables) {
       $dropper = '';
 
       if ($matches) {
-        $dropper = '<span class="uk-margin-small-left" uk-icon="icon: chevron-down"></span>';
+        $dropper = '<span class="uk-icon uk-margin-small-left">';
+        $dropper .= '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" ratio="1">';
+        $dropper .= '<polyline fill="none" stroke="#e5e5e5" stroke-width="1.03" points="16 7 10 13 4 7" style="stroke: #e5e5e5;"></polyline>';
+        $dropper .= '</svg>';
+        $dropper .= '</span>';
       }
 
       return '<a href="#" ' . drupal_attributes($attributes) . '>' . $text . $dropper . '</a>';
