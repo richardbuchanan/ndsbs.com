@@ -382,7 +382,12 @@ function ndsbs_preprocess_image(&$variables) {
 function ndsbs_preprocess_link(&$variables) {
   // @todo Research why Drupal strips "icon:" from the uk-icon attribute.
   if ($variables['text'] == '<span uk-icon=" user"></span>') {
-    $variables['text'] = '<span uk-icon="icon: user; ratio: 2"></span>';
+    $variables['text'] = '<span class="uk-icon">';
+    $variables['text'] .= '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 20 20" ratio="2">';
+    $variables['text'] .= '<circle fill="none" stroke="#e5e5e5" stroke-width="1.1" cx="9.9" cy="6.4" r="4.4" style="stroke: #e5e5e5;"></circle>';
+    $variables['text'] .= '<path fill="none" stroke="#e5e5e5" stroke-width="1.1" d="M1.5,19 C2.3,14.5 5.8,11.2 10,11.2 C14.2,11.2 17.7,14.6 18.5,19.2" style="stroke: #e5e5e5;"></path>';
+    $variables['text'] .= '</svg>';
+    $variables['text'] .= '</span>';
   }
 }
 
