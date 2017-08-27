@@ -16,7 +16,7 @@ function ndsbs_breadcrumb($variables) {
   $output = '';
 
   if (!empty($breadcrumb)) {
-    $output .= '<ul class="uk-breadcrumb" vocab="http://schema.org/" typeof="BreadcrumbList">';
+    $output .= '<ul class="uk-breadcrumb uk-hidden" vocab="http://schema.org/" typeof="BreadcrumbList">';
 
     foreach ($breadcrumb as $index => $crumb) {
       $position = $index + 1;
