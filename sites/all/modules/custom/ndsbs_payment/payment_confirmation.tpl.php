@@ -1,4 +1,5 @@
 <?php
+global $user;
 $misc_service = FALSE;
 
 $transactions = get_user_transactions(1);
@@ -7,6 +8,10 @@ foreach ($transactions as $transaction) {
   if ($transaction->nid == '3965') {
     $misc_service = TRUE;
     break;
+  }
+  if ($transaction->payment_status) {
+    $role = user_role_load_by_name('client');
+    user_multiple_role_edit(array($user->uid), 'add_role', $role->rid);
   }
 }
 

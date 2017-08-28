@@ -327,7 +327,6 @@ function bluepay_payment_form($form, &$form_state, $order) {
     $form['form_wrapper']['cc']['expiration_month']['#default_value'] = '12';
     $form['form_wrapper']['cc']['expiration_year']['#default_value'] = '17';
     $form['form_wrapper']['cc']['cvv']['#default_value'] = '123';
-    drupal_set_message(t('<b>NOTICE</b>: You are visiting a development site for testing purposes only! If you wish to purchase services from New Directions Substance and Behavioral Services, please visit <b><a href="@ndsbs" target="_blank">ndsbs.com</a></b>.', array('@ndsbs' => 'https://www.ndsbs.com')), 'error');
     drupal_set_message('For testing purposes rush services and credit card payment information has been entered for you. Please click "Submit payment" to test the transaction.', 'warning');
   }
 
