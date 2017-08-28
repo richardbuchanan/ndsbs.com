@@ -213,18 +213,25 @@ body.front #header-below {
 #region-highlighted-wrapper .block blockquote footer {
   color: #e5e5e5;
 }
+#region-highlighted-wrapper .block blockquote footer {
+  font-size: 1rem;
+}
 #header-below .block h3,
-#region-highlighted-wrapper .block h2.block-title {
+#region-highlighted-wrapper .block h2.block-title,
+#header-below .block h2.block-title .highlight,
+#region-highlighted-wrapper .block blockquote footer a:not(.uk-button) {
   color: #73b4f3;
+}
+#region-highlighted-wrapper .block blockquote footer a:not(.uk-button):focus,
+#region-highlighted-wrapper .block blockquote footer a:not(.uk-button):hover {
+  color: #fff;
+  text-decoration: underline;
 }
 #header-below .block h3,
 #region-highlighted-wrapper .block h2.uk-text-lead,
 #region-highlighted-wrapper .block h3 {
   font-size: 1.25rem;
   line-height: 1.1;
-}
-#header-below .block h2.block-title .highlight {
-  color: #73b4f3;
 }
 #header-below .block h2.block-title,
 #region-highlighted-wrapper h2.block-title {
@@ -244,7 +251,7 @@ body.front #header-below {
 #header-below .block a:not(.uk-button):hover,
 #region-highlighted-wrapper .block a:not(.uk-button):focus,
 #region-highlighted-wrapper .block a:not(.uk-button):hover {
-  color: #1e87f0;
+  color: #73b4f3;
   text-decoration: none;
 }
 #header-below .block #state-acceptance a>*:not([uk-icon]) {
