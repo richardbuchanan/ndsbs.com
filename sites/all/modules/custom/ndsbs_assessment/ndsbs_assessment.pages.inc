@@ -293,5 +293,6 @@ function user_release_authorization_form($form, &$form_state) {
 }
 
 function user_release_authorization_form_submit($form, &$form_state) {
+  dpm($form_state);
   drupal_set_message(t('Authorization to release has been sent to NDSBS.'));
 }
