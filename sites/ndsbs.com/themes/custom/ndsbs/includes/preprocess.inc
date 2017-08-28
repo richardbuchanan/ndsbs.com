@@ -53,6 +53,13 @@ function ndsbs_preprocess_html(&$variables) {
  * Implements hook_preprocess_HOOK() for maintenance-page.tpl.php.
  */
 function ndsbs_preprocess_maintenance_page(&$variables) {
+  $host = $_SERVER['HTTP_HOST'];
+  $dev_env = $host == 'localhost.ndsbs' || $host == 'dev.ndsbs.com';
+
+  if ($dev_env) {
+    drupal_set_message(t('<b>NOTICE</b>: You are visiting a development site for testing purposes only! If you wish to purchase services from New Directions Substance and Behavioral Services, please visit <b><a href="@ndsbs" target="_blank">ndsbs.com</a></b>.', array('@ndsbs' => 'https://www.ndsbs.com')), 'error');
+  }
+
   $login_form = drupal_get_form('user_login');
   $login_form['login_message'] = array(
     '#markup' => t('<p>If you are a site administrator or developer, login below.'),
@@ -67,6 +74,12 @@ function ndsbs_preprocess_maintenance_page(&$variables) {
  */
 function ndsbs_preprocess_page(&$variables) {
   global $user;
+  $host = $_SERVER['HTTP_HOST'];
+  $dev_env = $host == 'localhost.ndsbs' || $host == 'dev.ndsbs.com';
+
+  if ($dev_env) {
+    drupal_set_message(t('<b>NOTICE</b>: You are visiting a development site for testing purposes only! If you wish to purchase services from New Directions Substance and Behavioral Services, please visit <b><a href="@ndsbs" target="_blank">ndsbs.com</a></b>.', array('@ndsbs' => 'https://www.ndsbs.com')), 'error');
+  }
 
   if (drupal_is_front_page()) {
     $variables['header_attributes_array']['uk-parallax'] = 'bgy: -200;';
