@@ -1,5 +1,10 @@
 <?php
 
+function get_release_authorization_node_form() {
+  $form = drupal_get_form('release_authorization_node_form');
+  return $form;
+}
+
 function user_release_authorization_form($form, &$form_state) {
   global $user;
 
@@ -293,6 +298,6 @@ function user_release_authorization_form($form, &$form_state) {
 }
 
 function user_release_authorization_form_submit($form, &$form_state) {
-  dpm($form_state);
+  $values = $form_state['values'];
   drupal_set_message(t('Authorization to release has been sent to NDSBS.'));
 }

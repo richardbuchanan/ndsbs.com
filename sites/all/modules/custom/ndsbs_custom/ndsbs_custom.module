@@ -13,6 +13,10 @@ function ndsbs_custom_permission() {
       'title' => t('Administer NDSBS settings'),
       'description' => t('Perform administration tasks for NDSBS.'),
     ),
+    'view client list' => array(
+      'title' => t('View client lists'),
+      'description' => t('Allows users to view client lists'),
+    ),
   );
 }
 
@@ -113,7 +117,7 @@ function ndsbs_custom_menu() {
     'description' => 'List All Clients.',
     'access callback' => 'request_permission',
     'page callback' => '_list_all_client',
-    'access arguments' => array('access content'),
+    'access arguments' => array('view client list'),
   );
 
   $items['request/counseling/list'] = array(

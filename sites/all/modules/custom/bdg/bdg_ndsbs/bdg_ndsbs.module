@@ -355,19 +355,7 @@ function bdg_ndsbs_drupal_mail($from = 'default_from', $to = 'default_to', $subj
  * Function _list_all_assessment() define to call the theme.
  */
 function _start_assessment_questionnaire() {
-  global $base_url, $user;
-  $assessment_url = is_array(get_purchased_questionnaire_assessment_list_leftpanel()) ? bdg_ndsbs_get_steps_page() : $base_url . '/view/assessment/status';
-  if (in_array('client', $user->roles) &&
-    !in_array('therapist', $user->roles) &&
-    !in_array('staff admin', $user->roles) &&
-    !in_array('developer', $user->roles) &&
-    !in_array('super admin', $user->roles)) {
-    drupal_goto($assessment_url);
-  }
-  elseif (in_array('client', $user->roles)) {
-    drupal_goto($assessment_url);
-  }
-  return theme('questionnaire_start');
+  drupal_goto(bdg_ndsbs_get_steps_page());
 }
 
 /**
