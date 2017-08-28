@@ -390,6 +390,14 @@ function ndsbs_preprocess_image(&$variables) {
 }
 
 /**
+ * Implements template_preprocess_form().
+ */
+function ndsbs_preprocess_form(&$variables) {
+  $form_id = str_replace('-', '_', $variables['element']['#id']);
+  $variables['theme_hook_suggestions'][] = 'form__' . $form_id;
+}
+
+/**
  * Implements template_preprocess_link().
  */
 function ndsbs_preprocess_link(&$variables) {

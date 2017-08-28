@@ -572,3 +572,18 @@ function ndsbs_radios($variables) {
 
   return '<div' . drupal_attributes($attributes) . '>' . (!empty($element['#children']) ? $element['#children'] : '') . '</div>';
 }
+
+/**
+ * Implements theme_telfield().
+ */
+function ndsbs_telfield($variables) {
+  $element = $variables['element'];
+  $element['#attributes']['type'] = 'tel';
+  element_set_attributes($element, array('id', 'name', 'value', 'size', 'maxlength', 'placeholder'));
+  _form_set_class($element, array('form-text', 'form-tel', 'uk-input'));
+
+  $extra = elements_add_autocomplete($element);
+  $output = '<input' . drupal_attributes($element['#attributes']) . ' />';
+
+  return $output . $extra;
+}
