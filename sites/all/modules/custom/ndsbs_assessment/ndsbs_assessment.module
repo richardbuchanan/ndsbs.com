@@ -37,13 +37,11 @@ function ndsbs_assessment_menu() {
     'page callback' => '_get_otherservice_price',
     'access arguments' => array('access content'),
   );
-  $items['user/%user/release-authorization'] = array(
+  $items['user/release-authorizations'] = array(
     'title' => 'Authorization to Release',
-    'page callback' => 'get_release_authorization_node_form',
-    'page arguments' => array(1),
-    'access callback' => TRUE,
-    'access arguments' => array(1),
-    'file' => 'ndsbs_assessment.pages.inc',
+    'access callback' => 'user_is_logged_in',
+    'page callback' => 'release_authorizations',
+    'access arguments' => array('access content'),
   );
 
   return $items;
@@ -81,6 +79,11 @@ function ndsbs_assessment_theme() {
     'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'page__assessment',
   );
+  $items['user_release_authorizations'] = array(
+    'render element' => 'form',
+    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
+    'template' => 'user_release_authorizations',
+  );
 
   return $items;
 }
@@ -106,6 +109,23 @@ function admin_request_permission() {
  */
 function _list_all_assessment() {
   return theme('list_all_assessment');
+}
+
+function release_authorizations() {
+  return theme('user_release_authorizations');
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function ndsbs_assessment_form_release_authorization_node_form_alter(&$form, &$form_state, $form_id) {
+  foreach ($form['field_clinician']['und']['#options'] as $uid => $username) {
+    $user = user_load($uid);
+    $name = array($user->field_first_name['und'][0]['value']);
+    $name[] = $user->field_middle_name['und'][0]['value'];
+    $name[] = $user->field_last_name['und'][0]['value'];
+    $form['field_clinician']['und']['#options'][$uid] = implode(' ', $name);
+  }
 }
 
 /**
