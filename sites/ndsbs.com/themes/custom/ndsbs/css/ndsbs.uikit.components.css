@@ -35,6 +35,16 @@
 }
 
 /**
+ * Alert component.
+ *
+ * @see https://getuikit.com/docs/alert
+ */
+.uk-form-danger,
+.uk-form-danger:focus {
+  border-bottom-width: 2px;
+}
+
+/**
  * Card component.
  *
  * @see https://getuikit.com/docs/card

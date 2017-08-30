@@ -574,6 +574,64 @@ function ndsbs_radios($variables) {
 }
 
 /**
+ * Implements theme_status_messages().
+ */
+function ndsbs_status_messages($variables) {
+  $display = $variables['display'];
+  $output = '';
+
+  $status_heading = array(
+    'status' => t('Status message'),
+    'error' => t('Error message'),
+    'warning' => t('Warning message'),
+  );
+
+  foreach (drupal_get_messages($display) as $type => $messages) {
+    $class = 'uk-alert-';
+
+    switch ($type) {
+      case 'status':
+        $class .= 'success';
+        break;
+
+      case 'error':
+        $class .= 'danger';
+        break;
+
+      case 'warning':
+        $class .= 'warning';
+        break;
+
+    }
+
+    $output .= "<div id='messages' class=\"uk-alert $class\">\n";
+    $output .= '<button class="uk-alert-close" type="button" uk-close></button>';
+
+    if (!empty($status_heading[$type])) {
+      $output .= '<h2 class="uk-hidden">' . $status_heading[$type] . "</h2>\n";
+    }
+
+    if (count($messages) > 1) {
+      $output .= '<ul class="uk-list">';
+
+      foreach ($messages as $message) {
+        $output .= '<li>' . decode_entities($message) . '</li>';
+      }
+
+      $output .= '</ul>';
+    }
+    else {
+      $messages = reset($messages);
+      $output .= decode_entities($messages);
+    }
+
+    $output .= '</div>';
+  }
+
+  return $output;
+}
+
+/**
  * Implements theme_telfield().
  */
 function ndsbs_telfield($variables) {
