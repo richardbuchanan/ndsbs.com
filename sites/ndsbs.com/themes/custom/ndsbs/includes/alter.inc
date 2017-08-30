@@ -285,7 +285,8 @@ function ndsbs_form_release_authorization_node_form_alter(&$form, &$form_state, 
     </div>
   </div>';
 
-  $form['field_information_provided']['#prefix'] = '<p class="uk-margin-remove">Please provide the following information to the individual/company above:</p>
+  $form['field_information_provided']['#prefix'] = '<hr class="uk-divider-icon">
+  <p class="uk-margin-remove">Please provide the following information to the individual/company above:</p>
   <div class="uk-child-width-1-1 uk-child-width-1-2@m" uk-grid>
     <div>';
   $form['field_information_provided']['#suffix'] = '</div>';
@@ -297,7 +298,8 @@ function ndsbs_form_release_authorization_node_form_alter(&$form, &$form_state, 
     </div>
   </div>';
 
-  $form['field_purpose']['#prefix'] = '<p class="uk-margin-remove">The general purpose of this request is for</p>
+  $form['field_purpose']['#prefix'] = '<hr class="uk-divider-icon">
+  <p class="uk-margin-remove">The general purpose of this request is for</p>
   <div class="uk-child-width-1-1 uk-child-width-1-2@m" uk-grid>
     <div>';
   $form['field_purpose']['#suffix'] = '</div>';
@@ -328,7 +330,8 @@ function ndsbs_form_release_authorization_node_form_alter(&$form, &$form_state, 
   $form['field_transfer_pickup_additional']['#suffix'] = '</div>
     </div>';
 
-  $form['field_method_of_transfer_initial']['#prefix'] = '<p class="uk-margin-remove">I am willing to have my PHI shared via unsecured email or fax and I have been made aware of the risks that are involved by using this form of unsecured communication means.</p>
+  $form['field_method_of_transfer_initial']['#prefix'] = '<hr class="uk-divider-icon">
+  <p class="uk-margin-remove">I am willing to have my PHI shared via unsecured email or fax and I have been made aware of the risks that are involved by using this form of unsecured communication means.</p>
   <div class="uk-display-inline-block uk-margin-small-right">Initials:</div>
   <div class="uk-display-inline-block">';
   $form['field_method_of_transfer_initial']['#suffix'] = '</div>';
