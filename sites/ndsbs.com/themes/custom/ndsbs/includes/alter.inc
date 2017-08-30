@@ -100,25 +100,6 @@ function ndsbs_form_alter(&$form, &$form_state, $form_id) {
     $form['remember_me']['#prefix'] = '<div class="uk-margin">';
     $form['remember_me']['#suffix'] = '</div>';
   }
-
-  /*if ($form_id == 'user_login') {
-    $markup = t('<p>New here? <a href="@register">Create an NDSBS account</a>.</p>', array('@register' => '/user/register'));
-    $form['create_account'] = array(
-      '#markup' => $markup,
-      '#weight' => -10,
-    );
-
-    $form['name']['#weight'] = -9;
-    $form['pass']['#weight'] = -8;
-
-    $markup = t('<p>Forgot password? <a href="@reset">Reset password</a>.</p>', array('@reset' => '/user/password'));
-    $form['forgot_password'] = array(
-      '#markup' => $markup,
-      '#weight' => -7,
-    );
-
-    $form['remember_me']['#weight'] = -6;
-  }*/
 }
 
 /**
@@ -228,4 +209,170 @@ function ndsbs_form_bluepay_payment_form_alter(&$form, &$form_state, $form_id) {
   $form['form_wrapper']['cc']['#prefix'] = $cc_prefix;
 
   $form['form_wrapper']['submit']['#prefix'] = '<div class="uk-width-1-1">';
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for release_authorization_node_form().
+ */
+function ndsbs_form_release_authorization_node_form_alter(&$form, &$form_state, $form_id) {
+  $form['title']['#prefix'] = '<h3 class="release-authorization-section uk-text-center">Personal Information</h3>';
+  $form['title']['#prefix'] .= '<div class="uk-child-width-1-1 uk-child-width-1-2@m" uk-grid>';
+  $form['title']['#prefix'] .= '<div>';
+  $form['title']['#prefix'] .= '<div class="uk-display-inline-block uk-margin-small-right">Client\'s Name:</div>';
+  $form['title']['#prefix'] .= '<div class="uk-display-inline-block">';
+  $form['title']['#suffix'] = '</div>';
+  $form['title']['#suffix'] .= '</div>';
+
+  $form['field_client_dob']['#prefix'] = '<div>';
+  $form['field_client_dob']['#prefix'] .= '<div class="uk-display-inline-block uk-margin-small-right">Client\'s DOB (mm/dd/yyyy):</div>';
+  $form['field_client_dob']['#prefix'] .= '<div class="uk-display-inline-block">';
+  $form['field_client_dob']['#suffix'] = '</div></div></div>';
+
+  $form['field_parent_guardian_poa']['#prefix'] = '<div>
+    <p class="uk-margin-remove">Check below if you are the parent of, guardian of, or power of attorney for the client:</p>
+    <div class="uk-display-inline-block">';
+  $form['field_parent_guardian_poa']['#suffix'] = '</div>';
+
+  $form['field_parent_guardian_poa_name']['#prefix'] = '<div class="uk-display-inline-block uk-margin-left">
+      <div class="uk-display-inline-block uk-margin-small-right">Your name:</div>
+      <div class="uk-display-inline-block">';
+  $form['field_parent_guardian_poa_name']['#suffix'] = '</div>
+    </div>
+  </div>';
+
+  $form['field_clinician']['#prefix'] = '<h3 class="release-authorization-section uk-text-center">Authorization</h3>
+  <div class="uk-width-1-1">
+    <div class="uk-display-inline uk-margin-small-right">I authorize (clinician)</div>';
+  $form['field_clinician']['#suffix'] = '</div>';
+
+  $form['field_exchange_release_obtain']['#prefix'] = '<div>
+    <div class="uk-display-inline">of Directions Counseling Group and ndsbs.com to:</div>
+    <div class="uk-display-inline">';
+  $form['field_exchange_release_obtain']['#suffix'] = '</div>
+  </div>';
+
+  $form['field_recipient_name']['#prefix'] = '<div class="uk-child-width-1-1 uk-child-width-1-2@m" uk-grid>
+    <div>
+      <div class="uk-display-inline-block uk-margin-small-right">Individual:</div>
+      <div class="uk-display-inline-block">';
+  $form['field_recipient_name']['#suffix'] = '</div>
+    </div>';
+
+  $form['field_recipient_company']['#prefix'] = '<div>
+      <div class="uk-display-inline-block uk-margin-small-right">Company:</div>
+      <div class="uk-display-inline-block">';
+  $form['field_recipient_company']['#suffix'] = '</div>
+    </div>
+  </div>';
+
+  $form['field_recipient_email']['#prefix'] = '<div class="uk-child-width-1-1 uk-child-width-1-3@m" uk-grid>
+    <div>
+      <div class="uk-display-inline-block uk-margin-small-right">Email:</div>
+      <div class="uk-display-inline-block">';
+  $form['field_recipient_email']['#suffix'] = '</div>
+    </div>';
+
+  $form['field_recipient_phone']['#prefix'] = '<div>
+      <div class="uk-display-inline-block uk-margin-small-right">Phone:</div>
+      <div class="uk-display-inline-block">';
+  $form['field_recipient_phone']['#suffix'] = '</div>
+    </div>';
+
+  $form['field_recipient_fax']['#prefix'] = '<div>
+      <div class="uk-display-inline-block uk-margin-small-right">Fax:</div>
+      <div class="uk-display-inline-block">';
+  $form['field_recipient_fax']['#suffix'] = '</div>
+    </div>
+  </div>';
+
+  $form['field_information_provided']['#prefix'] = '<p class="uk-margin-remove">Please provide the following information to the individual/company above:</p>
+  <div class="uk-child-width-1-1 uk-child-width-1-2@m" uk-grid>
+    <div>';
+  $form['field_information_provided']['#suffix'] = '</div>';
+
+  $form['field_information_provided_other']['#prefix'] = '<div>
+      <div class="uk-display-inline-block uk-margin-small-left uk-margin-small-right">If other:</div>
+      <div class="uk-display-inline-block">';
+  $form['field_information_provided_other']['#suffix'] = '</div>
+    </div>
+  </div>';
+
+  $form['field_purpose']['#prefix'] = '<p class="uk-margin-remove">The general purpose of this request is for</p>
+  <div class="uk-child-width-1-1 uk-child-width-1-2@m" uk-grid>
+    <div>';
+  $form['field_purpose']['#suffix'] = '</div>';
+
+  $form['field_purpose_other']['#prefix'] = '<div>
+      <div class="uk-display-inline-block uk-margin-small-left uk-margin-small-right">If other:</div>
+      <div class="uk-display-inline-block">';
+  $form['field_purpose_other']['#suffix'] = '</div>
+    </div>
+  </div>';
+
+  $form['field_transfer_email_additional']['#prefix'] = '<h3 class="release-authorization-section uk-text-center">Method to Transfer Above</h3>
+    <div>
+      <div class="uk-display-inline-block uk-margin-small-right">Email Assessment to:</div>
+      <div class="uk-display-inline-block">';
+  $form['field_transfer_email_additional']['#suffix'] = '</div>
+    </div>';
+
+  $form['field_transfer_fax_additional']['#prefix'] = '<div>
+      <div class="uk-display-inline-block uk-margin-small-right">Fax Assessment to:</div>
+      <div class="uk-display-inline-block">';
+  $form['field_transfer_fax_additional']['#suffix'] = '</div>
+    </div>';
+
+  $form['field_transfer_pickup_additional']['#prefix'] = '<div>
+      <div class="uk-display-inline-block uk-margin-small-right">Picked up by:</div>
+      <div class="uk-display-inline-block">';
+  $form['field_transfer_pickup_additional']['#suffix'] = '</div>
+    </div>';
+
+  $form['field_method_of_transfer_initial']['#prefix'] = '<p class="uk-margin-remove">I am willing to have my PHI shared via unsecured email or fax and I have been made aware of the risks that are involved by using this form of unsecured communication means.</p>
+  <div class="uk-display-inline-block uk-margin-small-right">Initials:</div>
+  <div class="uk-display-inline-block">';
+  $form['field_method_of_transfer_initial']['#suffix'] = '</div>';
+
+  $form['field_revocation_agreement']['#prefix'] = '';
+  $form['field_revocation_agreement']['#suffix'] = '';
+
+  $form['field_revocation_date']['#prefix'] = '<div>
+    <div class="uk-display-inline-block uk-margin-small-right">Revocation date (mm/dd/yyyy):</div>
+    <div class="uk-display-inline-block">';
+  $form['field_revocation_date']['#suffix'] = '</div>
+  </div>';
+
+  $form['field_conditions_agreement']['#prefix'] = '';
+  $form['field_conditions_agreement']['#suffix'] = '';
+
+  $form['field_disclosure_agreement']['#prefix'] = '';
+  $form['field_disclosure_agreement']['#suffix'] = '';
+
+  $form['field_redisclosure_agreement']['#prefix'] = '';
+  $form['field_redisclosure_agreement']['#suffix'] = '';
+
+  $form['field_digital_signature']['#prefix'] = '<p>I, the undersigned, authorize this release of information:</p>
+  <div class="uk-child-width-1-1 uk-child-width-1-2@m" uk-grid>';
+  $form['field_digital_signature']['#suffix'] = '';
+
+  $form['field_date']['#prefix'] = '';
+  $form['field_date']['#suffix'] = '</div>';
+
+  $form['field_identifying_info_ssn']['#prefix'] = '<div>
+    <div class="uk-display-inline-block uk-margin-small-right">First 3 numbers of client social security #:</div>
+    <div class="uk-display-inline-block">';
+  $form['field_identifying_info_ssn']['#suffix'] = '</div>
+  </div>';
+
+  $form['field_identifying_info_address']['#prefix'] = '<div>
+    <div class="uk-display-inline-block uk-margin-small-right">Client Street Address #:</div>
+    <div class="uk-display-inline-block">';
+  $form['field_identifying_info_address']['#suffix'] = '</div>
+  </div>';
+
+  $form['field_identifying_info_dob']['#prefix'] = '<div>
+    <div class="uk-display-inline-block uk-margin-small-right">Client Birth Date (mm/dd/yyyy):</div>
+    <div class="uk-display-inline-block">';
+  $form['field_identifying_info_dob']['#suffix'] = '</div>
+  </div>';
 }

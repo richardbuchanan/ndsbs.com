@@ -83,11 +83,11 @@
  *
  * @see https://getuikit.com/docs/form
  */
-.uk-input,
-.uk-select,
-.uk-textarea,
-.uk-checkbox,
-.uk-radio {
+.uk-input:not(.uk-form-danger),
+.uk-select:not(.uk-form-danger),
+.uk-textarea:not(.uk-form-danger),
+.uk-checkbox:not(.uk-form-danger),
+.uk-radio:not(.uk-form-danger) {
   border-color: #999;
 }
 .uk-select {
