@@ -173,6 +173,7 @@ function ndsbs_form_element($variables) {
   $suffix = isset($element['#field_suffix']) ? $element['#field_suffix'] : '';
   $checkbox = $type && $type === 'checkbox';
   $radio = $type && $type === 'radio';
+  $form_error = form_get_error($element);
 
   // Create an attributes array for the wrapping container.
   if (empty($element['#wrapper_attributes'])) {
@@ -204,6 +205,9 @@ function ndsbs_form_element($variables) {
   }
   if (!empty($element['#autocomplete_path']) && drupal_valid_path($element['#autocomplete_path'])) {
     $wrapper_attributes['class'][] = 'form-autocomplete';
+  }
+  if ($form_error) {
+    $wrapper_attributes['class'][] = 'uk-text-danger';
   }
 
   if (!$checkbox && !$radio) {
