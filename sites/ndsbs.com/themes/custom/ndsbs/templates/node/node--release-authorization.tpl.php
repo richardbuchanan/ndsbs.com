@@ -192,7 +192,7 @@
     </div>
 
     <div class="uk-display-inline-block uk-width-1-1">
-      <div class="uk-float-right"><?php print render($content['links']['print_pdf']); ?></div>
+      <div class="uk-float-right"><?php print render($content['links']); ?></div>
     </div>
   </div>
 
