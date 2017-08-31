@@ -582,19 +582,25 @@ function ndsbs_preprocess_node(&$variables) {
 
     $variables['method_of_transfer'] = array();
     if (isset($content['field_transfer_email_additional'])) {
-      $variables['method_of_transfer']['method'] = 'Email to: ';
-      $variables['method_of_transfer']['value'] = $content['field_transfer_email_additional'][0]['#markup'];
+      $variables['method_of_transfer']['email'] = array(
+        'method' => 'Email to',
+        'value' => $content['field_transfer_email_additional'][0]['#markup'],
+      );
     }
     if (isset($content['field_transfer_fax_additional'])) {
-      $variables['method_of_transfer']['method'] = 'Fax to: ';
-      $variables['method_of_transfer']['value'] = $content['field_transfer_fax_additional'][0]['#markup'];
+      $variables['method_of_transfer']['fax'] = array(
+        'method' => 'Fax to',
+        'value' => $content['field_transfer_fax_additional'][0]['#markup'],
+      );
     }
     if (isset($content['field_transfer_pickup_additional'])) {
-      $variables['method_of_transfer']['method'] = 'Picked up by: ';
-      $variables['method_of_transfer']['value'] = $content['field_transfer_pickup_additional'][0]['#markup'];
+      $variables['method_of_transfer']['pickup'] = array(
+        'method' => 'Picked up by',
+        'value' => $content['field_transfer_pickup_additional'][0]['#markup'],
+      );
     }
     if (isset($content['field_method_of_transfer_mail'])) {
-      $variables['method_of_transfer']['method'] = 'mail';
+      $variables['method_of_transfer_mail'] = TRUE;
     }
 
     $variables['initials'] = $content['field_method_of_transfer_initial'][0]['#markup'];

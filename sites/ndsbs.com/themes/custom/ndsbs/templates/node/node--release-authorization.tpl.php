@@ -140,11 +140,12 @@
     </ul>
 
     <h3 class="release-authorization-section uk-text-center">Method of Transfer</h3>
-    <?php if ($method_of_transfer['method'] != 'mail'): ?>
+    <?php foreach ($method_of_transfer as $item): ?>
       <div class="uk-width-1-1">
-        <span><?php print $method_of_transfer['method']; ?></span> <span class="text-underline uk-h4"><?php print $method_of_transfer['value']; ?></span>
+        <span><?php print $item['method']; ?>:</span> <span class="text-underline uk-h4"><?php print $item['value']; ?></span>
       </div>
-    <?php else: ?>
+    <?php endforeach; ?>
+    <?php if ($method_of_transfer_mail): ?>
       <p class="uk-margin-remove">Mail to:</p>
       <address class="uk-margin-remove">
         <?php if ($recipient): ?><span class="uk-h4"><?php print $recipient; ?></span><br><?php endif; ?>
