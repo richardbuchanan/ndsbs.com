@@ -495,6 +495,116 @@ function ndsbs_preprocess_node(&$variables) {
     );
     $variables['purchase_link'] = l(t('Purchase Now'), $cart_url, $cart_url_options);
   }
+
+  if ($type == 'release_authorization') {
+    $content = $variables['content'];
+    $variables['classes_array'][] = 'uk-margin-bottom';
+
+    $variables['client_dob'] = $content['field_client_dob'][0]['#markup'];
+    $variables['parent_guardian_poa'] = isset($content['field_parent_guardian_poa']) ? $content['field_parent_guardian_poa'][0]['#markup'] : '';
+    $variables['parent_guardian_poa_name'] = isset($content['field_parent_guardian_poa_name']) ? $content['field_parent_guardian_poa_name'][0]['#markup'] : 'N/A';
+
+    $uid = $content['field_clinician']['#items'][0]['uid'];
+    $clinician = user_load($uid);
+
+    $clinician_name = array(
+      $clinician->field_first_name['und'][0]['value'],
+    );
+
+    if (isset($clinician->field_middle_name['und'][0])) {
+      $clinician_name[] = $clinician->field_middle_name['und'][0]['value'];
+    }
+
+    $clinician_name[] = $clinician->field_last_name['und'][0]['value'];
+    $variables['clinician'] = implode(' ', $clinician_name);
+
+    $exchange_release_obtain = array();
+    if (isset($content['field_exchange_release_obtain'])) {
+      foreach ($content['field_exchange_release_obtain'] as $value) {
+        if (is_array($value) && isset($value['#markup'])) {
+          $exchange_release_obtain[] = $value['#markup'];
+        }
+      }
+    }
+    $variables['exchange_release_obtain'] = $exchange_release_obtain;
+
+    $variables['recipient'] = isset($content['field_recipient_name']) ? $content['field_recipient_name'][0]['#markup'] : '';
+    $variables['recipient_company'] = isset($content['field_recipient_company']) ? $content['field_recipient_company'][0]['#markup'] : '';
+    $variables['recipient_address'] = '';
+    $recipient_address = '';
+
+    if (isset($content['field_recipient_address'])) {
+      $variables['recipient_address'] = $content['field_recipient_address'][0]['#address']['thoroughfare'];
+
+      if ($content['field_recipient_address'][0]['#address']['locality']) {
+        $recipient_address .= $content['field_recipient_address'][0]['#address']['locality'];
+      }
+
+      if ($content['field_recipient_address'][0]['#address']['administrative_area']) {
+        $recipient_address .= ', ' . $content['field_recipient_address'][0]['#address']['administrative_area'];
+      }
+
+      if ($content['field_recipient_address'][0]['#address']['postal_code']) {
+        $recipient_address .= ' ' . $content['field_recipient_address'][0]['#address']['postal_code'];
+      }
+    }
+    $variables['recipient_address_additional'] = $recipient_address;
+
+    $variables['recipient_email'] = isset($content['field_recipient_email']) ? $content['field_recipient_email'][0]['#markup'] : '';
+    $variables['recipient_phone'] = isset($content['field_recipient_phone']) ? $content['field_recipient_phone'][0]['#markup'] : '';
+    $variables['recipient_fax'] = isset($content['field_recipient_fax']) ? $content['field_recipient_fax'][0]['#markup'] : '';
+
+    $provided_information = array();
+    if (isset($content['field_information_provided'])) {
+      foreach ($content['field_information_provided'] as $value) {
+        if (is_array($value) && isset($value['#markup'])) {
+          $provided_information[] = $value['#markup'];
+        }
+      }
+      if (isset($content['field_information_provided_other'])) {
+        $count = count($provided_information) - 1;
+        $provided_information[$count] .= ': ' . $content['field_information_provided_other'][0]['#markup'];
+      }
+    }
+    $variables['provided_information'] = $provided_information;
+
+    $purposes = array();
+    if (isset($content['field_purpose'])) {
+      if (is_array($value) && isset($value['#markup'])) {
+        $purposes[] = $value['#markup'];
+      }
+      if (isset($content['field_purpose_other'])) {
+        $count = count($purposes) - 1;
+        $purposes[$count] .= ': ' . $content['field_purpose_other'][0]['#markup'];
+      }
+    }
+    $variables['purposes'] = $purposes;
+
+    $variables['method_of_transfer'] = array();
+    if (isset($content['field_transfer_email_additional'])) {
+      $variables['method_of_transfer']['method'] = 'Email to: ';
+      $variables['method_of_transfer']['value'] = $content['field_transfer_email_additional'][0]['#markup'];
+    }
+    if (isset($content['field_transfer_fax_additional'])) {
+      $variables['method_of_transfer']['method'] = 'Fax to: ';
+      $variables['method_of_transfer']['value'] = $content['field_transfer_fax_additional'][0]['#markup'];
+    }
+    if (isset($content['field_transfer_pickup_additional'])) {
+      $variables['method_of_transfer']['method'] = 'Picked up by: ';
+      $variables['method_of_transfer']['value'] = $content['field_transfer_pickup_additional'][0]['#markup'];
+    }
+    if (isset($content['field_method_of_transfer_mail'])) {
+      $variables['method_of_transfer']['method'] = 'mail';
+    }
+
+    $variables['initials'] = $content['field_method_of_transfer_initial'][0]['#markup'];
+    $variables['revocation_date'] = isset($content['field_revocation_date']) ? $content['field_revocation_date'][0]['#markup'] : FALSE;
+    $variables['digital_signature'] = $content['field_digital_signature'][0]['#markup'];
+    $variables['digital_signature_date'] = $content['field_date'][0]['#markup'];
+    $variables['client_ssn'] = $content['field_identifying_info_ssn'][0]['#markup'];
+    $variables['client_street'] = $content['field_identifying_info_address'][0]['#markup'];
+    $variables['client_dob_verify'] = $content['field_identifying_info_dob'][0]['#markup'];
+  }
 }
 
 /**

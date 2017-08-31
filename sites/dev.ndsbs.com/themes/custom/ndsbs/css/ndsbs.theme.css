@@ -506,6 +506,9 @@ body.front #header-below {
 /**
  * Forms.
  */
+.node-release-authorization *+.uk-grid-margin {
+  margin-top: 5px;
+}
 form .field-group-div {
   display: inline-block;
   width: 100%;
@@ -559,6 +562,7 @@ form .field-group-div {
   content: "Zip:";
 }
 #release-authorization-node-form h3.release-authorization-section,
+.node-release-authorization h3.release-authorization-section,
 #release-authorization-node-form .field-type-markup h3 {
   border: 2px solid #1e87f0;
   padding: 10px;

@@ -3,6 +3,10 @@
  * Discrete, reusable UI elements.
  */
 
+.text-underline {
+  border-bottom: 1px solid;
+}
+
 /**
  * Blocks.
  */
