@@ -520,11 +520,8 @@ $recipient_address = !empty($recipient_street) ? $recipient_street . '<br />' . 
       );
 
       $view_path = 'node/' . $nid;
-      $edit_path = $view_path . '/edit';
-
       $view = l('View', $view_path, $view_options);
-      $edit = l('Edit', $edit_path, $edit_options);
-      $operations = $view . $edit;
+      $operations = $view;
 
       $rows[] = array(
         $recipient,
