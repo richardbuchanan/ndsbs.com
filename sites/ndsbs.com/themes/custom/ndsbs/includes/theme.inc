@@ -451,24 +451,46 @@ function ndsbs_menu_link(array $variables) {
  */
 function ndsbs_menu_link__menu_client_navigation($variables) {
   $element = $variables['element'];
-  $attributes = $element['#attributes'];
+  $element['#attributes']['class'] = array();
   $depth = $element['#original_link']['depth'];
+  $count = 0;
   $sub_menu = '';
 
   if ($element['#below']) {
+    foreach ($element['#below'] as $below) {
+      if (is_array($below) && isset($below['#theme'])) {
+        $count++;
+      }
+    }
+
     unset($element['#below']['#theme_wrappers']);
     $sub_menu = '<div class="uk-accordion-content"><ul class="uk-list">';
     $sub_menu .= drupal_render($element['#below']);
     $sub_menu .= '</ul></div>';
   }
 
+  if (current_path() == $element['#href']) {
+    $attributes['class'][] = 'uk-open';
+  }
+
   if ($depth == 1) {
-    $output = '<h3 class="uk-accordion-title">' . $element['#title'] . '</h3>';
+    $attributes = array();
+
+    if ($element['#href'] != '<front>') {
+      $output = '<h3 class="uk-accordion-title">';
+      $output .= l($element['#title'], $element['#href'], $element['#localized_options']);
+      $output .= '</h3>';
+      $attributes['class'][] = 'no-icon';
+    }
+    else {
+      $output = '<h3 class="uk-accordion-title">' . $element['#title'] . '</h3>';
+    }
+
     return '<li' . drupal_attributes($attributes) . '>' . $output . $sub_menu . '</li>';
   }
   else {
     $output = l($element['#title'], $element['#href'], $element['#localized_options']);
-    return '<li' . drupal_attributes($attributes) . '>' . $output . '</li>';
+    return '<li>' . $output . '</li>';
   }
 }
 
@@ -495,14 +517,23 @@ function ndsbs_menu_link__menu_staff_navigation($variables) {
     $sub_menu .= '</ul></div>';
   }
 
+  if (current_path() == $element['#href']) {
+    $attributes['class'][] = 'uk-open';
+  }
+
   if ($depth == 1) {
     $attributes = array();
 
-    if ($count == 1) {
-      $attributes['class'][] = 'uk-open';
+    if ($element['#href'] != '<front>') {
+      $output = '<h3 class="uk-accordion-title">';
+      $output .= l($element['#title'], $element['#href'], $element['#localized_options']);
+      $output .= '</h3>';
+      $attributes['class'][] = 'no-icon';
+    }
+    else {
+      $output = '<h3 class="uk-accordion-title">' . $element['#title'] . '</h3>';
     }
 
-    $output = '<h3 class="uk-accordion-title">' . $element['#title'] . '</h3>';
     return '<li' . drupal_attributes($attributes) . '>' . $output . $sub_menu . '</li>';
   }
   else {
@@ -515,14 +546,14 @@ function ndsbs_menu_link__menu_staff_navigation($variables) {
  * Implements theme_menu_tree() for client dashboard.
  */
 function ndsbs_menu_tree__menu_client_navigation($variables) {
-  return '<ul uk-accordion>' . $variables['tree'] . '</ul>';
+  return '<ul id="client-navigation" class="ndsbs-navigation-accordion" uk-accordion>' . $variables['tree'] . '</ul>';
 }
 
 /**
  * Implements theme_menu_tree() for client dashboard.
  */
 function ndsbs_menu_tree__menu_staff_navigation($variables) {
-  return '<ul uk-accordion="multiple: true">' . $variables['tree'] . '</ul>';
+  return '<ul id="staff-navigation" class="ndsbs-navigation-accordion" uk-accordion>' . $variables['tree'] . '</ul>';
 }
 
 /**

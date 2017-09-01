@@ -219,4 +219,17 @@
       });
     }
   };
+
+  Drupal.behaviors.NDSBSDashboards = {
+    attach: function () {
+      var dashboard = $('.ndsbs-navigation-accordion');
+      var noIconLink = dashboard.find('li.no-icon').find('a');
+
+      noIconLink.click(function () {
+        var dashboardLocation = $(this).attr('href');
+        var locationURL = window.location.origin + dashboardLocation;
+        window.location.href = locationURL;
+      })
+    }
+  }
 })(jQuery);

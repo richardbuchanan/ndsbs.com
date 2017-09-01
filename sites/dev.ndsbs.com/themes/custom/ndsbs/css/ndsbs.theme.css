@@ -485,6 +485,9 @@ body.front #header-below {
   top: 26px;
   right: 45px;
 }
+.ndsbs-navigation-accordion li.no-icon .uk-accordion-title::before {
+  background-image: none;
+}
 
 /**
  * FAQ videos.
