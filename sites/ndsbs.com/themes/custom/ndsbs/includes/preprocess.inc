@@ -55,18 +55,21 @@ function ndsbs_preprocess_html(&$variables) {
 function ndsbs_preprocess_maintenance_page(&$variables) {
   $host = $_SERVER['HTTP_HOST'];
   $dev_env = $host == 'localhost.ndsbs' || $host == 'dev.ndsbs.com';
+  $variables['login_form'] = FALSE;
 
   if ($dev_env) {
-    drupal_set_message(t('<b>NOTICE</b>: You are visiting a development site for testing purposes only! If you wish to purchase services from New Directions Substance and Behavioral Services, please visit <b><a href="@ndsbs" target="_blank">ndsbs.com</a></b>.', array('@ndsbs' => 'https://www.ndsbs.com')), 'error');
+    $variables['messages'] = '<div id="messages" class="uk-alert uk-alert-danger"><b>NOTICE</b>: You are visiting a development site for testing purposes only! If you wish to purchase services from New Directions Substance and Behavioral Services, please visit <b><a href="https://www.ndsbs.com">www.ndsbs.com</a></b>.</div>';
   }
 
-  $login_form = drupal_get_form('user_login');
-  $login_form['login_message'] = array(
-    '#markup' => t('<p>If you are a site administrator or developer, login below.'),
-    '#weight' => -10,
-  );
+  if (function_exists('drupal_get_form')) {
+    $login_form = drupal_get_form('user_login');
+    $login_form['login_message'] = array(
+      '#markup' => t('<p>If you are a site administrator or developer, login below.'),
+      '#weight' => -10,
+    );
 
-  $variables['login_form'] = drupal_render($login_form);
+    $variables['login_form'] = drupal_render($login_form);
+  }
 }
 
 /**

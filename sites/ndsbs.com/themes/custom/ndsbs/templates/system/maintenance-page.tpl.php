@@ -51,7 +51,9 @@
         <div class="content">
           <div class="uk-text-center">
             <p class="uk-text-lead"><?php print $content; ?></p>
-            <?php print $login_form; ?>
+            <?php if ($login_form): ?>
+              <?php print $login_form; ?>
+            <?php endif; ?>
           </div>
         </div>
       </div>

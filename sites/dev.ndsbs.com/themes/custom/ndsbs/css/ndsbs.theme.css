@@ -111,6 +111,9 @@ body.front #header-below {
     startColorstr='#b3000000',
     endColorstr='#b3000000',GradientType=0); /* IE6-8 */
 }
+#page-header--maintenance #page-navbar {
+  background: #1e87f0;
+}
 #company-info-container {
   position: absolute;
   top: 28px;
