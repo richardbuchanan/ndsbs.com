@@ -491,6 +491,16 @@ body.front #header-below {
 .ndsbs-navigation-accordion li.no-icon .uk-accordion-title::before {
   background-image: none;
 }
+.ndsbs-navigation-accordion li.no-icon .uk-accordion-title a {
+  color: #333;
+}
+.ndsbs-navigation-accordion li.no-icon .uk-accordion-title a.active {
+  color: #1e87f0;
+}
+.ndsbs-navigation-accordion li.no-icon .uk-accordion-title a:focus,
+.ndsbs-navigation-accordion li.no-icon .uk-accordion-title a:hover {
+  color: #0f6ecd;
+}
 
 /**
  * FAQ videos.
