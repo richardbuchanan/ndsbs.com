@@ -11,25 +11,11 @@
     attach: function () {
       var html = $('html');
       var body = $('body');
-      var loginLink = $('[href="/user/login"]');
-      var loginModal = $("#login");
       var modalOverflow = $('#modal-overflow');
       var pageHeader = $('#page-header');
       var pageHighlighted = $('#page-highlighted');
       var viewportHeight = $(window).height();
       var adminMenuHeight = $('#admin-menu').length ? 29 : 0;
-      var path = window.location.pathname;
-      var userPaths = path === '/user' || path === '/user/login' || path === '/user/password' || path === '/user/register';
-
-      /*if (!userPaths) {
-        loginLink
-          .removeAttr('href')
-          .attr('uk-toggle', '')
-          .click(function (e) {
-            e.preventDefault();
-            UIkit.modal('#login').toggle();
-          });
-      }*/
 
       modalOverflow.on('hidden', function () {
         html.removeClass('ndsbs-overflow-initial');
@@ -44,6 +30,16 @@
       }
 
       UIkit.accordion($('.uk-accordion'));
+    }
+  };
+
+  Drupal.behaviors.NDSBSStatusMessages = {
+    attach: function () {
+      var close = $('[uk-close]');
+
+      close.click(function () {
+        $(this).parent().fadeOut();
+      })
     }
   };
 

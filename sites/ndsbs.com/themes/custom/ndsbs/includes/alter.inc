@@ -106,6 +106,7 @@ function ndsbs_form_alter(&$form, &$form_state, $form_id) {
  * Implements hook_form_FORM_ID_alter() for bluepay_payment_form().
  */
 function ndsbs_form_bluepay_payment_form_alter(&$form, &$form_state, $form_id) {
+  global $base_url;
   // Attach the payment script to the form.
   $form['#attached']['js'] = array();
   $form['#attached']['js'][] = drupal_get_path('theme', 'ndsbs') . '/js/payment.js';
@@ -207,8 +208,34 @@ function ndsbs_form_bluepay_payment_form_alter(&$form, &$form_state, $form_id) {
   $cc_prefix .= '<div class="uk-card-body">';
   $cc_prefix .= '<img class="img-responsive pull-right" src="/' . drupal_get_path('theme', 'ndsbs') . '/css/images/accepted.png" />';
   $form['form_wrapper']['cc']['#prefix'] = $cc_prefix;
-
   $form['form_wrapper']['submit']['#prefix'] = '<div class="uk-width-1-1">';
+
+  $conversion = "goog_snippet_vars = function() {\n";
+  $conversion .= "  var w = window;\n";
+  $conversion .= "  w.google_conversion_id = 838747312;\n";
+  $conversion .= "  w.google_conversion_label = \"FdXdCP70gnUQsIn5jwM\";\n";
+  $conversion .= "  w.google_remarketing_only = false;\n";
+  $conversion .= "};\n";
+  $conversion .= "// DO NOT CHANGE THE CODE BELOW.\n";
+  $conversion .= "goog_report_conversion = function(url) {\n";
+  $conversion .= "  goog_snippet_vars();\n";
+  $conversion .= "  window.google_conversion_format = \"3\";\n";
+  $conversion .= "  var opt = new Object();\n";
+  $conversion .= "  opt.onload_callback = function() {\n";
+  $conversion .= "    if (typeof(url) != 'undefined') {\n";
+  $conversion .= "      window.location = url;\n";
+  $conversion .= "    }\n";
+  $conversion .= "  };\n";
+  $conversion .= "  var conv_handler = window['google_trackConversion'];\n";
+  $conversion .= "  if (typeof(conv_handler) == 'function') {\n";
+  $conversion .= "    conv_handler(opt);\n";
+  $conversion .= "  }\n";
+  $conversion .= "};";
+  drupal_add_js($conversion, array('type' => 'inline'));
+  drupal_add_js('//www.googleadservices.com/pagead/conversion_async.js', array('type' => 'external'));
+
+  $url = $base_url . '/' . current_path();
+  $form['form_wrapper']['submit']['#attributes']['onclick'] = "goog_report_conversion ('" . $url . "')";
 }
 
 /**
@@ -378,4 +405,38 @@ function ndsbs_form_release_authorization_node_form_alter(&$form, &$form_state, 
     <div class="uk-display-inline-block">';
   $form['field_identifying_info_dob']['#suffix'] = '</div>
   </div>';
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for user_register_form().
+ */
+function ndsbs_form_user_register_form_alter(&$form, &$form_state, $form_id) {
+  global $base_url;
+
+  $conversion = "goog_snippet_vars = function() {\n";
+  $conversion .= "  var w = window;\n";
+  $conversion .= "  w.google_conversion_id = 838747312;\n";
+  $conversion .= "  w.google_conversion_label = \"Fil2CL_xgnUQsIn5jwM\";\n";
+  $conversion .= "  w.google_remarketing_only = false;\n";
+  $conversion .= "};\n";
+  $conversion .= "// DO NOT CHANGE THE CODE BELOW.\n";
+  $conversion .= "goog_report_conversion = function(url) {\n";
+  $conversion .= "  goog_snippet_vars();\n";
+  $conversion .= "  window.google_conversion_format = \"3\";\n";
+  $conversion .= "  var opt = new Object();\n";
+  $conversion .= "  opt.onload_callback = function() {\n";
+  $conversion .= "    if (typeof(url) != 'undefined') {\n";
+  $conversion .= "      window.location = url;\n";
+  $conversion .= "    }\n";
+  $conversion .= "  };\n";
+  $conversion .= "  var conv_handler = window['google_trackConversion'];\n";
+  $conversion .= "  if (typeof(conv_handler) == 'function') {\n";
+  $conversion .= "    conv_handler(opt);\n";
+  $conversion .= "  }\n";
+  $conversion .= "};";
+  drupal_add_js($conversion, array('type' => 'inline'));
+  drupal_add_js('//www.googleadservices.com/pagead/conversion_async.js', array('type' => 'external'));
+
+  $url = $base_url . '/' . current_path();
+  $form['actions']['submit']['#attributes']['onclick'] = "goog_report_conversion ('" . $url . "')";
 }
