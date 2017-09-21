@@ -61,6 +61,9 @@ function client_search() {
  *  Parameter no
  */
 function user_client_search_form($form, &$form_state) {
+  $queries = drupal_get_query_parameters();
+  $search_text = isset($queries['search_text']) && !empty($queries['search_text']) ? $queries['search_text'] : FALSE;
+
   $custom_dropdown = array(
     '' => 'All Fields',
     'field_data_field_first_name.field_first_name_value' => 'First Name',
@@ -75,21 +78,32 @@ function user_client_search_form($form, &$form_state) {
   // Textfield cor current password confirmation.
   $form['search_by'] = array(
     '#type' => 'select',
-    '#title' => t('Select from list:'),
     '#options' => $custom_dropdown,
-    //'#default_value' => $selected_value,
   );
 
   $form['search_text'] = array(
     '#type' => 'textfield',
-    '#title' => t('Search:'),
-    '#default_value' => '',
+    '#attributes' => array(
+      'placeholder' => t('Search'),
+    ),
+    '#default_value' => $search_text ? $search_text : '',
   );
 
-  $form['submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Submit')
+  $form['actions'] = array(
+    '#type' => 'actions',
+    'submit' => array(
+      '#type' => 'submit',
+      '#value' => t('Submit'),
+    ),
   );
+
+  if (!empty($form['search_text']['#default_value'])) {
+    $form['actions']['reset'] = array(
+      '#type' => 'submit',
+      '#value' => t('Reset'),
+    );
+  }
+
   return $form;
 }
 
@@ -98,21 +112,29 @@ function user_client_search_form($form, &$form_state) {
  * Submit handler for ndsbs_search_user_client_search_form_submit().
  */
 function user_client_search_form_submit(&$form, &$form_state) {
-  // Set up the edit array to pass to user_save()
-  $search_by = $form_state['values']['search_by'];
-  $search_text = $form_state['values']['search_text'];
-  if ($search_by <> '') {
-    $options = array(
-      'query' => array(
-        'search_by' => $search_by,
-        'search_text' => $search_text
-      )
-    );
-    drupal_goto('user/clients/list', $options);
+  $clicked_button = $form_state['clicked_button']['#value'];
+
+  if ($clicked_button == 'Reset') {
+    drupal_goto('user/clients/list');
   }
   else {
-    $options = array('query' => array('search_text' => $search_text));
-    drupal_goto('user/clients/list', $options);
+    // Set up the edit array to pass to user_save()
+    $search_by = $form_state['values']['search_by'];
+    $search_text = $form_state['values']['search_text'];
+
+    if ($search_by <> '') {
+      $options = [
+        'query' => [
+          'search_by' => $search_by,
+          'search_text' => $search_text
+        ]
+      ];
+      drupal_goto('user/clients/list', $options);
+    }
+    else {
+      $options = ['query' => ['search_text' => $search_text]];
+      drupal_goto('user/clients/list', $options);
+    }
   }
 }
 
@@ -212,7 +234,9 @@ function search_assessment_client_form($form, &$form_state) {
 
   $form['search_text'] = array(
     '#type' => 'textfield',
-    '#title' => t('Search:'),
+    '#attributes' => array(
+      'placeholder' => t('Search'),
+    ),
   );
 
   $form['asmnt_status'] = array(
@@ -220,10 +244,14 @@ function search_assessment_client_form($form, &$form_state) {
     '#options' => $asmnt_status,
   );
 
-  $form['submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Submit')
+  $form['actions'] = array(
+    '#type' => 'actions',
+    'submit' => array(
+      '#type' => 'submit',
+      '#value' => t('Submit'),
+    ),
   );
+
   return $form;
 }
 

@@ -193,7 +193,7 @@ function credit_card_payment_form($form, &$form_state) {
   $form['submit'] = array(
     '#id' => 'credit_card_submit',
     '#type' => 'submit',
-    '#value' => t('Submit payment')
+    '#value' => t('Submit payment'),
   );
   return $form;
 }

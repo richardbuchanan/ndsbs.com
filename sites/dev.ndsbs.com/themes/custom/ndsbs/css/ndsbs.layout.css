@@ -14,6 +14,15 @@
 }
 
 /**
+ * Forms.
+ */
+.ndsbs-inline-form>[class*=form-item],
+.ndsbs-inline-form>[class*=form-actions] {
+  display: inline-block;
+  margin: 0 20px 0 0 !important;
+}
+
+/**
  * Staff profiles.
  */
 .view-staff-profiles .uk-cover-container img {

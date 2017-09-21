@@ -358,12 +358,16 @@ function ndsbs_preprocess_button(&$variables) {
     case 'Submit':
     case 'Submit payment':
     case 'Upload':
+    case 'Yes':
     $variables['element']['#attributes']['class'][] = 'uk-button-primary';
       break;
 
     case 'Cancel account':
       $variables['element']['#attributes']['class'][] = 'uk-button-danger';
       break;
+
+    default:
+      $variables['element']['#attributes']['class'][] = 'uk-button-default';
   }
 }
 
@@ -404,6 +408,9 @@ function ndsbs_preprocess_form(&$variables) {
  * Implements template_preprocess_link().
  */
 function ndsbs_preprocess_link(&$variables) {
+  $link_options = isset($variables['options']);
+  $link_attributes = $link_options && isset($variables['options']['attributes']);
+  $link_id = $link_attributes && isset($variables['options']['attributes']['id']) ? $variables['options']['attributes']['id'] : FALSE;
   // @todo Research why Drupal strips "icon:" from the uk-icon attribute.
   if ($variables['text'] == '<span uk-icon=" user"></span>') {
     $variables['text'] = '<span class="uk-icon">';
@@ -412,6 +419,14 @@ function ndsbs_preprocess_link(&$variables) {
     $variables['text'] .= '<path fill="none" stroke="#e5e5e5" stroke-width="1.1" d="M1.5,19 C2.3,14.5 5.8,11.2 10,11.2 C14.2,11.2 17.7,14.6 18.5,19.2" style="stroke: #e5e5e5;"></path>';
     $variables['text'] .= '</svg>';
     $variables['text'] .= '</span>';
+  }
+
+  if ($link_id == 'edit-cancel') {
+    $variables['options']['attributes']['class'] = array(
+      'uk-button',
+      'uk-button-default',
+      'uk-margin-small-left',
+    );
   }
 }
 

@@ -801,10 +801,6 @@ function get_all_assessment_users() {
     'service_completed',
   ))->condition('ut.payment_status', 1, '=');
 
-  if (isset($user->roles[4]) && $user->roles[4] == 'therapist') {
-    //$result->condition('ut.therapist', $user->uid, '=');
-  }
-
   $result->orderBy('ut.order_date', 'DESC');
   $result->innerJoin('users_transactions_data', 'utd', 'ut.order_id = utd.oid');
   $result->fields('utd', array(
@@ -1589,7 +1585,7 @@ function call_user_form($form, &$form_state, $uid) {
   $first_name = $user->field_first_name['und'][0]['value'];
   $last_name = $user->field_last_name['und'][0]['value'];
   $name = "$first_name $last_name";
-  $phone = $user->field_phone['und'][0]['value'];
+  $phone = ndsbs_get_formatted_phone($uid);
 
   drupal_set_message(t('If @name has not been contacted, you can reach them at: <strong>@phone</strong>', array('@name' => $name, '@phone' => $phone)), 'info');
   $description = t('Select <em class="placeholder">Yes</em> if @name has been contacted, <em class="placeholder">No</em> to return to the user list page.', array('@name' => $name));

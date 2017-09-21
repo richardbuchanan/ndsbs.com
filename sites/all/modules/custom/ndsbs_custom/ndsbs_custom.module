@@ -1975,3 +1975,25 @@ function ndsbs_custom_field_attach_form($entity_type, $entity, &$form, &$form_st
     }
   }
 }
+
+function ndsbs_get_formatted_phone($uid) {
+  $user = user_load($uid);
+  $phone = $user->field_phone['und'][0]['value'];
+  $phone = preg_replace('/[^0-9]/s', '', $phone);
+  return preg_replace('~.*(\d{3})[^\d]{0,7}(\d{3})[^\d]{0,7}(\d{4}).*~', '($1) $2-$3', $phone);
+}
+
+function ndsbs_get_formatted_name($uid) {
+  $user_info = user_load($uid);
+  $first_name = ucfirst($user_info->field_first_name['und'][0]['value']);
+  $client_name = array($first_name);
+
+  if (isset($user_info->field_middle_name['und'][0]['value'])) {
+    $middle_name = ucfirst($user_info->field_middle_name['und'][0]['value']);
+    $client_name[] = $middle_name;
+  }
+
+  $last_name = ucfirst($user_info->field_last_name['und'][0]['value']);
+  $client_name[] = $last_name;
+  return implode(' ', $client_name);
+}
