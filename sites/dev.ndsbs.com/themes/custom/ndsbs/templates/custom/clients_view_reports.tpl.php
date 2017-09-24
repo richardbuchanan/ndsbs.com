@@ -472,9 +472,9 @@ $recipient_address = !empty($recipient_street) ? $recipient_street . '<br />' . 
               <?php if ($rec->field_attempted_on['und'][0]['value'] == 0): ?>
                 <?php $currpath = current_path(); ?>
                 <?php $options = array('query' => array('destination' => $currpath . '/tab/4'), 'attributes' => array('class' => 'btn btn-primary')); ?>
-                <?php print l(t('Attended'), 'request/counseling/update/'.$rec->nid, $options); ?>
+                <?php print l(t('Attended?'), 'request/counseling/update/'.$rec->nid, $options); ?>
               <?php else: ?>
-                <span>Attended On: <?php print $attempted_on = date('M d Y h:i A', $rec->field_attempted_on['und'][0]['value']); ?>
+                <span>Attended</span>
               <?php endif; ?>
             </td>
           </tr>
