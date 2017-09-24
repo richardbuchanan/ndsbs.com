@@ -489,12 +489,10 @@ function ndsbs_preprocess_node(&$variables) {
     $name .= isset($author->field_middle_name['und'][0]['value']) ? ' ' . $author->field_middle_name['und'][0]['value'] : '';
     $name .= isset($author->field_last_name['und'][0]['value']) ? ' ' . $author->field_last_name['und'][0]['value'] : '';
     $name .= isset($author->field_therapist_degree['und'][0]['value']) ? ' ' . $author->field_therapist_degree['und'][0]['value'] : '';
-    $user_url = drupal_get_path_alias('user/' . $variables['uid']);
-    $username = l($name, $user_url);
 
     $created = $variables['created'];
-    $date = format_date($created, $type = 'blog_date');
-    $variables['submitted'] = t('<span uk-icon="icon: calendar" style="cursor:default"></span> !datetime by !username', array('!username' => $username, '!datetime' => $date));
+    $date = format_date($created, 'blog_date');
+    $variables['submitted'] = t('<span uk-icon="icon: calendar" style="cursor:default"></span> !datetime by !username', array('!username' => $name, '!datetime' => $date));
 
     unset($variables['content']['links']['blog']);
   }

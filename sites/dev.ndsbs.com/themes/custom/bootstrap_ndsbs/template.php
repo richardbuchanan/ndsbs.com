@@ -286,16 +286,12 @@ function bootstrap_ndsbs_preprocess_node(&$variables) {
     $name .= isset($author->field_therapist_degree['und'][0]['value']) ? ' ' . $author->field_therapist_degree['und'][0]['value'] : '';
 
     $created = $variables['created'];
-    $date = format_date($created, $type = 'blog_date');
-    $variables['submitted'] = t('<span class="glyphicon glyphicon-calendar" aria-hidden="true"></span> !datetime by !username', array('!username' => $variables['name'], '!datetime' => $date));
+    $date = format_date($created, 'blog_date');
+    $variables['submitted'] = t('<span uk-icon="icon: calendar" style="cursor:default"></span> !datetime by !username', array('!username' => $name, '!datetime' => $date));
 
-    $variables['content']['links']['blog']['#links']['blog_usernames_blog']['title'] = $name . '\'s blog';
-    $variables['content']['links']['blog']['#links']['blog_usernames_blog']['href'] = 'blog';
-
-    if ($variables['teaser'] && !drupal_is_front_page()) {
-      unset($variables['content']['links']['blog']);
-    }
+    unset($variables['content']['links']['blog']);
   }
+
   if ($variables['title'] == 'Rush order') {
     $variables['theme_hook_suggestions'][] = 'node__assessment__rush_order';
   }
