@@ -469,6 +469,7 @@ function ndsbs_preprocess_menu_link(&$variables) {
  */
 function ndsbs_preprocess_node(&$variables) {
   $type = $variables['type'];
+  $node = $variables['node'];
   $teaser = $variables['teaser'];
   $display_submitted = $variables['display_submitted'];
 
@@ -480,6 +481,22 @@ function ndsbs_preprocess_node(&$variables) {
   if ($teaser) {
     $variables['theme_hook_suggestions'][] = 'node__teaser';
     $variables['theme_hook_suggestions'][] = 'node__' . $type . '__teaser';
+  }
+
+  if ($node->type == 'blog') {
+    $author = user_load($variables['uid']);
+    $name = isset($author->field_first_name['und'][0]['value']) ? $author->field_first_name['und'][0]['value'] : '';
+    $name .= isset($author->field_middle_name['und'][0]['value']) ? ' ' . $author->field_middle_name['und'][0]['value'] : '';
+    $name .= isset($author->field_last_name['und'][0]['value']) ? ' ' . $author->field_last_name['und'][0]['value'] : '';
+    $name .= isset($author->field_therapist_degree['und'][0]['value']) ? ' ' . $author->field_therapist_degree['und'][0]['value'] : '';
+    $user_url = drupal_get_path_alias('user/' . $variables['uid']);
+    $username = l($name, $user_url);
+
+    $created = $variables['created'];
+    $date = format_date($created, $type = 'blog_date');
+    $variables['submitted'] = t('<span uk-icon="icon: calendar" style="cursor:default"></span> !datetime by !username', array('!username' => $username, '!datetime' => $date));
+
+    unset($variables['content']['links']['blog']);
   }
 
   if ($display_submitted) {
