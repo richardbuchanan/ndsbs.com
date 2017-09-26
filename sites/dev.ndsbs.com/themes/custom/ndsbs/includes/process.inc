@@ -18,3 +18,11 @@ function ndsbs_process_page(&$variables) {
   $highlighted_attributes_array = $variables['highlighted_attributes_array'];
   $variables['highlighted_attributes'] = drupal_attributes($highlighted_attributes_array);
 }
+
+/**
+ * Implements template_process_views_view_table().
+ */
+function ndsbs_process_views_view_table(&$variables) {
+  $attributes = $variables['attributes_array'];
+  $variables['attributes'] = drupal_attributes($attributes);
+}

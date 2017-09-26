@@ -819,12 +819,6 @@ function ndsbs_status_messages($variables) {
   $display = $variables['display'];
   $output = '';
 
-  $status_heading = array(
-    'status' => t('Status message'),
-    'error' => t('Error message'),
-    'warning' => t('Warning message'),
-  );
-
   foreach (drupal_get_messages($display) as $type => $messages) {
     $class = 'uk-alert-';
 
@@ -843,12 +837,8 @@ function ndsbs_status_messages($variables) {
 
     }
 
-    $output .= "<div id='messages--$type' class=\"uk-alert $class\">\n";
+    $output .= "<div id='messages--$type' class='uk-alert $class'>";
     $output .= '<button class="uk-alert-close" type="button" uk-close></button>';
-
-    if (!empty($status_heading[$type])) {
-      $output .= '<h2 class="uk-hidden">' . $status_heading[$type] . "</h2>\n";
-    }
 
     if (count($messages) > 1) {
       $output .= '<ul class="uk-list">';

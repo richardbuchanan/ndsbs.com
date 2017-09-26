@@ -889,6 +889,31 @@ body.role-super-therapist #user-profile-form ul.group-user-account-therapist {
 }
 
 /**
+ * Views.
+ */
+.view-filters {
+  float: left;
+}
+.views-exposed-form label {
+  font-size: 16px;
+  font-weight: normal;
+}
+.views-exposed-form .views-exposed-widget {
+  padding: 0;
+}
+.views-exposed-form .views-exposed-widget .form-submit {
+  margin-top: 28px;
+}
+.vbo-views-form .uk-legend {
+  font-size: 16px;
+  font-weight: normal;
+  margin-bottom: 5px;
+}
+.vbo-views-form .form-submit {
+  margin-left: 20px;
+}
+
+/**
  * Keyframe animations.
  */
 @keyframes fadeIn {

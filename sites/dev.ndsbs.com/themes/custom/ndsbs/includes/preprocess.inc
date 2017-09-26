@@ -347,8 +347,10 @@ function ndsbs_preprocess_button(&$variables) {
   $variables['element']['#attributes']['class'] = array('uk-button');
 
   switch ($value) {
+    case 'Apply':
     case 'Create new account':
     case 'E-mail new password':
+    case 'Execute':
     case 'Log in':
     case 'Make Payment':
     case 'Save':
@@ -747,4 +749,16 @@ function ndsbs_preprocess_views_view_field(&$variables) {
       $variables['output'] = str_replace($search, $replace, $output);
     }
   }
+}
+
+/**
+ * Implements template_preprocess_views_view_table().
+ */
+function ndsbs_preprocess_views_view_table(&$variables) {
+  $classes = $variables['classes_array'];
+  $classes[] = 'uk-table';
+  $classes[] = 'uk-table-divided';
+  $classes[] = 'uk-table-striped';
+
+  $variables['attributes_array']['class'] = $classes;
 }
