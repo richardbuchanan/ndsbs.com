@@ -891,9 +891,6 @@ body.role-super-therapist #user-profile-form ul.group-user-account-therapist {
 /**
  * Views.
  */
-.view-filters {
-  float: left;
-}
 .views-exposed-form label {
   font-size: 16px;
   font-weight: normal;
