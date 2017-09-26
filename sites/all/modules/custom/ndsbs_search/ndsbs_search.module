@@ -1250,6 +1250,7 @@ function get_third_party_request_custom_search() {
 function search_all_other_services() {
   drupal_set_title('All Other Documents');
   $search_all_other_services_form = drupal_get_form('search_all_other_services_form');
+  $search_all_other_services_form['#attributes']['class'][] = 'ndsbs-inline-form';
   return drupal_render($search_all_other_services_form);
 }
 
