@@ -8,6 +8,10 @@
  * Allows developer to customize the site's functionality.
  */
 
+define('RUSH_DEFAULT', '75.00');
+define('RUSH_NEXTDAY', '150.00');
+define('RUSH_SAMEDAY', '225.00');
+
 /**
  * Implements hook_mail().
  */
@@ -273,23 +277,85 @@ function ndsbs_rush_order_notification_mail($order_id, $nid, $uid, $amount, $pay
   $node_information = node_load($nid);
   $rush_total = $rush_amount;
   $grand_total = $amount + $rush_total;
+  $rush_title = '';
 
-  $message_text = '<div class="container" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding-right: 15px;padding-left: 15px;margin-right: auto;margin-left: auto;"><div class="row" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;margin-right: -15px;margin-left: -15px;"><div class="col-xs-12" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;float: left;width: 100%;"><div style="margin-bottom: 15px; width: 100%; text-align: center;"><a href="https://www.ndsbs.com" class="navbar-brand" title="NDSBS.com"><img src="https://www.ndsbs.com/sites/ndsbs.com/themes/custom/bootstrap_ndsbs/logo.png" alt="NDSBS" height="65"></a></div><h3 class="text-center" style="color: #a94442;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;orphans: 3;widows: 3;page-break-after: avoid;font-family: inherit;font-weight: 500;line-height: 1.1;margin-top: 20px;margin-bottom: 10px;font-size: 32px;text-align: center;">Rush Order Received</h3><h3 class="text-center" style="color: #82796f;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;orphans: 3;widows: 3;page-break-after: avoid;font-family: inherit;font-weight: 500;line-height: 1.1;margin-top: 20px;margin-bottom: 10px;font-size: 24px;text-align: center;">ORDER NUMBER: ' . $order_id . '</h3><div class="table-responsive" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;min-height: .01%;overflow-x: auto;"><table class="table table-striped" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;border-spacing: 0;border-collapse: collapse!important;background-color: transparent;width: 100%;max-width: 100%;margin-bottom: 0;"><thead style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;display: table-header-group;"><tr style="background-color: #82796f;color: #e7e7e7;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><th colspan="2" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;text-align: left;line-height: 1.42857143;vertical-align: bottom;border-top: 1px solid #ddd;border-bottom: 2px solid #ddd;white-space: nowrap;;">Order details</th></tr></thead><tbody style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;"><tr style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><td style="width: 25%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">User:</td><td style="width: 75%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">' . $user_information->mail . '</td></tr><tr style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><td style="width: 25%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">Service purchased:</td><td style="width: 75%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">' . $node_information->title . '</td></tr><tr style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><td style="width: 25%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">Assessment amount:</td><td style="width: 75%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">$' . number_format($amount, 2) . '</td></tr><tr style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><td style="width: 25%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">Rush amount:</td><td style="width: 75%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">$' . number_format($rush_amount, 2) . '</td></tr><tr style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><td style="width: 25%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">Order total:</td><td style="width: 75%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">$' . number_format($grand_total, 2) . '</td></tr></tbody></table></div><div class="table-responsive" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;min-height: .01%;overflow-x: auto;"><table class="table table-striped" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;border-spacing: 0;border-collapse: collapse!important;background-color: transparent;width: 100%;max-width: 100%;margin-bottom: 0;"><thead style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;display: table-header-group;"><tr style="background-color: #82796f;color: #e7e7e7;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><th colspan="2" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;text-align: left;line-height: 1.42857143;vertical-align: bottom;border-top: 1px solid #ddd;border-bottom: 2px solid #ddd;white-space: nowrap;">Billing details</th></tr></thead><tbody style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;"><tr style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><td style="width: 25%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">Name:</td><td style="width: 75%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">' . $user_information->field_first_name['und'][0]['value'] . ' ' . $user_information->field_last_name['und'][0]['value'] . '</td></tr><tr style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><td style="width: 25%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">Address:</td><td style="width: 75%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;"><address style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;margin-bottom: 20px;font-style: normal;line-height: 1.42857143;">' . $user_information->field_address['und'][0]['value'] . '<br style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;">' . $user_information->field_city['und'][0]['value'] . ', ' . $user_information->field_state['und'][0]['value'] . ' ' . $user_information->field_zip['und'][0]['value'] . '</address></td></tr></tbody></table></div></div></div></div>';
+  switch ($rush_amount) {
+    case '75.00':
+      $rush_title = ' (2-3 business days)';
+      break;
+
+    case  '150.00':
+      $rush_title = ' (Next business day)';
+      break;
+
+    case '250.00':
+      $rush_title = ' (Same day)';
+      break;
+  }
+
+  $message_text = '<div class="uk-margin uk-text-center">';
+  $message_text .= '<a href="https://www.ndsbs.com" class="uk-logo uk-display-inline-block" title="New Directions Substance and Behavioral Services">';
+  $message_text .= '<img src="https://www.ndsbs.com/sites/ndsbs.com/themes/custom/ndsbs/logo-blue.png" alt="NDSBS" height="80" width="129">';
+  $message_text .= '</a>';
+  $message_text .= '</div>';
+
+  $message_text .= '<h3 class="uk-margin-remove-top uk-text-center uk-text-danger">Rush Order Received</h3>';
+  $message_text .= '<h3 class="uk-margin-remove-top uk-text-center">ORDER NUMBER: ' . $order_id . '</h3>';
+
+  $message_text .= '<h4 class="uk-text-lead">Order details</h4>';
+  $message_text .= '<table class="uk-table uk-table-divider uk-table-striped">';
+  $message_text .= '<tbody>';
+  $message_text .= '<tr>';
+  $message_text .= '<td class="uk-width-medium uk-text-nowrap"><strong>User</strong></td>';
+  $message_text .= '<td class="uk-table-expand">' . $user_information->mail . '</td>';
+  $message_text .= '</tr>';
+  $message_text .= '<tr>';
+  $message_text .= '<td class="uk-width-medium uk-text-nowrap"><strong>Service purchased</strong></td>';
+  $message_text .= '<td class="uk-table-expand">' . $node_information->title . '</td>';
+  $message_text .= '</tr>';
+  $message_text .= '<tr>';
+  $message_text .= '<td class="uk-width-medium uk-text-nowrap"><strong>Assessment amount</strong></td>';
+  $message_text .= '<td class="uk-table-expand">$' . number_format($amount, 2) . '</td>';
+  $message_text .= '</tr>';
+  $message_text .= '<tr>';
+  $message_text .= '<td class="uk-width-medium uk-text-nowrap"><strong>Rush amount</strong></td>';
+  $message_text .= '<td class="uk-table-expand">$' . number_format($rush_amount, 2) . $rush_title . '</td>';
+  $message_text .= '</tr>';
+  $message_text .= '<tr>';
+  $message_text .= '<td class="uk-width-medium uk-text-nowrap"><strong>Order total</strong></td>';
+  $message_text .= '<td class="uk-table-expand">$' . number_format($grand_total, 2) . '</td>';
+  $message_text .= '</tr>';
+  $message_text .= '</tbody>';
+  $message_text .= '</table>';
+
+  $message_text .= '<h4 class="uk-text-lead">Billing details</h4>';
+  $message_text .= '<table class="uk-table uk-table-divider uk-table-striped">';
+  $message_text .= '<tbody>';
+  $message_text .= '<tr>';
+  $message_text .= '<td class="uk-width-medium uk-text-nowrap"><strong>Name</strong></td>';
+  $message_text .= '<td class="uk-table-expand">' . $user_information->field_first_name['und'][0]['value'] . ' ' . $user_information->field_last_name['und'][0]['value'] . '</td>';
+  $message_text .= '</tr>';
+  $message_text .= '<tr>';
+  $message_text .= '<td class="uk-width-medium uk-text-nowrap"><strong>Address</strong></td>';
+  $message_text .= '<td class="uk-table-expand">';
+  $message_text .= '<address>' . $user_information->field_address['und'][0]['value'];
+  $message_text .= '<br>' . $user_information->field_city['und'][0]['value'] . ', ' . $user_information->field_state['und'][0]['value'] . ' ' . $user_information->field_zip['und'][0]['value'];
+  $message_text .= '</address>';
+  $message_text .= '</td>';
+  $message_text .= '</tr>';
+  $message_text .= '</tbody>';
+  $message_text .= '</table>';
 
   $default_from = variable_get('site_name', 'Drupal') . '<' . variable_get('site_mail', ini_get('sendmail_from')) . '>';
-  $module = 'ndsbs_payment';
-  $key = 'rush_order_notification_mail';
   $to = $default_from;
   $from = $default_from;
-  $language = $user_information->language;
-  //$message = drupal_mail($module, $key, $to, $language, $params = array(), $from = isset($from) ? $from : $default_from, $send = FALSE);
 
   $params = array(
-    'subject' => t('Order Confirmation mail from NDSBS'),
+    'subject' => t('Order Confirmation from NDSBS'),
     'body' => $message_text
   );
 
-  drupal_mail('ndsbs_payment', 'rush_order_notification_mail', $to, language_default(), $params, $from);
+  drupal_mail('ndsbs_payment', 'rush_order_confirmation', $to, language_default(), $params, $from);
 }
 
 /**
@@ -306,12 +372,78 @@ function ndsbs_rush_order_notification_mail($order_id, $nid, $uid, $amount, $pay
 function ndsbs_payment_order_confirmation_mail($order_id, $nid, $uid, $amount, $payment_status, $payment_method, $shipping_info, $rush_amount) {
   $user_information = user_load($uid);
   $node_information = node_load($nid);
-  $grand_total = $amount + $rush_amount;
+  $rush_total = $rush_amount;
+  $grand_total = $amount + $rush_total;
+  $rush_title = '';
 
-  $message_text = '<div class="container" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding-right: 15px;padding-left: 15px;margin-right: auto;margin-left: auto;"><div class="row" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;margin-right: -15px;margin-left: -15px;"><div class="col-xs-12" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;float: left;width: 100%;"><div style="margin-bottom: 15px; width: 100%; text-align: center;"><a href="https://www.ndsbs.com" class="navbar-brand" title="NDSBS.com"><img src="https://www.ndsbs.com/sites/ndsbs.com/themes/custom/bootstrap_ndsbs/logo.png" alt="NDSBS" height="65"></a></div><h3 class="text-center" style="color: #82796f;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;orphans: 3;widows: 3;page-break-after: avoid;font-family: inherit;font-weight: 500;line-height: 1.1;margin-top: 20px;margin-bottom: 10px;font-size: 24px;text-align: center;">ORDER NUMBER: ' . $order_id . '</h3><div class="table-responsive" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;min-height: .01%;overflow-x: auto;"><table class="table table-striped" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;border-spacing: 0;border-collapse: collapse!important;background-color: transparent;width: 100%;max-width: 100%;margin-bottom: 0;"><thead style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;display: table-header-group;"><tr style="background-color: #82796f;color: #e7e7e7;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><th colspan="2" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;text-align: left;line-height: 1.42857143;vertical-align: bottom;border-top: 1px solid #ddd;border-bottom: 2px solid #ddd;white-space: nowrap;;">Order details</th></tr></thead><tbody style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;"><tr style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><td style="width: 25%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">User:</td><td style="width: 75%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">' . $user_information->mail . '</td></tr><tr style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><td style="width: 25%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">Service purchased:</td><td style="width: 75%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">' . $node_information->title . '</td></tr><tr style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><td style="width: 25%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">Assessment amount:</td><td style="width: 75%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">$' . number_format($amount, 2) . '</td></tr><tr style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><td style="width: 25%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">Rush amount:</td><td style="width: 75%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">$' . number_format($rush_amount, 2) . '</td></tr><tr style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><td style="width: 25%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">Order total:</td><td style="width: 75%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">$' . number_format($grand_total, 2) . '</td></tr></tbody></table></div><div class="table-responsive" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;min-height: .01%;overflow-x: auto;"><table class="table table-striped" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;border-spacing: 0;border-collapse: collapse!important;background-color: transparent;width: 100%;max-width: 100%;margin-bottom: 0;"><thead style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;display: table-header-group;"><tr style="background-color: #82796f;color: #e7e7e7;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><th colspan="2" style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;text-align: left;line-height: 1.42857143;vertical-align: bottom;border-top: 1px solid #ddd;border-bottom: 2px solid #ddd;white-space: nowrap;">Billing details</th></tr></thead><tbody style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;"><tr style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><td style="width: 25%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">Name:</td><td style="width: 75%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">' . $user_information->field_first_name['und'][0]['value'] . ' ' . $user_information->field_last_name['und'][0]['value'] . '</td></tr><tr style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;page-break-inside: avoid;"><td style="width: 25%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;">Address:</td><td style="width: 75%;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;padding: 8px;line-height: 1.42857143;vertical-align: top;border-top: 1px solid #ddd;white-space: nowrap;background-color: #fff!important;"><address style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;margin-bottom: 20px;font-style: normal;line-height: 1.42857143;">' . $user_information->field_address['und'][0]['value'] . '<br style="-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;">' . $user_information->field_city['und'][0]['value'] . ', ' . $user_information->field_state['und'][0]['value'] . ' ' . $user_information->field_zip['und'][0]['value'] . '</address></td></tr></tbody></table></div></div></div></div>';
+  switch ($rush_amount) {
+    case '75.00':
+      $rush_title = ' (2-3 business days)';
+      break;
+
+    case  '150.00':
+      $rush_title = ' (Next business day)';
+      break;
+
+    case '250.00':
+      $rush_title = ' (Same day)';
+      break;
+  }
+
+  $message_text = '<div class="uk-margin uk-text-center">';
+  $message_text .= '<a href="https://www.ndsbs.com" class="uk-logo uk-display-inline-block" title="New Directions Substance and Behavioral Services">';
+  $message_text .= '<img src="https://www.ndsbs.com/sites/ndsbs.com/themes/custom/ndsbs/logo-blue.png" alt="NDSBS" height="80" width="129">';
+  $message_text .= '</a>';
+  $message_text .= '</div>';
+
+  $message_text .= '<h3 class="uk-margin-remove-top uk-text-center">ORDER NUMBER: ' . $order_id . '</h3>';
+
+  $message_text .= '<h4 class="uk-text-lead">Order details</h4>';
+  $message_text .= '<table class="uk-table uk-table-divider uk-table-striped">';
+  $message_text .= '<tbody>';
+  $message_text .= '<tr>';
+  $message_text .= '<td class="uk-width-medium uk-text-nowrap"><strong>User</strong></td>';
+  $message_text .= '<td class="uk-table-expand">' . $user_information->mail . '</td>';
+  $message_text .= '</tr>';
+  $message_text .= '<tr>';
+  $message_text .= '<td class="uk-width-medium uk-text-nowrap"><strong>Service purchased</strong></td>';
+  $message_text .= '<td class="uk-table-expand">' . $node_information->title . '</td>';
+  $message_text .= '</tr>';
+  $message_text .= '<tr>';
+  $message_text .= '<td class="uk-width-medium uk-text-nowrap"><strong>Assessment amount</strong></td>';
+  $message_text .= '<td class="uk-table-expand">$' . number_format($amount, 2) . '</td>';
+  $message_text .= '</tr>';
+  $message_text .= '<tr>';
+  $message_text .= '<td class="uk-width-medium uk-text-nowrap"><strong>Rush amount</strong></td>';
+  $message_text .= '<td class="uk-table-expand">$' . number_format($rush_amount, 2) . $rush_title . '</td>';
+  $message_text .= '</tr>';
+  $message_text .= '<tr>';
+  $message_text .= '<td class="uk-width-medium uk-text-nowrap"><strong>Order total</strong></td>';
+  $message_text .= '<td class="uk-table-expand">$' . number_format($grand_total, 2) . '</td>';
+  $message_text .= '</tr>';
+  $message_text .= '</tbody>';
+  $message_text .= '</table>';
+
+  $message_text .= '<h4 class="uk-text-lead">Billing details</h4>';
+  $message_text .= '<table class="uk-table uk-table-divider uk-table-striped">';
+  $message_text .= '<tbody>';
+  $message_text .= '<tr>';
+  $message_text .= '<td class="uk-width-medium uk-text-nowrap"><strong>Name</strong></td>';
+  $message_text .= '<td class="uk-table-expand">' . $user_information->field_first_name['und'][0]['value'] . ' ' . $user_information->field_last_name['und'][0]['value'] . '</td>';
+  $message_text .= '</tr>';
+  $message_text .= '<tr>';
+  $message_text .= '<td class="uk-width-medium uk-text-nowrap"><strong>Address</strong></td>';
+  $message_text .= '<td class="uk-table-expand">';
+  $message_text .= '<address>' . $user_information->field_address['und'][0]['value'];
+  $message_text .= '<br>' . $user_information->field_city['und'][0]['value'] . ', ' . $user_information->field_state['und'][0]['value'] . ' ' . $user_information->field_zip['und'][0]['value'];
+  $message_text .= '</address>';
+  $message_text .= '</td>';
+  $message_text .= '</tr>';
+  $message_text .= '</tbody>';
+  $message_text .= '</table>';
 
   $params = array(
-    'subject' => t('Order Confirmation mail from NDSBS'),
+    'subject' => t('Order Confirmation from NDSBS'),
     'body' => $message_text
   );
 

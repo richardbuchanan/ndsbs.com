@@ -992,6 +992,7 @@ function get_transaction_info_orderid($oid) {
       'tid',
       'uid',
       'cost',
+      'rush_cost',
       'payment_status',
       'payment_method',
       'order_date',
