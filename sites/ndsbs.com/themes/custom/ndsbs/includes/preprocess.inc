@@ -350,6 +350,7 @@ function ndsbs_preprocess_button(&$variables) {
     case 'Create new account':
     case 'E-mail new password':
     case 'Log in':
+    case 'Make Payment':
     case 'Save':
     case 'Save My Answer and Continue Questionnaire':
     case 'Save My Answer and Review Questionnaire':
@@ -357,6 +358,7 @@ function ndsbs_preprocess_button(&$variables) {
     case 'Start Questionnaire':
     case 'Submit':
     case 'Submit payment':
+    case 'Submit Request':
     case 'Upload':
     case 'Yes':
     $variables['element']['#attributes']['class'][] = 'uk-button-primary';

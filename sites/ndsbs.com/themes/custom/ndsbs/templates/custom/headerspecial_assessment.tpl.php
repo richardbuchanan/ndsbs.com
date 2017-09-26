@@ -3,64 +3,124 @@ global $base_url;
 $stepsdata = get_special_assessment_data_status();
 $stepsdata = $stepsdata[0];
 
-$status = !$stepsdata->status;
-$payment_status = !$stepsdata->payment_status;
+$status = $stepsdata->status ? TRUE : FALSE;
+$payment_status = $stepsdata->payment_status ? TRUE : FALSE;
 
-$step_one_class = $status ? 'step step-one' : 'step step-one active';
-$step_two_class = $payment_status ? 'step step-two' : 'step step-two active';
-$complete_class = $payment_status ? 'steps' : 'steps active';
+$step_one_attributes = array(
+  'id' => 'step-one',
+);
+$step_two_attributes = array(
+  'id' => 'step-two',
+);
+
+if (current_path() == 'user/special/assessment') {
+  $step_one_attributes['class'][] = 'uk-active';
+}
+elseif (current_path() == 'special/assessment/payment') {
+  $step_two_attributes['class'][] = 'uk-active';
+}
+
+$step_one_button_attributes = array(
+  'href' => '/user/special/assessment?destination=special/assessment/payment',
+  'class' => array('uk-icon-button'),
+);
+$step_one_title_attributes = array(
+  'class' => array(
+    'steps-header-title',
+    'uk-text-center@l',
+  ),
+);
+
+if ($status) {
+  $step_one_button_attributes['class'][] = 'uk-button-success';
+  $step_one_title_attributes['class'][] = 'step-completed';
+}
+else {
+  $step_one_button_attributes['class'][] = 'uk-button-primary';
+}
+
+$step_two_button_attributes = array(
+  'href' => '/special/assessment/payment',
+  'class' => array('uk-icon-button'),
+);
+$step_two_title_attributes = array(
+  'class' => array(
+    'steps-header-title',
+    'uk-text-center@l',
+  ),
+);
+
+if ($payment_status) {
+  $step_two_button_attributes['class'][] = 'uk-button-success';
+  $step_two_title_attributes['class'][] = 'step-completed';
+}
+else {
+  $step_two_button_attributes['class'][] = 'uk-button-primary';
+}
+
+$step_one_button_classes =  implode(' ', $step_one_button_attributes['class']) . ' uk-hidden@l uk-margin-right';
+$step_two_button_classes =  implode(' ', $step_two_button_attributes['class']) . ' uk-hidden@l uk-margin-right';
+
 ?>
-<div id="steps-container" class="steps-container-col-2">
-  <nav id="steps-wrapper">
-    <ul class="<?php print $complete_class; ?>">
-      <li class="<?php print $step_one_class; ?>">
-        <div class="shift"><span>1</span></div>
-      </li>
-      <li class="<?php print $step_two_class; ?>">
-        <div class="shift"><span>2</span></div>
-      </li>
-    </ul>
-  </nav>
+<ul class="uk-nav uk-nav-default uk-margin-bottom uk-hidden@l">
+  <li<?php print drupal_attributes($step_one_attributes); ?>>
+    <a href="/user/special/assessment?destination=special/assessment/payment">1. Request Special or Rush Order Services</a>
+  </li>
 
-  <div id="steps-badge-wrapper" class="row">
-    <div class="steps-col col-xs-6 col-sm-6 col-md-6">
-      <?php $badge_class = arg(0) == 'user' && arg(1) == 'special' && arg(2) == 'assessment' ? 'badge-link active' : 'badge-link'; ?>
-      <?php $request_url = $base_url . '/user/special/assessment?destination=special/assessment/payment'; ?>
-      <h3 class="badge-heading">
-        <a href="<?php print $request_url; ?>" class="<?php print $badge_class; ?>">Request Special or<br/>Rush Order Services</a>
+  <li<?php print drupal_attributes($step_two_attributes); ?>>
+    <a href="/special/assessment/payment">2. Make Payment</a>
+  </li>
+</ul>
+
+<ul id="steps-header-progress" class="uk-child-width-1-2@l uk-grid-small uk-visible@l" uk-grid>
+  <li class="uk-text-center">
+    <h3><a<?php print drupal_attributes($step_one_button_attributes); ?>>1</a></h3>
+  </li>
+  <li class="uk-text-center">
+    <h3><a<?php print drupal_attributes($step_two_button_attributes); ?>>2</a></h3>
+  </li>
+</ul>
+
+<ul id="steps-header-steps" class="uk-child-width-1-1 uk-child-width-1-2@l uk-grid-small uk-margin-bottom uk-visible@l" uk-grid>
+  <li<?php print drupal_attributes($step_one_attributes); ?>>
+    <div class="steps-header-content uk-height-1-1@l">
+      <h3<?php print drupal_attributes($step_one_title_attributes); ?>>
+        <a href="/user/special/assessment?destination=special/assessment/payment">
+          <span class="<?php print $step_one_button_classes; ?>">1</span>Request Special or Rush Order Services</a>
       </h3>
 
-      <div class="step-badge-bottom">
-        <?php if ($stepsdata->status <> 0): ?>
-          <span>Status: <b>Completed</b></span>
-          <span>Date Requested: <b><?php print date('m-d-Y', $stepsdata->updated_on); ?></b></span>
+      <div class="steps-header-footer">
+        <?php if ($status): ?>
+          <div><strong>Status</strong>: Completed</div>
+          <div><strong>Date Requested</strong>: <?php print date('m-d-Y', $stepsdata->updated_on); ?></div>
         <?php else: ?>
-          <?php if ($stepsdata->status == 0 && isset($stepsdata->status)): ?>
-            <span>Status: <b>Pending</b></span>
-            <span>Date Requested: <b><?php print date('m-d-Y', $stepsdata->requested_on); ?></b></span>
+          <?php if (!$status && isset($stepsdata->status)): ?>
+            <div><strong>Status</strong>: Pending</div>
+            <div><strong>Date Requested</strong>: <?php print date('m-d-Y', $stepsdata->requested_on); ?></div>
           <?php else: ?>
-            <span>Please select assessment below and click submit, then await email invoice to make payment from.</span>
+            <div>Please select assessment below and click submit, then await email invoice to make payment from.</div>
           <?php endif; ?>
         <?php endif; ?>
       </div>
     </div>
+  </li>
 
-    <div class="steps-col col-xs-6 col-sm-6 col-md-6">
-      <?php $badge_class = arg(0) == 'special' && arg(1) == 'assessment' && arg(2) == 'payment' ? 'badge-link active' : 'badge-link'; ?>
-      <?php $request_url = $base_url . '/special/assessment/payment'; ?>
-      <h3 class="badge-heading">
-        <a href="<?php print $request_url; ?>" class="<?php print $badge_class; ?>">Make<br/>Payment</a>
+  <li<?php print drupal_attributes($step_two_attributes); ?>>
+    <div class="steps-header-content uk-height-1-1@l">
+      <h3<?php print drupal_attributes($step_two_title_attributes); ?>>
+        <a href="/special/assessment/payment">
+          <span class="<?php print $step_two_button_classes; ?>">2</span>Make Payment</a>
       </h3>
 
-      <div class="step-badge-bottom">
-        <?php if (!$status): ?>
-          <span>Status: <b>Pending</b></span>
-          <span>Payment Status: <b>Not Paid</b></span>
-          <span>Invoice sent by counselor, select assessment below to make payment.</span>
+      <div class="steps-header-footer">
+        <?php if ($status): ?>
+          <div><strong>Status</strong>: Pending</div>
+          <div><strong>Payment Status</strong>: Not Paid</div>
+          <div>Invoice sent by counselor, select assessment below to make payment.</div>
         <?php else: ?>
-          <span>Click here to make payment.</span>
+          <div>Make a payment for Special Assessment or Rush Services</div>
         <?php endif; ?>
       </div>
     </div>
-  </div>
-</div>
+  </li>
+</ul>
