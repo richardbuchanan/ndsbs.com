@@ -388,7 +388,9 @@ function get_all_assessment_clients_custom_search() {
  *  Parameter no
  */
 function search_requested_stateform() {
-  return drupal_render(drupal_get_form('search_requested_stateform_form'));
+  $form = drupal_get_form('search_requested_stateform_form');
+  $form['#attributes']['class'][] = 'ndsbs-inline-form';
+  return drupal_render($form);
 }
 
 /**
@@ -425,7 +427,9 @@ function search_requested_stateform_form($form, &$form_state) {
 
   $form['search_text'] = array(
     '#type' => 'textfield',
-    '#title' => t('Search:'),
+    '#attributes' => array(
+      'placeholder' => t('Search'),
+    ),
     '#default_value' => $selected_value,
   );
 
@@ -684,6 +688,7 @@ function get_client_paperwork_custom_search() {
  */
 function search_transactions() {
   $search_transactions_form = drupal_get_form('search_transactions_form');
+  $search_transactions_form['#attributes']['class'][] = 'ndsbs-inline-form';
   return drupal_render($search_transactions_form);
 }
 
@@ -721,7 +726,9 @@ function search_transactions_form($form, &$form_state) {
 
   $form['search_text'] = array(
     '#type' => 'textfield',
-    '#title' => t('Search:'),
+    '#attributes' => array(
+      'placeholder' => t('Search'),
+    ),
   );
 
   $form['asmnt_status'] = array(
@@ -853,7 +860,9 @@ function get_all_transaction_custom_search() {
  *  Parameter no
  */
 function search_client_paymentrefund() {
-  return drupal_render(drupal_get_form('search_client_paymentrefund_form'));
+  $form = drupal_get_form('search_client_paymentrefund_form');
+  $form['#attributes']['class'][] = 'ndsbs-inline-form';
+  return drupal_render($form);
 }
 
 /**
@@ -885,7 +894,9 @@ function search_client_paymentrefund_form($form, &$form_state) {
 
   $form['search_text'] = array(
     '#type' => 'textfield',
-    '#title' => t('Search:'),
+    '#attributes' => array(
+      'placeholder' => t('Search'),
+    ),
     '#default_value' => $selected_value,
   );
 
@@ -982,7 +993,9 @@ function get_client_paymentrefund_custom_search() {
  *  Parameter no
  */
 function search_failed_requested_transactions() {
-  return drupal_render(drupal_get_form('search_failed_requested_transactions_form'));
+  $form = drupal_get_form('search_failed_requested_transactions_form');
+  $form['#attributes']['class'][] = 'ndsbs-inline-form';
+  return drupal_render($form);
 }
 
 /**
@@ -1013,7 +1026,9 @@ function search_failed_requested_transactions_form($form, &$form_state) {
 
   $form['search_text'] = array(
     '#type' => 'textfield',
-    '#title' => t('Search:'),
+    '#attributes' => array(
+      'placeholder' => t('Search'),
+    ),
     '#default_value' => $selected_value,
   );
 
@@ -1303,7 +1318,9 @@ function search_all_other_services_form($form, &$form_state) {
   );
   $form['search_text'] = array(
     '#type' => 'textfield',
-    '#title' => t('Search:'),
+    '#attributes' => array(
+      'placeholder' => t('Search'),
+    ),
   );
   $form['submit'] = array(
     '#type' => 'submit',
