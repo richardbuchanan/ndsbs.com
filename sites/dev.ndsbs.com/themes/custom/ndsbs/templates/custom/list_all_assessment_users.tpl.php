@@ -37,6 +37,7 @@ print search_assessment_client();
     $transactions = array();
     foreach($data as $data_info):
       if (!in_array($data_info->transaction_id, $transactions)):
+        $tran = get_transaction_info_orderid($data_info->order_id);
         $node_info = node_load($data_info->nid);
         //  Function called to get the main service and sub service title
         $service_title = get_mainservice_subservice_title($node_info, $data_info->termid);
@@ -46,19 +47,39 @@ print search_assessment_client();
         $qinfo = questionnaire_attempted_details($data_info->nid, $data_info->uid, $data_info->order_id);
         $user_info = user_load($data_info->uid);
 
+        $rush_amount = $tran[0]->rush_cost;
+        $rush_order = $rush_amount != '0.00';
+        $rush_title = '';
+
+        switch ($rush_amount) {
+          case '75.00':
+            $rush_title = '2-3 business days';
+            break;
+
+          case  '150.00':
+            $rush_title = 'Next business day';
+            break;
+
+          case '250.00':
+            $rush_title = 'Same day';
+            break;
+        }
+
         if (isset($user_info->uid)): ?>
           <tr>
             <td class="user-info">
               <?php if (user_access('administer users')): ?>
-                <span class="table-cell-clear"><?php print l(t($user_info->field_first_name['und'][0]['value'] . ' ' . $user_info->field_last_name['und'][0]['value']), 'user/'.$user_info->uid.'/edit'); ?></span>
+                <div><?php print l(t($user_info->field_first_name['und'][0]['value'] . ' ' . $user_info->field_last_name['und'][0]['value']), 'user/'.$user_info->uid.'/edit'); ?></div>
               <?php else: ?>
-              <span class="table-cell-clear"><?php print t($user_info->field_first_name['und'][0]['value'] . ' ' . $user_info->field_last_name['und'][0]['value']); ?></span>
+                <div><?php print t($user_info->field_first_name['und'][0]['value'] . ' ' . $user_info->field_last_name['und'][0]['value']); ?></div>
               <?php endif; ?>
 
+              <div><?php print $user_info->mail; ?></div>
+
               <?php if($user_info->field_phone['und'][0]['value'] <> ''): ?>
-              <span class="table-cell-clear"><b>Phone:</b> <?php print $user_info->field_phone['und'][0]['value']; ?></span>
+                <?php $phone = ndsbs_get_formatted_phone($user_info->uid); ?>
+                <div><?php print $phone; ?></div>
               <?php endif; ?>
-                  <span class="table-cell-clear"><b>Email:</b> <?php print $user_info->mail; ?></span>
             </td>
             <td>
               <?php
@@ -71,15 +92,18 @@ print search_assessment_client();
                 $sub_service = 'NO';
               }
               ?>
-              <span class="table-cell-clear"><?php print $main_service; ?></span>
+              <div><?php print $main_service; ?></div>
 
               <?php if ($sub_service <> 'NO'): ?>
-                <span class="table-cell-clear">(<?php print $sub_service; ?>)</span>
+                <div>(<?php print $sub_service; ?>)</div>
               <?php endif; ?>
               <?php if ($data_info->report_status == 0): ?>
-                <span class="table-cell-clear"><b>Status: </b> In process</span>
+                <div><b>Status: </b> In process</div>
               <?php else: ?>
-                <span class="table-cell-clear"><b>Status: </b> Completed</span>
+                <div><b>Status: </b> Completed</div>
+              <?php endif; ?>
+              <?php if ($rush_order): ?>
+                <div><b>Rush order: </b> <?php print $rush_title; ?></div>
               <?php endif; ?>
             </td>
             <td>
@@ -95,8 +119,8 @@ print search_assessment_client();
                 $total_attempted = $ques_data->total_attempts;
               }
               ?>
-              <span class="table-cell-clear"><b>Status:</b> <?php print $status; ?></span>
-              <span class="table-cell-clear"><b>Attempted:</b> <?php print $total_attempted; ?> times</span>
+              <div><b>Status:</b> <?php print $status; ?></div>
+              <div><b>Attempted:</b> <?php print $total_attempted; ?> times</div>
               <?php if($total_attempted > 0): ?>
                 <?php $view_option = array('attributes' => array(
                   'class' => 'form-submit'
@@ -107,17 +131,15 @@ print search_assessment_client();
                     'attributes' => array(
                       'class' => 'form-submit'
                   )); ?>
-                  <?php //print l(t('Print'), $base_url.'/questionnaire/print/'.$data_info->nid.'/trans/'.$data_info->order_id.'/uid/' . $data_info->uid, $print_option); ?>
                 </div>
               <?php endif; ?>
             </td>
             <td>
               <?php if ($data_info->service_completed): ?>
-                <span class="table-cell-clear">Letter is ready</span>
+                <div>Letter is ready</div>
               <?php else: ?>
-                <span class="table-cell-clear">
-                  Awaiting letter, <a href="/letter-ready/<?php print $data_info->order_id; ?>">change letter status</a>.
-                </span>
+                <div>Awaiting letter</div>
+                <div><a href="/letter-ready/<?php print $data_info->order_id; ?>">Change letter status</a></div>
               <?php endif; ?>
             </td>
             <td>
@@ -133,19 +155,19 @@ print search_assessment_client();
                     'query' => array(
                       'destination' => 'all/assessment/users'
                   ));
-                  print '<span class="table-cell-clear">' . l(t('Assign therapist'), 'assign/therapist/oid/'.$data_info->order_id, $options) . '</span>';
+                  print '<div>' . l(t('Assign therapist'), 'assign/therapist/oid/'.$data_info->order_id, $options) . '</div>';
                 }
                 else {
-                  Print '<span class="table-cell-clear">N/A</span>';
+                  Print '<div>N/A</div>';
                 }
               }
               else {
                 if ($user->roles[3] == 'super admin' || $user->roles[5] == 'staff admin') {
                   $options = array('query' => array('destination' => 'all/assessment/users'));
-                  print '<span class="table-cell-clear">' . l(t($therapist), 'assign/therapist/oid/'.$data_info->order_id, $options) . '</span>';
+                  print '<div>' . l(t($therapist), 'assign/therapist/oid/'.$data_info->order_id, $options) . '</div>';
                 }
                 else {
-                  print '<span class="table-cell-clear">' . $therapist . '</span>';
+                  print '<div>' . $therapist . '</div>';
                 }
               }
               ?>
@@ -159,7 +181,7 @@ print search_assessment_client();
                     'title' => 'Client Reports',
                     'rel' => array('width:900;height:550;resizable:true;position:[center,60]')
                 ));
-                print '<span class="table-cell-clear">' . l(t('Go to report'), $base_url . '/users/view/reports/'.$user_info->uid.'/tid/'.$data_info->termid.'/nid/'.$data_info->nid.'/transid/'.$data_info->order_id) . '</span>';
+                print '<div>' . l(t('Go to report'), $base_url . '/users/view/reports/'.$user_info->uid.'/tid/'.$data_info->termid.'/nid/'.$data_info->nid.'/transid/'.$data_info->order_id) . '</div>';
               ?>
             </td>
           </tr>
