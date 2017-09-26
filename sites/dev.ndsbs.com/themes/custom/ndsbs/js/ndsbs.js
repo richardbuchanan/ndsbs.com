@@ -223,8 +223,7 @@
 
       noIconLink.click(function () {
         var dashboardLocation = $(this).attr('href');
-        var locationURL = window.location.origin + dashboardLocation;
-        window.location.href = locationURL;
+        window.location.href = window.location.origin + dashboardLocation;
       })
     }
   }
