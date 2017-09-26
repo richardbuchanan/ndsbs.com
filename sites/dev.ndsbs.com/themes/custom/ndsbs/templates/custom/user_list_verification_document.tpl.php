@@ -21,13 +21,13 @@ drupal_add_js('misc/tableheader.js');
 ?>
 <table class="uk-table uk-table-striped sticky-enabled">
   <thead>
-    <tr class="bkg_b">
-      <th>Client</th>
-      <th>Document Type</th>
-      <th>Uploaded Document</th>
-      <th>Status</th>
-      <th>Comments</th>
-      <th>Action</th>
+    <tr>
+      <th class="uk-text-nowrap">Client</th>
+      <th class="uk-text-nowrap">Document Type</th>
+      <th class="uk-text-nowrap">Uploaded Document</th>
+      <th class="uk-text-nowrap">Status</th>
+      <th class="uk-text-nowrap">Comments</th>
+      <th class="uk-text-nowrap">Action</th>
     </tr>
   </thead>
   <tbody>
@@ -44,11 +44,9 @@ drupal_add_js('misc/tableheader.js');
       <tr>
         <td>
           <?php $name = implode(' ', $user_name); ?>
-          <b>Name-</b> <?php print l(t($name), 'user/' . $user_info->uid . '/edit'); ?>
-          <br/>
-          <b>Phone-</b> <?php print $user_info->field_phone['und'][0]['value']; ?>
-          <br/>
-          <b>Email-</b> <?php print $user_info->mail; ?>
+          <div><?php print l(t($name), 'user/' . $user_info->uid . '/edit'); ?></div>
+          <div><?php print $user_info->field_phone['und'][0]['value']; ?></div>
+          <div><?php print $user_info->mail; ?></div>
         </td>
         <td>
           <?php
@@ -74,7 +72,7 @@ drupal_add_js('misc/tableheader.js');
           }
           ?>
         </td>
-        <td>
+        <td class="uk-text-nowrap">
           <?php
           if ($rec->type == 'important_document') {
             $imp_status = isset($rec->field_imp_status['und']) && $rec->field_imp_status['und'][0]['value'] == 1;
@@ -108,34 +106,34 @@ drupal_add_js('misc/tableheader.js');
           ?>
         </td>
 
-        <td>
-          <?php
-          if ($rec->type == 'important_document') {
-            //  verify/document/nid/%/%
-            $field_imp_status = isset($rec->field_imp_status['und']) && $rec->field_imp_status['und'][0]['value'] == 1;
-            if ($field_imp_status) {
-              print '<a href="' . $base_url . '/verify/document/nid/' . $rec->nid . '/imp/0" class="edit_icon">Not Verify</a>';
-            }
-            else {
-              print '<a href="' . $base_url . '/verify/document/nid/' . $rec->nid . '/imp/1" class="edit_icon">Verify</a>';
-            }
-            if (user_access('delete necessary documents')) {
-              print '<a href="' . $base_url . '/node/' . $rec->nid . '/delete?destination=list/verification/document" class="delete_icon">Delete</a>';
-            }
-          }
-          if ($rec->type == 'account_verification') {
-            $_field_acc_status = isset($rec->field_acc_status['und']) && $rec->field_acc_status['und'][0]['value'] == 1;
-            if ($_field_acc_status) {
-              print '<a href="' . $base_url . '/verify/document/nid/' . $rec->nid . '/acc/0" class="edit_icon">Not Verify</a>';
-            }
-            else {
-              print '<a href="' . $base_url . '/verify/document/nid/' . $rec->nid . '/acc/1" class="edit_icon">Verify</a>';
-            }
-            if (user_access('delete necessary documents')) {
-              print '<a href="' . $base_url . '/node/' . $rec->nid . '/delete?destination=list/verification/document" class="delete_icon">Delete</a>';
-            }
-          }
-          ?>
+        <td class="uk-text-nowrap">
+          <?php if ($rec->type == 'important_document'): ?>
+            <?php $field_imp_status = isset($rec->field_imp_status['und']) && $rec->field_imp_status['und'][0]['value'] == 1; ?>
+
+            <?php if ($field_imp_status): ?>
+              <a href="<?php print $base_url; ?>/verify/document/nid/<?php print $rec->nid; ?>/imp/0">Verified</a>
+            <?php else: ?>
+              <a href="<?php print $base_url; ?>/verify/document/nid/<?php print $rec->nid; ?>/imp/1">Verify</a>
+            <?php endif; ?>
+
+            <?php if (user_access('delete necessary documents')): ?>
+              <a href="<?php print $base_url; ?>/node/<?php print $rec->nid; ?>/delete?destination=list/verification/document" class="uk-margin-small-left">Delete</a></li>
+            <?php endif; ?>
+          <?php endif; ?>
+
+          <?php if ($rec->type == 'account_verification'): ?>
+            <?php $_field_acc_status = isset($rec->field_acc_status['und']) && $rec->field_acc_status['und'][0]['value'] == 1; ?>
+
+            <?php if ($field_acc_status): ?>
+              <a href="<?php print $base_url; ?>/verify/document/nid/<?php print $rec->nid; ?>/acc/0">Verified</a>
+            <?php else: ?>
+              <a href="<?php print $base_url;?>/verify/document/nid/<?php print $rec->nid; ?>/acc/1">Verify</a>
+            <?php endif; ?>
+
+            <?php if (user_access('delete necessary documents')): ?>
+              <a href="<?php print $base_url; ?>/node/<?php print $rec->nid; ?>/delete?destination=list/verification/document" class="uk-margin-small-left">Delete</a>
+            <?php endif; ?>
+          <?php endif; ?>
         </td>
 
       </tr>
@@ -144,7 +142,7 @@ drupal_add_js('misc/tableheader.js');
     if ($total_count <= 0) {
       ?>
       <tr>
-        <td class="txt_ac" colspan="5">
+        <td colspan="5">
           Record not found.
         </td>
       </tr>
