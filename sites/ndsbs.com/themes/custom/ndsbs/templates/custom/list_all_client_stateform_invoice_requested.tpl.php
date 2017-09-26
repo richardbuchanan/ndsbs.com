@@ -125,7 +125,6 @@ drupal_add_js('misc/tableheader.js');
   }
   ?>
 </table>
-</div>
 <?php
 $total = 3;
 //pager_default_initialize($total, 1, $element = 0);

@@ -9,86 +9,58 @@ $val = get_all_assessment_invoice();
 drupal_add_js('misc/tableheader.js');
 ?>
 <table class="uk-table uk-table-striped sticky-enabled">
-  <tr class="bkg_b">
+  <tr>
     <th>Client</th>
     <th>Requested Service</th>
     <th>Status</th>
     <th>Action</th>
   </tr>
-  <?php
-  $total_count = count($val);
-  foreach ($val as $rec) {
-    $user_info = user_load($rec->request_by);
-    ?>
+  <?php $total_count = count($val); ?>
+  <?php foreach ($val as $rec): ?>
+    <?php $user_info = user_load($rec->request_by); ?>
+    <?php $phone = ndsbs_get_formatted_phone($user_info->uid); ?>
     <tr>
       <td>
         <?php $name = $user_info->field_first_name['und'][0]['value'] . ' ' . $user_info->field_middle_name['und'][0]['value'] . ' ' . $user_info->field_last_name['und'][0]['value']; ?>
-        <b>Name-</b> <?php print l(t($name), 'user/' . $user_info->uid . '/edit'); ?>
-        <br/>
-        <b>Phone-</b> <?php print $user_info->field_phone['und'][0]['value']; ?>
-        <br/>
-        <b>Email-</b> <?php print $user_info->mail; ?>
+        <div><?php print l(t($name), 'user/' . $user_info->uid . '/edit'); ?></div>
+        <div><?php print $phone; ?></div>
+        <div><?php print $user_info->mail; ?></div>
       </td>
       <td>
-        <?php
-        $assessment_info = node_load($rec->nid);
-        print $assessment_info->field_assessment_title['und'][0]['value'];
-        print '<br />';
-        print 'Cost';
-        print '  $';
-        print number_format($rec->special_amount, 2);
-        ?>
+        <?php $assessment_info = node_load($rec->nid); ?>
+        <div><?php print $assessment_info->title; ?></div>
+        <div>Cost $<?php print number_format($rec->special_amount, 2); ?></div>
       </td>
       <td>
-        <?php
-        print 'Invoice Requested On: ' . date('M, d-Y', $rec->requested_on);
-        if ($rec->updated_on > 0) {
-          print '<br />';
-          print 'Invoice Processed On: ' . date('M, d-Y', $rec->updated_on);
-        }
+        <div>Requested On: <?php print date('M d, Y', $rec->requested_on); ?></div>
 
-        //
-        if ($rec->action_by > 0) {
-          print '<br />';
-          $staff_info = user_load($rec->action_by);
-          print 'Invoice Processed By: ' . $staff_info->field_first_name['und'][0]['value'] . ' ' . $user_info->field_last_name['und'][0]['value'];
-        }
+        <?php if ($rec->updated_on > 0): ?>
+          <div>Processed On: <?php print date('M d, Y', $rec->updated_on); ?></div>
+        <?php endif; ?>
 
-        //
-        if ($rec->payment_status == 0) {
-          print '<br />';
-          print 'Payment Status: Pending';
-        }
-        else {
-          print '<br />';
-          print 'Payment Status: Paid';
-        }
-        ?>
+        <?php if ($rec->action_by > 0): ?>
+          <?php $staff_info = user_load($rec->action_by); ?>
+          <div>Processed By: <?php print $staff_info->field_first_name['und'][0]['value'] . ' ' . $staff_info->field_last_name['und'][0]['value']; ?></div>
+        <?php endif; ?>
+
+        <?php if ($rec->payment_status == 0): ?>
+          <div>Payment Status: Pending</div>
+        <?php else: ?>
+          <div>Payment Status: Paid</div>
+        <?php endif; ?>
       </td>
       <td>
-        <a href="javascript:void(0)"
-           onclick="opencreate_invoice('<?php print $rec->nid; ?>', '<?php print $rec->request_by; ?>', '<?php print $rec->id; ?>');">
-          <?php
-          print '<ul class="tr_actions">';
-          print '<li class="createinvoice_icon">Create Invoice</li>';
-          print '</ul>';
-          ?>
-        </a>
+        <a href="javascript:void(0)" onclick="opencreate_invoice('<?php print $rec->nid; ?>', '<?php print $rec->request_by; ?>', '<?php print $rec->id; ?>');">Create Invoice</a>
       </td>
     </tr>
-    <?php
-  }
-  if ($total_count <= 0) {
-    ?>
+  <?php endforeach; ?>
+  <?php if ($total_count <= 0): ?>
     <tr>
-      <td class="txt_ac" colspan="4">
-        Record not found.
-      </td>
+      <td colspan="4">Record not found.</td>
     </tr>
-    <?php
-  }
-  ?>
+  <?php endif; ?>
 </table>
+
 <?php
 $total = 3;
 //pager_default_initialize($total, 1, $element = 0);

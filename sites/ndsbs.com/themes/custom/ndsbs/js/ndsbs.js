@@ -30,6 +30,10 @@
       }
 
       UIkit.accordion($('.uk-accordion'));
+
+      $('a.active').each(function () {
+        $(this).addClass('uk-active');
+      })
     }
   };
 
@@ -223,9 +227,14 @@
 
       noIconLink.click(function () {
         var dashboardLocation = $(this).attr('href');
-        var locationURL = window.location.origin + dashboardLocation;
-        window.location.href = locationURL;
-      })
+        window.location.href = window.location.origin + dashboardLocation;
+      });
+
+      var activeLink = dashboard.find('a.uk-active');
+      var activeContent = activeLink.parents('.uk-accordion-content');
+      var activeParent = activeContent.parent('li');
+      activeContent.attr('aria-hidden', 'false').removeAttr('hidden');
+      activeParent.addClass('uk-open');
     }
   }
 })(jQuery);

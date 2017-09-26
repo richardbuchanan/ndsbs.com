@@ -26,55 +26,40 @@ drupal_add_js('misc/tableheader.js');
 ?>
 <?php print search_requested_stateform(); ?>
 <table class="uk-table uk-table-striped sticky-enabled">
-  <tr class="bkg_b">
+  <tr>
     <th>Client</th>
     <th>Requested Service</th>
     <th>Comments</th>
     <th>Action</th>
   </tr>
-  <?php
-  $total_count = count($result);
-  foreach ($result as $rec) {
-    $user_info = user_load($rec->uid);
-    ?>
+  <?php $total_count = count($result); ?>
+  <?php foreach ($result as $rec): ?>
+    <?php $user_info = user_load($rec->uid); ?>
+    <?php $phone = ndsbs_get_formatted_phone($rec->uid); ?>
     <tr>
-      <td>
+      <td class="uk-text-nowrap">
         <?php $name = $user_info->field_first_name['und'][0]['value'] . ' ' . $user_info->field_middle_name['und'][0]['value'] . ' ' . $user_info->field_last_name['und'][0]['value']; ?>
-        <b>Name-</b> <?php print l(t($name), 'user/' . $user_info->uid . '/edit'); ?>
-        <br/>
-        <b>Phone-</b> <?php print $user_info->field_phone['und'][0]['value']; ?>
-        <br/>
-        <b>Email-</b> <?php print $user_info->mail; ?>
+        <div><?php print l(t($name), 'user/' . $user_info->uid . '/edit'); ?></div>
+        <div><?php print $phone; ?></div>
+        <div><?php print $user_info->mail; ?></div>
       </td>
       <td>
-        <?php
-        $count = count($rec->field_state_form_title['und']);
-        for ($i = 0; $i < $count; $i++) {
-          //print $rec->field_state_form_title['und'][0]['value'] . '-' . $rec->field_state_form_upload['und'][0]['filename'];
-          //print '<br />';
-          print '<a href="' . $base_url . '/sites/ndsbs.com/files/stateform/' . $rec->field_state_form_upload['und'][$i]['filename'] . '">' . $rec->field_state_form_title['und'][$i]['value'] . '</a>';
-          print '<br />';
-        }
-        ?>
+        <?php $count = count($rec->field_state_form_title['und']); ?>
+        <?php for ($i = 0; $i < $count; $i++): ?>
+          <div>
+            <a href="<?php print $base_url; ?>/sites/ndsbs.com/files/stateform/<?php print $rec->field_state_form_upload['und'][$i]['filename']; ?>"><?php print $rec->field_state_form_title['und'][$i]['value']; ?></a>
+          </div>
+        <?php endfor; ?>
       </td>
       <td>
         <?php print $rec->field_state_form_comment['und'][0]['value']; ?>
       </td>
-      <td>
-        <!--<a href="<?php //print '/request/stateform/createinvoice/'.$rec->nid; ?>?width=500&height=400" class="colorbox-load">Create Invoice</a>-->
-        <a href="javascript:void(0)"
-           onclick="opencreate_invoice('<?php print $rec->nid; ?>');">
-          <?php
-          print '<ul class="tr_actions">
-                                    <li class="createinvoice_icon">Create Invoice</li>
-                                </ul>';
-          ?>
-        </a>
+      <td class="uk-text-nowrap">
+        <a href="javascript:void(0)" onclick="opencreate_invoice('<?php print $rec->nid; ?>');">Create Invoice</a>
       </td>
     </tr>
-    <?php
-  }
-  if ($total_count <= 0) {
+  <?php endforeach; ?>
+  <?php if ($total_count <= 0) {
     ?>
     <tr>
       <td class="txt_ac" colspan="4">
@@ -85,11 +70,9 @@ drupal_add_js('misc/tableheader.js');
   }
   ?>
 </table>
-</div>
 <?php
-$total = 3;
-//pager_default_initialize($total, 1, $element = 0);
-print $output = theme('pager', array('quantity' => $total));
+  $total = 3;
+  print $output = theme('pager', array('quantity' => $total));
 ?>
 
 <script>
