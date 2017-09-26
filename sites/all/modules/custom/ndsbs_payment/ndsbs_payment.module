@@ -273,11 +273,26 @@ function save_transaction_terms($oid, $main_report_id, $term_tid_cost, $uid, $pa
  * @param string $shipping_info
  */
 function ndsbs_rush_order_notification_mail($order_id, $nid, $uid, $amount, $payment_status, $payment_method, $shipping_info, $rush_amount) {
+  global $base_url;
   $user_information = user_load($uid);
   $node_information = node_load($nid);
   $rush_total = $rush_amount;
   $grand_total = $amount + $rush_total;
   $rush_title = '';
+
+  $theme = $base_url . '/' . drupal_get_path('theme', 'ndsbs') . '/css/';
+  $base = $theme . 'ndsbs.base.css';
+  $component = $theme . 'ndsbs.component.css';
+  $layout = $theme . 'ndsbs.layout.css';
+  $themecss = $theme . 'ndsbs.theme.css';
+  $uikit_components = $theme . 'ndsbs.uikit.components.css';
+
+  $stylesheets = '<link type="text/css" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.27/css/uikit.min.css" media="all">';
+  $stylesheets .= '<link type="text/css" rel="stylesheet" href="' . $base . '" media="all">';
+  $stylesheets .= '<link type="text/css" rel="stylesheet" href="' . $component . '" media="all">';
+  $stylesheets .= '<link type="text/css" rel="stylesheet" href="' . $layout . '" media="all">';
+  $stylesheets .= '<link type="text/css" rel="stylesheet" href="' . $themecss . '" media="all">';
+  $stylesheets .= '<link type="text/css" rel="stylesheet" href="' . $uikit_components . '" media="all">';
 
   switch ($rush_amount) {
     case '75.00':
@@ -293,7 +308,8 @@ function ndsbs_rush_order_notification_mail($order_id, $nid, $uid, $amount, $pay
       break;
   }
 
-  $message_text = '<div class="uk-margin uk-text-center">';
+  $message_text = $stylesheets;
+  $message_text .= '<div class="uk-margin uk-text-center">';
   $message_text .= '<a href="https://www.ndsbs.com" class="uk-logo uk-display-inline-block" title="New Directions Substance and Behavioral Services">';
   $message_text .= '<img src="https://www.ndsbs.com/sites/ndsbs.com/themes/custom/ndsbs/logo-blue.png" alt="NDSBS" height="80" width="129">';
   $message_text .= '</a>';
@@ -370,11 +386,26 @@ function ndsbs_rush_order_notification_mail($order_id, $nid, $uid, $amount, $pay
  * @param string $shipping_info
  */
 function ndsbs_payment_order_confirmation_mail($order_id, $nid, $uid, $amount, $payment_status, $payment_method, $shipping_info, $rush_amount) {
+  global $base_url;
   $user_information = user_load($uid);
   $node_information = node_load($nid);
   $rush_total = $rush_amount;
   $grand_total = $amount + $rush_total;
   $rush_title = '';
+
+  $theme = $base_url . '/' . drupal_get_path('theme', 'ndsbs') . '/css/';
+  $base = $theme . 'ndsbs.base.css';
+  $component = $theme . 'ndsbs.component.css';
+  $layout = $theme . 'ndsbs.layout.css';
+  $themecss = $theme . 'ndsbs.theme.css';
+  $uikit_components = $theme . 'ndsbs.uikit.components.css';
+
+  $stylesheets = '<link type="text/css" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.27/css/uikit.min.css" media="all">';
+  $stylesheets .= '<link type="text/css" rel="stylesheet" href="' . $base . '" media="all">';
+  $stylesheets .= '<link type="text/css" rel="stylesheet" href="' . $component . '" media="all">';
+  $stylesheets .= '<link type="text/css" rel="stylesheet" href="' . $layout . '" media="all">';
+  $stylesheets .= '<link type="text/css" rel="stylesheet" href="' . $themecss . '" media="all">';
+  $stylesheets .= '<link type="text/css" rel="stylesheet" href="' . $uikit_components . '" media="all">';
 
   switch ($rush_amount) {
     case '75.00':
@@ -390,7 +421,8 @@ function ndsbs_payment_order_confirmation_mail($order_id, $nid, $uid, $amount, $
       break;
   }
 
-  $message_text = '<div class="uk-margin uk-text-center">';
+  $message_text = $stylesheets;
+  $message_text .= '<div class="uk-margin uk-text-center">';
   $message_text .= '<a href="https://www.ndsbs.com" class="uk-logo uk-display-inline-block" title="New Directions Substance and Behavioral Services">';
   $message_text .= '<img src="https://www.ndsbs.com/sites/ndsbs.com/themes/custom/ndsbs/logo-blue.png" alt="NDSBS" height="80" width="129">';
   $message_text .= '</a>';
