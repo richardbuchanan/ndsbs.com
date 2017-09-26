@@ -501,6 +501,9 @@ body.front #header-below {
 .ndsbs-navigation-accordion li.no-icon .uk-accordion-title a:hover {
   color: #0f6ecd;
 }
+.ndsbs-navigation-accordion .uk-list>li>a.uk-active {
+  font-weight: bold;
+}
 
 /**
  * FAQ videos.
