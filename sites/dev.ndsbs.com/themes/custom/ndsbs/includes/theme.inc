@@ -383,16 +383,6 @@ function ndsbs_link($variables) {
     case '<uk-nav-divider>':
       return '';
 
-    case 'questionnaire/start/trans':
-      if ($staff && $client) {
-
-        return '<a href="#dashboard-modal" uk-toggle>' . $text . '</a>';
-      }
-      else {
-        return '<a href="' . check_plain(url($path, $options)) . '" ' . drupal_attributes($attributes) . '>' . $text . '</a>';
-      }
-      break;
-
     default:
       return '<a href="' . check_plain(url($path, $options)) . '" ' . drupal_attributes($attributes) . '>' . $text . '</a>';
   }
@@ -478,6 +468,12 @@ function ndsbs_menu_link(array $variables) {
 
     case '<uk-nav-divider>':
       $attributes['class'][] = 'uk-nav-divider';
+      return '<li' . drupal_attributes($attributes) . '>' . l($title, $href, $options) . $sub_menu . '</li>';
+
+    case 'questionnaire/start/trans':
+      if (isset($_SESSION['QUESTIONNAIRE_START_PAGE'])) {
+        $href = $_SESSION['QUESTIONNAIRE_START_PAGE'];
+      }
       return '<li' . drupal_attributes($attributes) . '>' . l($title, $href, $options) . $sub_menu . '</li>';
 
     default:

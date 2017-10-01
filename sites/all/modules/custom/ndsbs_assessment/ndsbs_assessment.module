@@ -414,3 +414,46 @@ function ndsbs_payment_misc_services_form_submit($form, &$form_state) {
   $_SESSION['misc_service_price'] = $service_price;
   drupal_goto('user/cart/nid/3965/tid/50');
 }
+
+function ndsbs_assessment_get_client_assessments($uid) {
+  $client_assessments = array();
+  $query = db_query("SELECT * FROM {users_transactions} WHERE uid = :uid", array(':uid' => $uid));
+  $results = $query->fetchAll();
+
+  foreach ($results as $result) {
+    $node = node_load($result->nid);
+
+    $client_assessments[] = array(
+      'nid' => $result->nid,
+      'trans' => $result->order_id,
+      'termid' => $result->tid,
+      'assessment_title' => $node->title,
+    );
+  }
+
+  return $client_assessments;
+}
+
+function ndsbs_assessment_client_assessments_select_form() {
+  global $user;
+  $client_assessments = ndsbs_assessment_get_client_assessments($user->uid);
+  $assessment_options = array();
+
+  foreach ($client_assessments as $assessment) {
+    $nid = $assessment['nid'];
+    $trans = $assessment['trans'];
+    $termid = $assessment['termid'];
+    $assessment_options["questionnaire/start/$nid/trans/$trans/termid/$termid"] = $assessment['assessment_title'] . " ($trans)";
+  }
+
+  $form['assessments'] = array(
+    '#type' => 'select',
+    '#title' => t('Select assessment'),
+    '#options' => $assessment_options,
+    '#default_value' => current_path(),
+    '#description' => t('Select the assessment for the questionnaire you would like to complete. The transaction ID for each assessment is in parentheses and can be referred to when speaking with NDSBS staff.'),
+    '#attributes' => array('class' => array('client-select-assessment')),
+  );
+
+  return $form;
+}

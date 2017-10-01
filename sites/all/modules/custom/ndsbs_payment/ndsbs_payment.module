@@ -221,13 +221,17 @@ function save_transaction_data($nid, $term_num, $uid, $amount, $rush_amount, $tx
   $result->execute();
 
   // Send order confirmation to client's email.
-  ndsbs_payment_order_confirmation_mail($order_id, $nid, $uid, $amount, $payment_status, $payment_method, $shipping_info, $rush_amount);
+  if ($_SERVER['HTTP_HOST'] != 'localhost.ndsbs' && $_SERVER['HTTP_HOST'] != 'dev.ndsbs.com') {
+    ndsbs_payment_order_confirmation_mail($order_id, $nid, $uid, $amount, $payment_status, $payment_method, $shipping_info, $rush_amount);
+  }
 
   // If this is a rush order, send rush notification to staff.
-  if ($rush_amount && $_SERVER['HTTP_HOST'] != 'dev.ndsbs.com') {
+  if ($rush_amount && $_SERVER['HTTP_HOST'] != 'localhost.ndsbs' && $_SERVER['HTTP_HOST'] != 'dev.ndsbs.com') {
     ndsbs_rush_order_notification_mail($order_id, $nid, $uid, $amount, $payment_status, $payment_method, $shipping_info, $rush_amount);
   }
 
+  $_SESSION['QUESTIONNAIRE_START_PAGE'] = "questionnaire/start/$nid/trans/$order_id/termid/$term_num";
+  drupal_flush_all_caches();
   return $order_id;
 }
 

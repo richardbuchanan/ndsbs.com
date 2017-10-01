@@ -636,6 +636,10 @@ form .field-group-div {
 #release-authorization-node-form .form-item-field-clinician-und {
   margin: 0;
 }
+select.client-select-assessment.uk-select:not([multiple]):not([size]) {
+  display: block;
+  clear: both;
+}
 
 /**
  * User profiles.

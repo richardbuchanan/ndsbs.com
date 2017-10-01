@@ -708,6 +708,7 @@ function assessment_confirmation_form_submit($form, &$form_state) {
     }
 
     $form_state['redirect'] = url($base_url . '/user/questionnaire/' . $assessment_nid . '/trans/' . $transid);
+    $_SESSION['COMPLETE_MY_QUESTIONNAIRE'] = $base_url . '/user/questionnaire/' . $assessment_nid . '/trans/' . $transid;
   }
 }
 
