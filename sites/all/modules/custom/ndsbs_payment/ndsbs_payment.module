@@ -221,7 +221,7 @@ function save_transaction_data($nid, $term_num, $uid, $amount, $rush_amount, $tx
   $result->execute();
 
   // Send order confirmation to client's email.
-  if ($_SERVER['HTTP_HOST'] != 'localhost.ndsbs' && $_SERVER['HTTP_HOST'] != 'dev.ndsbs.com') {
+  if ($_SERVER['HTTP_HOST'] != 'localhost.ndsbs') {
     ndsbs_payment_order_confirmation_mail($order_id, $nid, $uid, $amount, $payment_status, $payment_method, $shipping_info, $rush_amount);
   }
 
