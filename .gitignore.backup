@@ -42,6 +42,7 @@ sites/*/mysqldump
 
 # Ignore developer-only directories.
 sites/localhost*
+sites/*/settings.permissions.inc
 sites/all/modules/contrib/devel
 sites/all/modules/contrib/devel_themer
 sites/all/modules/contrib/permissions_variable
