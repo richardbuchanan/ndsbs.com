@@ -44,6 +44,7 @@ sites/*/mysqldump
 sites/localhost*
 sites/all/modules/contrib/devel
 sites/all/modules/contrib/devel_themer
+sites/all/modules/contrib/permissions_variable
 sites/all/modules/contrib/simplehtmldom
 
 # Do NOT ignore these paths.
