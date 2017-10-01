@@ -418,6 +418,12 @@ function bluepay_payment_form_submit($form, &$form_state) {
     $inserted_oid = save_transaction_data($data[0]->nid, $data[0]->tid, $customer->uid, $service_amount, $rush_amount, $payment->getTransID(), $response_data, 1, NULL, 'credit card', NULL);
     save_transaction_terms($inserted_oid, $data[0]->tid, $tmp_tid_cost, $customer->uid, 1);
 
+    $role_name = 'client';
+
+    if ($role = user_role_load_by_name($role_name)) {
+      user_multiple_role_edit(array($customer->uid), 'add_role', $role->rid);
+    }
+
     drupal_goto('user/payment/confirmation');
   }
   else {
