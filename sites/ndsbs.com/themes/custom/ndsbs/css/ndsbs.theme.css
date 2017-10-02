@@ -909,6 +909,10 @@ body.role-super-therapist #user-profile-form ul.group-user-account-therapist {
 .vbo-views-form .form-submit {
   margin-left: 20px;
 }
+.service-amount-0\.00,
+.service-amount- {
+  display: none;
+}
 
 /**
  * Keyframe animations.
