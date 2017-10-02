@@ -915,7 +915,8 @@ body.role-super-therapist #user-profile-form ul.group-user-account-therapist {
 }
 .service-amount-0\.00,
 .service-amount- {
-  display: none;
+  height: 0;
+  overflow: hidden;
 }
 
 /**
