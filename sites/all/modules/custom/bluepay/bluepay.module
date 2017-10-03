@@ -104,7 +104,6 @@ function bluepay_system_settings_form() {
 function bluepay_payment_form($form, &$form_state, $order) {
   global $user;
   $output[0] = 'No rush service';
-  $service_amount_main_service = '';
   $cart_items = get_cart_items();
 
   // BluePay's test mode requires an odd value for the total amount, so we set
@@ -144,11 +143,9 @@ function bluepay_payment_form($form, &$form_state, $order) {
     }
   }
 
-  $disabled = $amount['#markup'] > 0 ? 'enabled' : 'disabled';
   $rush_amount = isset($form_state['values']['rush_service']) ? $form_state['values']['rush_service'] : 0;
 
   $total = number_format($assessment_amount + $rush_amount, 2);
-  $path = drupal_get_path_alias(current_path());
   $tid = 5;
   $terms = taxonomy_get_tree($tid, $parent = 0, $max_depth = NULL, $load_entities = TRUE);
 
@@ -168,31 +165,23 @@ function bluepay_payment_form($form, &$form_state, $order) {
   $form_state['account'] = clone($user);
   $form_state['order'] = $order;
 
-  // Catch and clear already pushed messages.
-  $previous_messages = drupal_get_messages();
-
-  // Restore general messages to the current session's messages array.
-  $_SESSION['messages'] = array_merge_recursive(array_filter($previous_messages), drupal_get_messages());
-
   // Restore form errors.
   if (!empty($form_state['storage']['errors'])) {
     $form_errors = &drupal_static('form_set_error', array());
     $form_errors = $form_state['storage']['errors'];
   }
 
-  // Create the payment page option buttons.
-  $option_buttons = '<div class="cart-empty">';
-  $option_buttons .= '<div class="col-xs-12 text-right">';
-
   $button_attributes = array(
     'attributes' => array(
-      'class' => array('btn', 'btn-default'),
+      'class' => array(
+        'uk-button',
+        'uk-button-default',
+        'uk-margin-small-left',
+      ),
     )
   );
   $empty_cart = l('Empty cart', '/cart/empty', $button_attributes);
 
-  $option_buttons .= $empty_cart;
-  $option_buttons .= '</div></div>';
   $rush_prefix = '<div id="rush-details" class="col-xs-12 col-md-7"><div class="panel panel-default rush-service-box"><div class="panel-heading"><h3 class="panel-title">Rush Services</h3></div><div class="panel-body" data-form-state="enabled">';
   $rush_suffix = '<p class="about-rush">Not sure if you need a rush order?<br>Call <a href="tel:6148887274">614-888-7274</a> or email <a href="mailto:support@ndsbs.com">support@ndsbs.com</a></p></div><div class="panel-footer"><h4>ABOUT RUSH ORDERS</h4><p>We will make an effort to schedule you as soon as we can. The time frames for rush orders begin once your interview with the evaluator is completed.</p></div></div></div>';
   $summary_markup = '<div id="order-summary" class="col-xs-12 col-md-5"><div class="panel panel-default rush-service-box"><div class="panel-heading"><h3 class="panel-title">Order Summary</h3></div><div class="panel-body"><div class="row">';
@@ -307,12 +296,16 @@ function bluepay_payment_form($form, &$form_state, $order) {
     '#maxlength' => 4,
     '#required' => TRUE
   );
-  $form['form_wrapper']['submit'] = array(
+  $form['form_wrapper']['actions'] = array(
+    '#type' => 'actions',
+  );
+  $form['form_wrapper']['actions']['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Submit payment'),
     '#submit' => array('bluepay_payment_form_submit'),
-    '#prefix' => '<div class="col-xs-12">',
-    '#suffix' => '</div>',
+  );
+  $form['form_wrapper']['actions']['empty'] = array(
+    '#markup' => $empty_cart,
   );
   $form['service_amount'] = array(
     '#type' => 'hidden',
@@ -395,7 +388,6 @@ function bluepay_payment_form_submit($form, &$form_state) {
 
   $payment->sale(number_format($total_amount, 2));
   $payment->process();
-  $message = '';
 
   // Reads the response from BluePay and saves it to variable to be used later.
   if ($payment->isSuccessfulResponse()) {
@@ -424,7 +416,8 @@ function bluepay_payment_form_submit($form, &$form_state) {
       user_multiple_role_edit(array($customer->uid), 'add_role', $role->rid);
     }
 
-    drupal_goto('user/payment/confirmation');
+    delete_cart_items();
+    $form_state['redirect'] = 'user/payment/confirmation';
   }
   else {
     drupal_set_message($payment->getMessage(), 'error');
