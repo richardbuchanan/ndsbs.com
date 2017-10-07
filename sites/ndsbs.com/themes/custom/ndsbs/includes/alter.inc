@@ -115,17 +115,8 @@ function ndsbs_form_bluepay_payment_form_alter(&$form, &$form_state, $form_id) {
 
   // BluePay's test mode requires an odd value for the total amount, so we set
   // the rush service to 75 in order to get an approved transaction response.
-  $host = $_SERVER['HTTP_HOST'];
-  $dev_env = $host == 'localhost.ndsbs' || $host == 'dev.ndsbs.com';
   $node = node_load($cart_items[0]->nid);
-
-  if ($dev_env) {
-    $title['#markup'] = $node->title;
-  }
-  else{
-    $title = field_get_items('node', $node, 'field_assessment_title');
-    $title = field_view_value('node', $node, 'field_assessment_title', $title[0]);
-  }
+  $title['#markup'] = $node->title;
 
   $amount = field_get_items('node', $node, 'field_primary_service_amount');
   $amount = field_view_value('node', $node, 'field_primary_service_amount', $amount[0]);
