@@ -261,6 +261,7 @@ body.front #header-below {
   display: inline-block;
   font-size: 20px;
   line-height: 20px;
+  vertical-align: middle;
 }
 #page-title-wrapper .uk-width-auto {
   text-align: center;

@@ -68,6 +68,13 @@
     </ul>
   <?php endif; ?>
 
+  <?php if ($footer): ?>
+    <div class="view-footer">
+      <?php print $footer; ?>
+    </div>
+  <?php endif; ?>
+
+  <!--
   <div id="state-acceptance" class="uk-margin-top">
     <hr style="border-top-width:3px;">
     <h3 class="uk-margin-top">Not Sure About Acceptance in Your State?</h3>
@@ -76,5 +83,6 @@
       <span style="vertical-align:middle">Check My State</span>
     </a>
   </div>
+  -->
 
 </div><?php /* class view */ ?>
