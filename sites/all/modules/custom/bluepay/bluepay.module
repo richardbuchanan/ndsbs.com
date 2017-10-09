@@ -376,7 +376,7 @@ function bluepay_payment_form($form, &$form_state, $order) {
     ];
 
     // Create default values during development.
-    if ($dev_env) {
+    if ($dev_env && variable_get('bluepay_mode')) {
       $form['form_wrapper']['cc']['credit_card']['#attributes']['disabled'] = 'disabled';
       $form['form_wrapper']['cc']['credit_card']['#default_value'] = 'Visa';
 
