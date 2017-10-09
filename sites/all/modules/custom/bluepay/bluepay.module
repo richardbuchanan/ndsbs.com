@@ -136,7 +136,7 @@ function bluepay_payment_form($form, &$form_state, $order) {
     if (isset($form_state['values']) && isset($form_state['values']['rush_service'])) {
       $rush_amount = $form_state['values']['rush_service'];
     }
-    elseif ($dev_env && !$rush_amount) {
+    elseif ($dev_env && !$rush_amount && variable_get('bluepay_mode')) {
       $rush_amount = 75;
     }
     else {
