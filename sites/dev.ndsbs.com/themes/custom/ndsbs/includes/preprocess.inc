@@ -155,6 +155,8 @@ function ndsbs_preprocess_page(&$variables) {
   );
 
   // Create a description variable for node pages.
+  $variables['page_description'] = FALSE;
+
   if (isset($variables['node'])) {
     $node = $variables['node'];
     $subtitle = isset($node->field_sub_title['und']) ? $node->field_sub_title['und'][0]['value'] : FALSE;
@@ -506,8 +508,10 @@ function ndsbs_preprocess_node(&$variables) {
 
   if (isset($variables['field_primary_service_amount'])) {
     // Create the service amount variable.
-    $service_amount = $variables['field_primary_service_amount'][0]['value'];
-    $variables['service_amount'] = '<h3>$' . $service_amount . '</h3>';
+    if (isset($variables['field_primary_service_amount'][0])) {
+      $service_amount = $variables['field_primary_service_amount'][0]['value'];
+      $variables['service_amount'] = '<h3>$' . $service_amount . '</h3>';
+    }
 
     // Create the purchase link variable.
     $nid = $variables['nid'];

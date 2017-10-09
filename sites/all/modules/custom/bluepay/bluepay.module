@@ -509,8 +509,8 @@ function bluepay_payment_form_submit($form, &$form_state) {
     $form_state['redirect'] = 'user/payment/confirmation';
   }
   else {
-    drupal_set_message($payment->getMessage(), 'error');
     $form_state['redirect'] = 'user/payment';
+    drupal_set_message($payment->getMessage(), 'error');
   }
 }
 

@@ -115,6 +115,7 @@ function ndsbs_form_bluepay_payment_form_alter(&$form, &$form_state, $form_id) {
   $host = $_SERVER['HTTP_HOST'];
   $dev_env = $host == 'localhost.ndsbs' || $host == 'dev.ndsbs.com';
 
+  /**
   if (!$dev_env) {
     $conversion = "goog_snippet_vars = function() {\n";
     $conversion .= "  var w = window;\n";
@@ -143,6 +144,7 @@ function ndsbs_form_bluepay_payment_form_alter(&$form, &$form_state, $form_id) {
     $url = $base_url . '/user/payment';
     $form['form_wrapper']['actions']['submit']['#attributes']['onclick'] = "goog_report_conversion ('" . $url . "')";
   }
+  */
 }
 
 /**
@@ -323,6 +325,7 @@ function ndsbs_form_user_register_form_alter(&$form, &$form_state, $form_id) {
   $host = $_SERVER['HTTP_HOST'];
   $dev_env = $host == 'localhost.ndsbs' || $host == 'dev.ndsbs.com';
 
+  /**
   if (!$dev_env) {
     $conversion = "goog_snippet_vars = function() {\n";
     $conversion .= "  var w = window;\n";
@@ -351,6 +354,7 @@ function ndsbs_form_user_register_form_alter(&$form, &$form_state, $form_id) {
     $url = $base_url . '/' . current_path();
     $form['actions']['submit']['#attributes']['onclick'] = "goog_report_conversion ('" . $url . "')";
   }
+   */
 
   $form['field_for_courts']['#states'] = array(
     'visible' => array(

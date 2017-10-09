@@ -98,11 +98,11 @@
         </div>
       <?php endif; ?>
 
-      <?php if (isset($content['field_service_description'])): ?>
-        <div id="assessment-section-two" class="uk-width-1-1 uk-width-1-1@s uk-width-2-3@m uk-width-2-3@l uk-width-3-4@xl">
+      <div id="assessment-section-two" class="uk-width-1-1 uk-width-1-1@s uk-width-2-3@m uk-width-2-3@l uk-width-3-4@xl">
+        <?php if (isset($content['field_service_description'])): ?>
           <?php print render($content['field_service_description']); ?>
-        </div>
-      <?php endif; ?>
+        <?php endif; ?>
+      </div>
 
       <div id="puchase-card" class="uk-width-1-1 uk-width-1-1@s uk-width-1-3@m uk-width-1-3@l uk-width-1-4@xl">
         <div class="uk-card uk-card-primary uk-card-hover uk-card-body uk-text-center">

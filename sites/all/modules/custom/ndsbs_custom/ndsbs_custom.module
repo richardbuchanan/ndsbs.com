@@ -707,22 +707,16 @@ function third_party_request_node_form_validate($form, &$form_state) {
 function ndsbs_custom_user_update(&$edit, $account, $category) {
   global $user;
   //  Notify user if account modified by admin or staff admin
-  // echo $edit['field_special_user']['und'][0]['value']."hii";
-  if ((isset($user->roles[3]) && $user->roles[3] == 'super admin') ||
-    (isset($user->roles[5]) && $user->roles[5] == 'staff admin')
-  ) {
-    if ($edit['status'] != 0) {
-      //  The admin updated user profile
+  $super_admin = isset($user->roles[3]) && $user->roles[3] == 'super admin';
+  $staff_admin = isset($user->roles[5]) && $user->roles[5] == 'staff admin';
 
+  if ($super_admin || $staff_admin) {
+    if (isset($edit['status']) && $edit['status'] != 0) {
+      //  The admin updated user profile
       if ($edit['field_special_user']['und'][0]['value'] == 1) {
         //  The admin updated user profile and assigned special status
         ndsbs_custom_profile_update_notification_special($edit);
-
       }
-      else {
-        //ndsbs_custom_profile_update_notification($edit);
-      }
-
     }
   }
 }
