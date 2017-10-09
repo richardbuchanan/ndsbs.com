@@ -63,7 +63,7 @@ jQuery(document).ready(function ($) {
   });
 
   /* <![CDATA[ */
-  goog_snippet_vars = function() {
+  /*goog_snippet_vars = function() {
     var w = window;
     w.google_conversion_id = 838747312;
     w.google_conversion_label = "FdXdCP70gnUQsIn5jwM";
@@ -84,16 +84,16 @@ jQuery(document).ready(function ($) {
     if (typeof(conv_handler) == 'function') {
       conv_handler(opt);
     }
-  }
+  }*/
   /* ]]> */
 });
 
 jQuery(document).ajaxComplete(function(){
-  var message = '<div class="uk-alert uk-alert-primary">' +
+  /*var message = '<div class="uk-alert uk-alert-primary">' +
     '<p>Rush services updated!</p>' +
     '</div>';
   UIkit.notification({
     message: message,
     timeout: 2500
-  });
+  });*/
 });
