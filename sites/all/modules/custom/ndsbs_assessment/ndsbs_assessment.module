@@ -54,11 +54,6 @@ function ndsbs_assessment_menu() {
  */
 function ndsbs_assessment_theme() {
   $items = array();
-  $items['assessment_node_form'] = array(
-    'render element' => 'form',
-    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
-    'template' => 'assessment_node_form',
-  );
   $items['list_all_assessment'] = array(
     'render element' => 'assessment_data',
     'path' => drupal_get_path('module', 'ndsbs_assessment'),

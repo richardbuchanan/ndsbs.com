@@ -945,22 +945,6 @@ function bdg_ndsbs_get_assessment_link($assessment) {
 }
 
 /**
- * Implements hook_form_FORM_ID_alter() for assessment_node_form.
- */
-function bdg_ndsbs_form_switcher_item_node_form_alter(&$form, &$form_state, $form_id) {
-  /*$form['field_assessment_link']['#states'] = array(
-    'visible' => array(
-      ':input[name="field_direct_link_to_assessment' => array('checked' => TRUE),
-    ),
-  );
-  $form['body']['#states'] = array(
-    'visible' => array(
-      ':input[name="field_direct_link_to_assessment' => array('checked' => FALSE),
-    ),
-  );*/
-}
-
-/**
  * Sets the copyright date and wording.
  */
 function _ndsbs_copyright_content() {
