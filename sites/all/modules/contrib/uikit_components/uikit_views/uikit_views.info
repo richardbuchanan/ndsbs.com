@@ -13,9 +13,9 @@ files[] = plugins/UIkitViewsPluginStyleTable.inc
 
 stylesheets[all][] = css/uikit-views-preview.css
 
-; Information added by Drupal.org packaging script on 2017-07-09
-version = "7.x-3.0-beta2"
+; Information added by Drupal.org packaging script on 2017-09-14
+version = "7.x-3.0-beta3"
 core = "7.x"
 project = "uikit_components"
-datestamp = "1499570051"
+datestamp = "1505393353"
 

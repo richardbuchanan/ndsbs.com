@@ -48,13 +48,13 @@ class UIkitViewsPluginStyleGrid extends views_plugin_style {
     );
 
     $form['column_widths'] = array(
-      '#type' => 'fieldset',
+      '#type' => 'item',
       '#title' => t('Grid columns'),
       '#description' => t("To create a grid whose child elements' widths are evenly split, we apply one class to the grid for each breakpoint. Each item in the grid is then automatically applied a width based on the number of columns selected for each breakpoint. See <a href='@href' target='_blank' title='@title'>Grid component</a> for more details.", $args),
     );
 
     foreach (['@s', '@m', '@l', '@xl'] as $size) {
-      $form['column_widths']["width_${size}"] = array(
+      $form["width_${size}"] = array(
         '#type' => 'select',
         '#title' => t("uk-child-width-*${size}"),
         '#required' => TRUE,

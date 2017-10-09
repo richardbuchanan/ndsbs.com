@@ -75,7 +75,7 @@ class UIkitViewsPluginStyleAccordion extends views_plugin_style {
       );
       $form['animation'] = array(
         '#type' => 'checkbox',
-        '#title' => t('Reveal item directly or with a transition.'),
+        '#title' => t('Reveal item directly (unchecked) or with a transition (checked).'),
         '#default_value' => $this->options['animation'],
       );
       $form['transition'] = array(
