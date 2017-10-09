@@ -65,11 +65,12 @@ function ndsbs_container($variables) {
   $element += array('#attributes' => array());
   $prefix = '';
   $suffix = '';
+  $id = isset($element['#id']) ? $element['#id'] : FALSE;
 
   // Special handling for form elements.
   if (isset($element['#array_parents'])) {
     // Assign an html ID.
-    if (!isset($element['#attributes']['id'])) {
+    if (!isset($element['#attributes']['id']) && $id) {
       $element['#attributes']['id'] = $element['#id'];
     }
 
@@ -77,26 +78,28 @@ function ndsbs_container($variables) {
     $element['#attributes']['class'][] = 'form-wrapper';
   }
 
-  $field_first_name = $element['#id'] == 'edit-field-first-name';
-  $field_middle_name = $element['#id'] == 'edit-field-middle-name';
-  $field_last_name = $element['#id'] == 'edit-field-last-name';
-  if ($field_first_name || $field_middle_name || $field_last_name) {
-    $element['#attributes']['class'][] = 'uk-float-left';
-    $element['#attributes']['class'][] = 'uk-width-1-1';
-    $element['#attributes']['class'][] = 'uk-width-1-3@m';
-  }
+  if ($id) {
+    $field_first_name = $element['#id'] == 'edit-field-first-name';
+    $field_middle_name = $element['#id'] == 'edit-field-middle-name';
+    $field_last_name = $element['#id'] == 'edit-field-last-name';
+    if ($field_first_name || $field_middle_name || $field_last_name) {
+      $element['#attributes']['class'][] = 'uk-float-left';
+      $element['#attributes']['class'][] = 'uk-width-1-1';
+      $element['#attributes']['class'][] = 'uk-width-1-3@m';
+    }
 
-  $field_gender = $element['#id'] == 'edit-field-gender';
-  if ($field_gender) {
-    $element['#attributes']['class'][] = 'uk-width-1-1';
-    $element['#attributes']['class'][] = 'uk-width-1-3@m';
-  }
+    $field_gender = $element['#id'] == 'edit-field-gender';
+    if ($field_gender) {
+      $element['#attributes']['class'][] = 'uk-width-1-1';
+      $element['#attributes']['class'][] = 'uk-width-1-3@m';
+    }
 
-  $field_month = $element['#id'] == 'edit-field-month';
-  $field_dobdate = $element['#id'] == 'edit-field-dobdate';
-  $field_year = $element['#id'] == 'edit-field-year';
-  if ($field_month || $field_dobdate || $field_year) {
-    $element['#attributes']['class'][] = 'uk-float-left';
+    $field_month = $element['#id'] == 'edit-field-month';
+    $field_dobdate = $element['#id'] == 'edit-field-dobdate';
+    $field_year = $element['#id'] == 'edit-field-year';
+    if ($field_month || $field_dobdate || $field_year) {
+      $element['#attributes']['class'][] = 'uk-float-left';
+    }
   }
 
   return '<div' . drupal_attributes($element['#attributes']) . '>' . $prefix . $element['#children'] . $suffix . '</div>';

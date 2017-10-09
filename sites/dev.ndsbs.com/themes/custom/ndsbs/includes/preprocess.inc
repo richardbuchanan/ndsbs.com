@@ -438,7 +438,7 @@ function ndsbs_preprocess_menu_local_tasks(&$variables) {
  * Implements template_preprocess_menu_link().
  */
 function ndsbs_preprocess_menu_link(&$variables) {
-  if ($variables['theme_hook_suggestion'] == 'menu_link__menu_client_navigation') {
+  if (isset($variables['theme_hook_suggestion']) && $variables['theme_hook_suggestion'] == 'menu_link__menu_client_navigation') {
     $questionnaire_start = substr(current_path(), 0, 19) === 'questionnaire/start';
     $assessment_page = $questionnaire_start || current_path() == 'schedule/interview' || current_path() == 'user/paperwork/list' || current_path() == 'view/assessment/report';
     $assessment_link = $variables['element']['#original_link']['mlid'] == '7786';

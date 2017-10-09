@@ -145,10 +145,13 @@ function ndsbs_payment_theme($existing, $type, $theme, $path) {
 }
 
 function _user_payment() {
-  $return = TRUE;
   $cart_items = get_cart_items();
-  $account = user_load($cart_items[0]->uid);
-  $order = node_load($cart_items[0]->nid);
+  $order = array();
+
+  if ($cart_items) {
+    $order = node_load($cart_items[0]->nid);
+  }
+
   return drupal_get_form('bluepay_payment_form', $order);
 }
 
@@ -247,18 +250,27 @@ function delete_transaction_data($uid, $txn_id, $transaction_data, $payment_stat
  */
 function save_transaction_terms($oid, $main_report_id, $term_tid_cost, $uid, $payment_status) {
   foreach($term_tid_cost as $key => $value) {
-    db_insert('users_transactions_data')
-      ->fields(array('oid' => $oid, 'termid' => $key, 'amount' => $value['amount'], 'notary_cost' => $value['notary_amount'], 'sub_report' => $value['sub_report'], 'main_report_id' => $main_report_id))
-      ->execute();
+    if ($key) {
+      db_insert('users_transactions_data')
+        ->fields([
+          'oid' => $oid,
+          'termid' => $key,
+          'amount' => $value['amount'],
+          'notary_cost' => $value['notary_amount'],
+          'sub_report' => $value['sub_report'],
+          'main_report_id' => $main_report_id
+        ])
+        ->execute();
 
-    //  Change the stateform payment status
-    //  Status of the stateform will depend on the main report term is and state for term id
-    $stateform = update_stateform_payment_status_info_report($uid, $main_report_id, $key);
-    foreach($stateform as $data) {
-      $node_data = node_load($data->nid);
-      $node_data->field_state_form_payment_status['und'][0]['value'] = $payment_status;
-      $node_data->field_state_form_transid['und'][0]['value'] = $oid;
-      node_save($node_data);
+      //  Change the stateform payment status
+      //  Status of the stateform will depend on the main report term is and state for term id
+      $stateform = update_stateform_payment_status_info_report($uid, $main_report_id, $key);
+      foreach ($stateform as $data) {
+        $node_data = node_load($data->nid);
+        $node_data->field_state_form_payment_status['und'][0]['value'] = $payment_status;
+        $node_data->field_state_form_transid['und'][0]['value'] = $oid;
+        node_save($node_data);
+      }
     }
   }
   return;

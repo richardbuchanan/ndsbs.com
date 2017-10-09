@@ -857,6 +857,16 @@ body.role-super-therapist #user-profile-form ul.group-user-account-therapist {
 }
 
 /**
+ * Payment page.
+ */
+.page-user-payment .ajax-progress {
+  float: right;
+}
+.page-user-payment .uk-notification-message {
+  padding: 0;
+}
+
+/**
  * Steps header
  */
 #steps-header-progress a,

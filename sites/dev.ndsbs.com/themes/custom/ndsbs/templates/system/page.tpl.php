@@ -181,10 +181,6 @@
 
 </div>
 
-<?php if ($dashboard_modal): ?>
-  <?php print render($dashboard_modal); ?>
-<?php endif; ?>
-
 <div id="offcanvas" uk-offcanvas="mode: push; overlay: true" class="uk-offcanvas">
   <div class="uk-offcanvas-bar ie9-gradient">
     <?php print render($offcanvas_primary); ?>

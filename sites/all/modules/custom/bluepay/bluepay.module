@@ -102,232 +102,321 @@ function bluepay_system_settings_form() {
  * Builds the checkout form for the given order.
  */
 function bluepay_payment_form($form, &$form_state, $order) {
-  global $user;
-  $output[0] = 'No rush service';
-  $cart_items = get_cart_items();
+  if ($order) {
+    global $user;
+    $output[0] = 'No rush service';
+    $cart_items = get_cart_items();
 
-  // BluePay's test mode requires an odd value for the total amount, so we set
-  // the rush service to 75 in order to get an approved transaction response.
-  $host = $_SERVER['HTTP_HOST'];
-  $dev_env = $host == 'localhost.ndsbs' || $host == 'dev.ndsbs.com';
-  if ($dev_env) {
-    if ($cart_items[0]->nid != '3965') {
-      $form_state['values']['rush_service'] = 75;
-    }
-  }
+    // BluePay's test mode requires an odd value for the total amount, so we set
+    // the rush service to 75 in order to get an approved transaction response.
+    $host = $_SERVER['HTTP_HOST'];
+    $dev_env = $host == 'localhost.ndsbs' || $host == 'dev.ndsbs.com';
 
-  if ($dev_env) {
-    $title['#markup'] = $order->title;
-  }
-  else{
-    $title = field_get_items('node', $order, 'field_assessment_title');
-    $title = field_view_value('node', $order, 'field_assessment_title', $title[0]);
-  }
+    $amount = field_get_items('node', $order, 'field_primary_service_amount');
+    $amount = field_view_value('node', $order, 'field_primary_service_amount', $amount[0]);
+    $assessment_amount = (int) $amount['#markup'];
 
-  $amount = field_get_items('node', $order, 'field_primary_service_amount');
-  $amount = field_view_value('node', $order, 'field_primary_service_amount', $amount[0]);
-  $assessment_amount = (int)$amount['#markup'];
+    foreach ($cart_items as $cart_item) {
+      $node_id = $cart_item->nid;
 
-  foreach ($cart_items as $cart_item) {
-    $node_id = $cart_item->nid;
+      if ($cart_item->sub_report != 1) {
+        $custom_special_amount = get_special_assessment_custom_amount($node_id);
 
-    if ($cart_item->sub_report != 1) {
-      $custom_special_amount = get_special_assessment_custom_amount($node_id);
-
-      if ($_SESSION['misc_service_price'] > 0) {
-        $assessment_amount = $_SESSION['misc_service_price'];
-      }
-      elseif ($custom_special_amount > 0) {
-        $assessment_amount = $custom_special_amount;
+        if (isset($_SESSION['misc_service_price']) && $_SESSION['misc_service_price'] > 0) {
+          $assessment_amount = $_SESSION['misc_service_price'];
+        }
+        elseif ($custom_special_amount > 0) {
+          $assessment_amount = $custom_special_amount;
+        }
       }
     }
+
+    $rush_amount = isset($form_state['values']['rush_service']) ? $form_state['values']['rush_service'] : 0;
+
+    if (isset($form_state['values']) && isset($form_state['values']['rush_service'])) {
+      $rush_amount = $form_state['values']['rush_service'];
+    }
+    elseif ($dev_env && !$rush_amount) {
+      $rush_amount = 75;
+    }
+    else {
+      $rush_amount = 0;
+    }
+
+    $total = number_format($assessment_amount + $rush_amount, 2);
+    $tid = 5;
+    $terms = taxonomy_get_tree($tid, $parent = 0, $max_depth = NULL, $load_entities = TRUE);
+
+    foreach ($terms as $data) {
+      $rush_term_amount = $data->field_rush_amount['und'][0]['value'];
+      $description = $data->description;
+      $option = $description . ' ($' . $rush_term_amount . ')';
+      $explode = explode('.', $rush_term_amount);
+      $output[$explode[0]] = $option;
+    }
+
+    // Attach the payment script to the form.
+    $form['#attached']['js'][] = drupal_get_path('theme', 'bootstrap_ndsbs') . '/js/payment.js';
+    $form['#attached']['js'][] = drupal_get_path('theme', 'bootstrap_ndsbs') . '/js/creditcard.js';
+
+    // Create form state values for the user account and assessment.
+    $form_state['account'] = clone($user);
+    $form_state['order'] = $order;
+
+    // Restore form errors.
+    //if (!empty($form_state['storage']['errors'])) {
+    //$form_errors = &drupal_static('form_set_error', array());
+    //$form_errors = $form_state['storage']['errors'];
+    //}
+
+    $button_attributes = [
+      'attributes' => [
+        'class' => [
+          'uk-button',
+          'uk-button-default',
+          'uk-margin-small-left',
+        ],
+      ]
+    ];
+    $empty_cart = l('Empty cart', '/cart/empty', $button_attributes);
+
+    $rush_prefix = '<div id="rush-details" class="uk-width-1-1 uk-width-1-2@m uk-first-column">';
+    $rush_prefix .= '<div class="uk-card uk-card-default rush-service-box">';
+    $rush_prefix .= '<div class="uk-card-header">';
+    $rush_prefix .= '<h3 class="uk-card-title">Rush Services</h3>';
+    $rush_prefix .= '</div>';
+    $rush_prefix .= '<div class="uk-card-body" data-form-state="enabled">';
+
+    $rush_suffix = '<p class="about-rush">Not sure if you need a rush order?<br>Call <a href="tel:6148887274">614-888-7274</a> or email <a href="mailto:support@ndsbs.com">support@ndsbs.com</a></p>';
+    $rush_suffix .= '</div>';
+    $rush_suffix .= '<div class="uk-card-footer">';
+    $rush_suffix .= '<h4>ABOUT RUSH ORDERS</h4>';
+    $rush_suffix .= '<p>We will make an effort to schedule you as soon as we can. The time frames for rush orders begin once your interview with the evaluator is completed.</p>';
+    $rush_suffix .= '</div>';
+    $rush_suffix .= '</div>';
+    $rush_suffix .= '</div>';
+
+    $summary_markup = '<div id="order-summary" class="uk-width-1-1 uk-width-1-2@m">';
+    $summary_markup .= '<div class="uk-card uk-card-default rush-service-box">';
+    $summary_markup .= '<div class="uk-card-header">';
+    $summary_markup .= '<h3 class="uk-card-title">Order Summary</h3>';
+    $summary_markup .= '</div>';
+    $summary_markup .= '<div class="uk-card-body">';
+
+    if ($assessment_amount) {
+      $summary_markup .= '<div class="order-summary-assessment uk-display-inline-block uk-width-1-1">';
+      $summary_markup .= '<span class="uk-float-left">' . $order->title . ':</span>';
+      $summary_markup .= '<span class="uk-float-right">$' . number_format($assessment_amount, 2) . '</span>';
+      $summary_markup .= '</div>';
+    }
+
+    $summary_markup .= '<div class="order-summary-rush-service uk-display-inline-block uk-width-1-1">';
+    $summary_markup .= '<span class="uk-float-left">Rush service:</span>';
+    $summary_markup .= '<span class="uk-float-right">$' . number_format($rush_amount, 2) . '</span>';
+    $summary_markup .= '</div>';
+    $summary_markup .= '<div class="order-summary-total uk-display-inline-block uk-width-1-1">';
+    $summary_markup .= '<span class="uk-float-left"><h2>Order Total:</h2></span>';
+    $summary_markup .= '<span class="uk-float-right"><h2>$' . $total . '</h2></span>';
+    $summary_markup .= '</div></div></div></div>';
+
+    $cc_prefix = '<div id="payment-details" class="uk-width-1-1 uk-width-1-2@m uk-grid-margin uk-first-column">';
+    $cc_prefix .= '<div class="uk-card uk-card-default credit-card-box">';
+    $cc_prefix .= '<div class="uk-card-header">';
+    $cc_prefix .= '<h3 class="uk-card-title">Payment Details</h3>';
+    $cc_prefix .= '</div>';
+    $cc_prefix .= '<div class="uk-card-body">';
+
+    if ($dev_env) {
+      $cc_prefix .= '<div class="uk-alert-warning" uk-alert>';
+      $cc_prefix .= '<p>For testing purposes rush services and credit card payment information has been entered for you. Please click "Submit payment" to test the transaction.</p>';
+      $cc_prefix .= '</div>';
+    }
+
+    $cc_prefix .= '<img class="img-responsive pull-right" src="/' . drupal_get_path('theme', 'bootstrap_ndsbs') . '/css/images/accepted_c22e0.png">';
+
+    $cc_suffix = '</div></div></div>';
+
+    $form['form_wrapper'] = [
+      '#type' => 'container',
+      '#attributes' => [
+        'id' => 'blupay-payment-form-ajax-wrapper',
+        'class' => [
+          'uk-grid',
+        ],
+      ],
+    ];
+    $form['form_wrapper']['rush_service'] = [
+      '#type' => 'radios',
+      '#title' => t('Select rush service'),
+      '#options' => $output,
+      '#required' => TRUE,
+      '#default_value' => $rush_amount,
+      '#prefix' => $rush_prefix,
+      '#suffix' => $rush_suffix,
+      '#ajax' => [
+        'callback' => 'bluepay_payment_form_ajax',
+        'wrapper' => 'order-summary',
+        'effect' => 'none',
+      ],
+    ];
+
+    if ($dev_env && !$rush_amount) {
+      $form['form_wrapper']['rush_service']['#default_value'] = 75;
+      $form['form_wrapper']['rush_service']['#disabled'] = TRUE;
+    }
+    elseif (isset($form_state['values']) && isset($form_state['values']['rush_service'])) {
+      $form['form_wrapper']['rush_service']['#default_value'] = $form_state['values']['rush_service'];
+    }
+    else {
+      $form['form_wrapper']['rush_services']['#default_value'] = 0;
+    }
+
+    $form['form_wrapper']['summary'] = [
+      '#markup' => $summary_markup,
+    ];
+    $form['form_wrapper']['cc'] = [
+      '#type' => 'container',
+      '#prefix' => $cc_prefix,
+      '#suffix' => $cc_suffix,
+    ];
+    $form['form_wrapper']['cc']['credit_card'] = [
+      '#type' => 'select',
+      '#title' => t('Select Credit card'),
+      '#options' => [
+        'AmEx' => t('American Express'),
+        'Discover' => t('Discover'),
+        'Maestro' => t('Maestro'),
+        'MasterCard' => t('MasterCard'),
+        'Visa' => t('Visa'),
+      ],
+      '#required' => TRUE
+    ];
+    $form['form_wrapper']['cc']['name_on_card'] = [
+      '#type' => 'textfield',
+      '#title' => t('Name on card'),
+      '#size' => 25,
+      '#required' => TRUE,
+    ];
+    $form['form_wrapper']['cc']['card_number'] = [
+      '#type' => 'credit_card',
+      '#title' => t('Card Number'),
+      '#required' => TRUE,
+      '#font-awesome-icon' => 'credit-card',
+    ];
+    $form['form_wrapper']['cc']['expiration_month'] = [
+      '#type' => 'select',
+      '#title' => t('Expiration Month'),
+      '#options' => [
+        t('01') => t('01 - January'),
+        t('02') => t('02 - February'),
+        t('03') => t('03 - March'),
+        t('04') => t('04 - April'),
+        t('05') => t('05 - May'),
+        t('06') => t('06 - June'),
+        t('07') => t('07 - July'),
+        t('08') => t('08 - August'),
+        t('09') => t('09 - September'),
+        t('10') => t('10 - October'),
+        t('11') => t('11 - November'),
+        t('12') => t('12 - December'),
+      ],
+      '#required' => TRUE
+    ];
+    $form['form_wrapper']['cc']['expiration_year'] = [
+      '#type' => 'select',
+      '#title' => t('Expiration Year'),
+      '#options' => [
+        t('16') => t('2016'),
+        t('17') => t('2017'),
+        t('18') => t('2018'),
+        t('19') => t('2019'),
+        t('20') => t('2020'),
+        t('21') => t('2021'),
+        t('22') => t('2022'),
+        t('23') => t('2023'),
+        t('24') => t('2024'),
+        t('25') => t('2025'),
+        t('26') => t('2026'),
+        t('27') => t('2027'),
+        t('28') => t('2028'),
+        t('29') => t('2029'),
+        t('30') => t('2030'),
+        t('31') => t('2031'),
+        t('32') => t('2032'),
+        t('33') => t('2033'),
+        t('34') => t('2034'),
+        t('35') => t('2035'),
+      ],
+      '#required' => TRUE
+    ];
+    $form['form_wrapper']['cc']['cvv'] = [
+      '#type' => 'textfield',
+      '#title' => t('CVC'),
+      '#size' => 6,
+      '#maxlength' => 4,
+      '#required' => TRUE
+    ];
+    $form['form_wrapper']['actions'] = [
+      '#type' => 'actions',
+      '#attributes' => [
+        'class' => [
+          'uk-width-1-1',
+          'form-actions',
+          'form-wrapper',
+          'uk-grid-margin',
+          'uk-first-column',
+        ],
+      ],
+    ];
+    $form['form_wrapper']['actions']['submit'] = [
+      '#type' => 'submit',
+      '#value' => t('Submit payment'),
+      '#submit' => ['bluepay_payment_form_submit'],
+    ];
+    $form['form_wrapper']['actions']['empty'] = [
+      '#markup' => $empty_cart,
+    ];
+    $form['service_amount'] = [
+      '#type' => 'hidden',
+      '#value' => $assessment_amount,
+    ];
+
+    // Create default values during development.
+    if ($dev_env) {
+      $form['form_wrapper']['cc']['credit_card']['#attributes']['disabled'] = 'disabled';
+      $form['form_wrapper']['cc']['credit_card']['#default_value'] = 'Visa';
+
+      $form['form_wrapper']['cc']['name_on_card']['#attributes']['disabled'] = 'disabled';
+      $form['form_wrapper']['cc']['name_on_card']['#default_value'] = 'Test Client';
+
+      $form['form_wrapper']['cc']['card_number']['#attributes']['disabled'] = 'disabled';
+      $form['form_wrapper']['cc']['card_number']['#default_value'] = '4111111111111111';
+
+      $form['form_wrapper']['cc']['expiration_month']['#attributes']['disabled'] = 'disabled';
+      $form['form_wrapper']['cc']['expiration_month']['#default_value'] = '01';
+
+      $form['form_wrapper']['cc']['expiration_year']['#attributes']['disabled'] = 'disabled';
+      $form['form_wrapper']['cc']['expiration_year']['#default_value'] = date('y') + 1;
+
+      $form['form_wrapper']['cc']['cvv']['#attributes']['disabled'] = 'disabled';
+      $form['form_wrapper']['cc']['cvv']['#default_value'] = '123';
+    }
   }
+  else {
+    $empty = '<div class="uk-card uk-card-default uk-card-body">';
+    $empty .= '<p>Your cart is empty. Please <a href="/view/assessment/status">select an assessment</a> to purchase to continue.</p>';
+    $empty .= '</div>';
 
-  $rush_amount = isset($form_state['values']['rush_service']) ? $form_state['values']['rush_service'] : 0;
-
-  $total = number_format($assessment_amount + $rush_amount, 2);
-  $tid = 5;
-  $terms = taxonomy_get_tree($tid, $parent = 0, $max_depth = NULL, $load_entities = TRUE);
-
-  foreach ($terms as $data) {
-    $rush_term_amount = $data->field_rush_amount['und'][0]['value'];
-    $description = $data->description;
-    $option = $description . ' ($' . $rush_term_amount . ')';
-    $explode = explode('.', $rush_term_amount);
-    $output[$explode[0]] = $option;
-  }
-
-  // Attach the payment script to the form.
-  $form['#attached']['js'][] = drupal_get_path('theme', 'bootstrap_ndsbs') . '/js/payment.js';
-  $form['#attached']['js'][] = drupal_get_path('theme', 'bootstrap_ndsbs') . '/js/creditcard.js';
-
-  // Create form state values for the user account and assessment.
-  $form_state['account'] = clone($user);
-  $form_state['order'] = $order;
-
-  // Restore form errors.
-  if (!empty($form_state['storage']['errors'])) {
-    $form_errors = &drupal_static('form_set_error', array());
-    $form_errors = $form_state['storage']['errors'];
-  }
-
-  $button_attributes = array(
-    'attributes' => array(
-      'class' => array(
-        'uk-button',
-        'uk-button-default',
-        'uk-margin-small-left',
-      ),
-    )
-  );
-  $empty_cart = l('Empty cart', '/cart/empty', $button_attributes);
-
-  $rush_prefix = '<div id="rush-details" class="col-xs-12 col-md-7"><div class="panel panel-default rush-service-box"><div class="panel-heading"><h3 class="panel-title">Rush Services</h3></div><div class="panel-body" data-form-state="enabled">';
-  $rush_suffix = '<p class="about-rush">Not sure if you need a rush order?<br>Call <a href="tel:6148887274">614-888-7274</a> or email <a href="mailto:support@ndsbs.com">support@ndsbs.com</a></p></div><div class="panel-footer"><h4>ABOUT RUSH ORDERS</h4><p>We will make an effort to schedule you as soon as we can. The time frames for rush orders begin once your interview with the evaluator is completed.</p></div></div></div>';
-  $summary_markup = '<div id="order-summary" class="col-xs-12 col-md-5"><div class="panel panel-default rush-service-box"><div class="panel-heading"><h3 class="panel-title">Order Summary</h3></div><div class="panel-body"><div class="row">';
-  $summary_markup .= $assessment_amount ? '<div class="order-summary-assessment col-xs-12"><span class="pull-left">' . $title['#markup'] . ':</span><span class="pull-right">$' . number_format($assessment_amount, 2) . '</span></div>' : '';
-  $summary_markup .= '<div class="order-summary-rush-service col-xs-12"><span class="pull-left">Rush service:</span><span class="pull-right">$' . number_format($rush_amount, 2) . '</span></div><div class="order-summary-total col-xs-12"><hr><span class="pull-left"><h2>Order Total:</h2></span><span class="pull-right"><h2>$' . $total . '</h2></span></div></div></div></div></div>';
-  $cc_prefix = '<div id="payment-details" class="col-xs-12 col-md-7"><div class="panel panel-default credit-card-box"><div class="panel-heading"><h3 class="panel-title display-td">Payment Details</h3></div><div class="panel-body"><img class="img-responsive pull-right" src="/' . drupal_get_path('theme', 'bootstrap_ndsbs') . '/css/images/accepted_c22e0.png">';
-  $cc_suffix = '</div></div></div>';
-
-  $form['form_wrapper'] = array(
-    '#type' => 'container',
-    '#attributes' => array(
-      'id' => 'blupay-payment-form-ajax-wrapper',
-      'class' => array('row'),
-    ),
-  );
-  $form['form_wrapper']['rush_service'] = array(
-    '#type' => 'radios',
-    '#title' => t('Select rush service'),
-    '#options' => $output,
-    '#required' => TRUE,
-    '#default_value' => $rush_amount,
-    '#prefix' => $rush_prefix,
-    '#suffix' => $rush_suffix,
-    '#ajax' => array(
-      'callback' => 'bluepay_payment_form_ajax',
-      'wrapper' => 'blupay-payment-form-ajax-wrapper',
-      'effect' => 'fade',
-    ),
-  );
-  $form['form_wrapper']['summary'] = array(
-    '#markup' => $summary_markup,
-  );
-  $form['form_wrapper']['cc'] = array(
-    '#type' => 'container',
-    '#prefix' => $cc_prefix,
-    '#suffix' => $cc_suffix,
-  );
-  $form['form_wrapper']['cc']['credit_card'] = array(
-    '#type' => 'select',
-    '#title' => t('Select Credit card'),
-    '#options' => array(
-      'AmEx' => t('American Express'),
-      'Discover' => t('Discover'),
-      'Maestro' => t('Maestro'),
-      'MasterCard' => t('MasterCard'),
-      'Visa' => t('Visa'),
-    ),
-    '#required' => TRUE
-  );
-  $form['form_wrapper']['cc']['name_on_card'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Name on card'),
-    '#size' => 25,
-    '#required' => TRUE,
-  );
-  $form['form_wrapper']['cc']['card_number'] = array(
-    '#type' => 'credit_card',
-    '#title' => t('Card Number'),
-    '#required' => TRUE,
-    '#font-awesome-icon' => 'credit-card',
-  );
-  $form['form_wrapper']['cc']['expiration_month'] = array(
-    '#type' => 'select',
-    '#title' => t('Expiration Month'),
-    '#options' => array(
-      t('01') => t('01 - January'),
-      t('02') => t('02 - February'),
-      t('03') => t('03 - March'),
-      t('04') => t('04 - April'),
-      t('05') => t('05 - May'),
-      t('06') => t('06 - June'),
-      t('07') => t('07 - July'),
-      t('08') => t('08 - August'),
-      t('09') => t('09 - September'),
-      t('10') => t('10 - October'),
-      t('11') => t('11 - November'),
-      t('12') => t('12 - December'),
-    ),
-    '#required' => TRUE
-  );
-  $form['form_wrapper']['cc']['expiration_year'] = array(
-    '#type' => 'select',
-    '#title' => t('Expiration Year'),
-    '#options' => array(
-      t('16') => t('2016'),
-      t('17') => t('2017'),
-      t('18') => t('2018'),
-      t('19') => t('2019'),
-      t('20') => t('2020'),
-      t('21') => t('2021'),
-      t('22') => t('2022'),
-      t('23') => t('2023'),
-      t('24') => t('2024'),
-      t('25') => t('2025'),
-      t('26') => t('2026'),
-      t('27') => t('2027'),
-      t('28') => t('2028'),
-      t('29') => t('2029'),
-      t('30') => t('2030'),
-      t('31') => t('2031'),
-      t('32') => t('2032'),
-      t('33') => t('2033'),
-      t('34') => t('2034'),
-      t('35') => t('2035'),
-    ),
-    '#required' => TRUE
-  );
-  $form['form_wrapper']['cc']['cvv'] = array(
-    '#type' => 'textfield',
-    '#title' => t('CVC'),
-    '#size' => 6,
-    '#maxlength' => 4,
-    '#required' => TRUE
-  );
-  $form['form_wrapper']['actions'] = array(
-    '#type' => 'actions',
-  );
-  $form['form_wrapper']['actions']['submit'] = array(
-    '#type' => 'submit',
-    '#value' => t('Submit payment'),
-    '#submit' => array('bluepay_payment_form_submit'),
-  );
-  $form['form_wrapper']['actions']['empty'] = array(
-    '#markup' => $empty_cart,
-  );
-  $form['service_amount'] = array(
-    '#type' => 'hidden',
-    '#value' => $assessment_amount,
-  );
-
-  // Create default values during development.
-  if ($dev_env) {
-    $form['form_wrapper']['cc']['credit_card']['#default_value'] = 'Visa';
-    $form['form_wrapper']['cc']['name_on_card']['#default_value'] = 'Richard Buchanan';
-    $form['form_wrapper']['cc']['card_number']['#default_value'] = '4111111111111111';
-    $form['form_wrapper']['cc']['expiration_month']['#default_value'] = '12';
-    $form['form_wrapper']['cc']['expiration_year']['#default_value'] = '17';
-    $form['form_wrapper']['cc']['cvv']['#default_value'] = '123';
-    drupal_set_message('For testing purposes rush services and credit card payment information has been entered for you. Please click "Submit payment" to test the transaction.', 'warning');
+    $form['empty_cart'] = array(
+      '#markup' => $empty,
+    );
   }
 
   return $form;
 }
 
 function bluepay_payment_form_ajax($form, $form_state) {
-  return $form['form_wrapper'];
+  return $form['form_wrapper']['summary'];
 }
 
 function bluepay_payment_form_submit($form, &$form_state) {
@@ -421,6 +510,7 @@ function bluepay_payment_form_submit($form, &$form_state) {
   }
   else {
     drupal_set_message($payment->getMessage(), 'error');
+    $form_state['redirect'] = 'user/payment';
   }
 }
 
