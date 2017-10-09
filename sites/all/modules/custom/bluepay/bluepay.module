@@ -114,7 +114,7 @@ function bluepay_payment_form($form, &$form_state, $order) {
 
     $amount = field_get_items('node', $order, 'field_primary_service_amount');
     $amount = field_view_value('node', $order, 'field_primary_service_amount', $amount[0]);
-    $assessment_amount = (int) $amount['#markup'];
+    $assessment_amount = $amount['#markup'];
 
     foreach ($cart_items as $cart_item) {
       $node_id = $cart_item->nid;
@@ -162,12 +162,6 @@ function bluepay_payment_form($form, &$form_state, $order) {
     // Create form state values for the user account and assessment.
     $form_state['account'] = clone($user);
     $form_state['order'] = $order;
-
-    // Restore form errors.
-    //if (!empty($form_state['storage']['errors'])) {
-    //$form_errors = &drupal_static('form_set_error', array());
-    //$form_errors = $form_state['storage']['errors'];
-    //}
 
     $button_attributes = [
       'attributes' => [
