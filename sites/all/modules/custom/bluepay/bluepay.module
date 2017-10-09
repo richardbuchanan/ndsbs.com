@@ -220,9 +220,24 @@ function bluepay_payment_form($form, &$form_state, $order) {
     $cc_prefix .= '</div>';
     $cc_prefix .= '<div class="uk-card-body">';
 
+    $bluepay_link_options = array(
+      'query' => array(
+        'destination' => 'user/payment',
+      ),
+    );
+
+    $bluepay_link = l(t('BluePay mode'), '/admin/config/bluepay', $bluepay_link_options);
+
     if ($dev_env && variable_get('bluepay_mode')) {
       $cc_prefix .= '<div class="uk-alert-warning" uk-alert>';
       $cc_prefix .= '<p>For testing purposes rush services and credit card payment information has been entered for you. Please click "Submit payment" to test the transaction.</p>';
+      $cc_prefix .= '<p>You can perform a live purchase to charge a credit/debit card by changing the ' . $bluepay_link . ' to <em class="placeholder"><strong>Live</strong></em>.</p>';
+      $cc_prefix .= '</div>';
+    }
+    elseif ($dev_env) {
+      $cc_prefix .= '<div class="uk-alert-warning" uk-alert>';
+      $cc_prefix .= '<p>The site is currently set to process transactions as a live transaction.</p>';
+      $cc_prefix .= '<p>You can perform a test purchase without charging a credit/debit card by changing the ' . $bluepay_link . ' to <em class="placeholder"><strong>Test</strong></em>.</p>';
       $cc_prefix .= '</div>';
     }
 
