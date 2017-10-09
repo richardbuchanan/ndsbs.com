@@ -220,7 +220,7 @@ function bluepay_payment_form($form, &$form_state, $order) {
     $cc_prefix .= '</div>';
     $cc_prefix .= '<div class="uk-card-body">';
 
-    if ($dev_env) {
+    if ($dev_env && variable_get('bluepay_mode')) {
       $cc_prefix .= '<div class="uk-alert-warning" uk-alert>';
       $cc_prefix .= '<p>For testing purposes rush services and credit card payment information has been entered for you. Please click "Submit payment" to test the transaction.</p>';
       $cc_prefix .= '</div>';
