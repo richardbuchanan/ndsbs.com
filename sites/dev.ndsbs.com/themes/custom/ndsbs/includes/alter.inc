@@ -67,7 +67,7 @@ function ndsbs_form_alter(&$form, &$form_state, $form_id) {
     $form['form_id']['#weight'] = 103;
   }
 
-  if ($form_id == 'user_register_form' || $form_id == 'user_profile_form') {
+  if ($form_id == 'user_profile_form') {
     $form['field_for_courts']['#states'] = array(
       'visible' => array(
         array(':input[name="field_reason_for_assessment[und][0]"]' => array('checked' => TRUE)),
@@ -320,30 +320,53 @@ function ndsbs_form_release_authorization_node_form_alter(&$form, &$form_state, 
 function ndsbs_form_user_register_form_alter(&$form, &$form_state, $form_id) {
   global $base_url;
 
-  $conversion = "goog_snippet_vars = function() {\n";
-  $conversion .= "  var w = window;\n";
-  $conversion .= "  w.google_conversion_id = 838747312;\n";
-  $conversion .= "  w.google_conversion_label = \"Fil2CL_xgnUQsIn5jwM\";\n";
-  $conversion .= "  w.google_remarketing_only = false;\n";
-  $conversion .= "};\n";
-  $conversion .= "// DO NOT CHANGE THE CODE BELOW.\n";
-  $conversion .= "goog_report_conversion = function(url) {\n";
-  $conversion .= "  goog_snippet_vars();\n";
-  $conversion .= "  window.google_conversion_format = \"3\";\n";
-  $conversion .= "  var opt = new Object();\n";
-  $conversion .= "  opt.onload_callback = function() {\n";
-  $conversion .= "    if (typeof(url) != 'undefined') {\n";
-  $conversion .= "      window.location = url;\n";
-  $conversion .= "    }\n";
-  $conversion .= "  };\n";
-  $conversion .= "  var conv_handler = window['google_trackConversion'];\n";
-  $conversion .= "  if (typeof(conv_handler) == 'function') {\n";
-  $conversion .= "    conv_handler(opt);\n";
-  $conversion .= "  }\n";
-  $conversion .= "};";
-  drupal_add_js($conversion, array('type' => 'inline'));
-  drupal_add_js('//www.googleadservices.com/pagead/conversion_async.js', array('type' => 'external'));
+  $host = $_SERVER['HTTP_HOST'];
+  $dev_env = $host == 'localhost.ndsbs' || $host == 'dev.ndsbs.com';
 
-  $url = $base_url . '/' . current_path();
-  $form['actions']['submit']['#attributes']['onclick'] = "goog_report_conversion ('" . $url . "')";
+  if (!$dev_env) {
+    $conversion = "goog_snippet_vars = function() {\n";
+    $conversion .= "  var w = window;\n";
+    $conversion .= "  w.google_conversion_id = 838747312;\n";
+    $conversion .= "  w.google_conversion_label = \"Fil2CL_xgnUQsIn5jwM\";\n";
+    $conversion .= "  w.google_remarketing_only = false;\n";
+    $conversion .= "};\n";
+    $conversion .= "// DO NOT CHANGE THE CODE BELOW.\n";
+    $conversion .= "goog_report_conversion = function(url) {\n";
+    $conversion .= "  goog_snippet_vars();\n";
+    $conversion .= "  window.google_conversion_format = \"3\";\n";
+    $conversion .= "  var opt = new Object();\n";
+    $conversion .= "  opt.onload_callback = function() {\n";
+    $conversion .= "    if (typeof(url) != 'undefined') {\n";
+    $conversion .= "      window.location = url;\n";
+    $conversion .= "    }\n";
+    $conversion .= "  };\n";
+    $conversion .= "  var conv_handler = window['google_trackConversion'];\n";
+    $conversion .= "  if (typeof(conv_handler) == 'function') {\n";
+    $conversion .= "    conv_handler(opt);\n";
+    $conversion .= "  }\n";
+    $conversion .= "};";
+    drupal_add_js($conversion, ['type' => 'inline']);
+    drupal_add_js('//www.googleadservices.com/pagead/conversion_async.js', ['type' => 'external']);
+
+    $url = $base_url . '/' . current_path();
+    $form['actions']['submit']['#attributes']['onclick'] = "goog_report_conversion ('" . $url . "')";
+  }
+
+  $form['field_for_courts']['#states'] = array(
+    'visible' => array(
+      array(':input[name="field_reason_for_assessment[und][0]"]' => array('checked' => TRUE)),
+      array(':input[name="field_reason_for_assessment[und][1]"]' => array('checked' => TRUE)),
+      array(':input[name="field_reason_for_assessment[und][2]"]' => array('checked' => TRUE)),
+    ),
+  );
+  $form['field_for_probation']['#states'] = array(
+    'visible' => array(
+      ':input[name="field_reason_for_assessment[und][7]"]' => array('checked' => TRUE),
+    ),
+  );
+  $form['actions']['submit']['#states'] = array(
+    'disabled' => array(
+      ':input[name="field_terms_of_use[und]"]' => array('value' => 'I do not agree with NDSBS Terms of Use'),
+    ),
+  );
 }

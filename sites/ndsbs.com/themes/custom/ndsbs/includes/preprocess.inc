@@ -47,6 +47,11 @@ function ndsbs_preprocess_html(&$variables) {
 
     drupal_add_html_head($meta_robots, 'ndsbs_dev_robots');
   }
+
+  $title = NDSBS::getTitle();
+  $variables['head_title_array']['title'] = $title;
+  $variables['head_title'] = implode(' | ', $variables['head_title_array']);
+  $variables['head_array']['title'] = implode(' | ', $variables['head_title_array']);
 }
 
 /**
@@ -173,25 +178,7 @@ function ndsbs_preprocess_page(&$variables) {
   $staff = user_has_role('4', $user) || user_has_role('7', $user) || user_has_role('3', $user) || user_has_role('8', $user) || user_has_role('5', $user);
   $client = user_has_role('6', $user);
 
-  if ($staff && $client) {
-    $dashboard_modal = '<div id="dashboard-modal" uk-modal="center: true">';
-    $dashboard_modal .= '<div class="uk-modal-dialog uk-modal-body">';
-    $dashboard_modal .= '<button class="uk-modal-close-full uk-close-large" type="button" uk-close></button>';
-    $dashboard_modal .= '<h2 class="uk-modal-title">Dashboard</h2>';
-    $dashboard_modal .= '<p>Since you have both a staff role and a client role assigned to your account, please select which dashboard should be opened.</p>';
-    $dashboard_modal .= '<div class="uk-text-right">';
-    $dashboard_modal .= '<a href="/questionnaire/start/trans" class="uk-button uk-button-primary">Client dashboard</a>';
-    $dashboard_modal .= '<a href="/user/clients/list" class="uk-button uk-button-primary uk-margin-small-left">Staff dashboard</a>';
-    $dashboard_modal .= '</div></div></div>';
-  }
-  else {
-    $dashboard_modal = '';
-  }
-
-  $variables['dashboard_modal'] = array(
-    '#markup' => $dashboard_modal,
-  );
-
+  $variables['offcanvas_client_dashboard'] = array();
   if ($client) {
     // Client dashboard offcanvas menu.
     $variables['offcanvas_client_dashboard'] = menu_tree(variable_get('menu_main_links_source', 'menu-client-navigation'));
@@ -214,6 +201,7 @@ function ndsbs_preprocess_page(&$variables) {
     }
   }
 
+  $variables['offcanvas_staff_dashboard'] = array();
   if ($staff) {
     // Staff dashboard offcanvas menu.
     $variables['offcanvas_staff_dashboard'] = menu_tree(variable_get('menu_main_links_source', 'menu-staff-navigation'));
@@ -235,6 +223,9 @@ function ndsbs_preprocess_page(&$variables) {
       }
     }
   }
+
+  $title = NDSBS::getTitle();
+  drupal_set_title($title);
 }
 
 /**
@@ -457,7 +448,7 @@ function ndsbs_preprocess_menu_local_tasks(&$variables) {
  * Implements template_preprocess_menu_link().
  */
 function ndsbs_preprocess_menu_link(&$variables) {
-  if ($variables['theme_hook_suggestion'] == 'menu_link__menu_client_navigation') {
+  if (isset($variables['theme_hook_suggestion']) && $variables['theme_hook_suggestion'] == 'menu_link__menu_client_navigation') {
     $questionnaire_start = substr(current_path(), 0, 19) === 'questionnaire/start';
     $assessment_page = $questionnaire_start || current_path() == 'schedule/interview' || current_path() == 'user/paperwork/list' || current_path() == 'view/assessment/report';
     $assessment_link = $variables['element']['#original_link']['mlid'] == '7786';

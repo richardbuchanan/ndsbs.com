@@ -15,7 +15,7 @@ class Ndsbs {
     include_once drupal_get_path('theme', 'uikit') . '/src/UIkit.php';
   }
 
-  private function getUserName() {
+  private static function getUserName() {
     global $user;
     $user = user_load($user->uid);
     $username = $user->name;

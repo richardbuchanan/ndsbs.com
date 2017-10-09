@@ -47,6 +47,11 @@ function ndsbs_preprocess_html(&$variables) {
 
     drupal_add_html_head($meta_robots, 'ndsbs_dev_robots');
   }
+
+  $title = NDSBS::getTitle();
+  $variables['head_title_array']['title'] = $title;
+  $variables['head_title'] = implode(' | ', $variables['head_title_array']);
+  $variables['head_array']['title'] = implode(' | ', $variables['head_title_array']);
 }
 
 /**
@@ -173,6 +178,7 @@ function ndsbs_preprocess_page(&$variables) {
   $staff = user_has_role('4', $user) || user_has_role('7', $user) || user_has_role('3', $user) || user_has_role('8', $user) || user_has_role('5', $user);
   $client = user_has_role('6', $user);
 
+  $variables['offcanvas_client_dashboard'] = array();
   if ($client) {
     // Client dashboard offcanvas menu.
     $variables['offcanvas_client_dashboard'] = menu_tree(variable_get('menu_main_links_source', 'menu-client-navigation'));
@@ -195,6 +201,7 @@ function ndsbs_preprocess_page(&$variables) {
     }
   }
 
+  $variables['offcanvas_staff_dashboard'] = array();
   if ($staff) {
     // Staff dashboard offcanvas menu.
     $variables['offcanvas_staff_dashboard'] = menu_tree(variable_get('menu_main_links_source', 'menu-staff-navigation'));
@@ -216,6 +223,9 @@ function ndsbs_preprocess_page(&$variables) {
       }
     }
   }
+
+  $title = NDSBS::getTitle();
+  drupal_set_title($title);
 }
 
 /**

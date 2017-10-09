@@ -316,11 +316,11 @@ function _malicious_data_error() {
  */
 function ndsbs_custom_theme() {
   $items = array();
-  $items['user_register_form'] = array(
-    'render element' => 'form',
-    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
-    'template' => 'user_register_forms',
-  );
+  //$items['user_register_form'] = array(
+    //'render element' => 'form',
+    //'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
+    //'template' => 'user_register_forms',
+  //);
   $items['user_welcome'] = array(
     'render element' => 'form',
     'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
@@ -557,23 +557,18 @@ function ndsbs_custom_theme() {
  */
 function ndsbs_custom_form_alter(&$form, &$form_state, $form_id) {
   global $user;
-  if ($user->uid == '') {
+  //if ($user->uid == '') {
     //  Validation added for date of birth
-    if ($form_id == 'user_register_form') {
+    //if ($form_id == 'user_register_form') {
       //$form['#attributes']['autocomplete'] = 'off';
-      $form['#validate'][] = 'ndsbs_custom_user_register_form_validate';
-      foreach ($form as $key => $value) {
-        if (is_array($value) && isset($value['#attributes'])) {
-          $form[$key]['#attributes']['autocomplete'] = 'off';
-        }
-      }
-    }
-  }
-
-//    if($form_id == 'refund_payment_node_form') {
-//        $form['#validate'][] = 'ndsbs_custom_payment_refund_change_values_validate';
-//        $form['#submit'][] = 'ndsbs_custom_payment_refund_change_values_submit';
-//    }
+      //$form['#validate'][] = 'ndsbs_custom_user_register_form_validate';
+      //foreach ($form as $key => $value) {
+        //if (is_array($value) && isset($value['#attributes'])) {
+          //$form[$key]['#attributes']['autocomplete'] = 'off';
+        //}
+      //}
+    //}
+  //}
 
   if ($form_id == 'appointment_preference_node_form') {
     $form['#validate'][] = 'appointment_preference_date_validate';
@@ -608,14 +603,6 @@ function ndsbs_custom_form_alter(&$form, &$form_state, $form_id) {
     for ($i = 0; $i < $count; $i++) {
       $form['fgm_node_appointment_preference_form_group_appointment_group']['fields']['items'][$i]['field_prefererred_therapist']['#options'] = get_therapist_dropdown();
     }
-    //$form['fgm_node_appointment_preference_form_group_appointment_group']['fields']['items'][1]['field_prefererred_therapist']['#options'] = get_therapist_dropdown();
-    //print_r($form['fgm_node_appointment_preference_form_group_appointment_group']['fields']['items'][1]['field_prefererred_therapist']['und']['#options']);
-  }
-  //['#options']
-
-  //  Unset the password filed in case of update profile
-  if ($form_id == 'user_profile_form') {
-    unset($form['account']['pass']);
   }
 
   //  Validate the third party request form
@@ -710,31 +697,6 @@ function third_party_request_node_form_validate($form, &$form_state) {
   if ($char_count > 15) {
     form_set_error('City', t('Phone number should not be greater than 15 digit.'));
   }
-}
-
-/**
- *  Implementation of hook_nodeapi()
- *  Function ndsbs_custom_nodeapi() defined
- *  Parameter no
- */
-/*
-function ndsbs_custom_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL) {
-    if($form_id == 'user_register_form') {
-        $robotest = $_POST['robotest'];
-        if($robotest) {
-            drupal_goto('data/error');
-        }
-    }
-}
-*/
-
-/**
- *  Implementation of hook_init()
- *  Function ndsbs_custom_init() defined
- *  Parameter no
- */
-function ndsbs_custom_init() {
-  //error_reporting(0);
 }
 
 /**
