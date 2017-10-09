@@ -51,7 +51,7 @@ class NdsbsBlock {
    * @return array
    *   Returns an array of classes for footer blocks.
    */
-  private function getFooterClasses($delta) {
+  private static function getFooterClasses($delta) {
     $classes = array();
 
     switch ($delta) {

@@ -236,5 +236,17 @@
       activeContent.attr('aria-hidden', 'false').removeAttr('hidden');
       activeParent.addClass('uk-open');
     }
+  };
+
+  Drupal.behaviors.NDSBSAssessmentSelect = {
+    attach: function () {
+      var selectForm = $('#ndsbs-assessment-client-assessments-select-form');
+      var assessmentSelect = selectForm.find('select');
+      var origin = window.location.origin;
+
+      assessmentSelect.on('change', function() {
+        window.location.href = origin + '/' + this.value;
+      })
+    }
   }
 })(jQuery);

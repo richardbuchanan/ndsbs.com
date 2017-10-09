@@ -155,6 +155,8 @@ function ndsbs_preprocess_page(&$variables) {
   );
 
   // Create a description variable for node pages.
+  $variables['page_description'] = FALSE;
+
   if (isset($variables['node'])) {
     $node = $variables['node'];
     $subtitle = isset($node->field_sub_title['und']) ? $node->field_sub_title['und'][0]['value'] : FALSE;
@@ -504,10 +506,12 @@ function ndsbs_preprocess_node(&$variables) {
 
   $variables['service_amount'] = FALSE;
 
-  if ($variables['field_primary_service_amount']) {
+  if (isset($variables['field_primary_service_amount'])) {
     // Create the service amount variable.
-    $service_amount = $variables['field_primary_service_amount'][0]['value'];
-    $variables['service_amount'] = '<h3>$' . $service_amount . '</h3>';
+    if (isset($variables['field_primary_service_amount'][0])) {
+      $service_amount = $variables['field_primary_service_amount'][0]['value'];
+      $variables['service_amount'] = '<h3>$' . $service_amount . '</h3>';
+    }
 
     // Create the purchase link variable.
     $nid = $variables['nid'];
@@ -700,18 +704,28 @@ function ndsbs_preprocess_views_view(&$variables) {
     foreach ($result as $index => $item) {
       $node = node_load($item->nid);
       $direct_link = isset($node->field_direct_link_to_assessment['und']);
-      $assessment_link = drupal_get_path_alias('node/' . $node->field_assessment_link['und'][0]['target_id']);
+      $assessment_link = FALSE;
 
-      if ($direct_link && $assessment_link != 'node/') {
+      if (isset($node->field_assessment_link['und'])) {
+        $assessment_link = drupal_get_path_alias('node/' . $node->field_assessment_link['und'][0]['target_id']);
+      }
+
+      if ($direct_link && ($assessment_link && $assessment_link != 'node/')) {
         $link_assessment = drupal_get_path_alias('node/' . $node->field_assessment_link['und'][0]['target_id']);
       }
       else {
         $link_assessment = FALSE;
       }
 
+      $content = '';
+
+      if (isset($item->field_body[0])) {
+        $content = $item->field_body[0]['rendered']['#markup'];
+      }
+
       $items[$index] = array(
         'title' => t($item->node_title),
-        'content' => $item->field_body[0]['rendered']['#markup'],
+        'content' => $content,
         'direct_link' => $link_assessment,
       );
     }

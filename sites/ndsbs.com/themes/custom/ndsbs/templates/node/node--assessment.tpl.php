@@ -91,7 +91,7 @@
   <div class="content"<?php print $content_attributes; ?>>
     <div uk-grid>
 
-      <?php if ($content['field_asmentinfo_section_one']): ?>
+      <?php if (isset($content['field_asmentinfo_section_one'])): ?>
         <div id="assessment-section-one" class="uk-width-1-1">
           <?php print render($content['field_asmentinfo_section_one']); ?>
           <hr class="uk-divider-icon">
@@ -99,7 +99,7 @@
       <?php endif; ?>
 
       <div id="assessment-section-two" class="uk-width-1-1 uk-width-1-1@s uk-width-2-3@m uk-width-2-3@l uk-width-3-4@xl">
-        <?php if ($content['field_service_description']): ?>
+        <?php if (isset($content['field_service_description'])): ?>
           <?php print render($content['field_service_description']); ?>
         <?php endif; ?>
       </div>
@@ -126,14 +126,14 @@
         </div>
       </div>
 
-      <?php if ($content['field_asmentinfo_section_two']): ?>
+      <?php if (isset($content['field_asmentinfo_section_two'])): ?>
         <div id="assessment-section-three" class="uk-width-1-1">
           <hr class="uk-divider-icon">
           <?php print render($content['field_asmentinfo_section_two']); ?>
         </div>
       <?php endif; ?>
 
-      <?php if ($content['field_asmentinfo_section_three']): ?>
+      <?php if (isset($content['field_asmentinfo_section_three'])): ?>
         <div id="assessment-section-four" class="uk-width-1-1">
           <hr class="uk-divider-icon">
           <?php print render($content['field_asmentinfo_section_three']); ?>

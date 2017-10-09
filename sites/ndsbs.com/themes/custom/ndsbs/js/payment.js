@@ -87,3 +87,13 @@ jQuery(document).ready(function ($) {
   }
   /* ]]> */
 });
+
+jQuery(document).ajaxComplete(function(){
+  var message = '<div class="uk-alert uk-alert-primary">' +
+    '<p>Rush services updated!</p>' +
+    '</div>';
+  UIkit.notification({
+    message: message,
+    timeout: 2500
+  });
+});
