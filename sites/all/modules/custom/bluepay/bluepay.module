@@ -254,9 +254,8 @@ function bluepay_payment_form($form, &$form_state, $order) {
       ],
     ];
 
-    if ($dev_env && !$rush_amount) {
+    if ($dev_env && !$rush_amount && variable_get('bluepay_mode')) {
       $form['form_wrapper']['rush_service']['#default_value'] = 75;
-      $form['form_wrapper']['rush_service']['#disabled'] = TRUE;
     }
     elseif (isset($form_state['values']) && isset($form_state['values']['rush_service'])) {
       $form['form_wrapper']['rush_service']['#default_value'] = $form_state['values']['rush_service'];
