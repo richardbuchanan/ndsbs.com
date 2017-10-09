@@ -44,29 +44,32 @@ class Ndsbs {
       case "user/$uid/devel/render":
       case "user/$uid/track":
       case "user/$uid/track/navigation":
-        $title = $username;
+        $title = t('@username', array('@username' => $username));
         break;
 
       case "user/$uid/contact":
-        $title = "Contact $username";
+        $title = t('Contact @username', array('@username' => $username));
         break;
 
       case 'user':
       case 'user/login':
-        $title = 'Log in';
+        $title = t('Log in');
         break;
 
       case 'user/password':
-        $title = 'Request new password';
+        $title = t('Request new password');
         break;
 
       case 'user/register':
-        $title = 'Create new account';
+        $title = t('Create new account');
         break;
+
+      default:
+        $title = t('@title', array('@title' => $title));
     }
 
     if (current_path() == 'user' && user_is_logged_in()) {
-      $title = $username;
+      $title = t('@username', array('@username' => $username));
     }
 
     return html_entity_decode($title);
