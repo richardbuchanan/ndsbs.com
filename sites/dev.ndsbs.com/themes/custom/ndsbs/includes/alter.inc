@@ -87,10 +87,6 @@ function ndsbs_form_alter(&$form, &$form_state, $form_id) {
     );
   }
 
-  if ($form_id == 'user_profile_form') {
-    unset($form['#fieldgroups']['group_terms_of_use']);
-  }
-
   if ($form_id == 'user_login_block') {
     $markup = $form['links']['#markup'];
     $markup = str_replace('<ul class="uk-list">', '<ul class="uk-subnav uk-subnav-divided">', $markup);

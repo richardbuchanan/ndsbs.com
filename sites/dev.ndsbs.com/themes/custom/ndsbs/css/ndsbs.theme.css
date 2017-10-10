@@ -641,6 +641,9 @@ select.client-select-assessment.uk-select:not([multiple]):not([size]) {
   display: block;
   clear: both;
 }
+#user-profile-form .group-terms-of-use {
+  display: none;
+}
 
 /**
  * User profiles.

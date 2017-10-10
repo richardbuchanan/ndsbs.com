@@ -351,11 +351,6 @@ function ndsbs_custom_theme() {
     'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
     'template' => 'user-profile',
   );
-  $items['user_profile_form'] = array(
-    'render element' => 'form',
-    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
-    'template' => 'user_profile_form',
-  );
   $items['paper_work_node_form'] = array(
     'render element' => 'form',
     'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
