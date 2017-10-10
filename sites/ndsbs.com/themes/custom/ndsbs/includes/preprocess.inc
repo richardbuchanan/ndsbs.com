@@ -48,7 +48,7 @@ function ndsbs_preprocess_html(&$variables) {
     drupal_add_html_head($meta_robots, 'ndsbs_dev_robots');
   }
 
-  $title = NDSBS::getTitle();
+  $title = htmlspecialchars_decode(NDSBS::getTitle());
   $variables['head_title_array']['title'] = $title;
   $variables['head_title'] = implode(' | ', $variables['head_title_array']);
   $variables['head_array']['title'] = implode(' | ', $variables['head_title_array']);
@@ -227,7 +227,7 @@ function ndsbs_preprocess_page(&$variables) {
   }
 
   $title = NDSBS::getTitle();
-  drupal_set_title($title);
+  drupal_set_title(strip_tags($title));
 }
 
 /**

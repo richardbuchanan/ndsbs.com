@@ -38,6 +38,7 @@ function ndsbs_preprocess_questionnaier_start(&$variables) {
 
   $variables['assessment_select_form'] = drupal_get_form('ndsbs_assessment_client_assessments_select_form');
   $variables['questionnaire_form'] = get_assessment_confirmation_form();
+  questionnaire_move($assessment_id, $transid);
 }
 
 /**

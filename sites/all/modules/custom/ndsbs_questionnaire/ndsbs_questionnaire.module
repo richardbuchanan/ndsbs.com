@@ -1325,24 +1325,16 @@ function ndsbs_questionnaire_email_to_therapist($assessment_id) {
  * Function questionnaire_move() Implemeted to move questionnaire
  * for question answer node table to question and answer table respectivaly
  */
-function questionnaire_move() {
-  $assessment_nid = arg(2);
-  $transid = arg(4);
-
+function questionnaire_move($assessment_nid, $transid) {
   // Transfer Questionnaire from import (q_node and a_node To q and a respectivally)
   $query_chk = db_select('assessment_question', 'assmnt')
     ->fields('assmnt', array('transaction_id'))
     ->condition('transaction_id', $transid, '=');
   $chk_execute = $query_chk->execute();
   $chk_result = $chk_execute->fetchAll();
+  $chk_result_data = $chk_result[0]->transaction_id;
 
-  $chk_result_data = FALSE;
-
-  if (isset($chk_result[0])) {
-    $chk_result_data = $chk_result[0]->transaction_id;
-  }
-
-  if ($chk_result_data) {
+  if ($chk_result_data <= 0) {
     // Build the SELECT query For Question.
     $query = db_select('assessment_question_node', 'aqn');
     // Add the fields we want.
@@ -1374,6 +1366,8 @@ function questionnaire_move() {
     db_insert('assessment_answer')
       ->from($query_answer)
       ->execute();
+
+    drupal_goto(current_path());
   }
 }
 

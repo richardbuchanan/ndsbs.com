@@ -13,12 +13,15 @@
  */
 function ndsbs_preprocess_questionnaier_start(&$variables) {
   $_SESSION['COMPLETE_MY_QUESTIONNAIRE'] = current_path();
+
+  if (!isset($_SESSION['QUESTIONNAIRE_START_PAGE']) || $_SESSION['QUESTIONNAIRE_START_PAGE'] != current_path()) {
+    $_SESSION['QUESTIONNAIRE_START_PAGE'] = current_path();
+    menu_cache_clear_all();
+  }
+
   $assessment_id = arg(2);
   $transid = arg(4);
   $total_questions = get_total_questions_numbers($assessment_id, $transid);
-  $assessment_node = node_load($assessment_id);
-  $assessment_title = $assessment_node->title;
-
   $questionnaire_info = get_total_attempted_times($assessment_id, $transid);
   $total_attempts = $questionnaire_info['total_attempts'] ? $questionnaire_info['total_attempts'] : '0';
 
@@ -30,11 +33,12 @@ function ndsbs_preprocess_questionnaier_start(&$variables) {
   );
 
   $variables['questionnaire_instructions'] = theme('item_list', array(
-    'title' => $assessment_title . ' Questionnaire',
     'items' => $items,
   ));
 
-  $variables['form'] = get_assessment_confirmation_form();
+  $variables['assessment_select_form'] = drupal_get_form('ndsbs_assessment_client_assessments_select_form');
+  $variables['questionnaire_form'] = get_assessment_confirmation_form();
+  questionnaire_move($assessment_id, $transid);
 }
 
 /**
