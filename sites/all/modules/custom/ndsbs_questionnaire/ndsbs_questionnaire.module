@@ -238,8 +238,8 @@ function assessment_questionnaire_form($form, &$form_state) {
   $get_ans_id_result = $get_ans_id->execute();
   $ans_id_data = $get_ans_id_result->fetchAll();
 
-  $short_answer = $ans_id_data[0]->short_answer_textarea;
-  $other_answer = $ans_id_data[0]->others_reason;
+  $short_answer = isset($ans_id_data[0]) ? $ans_id_data[0]->short_answer_textarea : '';
+  $other_answer = isset($ans_id_data[0]) ? $ans_id_data[0]->others_reason : '';
 
   // Get answer from the db.
   $data_answer = assessment_answer($question_id);
@@ -260,6 +260,10 @@ function assessment_questionnaire_form($form, &$form_state) {
   $evaluation_status = get_evaluation_status($assessment_node_id, $transid);
 
   $new_field_added = 1;
+  $data_checked = array();
+  $set_text_box_disable = 0;
+  $set_dd_radio_disable = 0;
+  $selected_data = 0;
 
   foreach ($data_answer as $answer_option) {
     switch ($question_type) {
@@ -267,7 +271,7 @@ function assessment_questionnaire_form($form, &$form_state) {
         $type = 'checkboxes';
         $value[$answer_option->ansid] = $answer_option->answers;
 
-        if ($ans_id_data[0]->answer_id <> '') {
+        if (isset($ans_id_data[0]) && $ans_id_data[0]->answer_id <> '') {
           if ($evaluation_status == 1) {
             $data_checked[$answer_option->ansid] = array('#disabled' => TRUE);
             $set_text_box_disable = 1;
@@ -275,7 +279,8 @@ function assessment_questionnaire_form($form, &$form_state) {
           }
         }
 
-        $explode_data = explode(',', $ans_id_data[0]->answer_id);
+        $explode_data = isset($ans_id_data[0]) ? explode(',', $ans_id_data[0]->answer_id) : array();
+
         for ($i = 0; $i < count($explode_data); $i++) {
           if ($explode_data[$i] == $answer_option->ansid) {
             if ($evaluation_status == 1) {
@@ -297,7 +302,7 @@ function assessment_questionnaire_form($form, &$form_state) {
         $type = 'radios';
         $value[$answer_option->ansid] = $answer_option->answers;
 
-        if ($ans_id_data[0]->answer_id <> '') {
+        if (isset($ans_id_data[0]) && $ans_id_data[0]->answer_id <> '') {
           if ($evaluation_status == 1) {
             $data_checked[$answer_option->ansid] = array('#disabled' => TRUE);
             $set_text_box_disable = 1;
@@ -305,7 +310,7 @@ function assessment_questionnaire_form($form, &$form_state) {
           }
         }
 
-        if ($ans_id_data[0]->answer_id == $answer_option->ansid) {
+        if (isset($ans_id_data[0]) && $ans_id_data[0]->answer_id == $answer_option->ansid) {
           if ($evaluation_status == 1) {
             $data_checked[$answer_option->ansid] = array(
               '#attributes' => array(
@@ -328,7 +333,7 @@ function assessment_questionnaire_form($form, &$form_state) {
           '#value' => $answer_option->ansid,
         );
 
-        if ($ans_id_data[0]->answer_id <> '') {
+        if (isset($ans_id_data[0]) && $ans_id_data[0]->answer_id <> '') {
           if ($evaluation_status == 1) {
             $set_dd_radio_disable = 1;
           }
@@ -452,7 +457,7 @@ function assessment_questionnaire_form($form, &$form_state) {
         '#type' => $type,
         '#options' => $value,
         '#required' => TRUE,
-        '#default_value' => $selected_data,
+        '#default_value' => $selected_data ? $selected_data : array(),
         '#prefix' => '<span class="hide_ans">',
         '#suffix' => '</span>',
       );
@@ -537,7 +542,8 @@ function assessment_questionnaire_form_submit($form, &$form_state) {
   $page_num = $_REQUEST['page'];
   $page_nxt = $page_num + 1;
 
-  $view_questionnaire = $form_state['values']['view_questionnaire'];
+  $view_questionnaire = isset($form_state['values']['view_questionnaire']) ? $form_state['values']['view_questionnaire'] : 0;
+
   if ($view_questionnaire == 1) {
     drupal_goto($base_url . '/user/questionnaire/' . $assessment_nid . '/trans/' . $transid, array(
       // 'query' => array('page' => $page_nxt),
@@ -547,11 +553,18 @@ function assessment_questionnaire_form_submit($form, &$form_state) {
 
   $data_question_id = $form_state['values']['data_question_id'];
   $data_question_sequesce = $form_state['values']['question_sequesce'];
-  $month_value = $form_state['values']['data_answer_month'];
-  $year_value = $form_state['values']['data_answer_year'];
+  $month_value = isset($form_state['values']['data_answer_month']) ? $form_state['values']['data_answer_month'] : '';
+  $year_value = isset($form_state['values']['data_answer_year']) ? $form_state['values']['data_answer_year'] : '';
   $data_answer = $form_state['values']['data_answer'];
 
-  $answer_str = implode(',', $data_answer);
+  $answer_str = '';
+  $data_answer_other = '';
+  $save_textarea_input_val = '';
+
+  if (is_array($data_answer)) {
+    $answer_str = implode(',', $data_answer);
+  }
+
   if ($answer_str <> '') {
     $answer_save = $answer_str;
   }
@@ -563,7 +576,7 @@ function assessment_questionnaire_form_submit($form, &$form_state) {
     }
   }
   else {
-    $textarea_ans_id = $form_state['values']['textarea_ans_id'];
+    $textarea_ans_id = isset($form_state['values']['textarea_ans_id']) ? $form_state['values']['textarea_ans_id'] : '';
     if ($textarea_ans_id <> '') {
       $answer_save = $textarea_ans_id;
       $save_textarea_input_val = $data_answer;
@@ -573,7 +586,7 @@ function assessment_questionnaire_form_submit($form, &$form_state) {
     }
   }
 
-  if ($form_state['values']['data_answer_other'] <> '') {
+  if (isset($form_state['values']['data_answer_other']) && $form_state['values']['data_answer_other'] <> '') {
     $data_answer_other = $form_state['values']['data_answer_other'];
   }
 
@@ -638,8 +651,23 @@ function get_assessment_confirmation_form() {
  * Defined to show the checknox of the confirm.
  */
 function assessment_confirmation_form() {
+  $assessment_data = get_purchased_questionnaire_assessment_list_leftpanel();
+  $assessment_id = 0;
+  $transid = 0;
+
+  foreach ($assessment_data as $assessment_datum) {
+    if ($assessment_datum['transaction_id'] == arg(4)) {
+      $assessment_id = $assessment_datum['assessment_node_id'];
+      $transid = $assessment_datum['transaction_id'];
+    }
+  }
+
+  $question_info = get_total_attempted_times($assessment_id, $transid);
+  $total_attempts = $question_info['total_attempts'];
+  $start = $total_attempts ? 'continue' : 'start';
+
   $form['confirm_answer'] = array(
-    '#title' => t('If you are ready to start the questionnaire please select Confirm box first.'),
+    '#title' => t('If you are ready to @start the questionnaire please select Confirm box first.', array('@start' => $start)),
     '#type' => 'checkboxes',
     '#options' => array('1' => 'Confirm'),
     '#required' => TRUE,
@@ -647,7 +675,7 @@ function assessment_confirmation_form() {
   $form['submit'] = array(
     '#id' => 'questionnair_cnfrm',
     '#type' => 'submit',
-    '#value' => t('Start Questionnaire'),
+    '#value' => $total_attempts ? t('Continue Questionnaire') : t('Start Questionnaire'),
   );
 
   return $form;
@@ -707,8 +735,8 @@ function assessment_confirmation_form_submit($form, &$form_state) {
         ->execute();
     }
 
-    $form_state['redirect'] = url($base_url . '/user/questionnaire/' . $assessment_nid . '/trans/' . $transid);
-    $_SESSION['COMPLETE_MY_QUESTIONNAIRE'] = $base_url . '/user/questionnaire/' . $assessment_nid . '/trans/' . $transid;
+    $form_state['redirect'] = url('/user/questionnaire/' . $assessment_nid . '/trans/' . $transid);
+    $_SESSION['COMPLETE_MY_QUESTIONNAIRE'] = '/user/questionnaire/' . $assessment_nid . '/trans/' . $transid;
   }
 }
 
@@ -1302,7 +1330,7 @@ function ndsbs_questionnaire_email_to_therapist($assessment_id) {
   $to = "Brian Davis <$superadmin->mail>";
   $node_info = node_load($order_data[0]->nid);
   $node_tid = $node_info->field_primary_service['und'][0]['tid'];
-  $language = $edit['original']->language;
+  $language = user_preferred_language($user);
   $default_from = variable_get('site_mail', ini_get('sendmail_from'));
   $message = drupal_mail($module, $key, $to, $language, $params = array(), $from = $default_from, $send = FALSE);
 

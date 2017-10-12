@@ -431,17 +431,47 @@ $recipient_address = !empty($recipient_street) ? $recipient_street . '<br />' . 
         </tbody>
       </table>
     </form>
+
+    <?php // Temp main reports ?>
+    <?php $client_assessments = ndsbs_assessment_get_client_assessments(arg(3)); ?>
+    <form id="assessment-frm" method="post" action="<?php print $base_url; ?>/save/assessmentform/verification" enctype="multipart/form-data">
+      <table class="uk-table uk-table-striped sticky-enabled">
+        <thead>
+        <tr>
+          <th>Requested Document</th>
+          <th>Express Mail</th>
+          <?php if ($notary_status == 'active'): ?>
+            <th>Notary Request</th>
+          <?php endif; ?>
+          <th>Counselor's Report</th>
+          <?php if ($notary_status == 'active'): ?>
+            <th>Upload Notary Report</th>
+          <?php endif; ?>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($client_assessments as $client_assessment): ?>
+          <tr>
+            <td><?php print $client_assessment['assessment_title']; ?> Report</td>
+            <td></td>
+            <td></td>
+          </tr>
+        <?php endforeach; ?>
+        </tbody>
+      </table>
+    </form>
+    <?php // End temp main reports ?>
+
   </li>
   <li id="interview" class="tab-pane fade">
     <h2 class="tab-title">Interview</h2>
     <?php
-    $result = array();
-    $val = get_counseling_request_info_transid(arg(9));
-    $nid_array = array();
-    foreach ($val as $data) {
-      $nid_array[] = $data->nid;
-    }
-    $result = node_load_multiple($nid_array); ?>
+    $query = new EntityFieldQuery();
+    $entities = $query->entityCondition('entity_type', 'node')
+      ->entityCondition('bundle', 'counseling_request')
+      ->propertyCondition('uid', arg(3))
+      ->execute();
+    $nodes = node_load_multiple(array_keys($entities['node'])); ?>
     <table class="uk-table uk-table-striped sticky-enabled">
       <thead>
         <tr>
@@ -452,7 +482,7 @@ $recipient_address = !empty($recipient_street) ? $recipient_street . '<br />' . 
         </tr>
       </thead>
       <tbody>
-        <?php foreach ($result as $rec): ?>
+        <?php foreach ($nodes as $rec): ?>
           <?php $user_info = user_load($rec->uid); ?>
           <tr>
             <td>

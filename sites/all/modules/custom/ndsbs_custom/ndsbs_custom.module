@@ -403,7 +403,7 @@ function ndsbs_custom_theme() {
   );
   $items['counseling_request_node_form'] = array(
     'render element' => 'form',
-    'path' => drupal_get_path('theme', 'bootstrap_ndsbs') . '/templates',
+    'path' => drupal_get_path('theme', 'ndsbs') . '/templates/custom',
     'template' => 'counseling_request_node_form',
   );
   $items['appointment_preference_node_form'] = array(

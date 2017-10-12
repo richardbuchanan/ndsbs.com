@@ -341,6 +341,7 @@ function ndsbs_preprocess_button(&$variables) {
 
   switch ($value) {
     case 'Apply':
+    case 'Continue Questionnaire':
     case 'Create new account':
     case 'E-mail new password':
     case 'Execute':
@@ -360,6 +361,7 @@ function ndsbs_preprocess_button(&$variables) {
       break;
 
     case 'Cancel account':
+    case 'Delete':
       $variables['element']['#attributes']['class'][] = 'uk-button-danger';
       break;
 

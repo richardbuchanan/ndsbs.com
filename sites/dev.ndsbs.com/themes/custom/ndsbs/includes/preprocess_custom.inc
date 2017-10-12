@@ -9,45 +9,102 @@
  */
 
 /**
- * Implements hook_preprocess_HOOK() for questionnaire_start.tpl.php
+ * Implements hook_preprocess_HOOK() for assessment_questionnaire_form.tpl.php.
  */
-function ndsbs_preprocess_questionnaier_start(&$variables) {
-  $_SESSION['COMPLETE_MY_QUESTIONNAIRE'] = current_path();
+function ndsbs_preprocess_assessment_questionnaire_form(&$variables) {
+  global $user;
+  $nid = arg(2);
+  $tid = arg(4);
+  $page = isset($_GET['page']) ? $_GET['page'] + 1 : '1';
+  $variables['submit_message'] = FALSE;
 
-  if (!isset($_SESSION['QUESTIONNAIRE_START_PAGE']) || $_SESSION['QUESTIONNAIRE_START_PAGE'] != current_path()) {
-    $_SESSION['QUESTIONNAIRE_START_PAGE'] = current_path();
-    menu_cache_clear_all();
+  $total_ass_questions = get_total_questions_numbers($nid, $tid);
+  $total_attempted_questions = get_total_attempted_questions_numbers($nid, $tid);
+  $last_question = $total_attempted_questions == $total_ass_questions ? 1 : 0;
+  $skipped_questions = get_skipped_question_before_evaluation($nid, $tid);
+
+  // $last_question_answered = $last_question && !empty($form['data_answer']['#value']);
+  $ready_for_evaluation = $variables['form']['validate_evaluation_status']['#value'] == 'ready' ? 1 : 0;
+
+  if ($last_question) {
+    $submit_message = '<div class="uk-alert-success" uk-alert>';
+    $submit_message .= t('<p>You have answered all questions. Thank you! Please click the Submit All Answers for Evaluator Review button, then provide us with your preferred time to complete your interview. Someone from our support team will contact you to schedule.</p>');
+    $submit_message .= '</div>';
+
+    $variables['submit_message'] = array(
+      '#markup' => $submit_message,
+    );
   }
 
-  $assessment_id = arg(2);
-  $transid = arg(4);
-  $total_questions = get_total_questions_numbers($assessment_id, $transid);
-  $questionnaire_info = get_total_attempted_times($assessment_id, $transid);
-  $total_attempts = $questionnaire_info['total_attempts'] ? $questionnaire_info['total_attempts'] : '0';
+  if (!$ready_for_evaluation && $page == $total_ass_questions) {
+    $submit_message = '<div class="uk-alert-warning" uk-alert>';
+    $submit_message .= t('<p><strong>There are questions you need to answer before submitting your questionnaire. Please review the list of questions below.</strong></p>');
+    $submit_message .= $skipped_questions;
+    $submit_message .= '</div>';
 
-  $items = array(
-    '<strong>Total Questions</strong> - ' . $total_questions,
-    '<strong>Estimated Time to Complete</strong> - 15 minutes / your saved answers remain in your account if you need to stop and resume at another time.',
-    '<strong>Attempted</strong> - ' . $total_attempts . ' times',
-    '<strong>Instructions</strong> - Use text boxes where provided and write as much detail as you would like. You may explain any of your answers in detail during your interview.',
+    $variables['submit_message'] = array(
+      '#markup' => $submit_message,
+    );
+  }
+
+  $questions_remaining_attributes = array(
+    'id' => 'questions-remaining',
   );
 
-  $variables['questionnaire_instructions'] = theme('item_list', array(
-    'items' => $items,
-  ));
+  if ($total_attempted_questions == $total_ass_questions) {
+    $questions_remaining_attributes['class'][] = 'completed';
+  }
 
-  $variables['assessment_select_form'] = drupal_get_form('ndsbs_assessment_client_assessments_select_form');
-  $variables['questionnaire_form'] = get_assessment_confirmation_form();
-  questionnaire_move($assessment_id, $transid);
+  $questions_remaining = '<div' . drupal_attributes($questions_remaining_attributes) . '>';
+  $questions_remaining .= t('<span class="uk-badge uk-float-right uk-margin-bottom uk-margin-left">@attempted out of @questions answers saved</span>', array(
+    '@attempted' => $total_attempted_questions,
+    '@questions' => $total_ass_questions,
+  ));
+  $questions_remaining .= '</div>';
+
+  $variables['questions_remaining'] = array(
+    '#markup' => $questions_remaining,
+  );
+
+  $variables['pager'] = array(
+    '#theme' => 'pager',
+  );
+
+  $review_attributes = array(
+    'id' => 'submit-all-questionnaire-answers',
+    'class' => array(
+      'uk-button',
+      'uk-button-primary',
+    ),
+    'title' => t('Submit all answers and finish questionnaire'),
+  );
+
+  $variables['print_submit'] = FALSE;
+
+  if ($user->roles[6] == 'client') {
+    $variables['print_submit'] = TRUE;
+  }
+
+  if ($page == $total_ass_questions && $last_question) {
+    $variables['print_submit'] = FALSE;
+  }
+
+  if (!$last_question) {
+    $review_attributes['class'][] = 'uk-hidden';
+  }
+
+  $review_options = array(
+    'attributes' => $review_attributes,
+  );
+
+  $review_path = 'user/evaluation/questionnaire/' . $nid . '/trans/' . $tid;
+  $variables['submit_for_review'] = l(t('Submit All Answers for Evaluator Review'), $review_path, $review_options);
 }
 
 /**
  * Implements hook_preprocess_HOOK() for list_all_client.tpl.php.
  */
 function ndsbs_preprocess_list_all_client(&$variables) {
-  global $base_url, $user;
-  $i = 0;
-
   $clients = get_all_clients();
 
   if (isset($_REQUEST['search_text'])) {
@@ -188,4 +245,73 @@ function ndsbs_preprocess_list_all_client(&$variables) {
   }
 
   $variables['clients'] = $clients;
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for questionnaire_start.tpl.php
+ */
+function ndsbs_preprocess_questionnaier_start(&$variables) {
+  $_SESSION['COMPLETE_MY_QUESTIONNAIRE'] = current_path();
+
+  if (!isset($_SESSION['QUESTIONNAIRE_START_PAGE']) || $_SESSION['QUESTIONNAIRE_START_PAGE'] != current_path()) {
+    $_SESSION['QUESTIONNAIRE_START_PAGE'] = current_path();
+    menu_cache_clear_all();
+  }
+
+  $assessment_id = arg(2);
+  $transid = arg(4);
+  $total_questions = get_total_questions_numbers($assessment_id, $transid);
+  $questionnaire_info = get_total_attempted_times($assessment_id, $transid);
+  $total_attempts = $questionnaire_info['total_attempts'] ? $questionnaire_info['total_attempts'] : '0';
+
+  $items = array(
+    '<strong>Total Questions</strong> - ' . $total_questions,
+    '<strong>Estimated Time to Complete</strong> - 15 minutes / your saved answers remain in your account if you need to stop and resume at another time.',
+    '<strong>Attempted</strong> - ' . $total_attempts . ' times',
+    '<strong>Instructions</strong> - Use text boxes where provided and write as much detail as you would like. You may explain any of your answers in detail during your interview.',
+  );
+
+  $variables['questionnaire_instructions'] = theme('item_list', array(
+    'items' => $items,
+  ));
+
+  $variables['assessment_select_form'] = drupal_get_form('ndsbs_assessment_client_assessments_select_form');
+  $variables['questionnaire_form'] = get_assessment_confirmation_form();
+  questionnaire_move($assessment_id, $transid);
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for schedule_interview.tpl.php.
+ */
+function ndsbs_preprocess_schedule_interview(&$variables) {
+  global $user;
+
+  $assessment_data = explode('/', $_SESSION['COMPLETE_MY_QUESTIONNAIRE']);
+  $trans_id = $assessment_data[4];
+
+  $query = new EntityFieldQuery();
+  $entities = $query->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', 'counseling_request')
+    ->propertyCondition('uid', $user->uid)
+    ->execute();
+  $nodes = node_load_multiple(array_keys($entities['node']));
+
+  $interview_requested = FALSE;
+  $date_requested = t('No interview requests were found');
+  $date_attended = t('Not attended');
+
+  foreach ($nodes as $node) {
+    if ($node->field_assess_trans_id['und'][0]['value'] == $trans_id) {
+      $interview_requested = TRUE;
+      $date_requested = date('l, F j, Y', $node->created);
+
+      if ($node->field_attempted_on['und'][0]['value']) {
+        $date_attended = date('l, F j, Y', $node->field_attempted_on['und'][0]['value']);
+      }
+    }
+  }
+
+  $variables['interview_requested'] = $interview_requested;
+  $variables['date_requested'] = $date_requested;
+  $variables['date_attended'] = $date_attended;
 }

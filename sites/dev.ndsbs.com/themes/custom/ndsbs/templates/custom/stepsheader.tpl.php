@@ -1,8 +1,9 @@
 <?php
-$assessment_data = get_purchased_questionnaire_assessment_list_leftpanel();
-$assessment_id = $assessment_data[0]['assessment_node_id'];
-$transid = $assessment_data[0]['transaction_id'];
-$termid = $assessment_data[0]['term_id'];
+//$assessment_data = get_purchased_questionnaire_assessment_list_leftpanel();
+$assessment_data = explode('/', $_SESSION['COMPLETE_MY_QUESTIONNAIRE']);
+$assessment_id = $assessment_data[2];
+$transid = $assessment_data[4];
+$termid = $assessment_data[6];
 
 $question_info = get_total_attempted_times($assessment_id, $transid);
 $total_attempts = $question_info['total_attempts'];
@@ -45,7 +46,7 @@ $nid = node_load($assessment_id);
 $data = get_purchased_items_reports_trans($assessment_id, 1, 0, $termid, $transid);
 
 $client_reports = get_all_client_reports($transid);
-$documents_status = $paperwork_status || !empty($client_reports);
+$documents_status = $paperwork_status || (!empty($client_reports) && !empty($report_info));
 
 $report_info = array();
 foreach($data as $report) {
@@ -53,7 +54,7 @@ foreach($data as $report) {
 }
 
 $questionnaire_url = '/' . $_SESSION['COMPLETE_MY_QUESTIONNAIRE'];
-$counseling_url = '/schedule/interview';
+$counseling_url = '/schedule/interview?destination=user/paperwork/list';
 $necessary_docs_url = '/user/paperwork/list';
 $report_url = '/view/assessment/report';
 
@@ -104,7 +105,7 @@ if ($attendance) {
 else {
   $step_two_button_attributes['class'][] = 'uk-button-primary';
 }
-if (current_path() == 'node/add/counseling-request') {
+if (current_path() == 'schedule/interview') {
   $step_two_attributes['class'][] = 'uk-active';
   drupal_set_title('Schedule My Interview');
 }
@@ -149,7 +150,7 @@ $step_four_title_attributes = array(
     'uk-text-center@l',
   ),
 );
-if (!empty($client_reports)) {
+if (!empty($client_reports) && $report_info->main_report) {
   $step_four_button_attributes['class'][] = 'uk-button-success';
   $step_four_title_attributes['class'][] = 'step-completed';
 }
@@ -234,10 +235,8 @@ $step_four_button_classes =  implode(' ', $step_four_button_attributes['class'])
 
       <div class="steps-header-footer">
         <div><strong>Status</strong>: <?php print $attended_badge; ?></div>
-        <?php if ($attendance == 0): ?>
-          <p class="uk-margin-remove-bottom">Call Now to Schedule (9 a.m. – 5 p.m. EST): <a href="tel: 1-800-671-8589">1-800-671-8589</a></p>
-          <div class="uk-margin-small-top uk-margin-small-bottom"><strong>OR</strong></div>
-          <p class="uk-margin-remove">Indicate & save appointment request</p>
+        <?php if (!$counseling_data): ?>
+          <p class="uk-margin-remove-bottom">Submit interview request <strong>OR</strong> call to schedule interview (9 a.m. – 5 p.m. EST): <a href="tel: 1-800-671-8589">1-800-671-8589</a></p>
         <?php endif; ?>
       </div>
     </div>
@@ -278,7 +277,7 @@ $step_four_button_classes =  implode(' ', $step_four_button_attributes['class'])
       </h3>
 
       <div class="steps-header-footer">
-        <?php if (empty($client_reports)): ?>
+        <?php if (empty($client_reports) || !$report_info->main_report): ?>
           <p><strong>Status</strong>: Pending</p>
           <p class="uk-margin-remove-bottom">Must complete first three steps to receive a report.</p>
         <?php else: ?>

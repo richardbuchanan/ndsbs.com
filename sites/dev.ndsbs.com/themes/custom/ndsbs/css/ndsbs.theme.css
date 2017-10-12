@@ -644,6 +644,12 @@ select.client-select-assessment.uk-select:not([multiple]):not([size]) {
 #user-profile-form .group-terms-of-use {
   display: none;
 }
+#questions-remaining .uk-badge {
+  padding: 0 10px;
+}
+#questions-remaining.completed .uk-badge {
+  background: #07754e;
+}
 
 /**
  * User profiles.

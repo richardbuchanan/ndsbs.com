@@ -29,11 +29,12 @@ drupal_add_js('misc/tableheader.js');
       <?php $links = array(); ?>
       <?php $options = array('html' => TRUE); ?>
 
-      <?php $view = '/sites/' . $host . '/files/reports/' . $report['report']; ?>
-      <?php $links[] = "<a href='$view' target='_blank' title='View report'><span uk-icon='icon: file'></span> View</a>"; ?>
-
-      <?php $download = '/download/report?file_name_path=%20public://reports/' . $report['report']; ?>
-      <?php $links[] = "<a href='$download' title='Download report'><span uk-icon='icon: download'></span> Download</a>"; ?>
+      <?php if ($report['report']): ?>
+        <?php $view = '/sites/' . $host . '/files/reports/' . $report['report']; ?>
+        <?php $links[] = "<a href='$view' target='_blank' title='View report'><span uk-icon='icon: file'></span> View</a>"; ?>
+      <?php else: ?>
+        <?php $links[] = '<span>Report pending</span>'; ?>
+      <?php endif; ?>
 
       <tr>
         <td><?php print $report['assessment']; ?></td>
