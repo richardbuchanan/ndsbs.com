@@ -185,6 +185,9 @@
         $(this).blur();
         body.removeClass('navbar-open');
         body.addClass('navbar-closed');
+      }).find('a').on('hover', function (e) {
+        e.preventDefault();
+        $(this).blur();
       });
 
       offcanvas.on('beforeshow', function () {
