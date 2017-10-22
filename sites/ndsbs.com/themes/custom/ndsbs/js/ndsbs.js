@@ -175,10 +175,14 @@
       var pageNavbar = $('#page-navbar');
       var offcanvas = $('#offcanvas');
 
-      pageNavbar.on('beforeshow', function () {
+      pageNavbar.on('beforeshow', function (e) {
+        e.preventDefault();
+        $(this).blur();
         body.addClass('navbar-open');
         body.removeClass('navbar-closed');
-      }).on('hidden', function () {
+      }).on('hidden', function (e) {
+        e.preventDefault();
+        $(this).blur();
         body.removeClass('navbar-open');
         body.addClass('navbar-closed');
       });
