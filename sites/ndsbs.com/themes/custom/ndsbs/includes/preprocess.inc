@@ -52,6 +52,12 @@ function ndsbs_preprocess_html(&$variables) {
   $variables['head_title_array']['title'] = $title;
   $variables['head_title'] = implode(' | ', $variables['head_title_array']);
   $variables['head_array']['title'] = implode(' | ', $variables['head_title_array']);
+
+  foreach ($variables['html_attributes_array']['class'] as $index => $value) {
+    if ($value == 'uk-height-1-1') {
+      $variables['html_attributes_array']['class'][$index] = 'uk-height-viewport';
+    }
+  }
 }
 
 /**

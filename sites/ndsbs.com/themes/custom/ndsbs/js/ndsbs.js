@@ -248,5 +248,22 @@
         window.location.href = origin + '/' + this.value;
       })
     }
+  };
+
+  Drupal.behaviors.NDSBSAcceptanceModal = {
+    attach: function () {
+      $('#edit-field-assessment-state-und').on('change', function(e) {
+        if (this.value === 'IL' || this.value === 'NY') {
+          e.preventDefault();
+          $(this).blur();
+
+          UIkit.modal.alert('Please call 1-800-671-8589 to verify acceptance before purchasing')
+            .then(function () {
+              // Alert has closed....
+            });
+        }
+      });
+    }
   }
+
 })(jQuery);
