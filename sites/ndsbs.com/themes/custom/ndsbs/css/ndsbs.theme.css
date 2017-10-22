@@ -1061,10 +1061,5 @@ body.role-super-therapist #user-profile-form ul.group-user-account-therapist {
   left: 0 !important;
 }
 [src="//cdn.ywxi.net/static/img/tm-float-bg-right-bottom.png"] {
-  -moz-transform: scaleX(-1);
-  -o-transform: scaleX(-1);
-  -webkit-transform: scaleX(-1);
-  transform: scaleX(-1);
-  filter: FlipH;
-  -ms-filter: "FlipH";
+  display: none !important;
 }
