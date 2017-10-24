@@ -431,6 +431,9 @@ if (arg(11)) {
       'rows' => $rows,
       'empty' => t('No records found.'),
       'sticky' => TRUE,
+      'attributes' => array(
+        'class' => array('uk-table-striped'),
+      ),
     ));
     ?>
   </li>
