@@ -44,7 +44,7 @@ $street = $user_info->field_address['und'][0]['value'];
 $city = $user_info->field_city['und'][0]['value'];
 $state = $user_info->field_state['und'][0]['value'];
 $zip = $user_info->field_zip['und'][0]['value'];
-$address = $street . '<br />' . $city . ', ' . $state . ' ' . $zip;
+$address = l(t($client_name), 'user/' . $user_info->uid . '/edit') . '<br />' . $street . '<br />' . $city . ', ' . $state . ' ' . $zip;
 $phone = $user_info->field_phone['und'][0]['value'];
 $second_phone = $user_info->field_second_phone['und'][0]['value'];
 $dob = $user_info->field_month['und'][0]['value'] . '/' . $user_info->field_dobdate['und'][0]['value'] . '/' . $user_info->field_year['und'][0]['value'];
@@ -59,9 +59,15 @@ $recipient_city = !empty($user_info->field_recipient_city['und'][0]['value']) ? 
 $recipient_state = !empty($user_info->field_recipient_state['und'][0]['value']) ? $user_info->field_recipient_state['und'][0]['value'] : '';
 $recipient_zip = !empty($user_info->field_recipient_zip['und'][0]['value']) ? $user_info->field_recipient_zip['und'][0]['value'] : '';
 $recipient_address = !empty($recipient_street) ? $recipient_street . '<br />' . $recipient_city . ', ' . $recipient_state . ' ' . $recipient_zip : '';
+
+$active_tab = 0;
+
+if (arg(11)) {
+  $active_tab = arg(11);
+}
 ?>
-<ul uk-tab>
-  <li class="uk-active">
+<ul uk-tab="active: <?php print $active_tab; ?>">
+  <li>
     <a href="#paperwork">Client Info</a>
   </li>
   <li>
@@ -76,19 +82,19 @@ $recipient_address = !empty($recipient_street) ? $recipient_street . '<br />' . 
 </ul>
 
 <ul class="uk-switcher uk-margin">
-  <li id="paperwork" class="tab-pane fade in active">
-    <h2 class="tab-title"><?php print l(t($client_name), 'user/' . $user_info->uid . '/edit'); ?></h2>
+  <li id="paperwork">
+    <h3>Client Info</h3>
     <div class="uk-grid-match uk-child-width-expand@s" uk-grid>
       <div>
         <div class="uk-card uk-card-default uk-card-body">
           <h3 class="uk-card-title">Contact Information</h3>
           <ul class="uk-list">
-            <li><a href="mailto:<?php print $user_info->mail; ?>"><?php print $user_info->mail; ?></a></li>
             <li><?php print $address; ?></li>
             <li><?php print $phone; ?></li>
             <?php if ($second_phone): ?>
               <li><?php print $second_phone; ?></li>
             <?php endif; ?>
+            <li><a href="mailto:<?php print $user_info->mail; ?>"><?php print $user_info->mail; ?></a></li>
           </ul>
         </div>
       </div>
@@ -216,13 +222,13 @@ $recipient_address = !empty($recipient_street) ? $recipient_street . '<br />' . 
     </div>
   </li>
 
-  <li id="assessment" class="tab-pane fade">
+  <li id="assessment">
     <?php $subreport_data = get_purchased_items_subreports_report_section_trans($report_nid = arg(7), 1, 1, $report_tid = arg(5), $user_id, arg(9)); ?>
     <?php $data = get_purchased_items_reports_section_trans($report_nid = arg(7), 1, 0, $report_tid = arg(5), $user_id, arg(9)); ?>
     <?php foreach($data as $report_info_result): ?>
       <?php $termid_assessment = $report_info_result->termid; ?>
       <?php $result_report = node_load($report_info_result->nid); ?>
-      <h2 class="tab-title"><?php print $result_report->field_assessment_title['und'][0]['value']; ?></h2>
+      <h3>Assessment</h3>
       <?php $assigned_therapist = $report_info_result->therapist ? true : false; ?>
       <?php if ($assigned_therapist): ?>
         <?php $therapist_info = user_load($report_info_result->therapist); ?>
@@ -237,208 +243,6 @@ $recipient_address = !empty($recipient_street) ? $recipient_street . '<br />' . 
         <span class="clearfix"><?php print $generated_by; ?><?php print $generated_on; ?></span>
       <?php endif; ?>
     <?php endforeach; ?>
-    <form id="assessment-frm" method="post" action="<?php print $base_url; ?>/save/assessmentform/verification" enctype="multipart/form-data">
-      <table class="uk-table uk-table-striped sticky-enabled">
-        <thead>
-          <tr>
-            <th>Requested Document</th>
-            <th>Express Mail</th>
-            <?php if ($notary_status == 'active'): ?>
-              <th>Notary Request</th>
-            <?php endif; ?>
-            <th>Counselor's Report</th>
-            <?php if ($notary_status == 'active'): ?>
-              <th>Upload Notary Report</th>
-            <?php endif; ?>
-          </tr>
-        </thead>
-        <tbody>
-          <?php foreach ($data as $report_info): ?>
-            <?php $term_id_assessment = $report_info->termid; ?>
-            <?php $result = node_load($report_info->nid); ?>
-            <tr>
-              <td>Assessment Report</td>
-              <td>
-                <?php if ($report_info->express_mail): ?>
-                  <span>Requested On: <?php print date('M d, Y', $report_info->order_date); ?></span>
-                <?php endif; ?>
-              </td>
-              <?php if ($notary_status == 'active'): ?>
-                <td>
-                  <?php if ($report_info->notary_cost): ?>
-                    <span>Requested On: <?php print date('M d, Y', $report_info->order_date); ?></span>
-                  <?php endif; ?>
-                </td>
-              <?php endif; ?>
-              <td>
-                <?php $options_dest = array('query' => array('destination' => 'users/view/reports/'.arg(3).'/tid/'.arg(5).'/nid/'.arg(7).'/transid/'.arg(9).'/tab/2'), 'attributes' => array('class' => 'btn btn-primary')); ?>
-                <?php print l(t('Upload Report'), 'node/add/report-format/generate/user/report/uid/'. arg(3) . '/tid/' . arg(5) . '/nid/' . arg(7) . '/id/'.$report_info->id.'/stid/'.$report_info->termid, $options_dest); ?>
-                <?php $explode = explode('.', $report_info->main_report); ?>
-                <?php $file_extension = $explode[1]; ?>
-                <?php $fname = $report_info->main_report; ?>
-                <?php $file_name_path = 'public://reports/'.$fname; ?>
-                <?php print l(t($fname), $base_url.'/download/report', array('query' => array('file_name_path' => $file_name_path))); ?>
-              </td>
-              <?php if ($notary_status == 'active'): ?>
-                <td></td>
-              <?php endif; ?>
-            </tr>
-          <?php endforeach; ?>
-
-          <?php $inc1 = 0; ?>
-          <?php foreach ($subreport_data as $sub_info): ?>
-            <?php if ($sub_info->main_report_id == $sub_info->termid): ?>
-              <?php if ($sub_info->notary_cost): ?>
-                <tr>
-                  <td>
-                    <span>Assessment Report</span>
-                    <input type="hidden" name="assessment_oid_<?php print $inc1; ?>" value="<?php print $sub_info->id; ?>" />
-                    <input type="hidden" name="termid_<?php print $inc1; ?>" value="<?php print $sub_info->termid; ?>" />
-                  </td>
-                  <td>
-                    <?php if ($sub_info->express_mail): ?>
-                      <?php $report_updated_by = user_load($sub_info->updated_by); ?>
-                      <?php if ($sub_info->express_mail_status == 2): ?>
-                        <span class="clearfix">Dispatched on: <?php print date('M d, Y', $sub_info->updated_on); ?>
-                        <span class="clearfix">Updated by: <?php print $report_updated_by->field_first_name['und'][0]['value'] . ' ' . $report_updated_by->field_last_name['und'][0]['value']; ?></span>
-                      <?php else: ?>
-                        <select name="express_mail_status_<?php print $inc1; ?>" id="express_mail_status" class="form-control">
-                          <option value="0">-Select-</option>
-                          <option value="2">Dispatched</option>
-                        </select>
-                      <?php endif; ?>
-                    <?php else: ?>
-                      <span>Not Requested</span>
-                    <?php endif; ?>
-                  </td>
-
-                  <?php if ($notary_status == 'active'): ?>
-                    <td>
-                      <?php if ($sub_info->notary_cost): ?>
-                        <?php $report_updated_by = user_load($sub_info->updated_by); ?>
-                        <?php if ($sub_info->notary_status == 2): ?>
-                          <span class="clearfix">Attached</span>
-                          <span class="clearfix">Updated by: <?php print $report_updated_by->field_first_name['und'][0]['value'] . ' ' . $report_updated_by->field_last_name['und'][0]['value']; ?>
-                        <?php else: ?>
-                          <select name="notary_status_<?php print $inc1; ?>" id="notary_status" class="form-control">
-                            <option value="0">-Select-</option>
-                            <option value="2">Attached</option>
-                          </select>
-                        <?php endif; ?>
-                      <?php else: ?>
-                        <span>Not Requested</span>
-                      <?php endif; ?>
-                    </td>
-                  <?php endif; ?>
-
-                  <td>
-                    <?php $options_dest = array('query' => array('destination' => 'users/view/reports/'.arg(3).'/tid/'.arg(5).'/nid/'.arg(7).'/transid/'.arg(9).'/tab/2'), array('class' => "brown_btn dis_ib")); ?>
-                    <?php print l(t('Generate Report'), 'node/add/report-format/generate/user/report/uid/'. arg(3) . '/tid/' . arg(5) . '/nid/' . arg(7) . '/id/'.$sub_info->id.'/stid/'.$sub_info->termid, $options_dest); ?>
-                    <?php $explode = explode('.', $sub_info->main_report); ?>
-                    <?php $file_extension = $explode[1]; ?>
-                    <?php $fname = $sub_info->main_report; ?>
-                    <?php $file_name_path = 'public://reports/'.$fname; ?>
-                    <?php print l(t($fname), $base_url.'/download/report', array('query' => array('file_name_path' => $file_name_path))); ?>
-                  </td>
-
-                  <?php if ($notary_status == 'active'): ?>
-                    <td>
-                      <input type="file" name="file_<?php print $inc1; ?>" />
-                      <?php $explode = explode('.', $sub_info->report_name); ?>
-                      <?php $file_extension = $explode[1]; ?>
-                      <?php $fname = $sub_info->report_name; ?>
-                      <?php $file_name_path = 'public://reports/'.$fname; ?>
-                      <?php print l(t($fname), $base_url.'/download/report', array('query' => array('file_name_path' => $file_name_path))); ?>
-                    </td>
-                  <?php endif; ?>
-                </tr>
-                <?php $inc1++; ?>
-              <?php endif; ?>
-            <?php endif; ?>
-          <?php endforeach; ?>
-
-          <?php $statform_array = array(21, 22, 23, 24); ?>
-          <?php foreach ($subreport_data as $sub_info): ?>
-            <?php if (!in_array($sub_info->termid, $statform_array)): ?>
-              <?php if ($sub_info->main_report_id != $sub_info->termid): ?>
-                <?php $term_id_assessment = $report_info->termid; ?>
-                <?php $sub_report = taxonomy_term_load($sub_info->termid); ?>
-                <?php $result = node_load($sub_info->nid); ?>
-                <tr>
-                  <td><?php print $sub_report->name; ?>
-                    <input type="hidden" name="assessment_oid_<?php print $inc1; ?>" value="<?php print $sub_info->id; ?>" />
-                    <input type="hidden" name="termid_<?php print $inc1; ?>" value="<?php print $sub_info->termid; ?>" />
-                  </td>
-                  <td>
-                    <?php if ($sub_info->express_mail > 0): ?>
-                      <?php $report_updated_by = user_load($sub_info->updated_by); ?>
-                      <?php if ($sub_info->express_mail_status == 2): ?>
-                        <span class="clearfix">Dispatched on: <?php print date('M d, Y', $sub_info->updated_on); ?></span>
-                        <span class="clearfix">Updated by: <?php print $report_updated_by->field_first_name['und'][0]['value'] . ' ' . $report_updated_by->field_last_name['und'][0]['value']; ?></span>
-                      <?php else: ?>
-                        <select name="express_mail_status_<?php print $inc1; ?>" id="express_mail_status" class="form-control">
-                          <option value="0">-Select-</option>
-                          <option value="2">Dispatched</option>
-                        </select>
-                      <?php endif; ?>
-                    <?php else: ?>
-                      <span>Not Requested</span>
-                    <?php endif; ?>
-                  </td>
-
-                  <?php if ($notary_status == 'active'): ?>
-                    <td>
-                      <?php if ($sub_info->notary_cost > 0): ?>
-                        <?php $report_updated_by = user_load($sub_info->updated_by); ?>
-                        <?php if ($sub_info->notary_status == 2): ?>
-                          <span class="clearfix">Attached</span>
-                          <span class="clearfix">Updated by: <?php print $report_updated_by->field_first_name['und'][0]['value'] . ' ' . $report_updated_by->field_last_name['und'][0]['value']; ?></span>
-                        <?php else: ?>
-                          <select name="notary_status_<?php print $inc1; ?>" id="notary_status" class="form-control">
-                            <option value="0">-Select-</option>
-                            <option value="2">Attached</option>
-                          </select>
-                        <?php endif; ?>
-                      <?php else: ?>
-                        <span>Not Requested</span>
-                      <?php endif; ?>
-                    </td>
-                  <?php endif; ?>
-
-                  <td>
-                    <?php $options_dest = array('query' => array('destination' => 'users/view/reports/' . arg(3) . '/tid/' . arg(5) . '/nid/' . arg(7) . '/transid/' . arg(9) . '/tab/2')); ?>
-                    <?php print l(t('Generate Report'), 'node/add/report-format/generate/user/report/uid/' . arg(3) . '/tid/' . arg(5) . '/nid/' . arg(7) . '/id/' . $sub_info->id . '/stid/' . $sub_info->termid, $options_dest); ?>
-                    <?php $explode = explode('.', $sub_info->main_report); ?>
-                    <?php $file_extension = $explode[1]; ?>
-                    <?php $fname = $sub_info->main_report; ?>
-                  </td>
-
-                  <?php if ($notary_status == 'active'): ?>
-                    <td>
-                      <input type="file" name="file_<?php print $inc1; ?>" />
-                      <?php $explode = explode('.', $sub_info->report_name); ?>
-                      <?php $file_extension = $explode[1]; ?>
-                      <?php $fname = $sub_info->report_name; ?>
-                      <?php $file_name_path = 'public://reports/'.$fname; ?>
-                      <?php print l(t($fname), $base_url.'/download/report', array('query' => array('file_name_path' => $file_name_path))); ?>
-                    </td>
-                  <?php endif; ?>
-                </tr>
-                <?php $inc1++; ?>
-              <?php endif; ?>
-            <?php endif; ?>
-          <?php endforeach; ?>
-          <tr style="display:none;">
-            <td colspan="3">
-              <input type="hidden" name="total_count" value="<?php print $inc1; ?>" />
-              <input type="hidden" name="uid" value="<?php print arg(3); ?>" />
-              <input type="hidden" name="tid" value="<?php print arg(5); ?>" />
-              <input type="hidden" name="nid" value="<?php print arg(7); ?>" />
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </form>
 
     <?php // Temp main reports ?>
     <?php $client_assessments = ndsbs_assessment_get_client_assessments(arg(3)); ?>
@@ -459,10 +263,49 @@ $recipient_address = !empty($recipient_street) ? $recipient_street . '<br />' . 
         </thead>
         <tbody>
         <?php foreach ($client_assessments as $client_assessment): ?>
+          <?php $report_data = get_purchased_items_reports_section_trans($client_assessment['nid'], 1, 0, $client_assessment['termid'], $user_id, $client_assessment['trans']); ?>
+          <?php $report_data = $report_data[0]; ?>
           <tr>
             <td><?php print $client_assessment['assessment_title']; ?> Report</td>
-            <td></td>
-            <td></td>
+            <td>
+              <?php if ($report_data->express_mail): ?>
+                <span>Requested On: <?php print date('M d, Y', $report_data->order_date); ?></span>
+              <?php endif; ?>
+            </td>
+            <?php if ($notary_status == 'active'): ?>
+              <td>
+                <?php if ($report_data->notary_cost): ?>
+                  <span>Requested On: <?php print date('M d, Y', $report_data->order_date); ?></span>
+                <?php endif; ?>
+              </td>
+            <?php endif; ?>
+            <td>
+              <ul class="uk-subnav uk-subnav-divider">
+                <?php $options_dest = array(
+                  'query' => array(
+                    'destination' => 'users/view/reports/'. $user_id .'/tid/' . $report_data->tid . '/nid/' . $report_data->nid . '/transid/' . $report_data->order_id . '/tab/1',
+                  ),
+                ); ?>
+
+                <?php $explode = explode('.', $report_data->main_report); ?>
+                <?php $file_extension = $explode[1]; ?>
+                <?php $fname = $report_data->main_report; ?>
+                <?php $file_name_path = 'public://reports/' . $fname; ?>
+
+                <?php $options_report = array(
+                  'query' => array('file_name_path' => $file_name_path),
+                ); ?>
+
+                <li><?php print l(t('Upload Report'), 'node/add/report-format/generate/user/report/uid/'. $user_id . '/tid/' . $report_data->tid . '/nid/' . $report_data->nid . '/id/' . $report_data->id . '/stid/' . $report_data->termid, $options_dest); ?></li>
+
+                <?php if ($report_data->main_report): ?>
+                  <li><?php print l(t($fname), $base_url . '/download/report', $options_report); ?></li>
+                <?php endif; ?>
+              </ul>
+            </td>
+            <?php if ($notary_status == 'active'): ?>
+              <td></td>
+            <?php endif; ?>
           </tr>
         <?php endforeach; ?>
         </tbody>
@@ -471,8 +314,9 @@ $recipient_address = !empty($recipient_street) ? $recipient_street . '<br />' . 
     <?php // End temp main reports ?>
 
   </li>
-  <li id="interview" class="tab-pane fade">
-    <h2 class="tab-title">Interview</h2>
+
+  <li id="interview">
+    <h3>Interview</h3>
     <?php
     $query = new EntityFieldQuery();
     $entities = $query->entityCondition('entity_type', 'node')
@@ -509,7 +353,7 @@ $recipient_address = !empty($recipient_street) ? $recipient_street . '<br />' . 
             <td>
               <?php if ($rec->field_attempted_on['und'][0]['value'] == 0): ?>
                 <?php $currpath = current_path(); ?>
-                <?php $options = array('query' => array('destination' => $currpath . '/tab/4'), 'attributes' => array('class' => 'btn btn-primary')); ?>
+                <?php $options = array('query' => array('destination' => $currpath . '/tab/3'), 'attributes' => array('class' => 'btn btn-primary')); ?>
                 <?php print l(t('Attended?'), 'request/counseling/update/'.$rec->nid, $options); ?>
               <?php else: ?>
                 <span>Attended</span>
@@ -520,8 +364,9 @@ $recipient_address = !empty($recipient_street) ? $recipient_street . '<br />' . 
       </tbody>
     </table>
   </li>
-  <li id="releases" class="tab-pane fade">
-    <h2 class="tab-title">Releases</h2>
+
+  <li id="releases">
+    <h3>Releases</h3>
     <?php
     $query = new EntityFieldQuery();
     $entities = $query->entityCondition('entity_type', 'node')
