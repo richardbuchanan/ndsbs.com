@@ -78,38 +78,46 @@ $recipient_address = !empty($recipient_street) ? $recipient_street . '<br />' . 
 <ul class="uk-switcher uk-margin">
   <li id="paperwork" class="tab-pane fade in active">
     <h2 class="tab-title"><?php print l(t($client_name), 'user/' . $user_info->uid . '/edit'); ?></h2>
-    <div class="row">
-      <div class="col-xs-12 col-sm-4 col-md-4">
-        <ul class="list-group">
-          <li class="list-group-item active">Contact Information</li>
-          <li class="list-group-item"><a href="mailto:<?php print $user_info->mail; ?>"><?php print $user_info->mail; ?></a></li>
-          <li class="list-group-item"><?php print $address; ?></li>
-          <li class="list-group-item"><?php print $phone; ?></li>
-          <?php if ($second_phone): ?>
-            <li class="list-group-item"><?php print $second_phone; ?></li>
-          <?php endif; ?>
-        </ul>
+    <div class="uk-grid-match uk-child-width-expand@s" uk-grid>
+      <div>
+        <div class="uk-card uk-card-default uk-card-body">
+          <h3 class="uk-card-title">Contact Information</h3>
+          <ul class="uk-list">
+            <li><a href="mailto:<?php print $user_info->mail; ?>"><?php print $user_info->mail; ?></a></li>
+            <li><?php print $address; ?></li>
+            <li><?php print $phone; ?></li>
+            <?php if ($second_phone): ?>
+              <li><?php print $second_phone; ?></li>
+            <?php endif; ?>
+          </ul>
+        </div>
       </div>
-      <div class="col-xs-12 col-sm-4 col-md-4">
-        <ul class="list-group">
-          <li class="list-group-item active">Personal Details</li>
-          <li class="list-group-item">Gender: <?php print $user_info->field_gender['und'][0]['value']; ?></li>
-          <li class="list-group-item">DOB: <?php print $dob; ?></li>
-          <li class="list-group-item">How did you hear about us? <?php print $user_info->field_referred_by['und'][0]['value']; ?></li>
-        </ul>
+
+      <div>
+        <div class="uk-card uk-card-default uk-card-body">
+          <h3 class="uk-card-title">Personal Details</h3>
+          <ul class="uk-list">
+            <li>Gender: <?php print $user_info->field_gender['und'][0]['value']; ?></li>
+            <li>DOB: <?php print $dob; ?></li>
+            <li>How did you hear about us? <?php print $user_info->field_referred_by['und'][0]['value']; ?></li>
+          </ul>
+        </div>
       </div>
-      <div class="col-xs-12 col-sm-4 col-md-4">
-        <ul class="list-group">
-          <li class="list-group-item active">Recipient Information</li>
-          <?php if ($recipient): ?>
-            <li class="list-group-item"><?php print $recipient_name; ?></li>
-            <li class="list-group-item"><?php print $recipient_title; ?></li>
-            <li class="list-group-item"><?php print $recipient_company; ?></li>
-            <li class="list-group-item"><?php print $recipient_address; ?></li>
-          <?php else: ?>
-            <li class="list-group-item">Not Applicable</li>
-          <?php endif; ?>
-        </ul>
+
+      <div>
+        <div class="uk-card uk-card-default uk-card-body">
+          <h3 class="uk-card-title">Recipient Information</h3>
+          <ul class="uk-list">
+            <?php if ($recipient): ?>
+              <li><?php print $recipient_name; ?></li>
+              <li><?php print $recipient_title; ?></li>
+              <li><?php print $recipient_company; ?></li>
+              <li><?php print $recipient_address; ?></li>
+            <?php else: ?>
+              <li>Not Applicable</li>
+            <?php endif; ?>
+          </ul>
+        </div>
       </div>
     </div>
 
@@ -154,11 +162,11 @@ $recipient_address = !empty($recipient_street) ? $recipient_street . '<br />' . 
                       <?php endif; ?>
                     </td>
                     <td>
-                      <input type="text" class="form-control" name="paper_work_note_<?php print $i; ?>" size="15" <?php if ($rec->field_paperwork_note['und'][0]['value']) { ?>value="<?php print $rec->field_paperwork_note['und'][0]['value']; ?>"<?php } ?> />
+                      <input type="text" class="uk-input" name="paper_work_note_<?php print $i; ?>" size="15" <?php if ($rec->field_paperwork_note['und'][0]['value']) { ?>value="<?php print $rec->field_paperwork_note['und'][0]['value']; ?>"<?php } ?> />
                       <input type="hidden" name="paper_work_node_id_<?php print $i; ?>" value="<?php print $rec->nid; ?>" />
                     </td>
                     <td>
-                      <select name="verification_status_<?php print $i; ?>" class="form-control">
+                      <select name="verification_status_<?php print $i; ?>" class="uk-select">
                         <option>Select</option>
                         <option value="1">Verified</option>
                         <option value="0">Not Verified</option>
@@ -173,13 +181,13 @@ $recipient_address = !empty($recipient_street) ? $recipient_street . '<br />' . 
                 </tr>
               <?php endif; ?>
               <tr>
-                <td><input type="text" class="form-control" size="15" name="new_title"></td>
+                <td><input type="text" class="uk-input" size="15" name="new_title"></td>
                 <td></td>
                 <td>
-                  <input type="text" class="form-control" size="15" name="new_status">
+                  <input type="text" class="uk-input" size="15" name="new_status">
                 </td>
                 <td>
-                  <input type="text" class="form-control" size="15" name="new_note" />
+                  <input type="text" class="uk-input" size="15" name="new_note" />
                   <input type="hidden" name="uid" value="<?php print arg(3);?>">
                   <input type="hidden" name="tid" value="<?php print arg(9);?>">
                   <input type="hidden" name="fiveid" value="<?php print arg(5);?>">
@@ -187,7 +195,7 @@ $recipient_address = !empty($recipient_street) ? $recipient_street . '<br />' . 
                 </td>
 
                 <td>
-                  <select name="verification_status_new" id="verification_status" class="form-select form-control">
+                  <select name="verification_status_new" id="verification_status" class="uk-select">
                     <option>Select</option>
                     <option value="1">Verified</option>
                     <option value="0">Not Verified</option>
@@ -198,7 +206,7 @@ $recipient_address = !empty($recipient_street) ? $recipient_street . '<br />' . 
               <tr>
                 <td colspan="6">
                   <input type="hidden" name="total_count" value="<?php print $i; ?>" />
-                  <input type="submit" name="button" value="Submit"  class="btn btn-primary" />
+                  <input type="submit" name="button" value="Submit"  class="uk-button uk-button-primary" />
                 </td>
               </tr>
             </tbody>
