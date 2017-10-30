@@ -205,7 +205,7 @@ function ndsbs_preprocess_list_all_client(&$variables) {
     }
 
     $more_than_three_hours = get_user_created_compared($client->created, time(), 10800);
-    $contacted = get_user_contacted_status($client->created);
+    $contacted = get_user_contacted_status($client->uid);
 
     if (get_user_transaction_status($client->uid)) {
       $transaction_date = get_user_transaction_date($client->uid);
