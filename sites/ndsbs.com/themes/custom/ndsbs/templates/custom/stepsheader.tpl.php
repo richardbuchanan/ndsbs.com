@@ -237,6 +237,8 @@ $step_four_button_classes =  implode(' ', $step_four_button_attributes['class'])
         <div><strong>Status</strong>: <?php print $attended_badge; ?></div>
         <?php if (!$counseling_data): ?>
           <p class="uk-margin-remove-bottom">Submit interview request <strong>OR</strong> call to schedule interview (9 a.m. – 5 p.m. EST): <a href="tel: 1-800-671-8589">1-800-671-8589</a></p>
+        <?php elseif (!$attendance): ?>
+          <p>A representative will call shortly to schedule your appointment</p>
         <?php endif; ?>
       </div>
     </div>

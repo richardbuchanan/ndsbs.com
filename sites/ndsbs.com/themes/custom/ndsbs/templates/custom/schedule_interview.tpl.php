@@ -18,5 +18,6 @@
 <?php else: ?>
   <?php module_load_include('inc', 'node', 'node.pages'); ?>
   <?php $form = node_add('counseling_request'); ?>
+  <?php hide($form['field_preferred_therapist']); ?>
   <?php print drupal_render($form); ?>
 <?php endif; ?>
