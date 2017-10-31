@@ -234,6 +234,10 @@ function ndsbs_preprocess_page(&$variables) {
 
   $title = NDSBS::getTitle();
   drupal_set_title(strip_tags($title));
+  $variables['title'] = $title;
+
+  $logo = '/' . drupal_get_path('theme', 'ndsbs') . '/logo-extended.png';
+  $variables['logo'] = $logo;
 }
 
 /**
