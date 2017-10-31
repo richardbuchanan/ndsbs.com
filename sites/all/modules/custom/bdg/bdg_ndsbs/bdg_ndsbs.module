@@ -20,8 +20,31 @@
 
 define('SA_ADMIN_PHONE', '1-800-671-8589');
 define('SA_ADMIN_FAX', '614-888-3239');
-define('SA_ADMIN_EMAIL', 'nfo@ndsbs.com');
+define('SA_ADMIN_EMAIL', 'info@ndsbs.com');
 define('SA_ADMIN_ADDRESS', '6797 N High Street Suite 350 Worthington OH 43085');
+
+/**
+ * Implements hook_init().
+ */
+function bdg_ndsbs_init() {
+  $host = $_SERVER['HTTP_HOST'];
+  $dev_env = $host == 'localhost.ndsbs' || $host == 'dev.ndsbs.com';
+
+  $modules = array(
+    'fb',
+    'fb_post',
+    'metatag_facebook',
+    'tawk_to',
+  );
+
+  if ($dev_env) {
+    foreach ($modules as $module) {
+      if (module_exists($module)) {
+        module_disable(array($module), FALSE);
+      }
+    }
+  }
+}
 
 /**
  * Implements hook_permission().
@@ -965,10 +988,18 @@ function _ndsbs_main_menu_content() {
 }
 
 function _ndsbs_site_seals_content() {
-  $output = '<div class="uk-flex uk-flex-center uk-flex-right@m">';
-  $output .= '<span id="siteseal"><script async type="text/javascript" src="https://seal.godaddy.com/getSeal?sealID=fPzyBVTYzEKessk4HA9jDt9ALuaThCsopCkEyyRc7mBTdwENhjRNDi"></script></span>';
-  $output .= '<script type="text/javascript" src="https://cdn.ywxi.net/js/1.js" async></script>';
-  $output .= '</div>';
+  $output = '';
+
+  $host = $_SERVER['HTTP_HOST'];
+  $dev_env = $host == 'localhost.ndsbs' || $host == 'dev.ndsbs.com';
+
+  if (!$dev_env) {
+    $output .= '<div class="uk-flex uk-flex-center uk-flex-right@m">';
+    $output .= '<span id="siteseal"><script async type="text/javascript" src="https://seal.godaddy.com/getSeal?sealID=fPzyBVTYzEKessk4HA9jDt9ALuaThCsopCkEyyRc7mBTdwENhjRNDi"></script></span>';
+    $output .= '<script type="text/javascript" src="https://cdn.ywxi.net/js/1.js" async></script>';
+    $output .= '</div>';
+  }
+
   return $output;
 }
 

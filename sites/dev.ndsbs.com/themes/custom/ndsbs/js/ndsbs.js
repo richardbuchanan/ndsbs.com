@@ -17,7 +17,7 @@
       var viewportHeight = $(window).height();
       var adminMenuHeight = $('#admin-menu').length ? 29 : 0;
 
-      modalOverflow.on('hidden', function () {
+      UIkit.util.on('#modal-overflow', 'hidden', function () {
         html.removeClass('ndsbs-overflow-initial');
       });
 
@@ -172,28 +172,29 @@
   Drupal.behaviors.NDSBSNavbar = {
     attach: function () {
       var body = $('body');
-      var pageNavbar = $('#page-navbar');
       var offcanvas = $('#offcanvas');
 
-      pageNavbar.on('beforeshow', function (e) {
-        e.preventDefault();
-        $(this).blur();
+      UIkit.util.on('#page-navbar', 'beforeshow', function (e) {
         body.addClass('navbar-open');
         body.removeClass('navbar-closed');
-      }).on('hidden', function (e) {
-        e.preventDefault();
-        $(this).blur();
+      });
+
+      UIkit.util.on('#page-navbar', 'hidden', function (e) {
         body.removeClass('navbar-open');
         body.addClass('navbar-closed');
-      }).find('a').on('hover', function (e) {
+      });
+
+      $('#page-navbar').find('a').hover(function (e) {
         e.preventDefault();
         $(this).blur();
       });
 
-      offcanvas.on('beforeshow', function () {
+      UIkit.util.on('#offcanvas', 'beforeshow', function (e) {
         body.addClass('offcanvas-open');
         body.removeClass('offcanvas-closed');
-      }).on('hidden', function (e) {
+      });
+
+      UIkit.util.on('#offcanvas', 'hidden', function (e) {
         if (!offcanvas.hasClass('uk-open')) {
           body.removeClass('offcanvas-open');
           body.addClass('offcanvas-closed');

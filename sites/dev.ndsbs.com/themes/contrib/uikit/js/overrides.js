@@ -7,12 +7,12 @@
   'use strict';
 
   $(function() {
-    var navbar = $('.uk-navbar-nav');
+    var navbarLink = $('.uk-navbar-nav [href="#"]');
 
     // Prevent navbar parent links from being used as a link when clicked.
-    navbar.on('click', '[href="#"], [href=""]', function (e) {
+    navbarLink.click(function (e) {
       e.preventDefault();
-    }).find('[href="#"]').prop('href', '');
+    });
 
     // Initialize alert closing actions.
     UIkit.alert('#messages');

@@ -32,14 +32,30 @@ function ndsbs_css_alter(&$css) {
   if (isset($css['modules/user/user.css'])) {
     $css['modules/user/user.css']['data'] = "$ndsbs/css/ndsbs.user.css";
   }
+
+  $uikit = '/' . $ndsbs . '/vendor/uikit.min.css';
+  $css['//cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.31/css/uikit.min.css']['data'] = $uikit;
+
+  $adminimal_admin_menu = drupal_get_path('module', 'adminimal_admin_menu') . '/adminimal_admin_menu.css';
+  if (isset($css[$adminimal_admin_menu])) {
+    $css[$adminimal_admin_menu]['data'] = $ndsbs . '/css/adminimal_admin_menu.css';
+  }
 }
 
 /**
  * Implements hook_js_alter().
  */
 function ndsbs_js_alter(&$javascript) {
-  unset($javascript['//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js']);
-  unset($javascript['//cdnjs.cloudflare.com/ajax/libs/jquery-migrate/1.4.1/jquery-migrate.min.js']);
+  $ndsbs = drupal_get_path('theme', 'ndsbs');
+
+  $uikit = '/' . $ndsbs . '/vendor/uikit.min.js';
+  $uikit_icons = '/' . $ndsbs . '/vendor/uikit-icons.min.js';
+
+  $javascript['//cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.31/js/uikit.min.js']['data'] = $uikit; // -19.971
+  $javascript['//cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.31/js/uikit-icons.min.js']['data'] = $uikit_icons;
+
+  $jsapi = '/' . $ndsbs . '/vendor/jsapi';
+  $javascript['https://www.google.com/jsapi']['data'] = $jsapi;
 }
 
 /**

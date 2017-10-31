@@ -19,7 +19,7 @@ class UIkit {
    *
    * @var string
    */
-  const UIKIT_LIBRARY_VERSION = '3.0.0-beta.30';
+  const UIKIT_LIBRARY_VERSION = '3.0.0-beta.31';
 
   /**
    * The Drupal project page for the UIkit base theme.
@@ -110,25 +110,6 @@ class UIkit {
       'version' => self::UIKIT_LIBRARY_VERSION,
     ));
 
-    // Add the jQuery script.
-    drupal_add_js('//cdnjs.cloudflare.com/ajax/libs/jquery/' . self::UIKIT_JQUERY_VERSION . '/jquery.min.js', array(
-      'type' => 'external',
-      'group' => JS_THEME,
-      'every_page' => TRUE,
-      'weight' => -20,
-      'version' => self::UIKIT_JQUERY_VERSION,
-    ));
-
-    // Add the jQuery Migrate script so we can use multiple jQuery versions
-    // simultaneously.
-    drupal_add_js('//cdnjs.cloudflare.com/ajax/libs/jquery-migrate/' . self::UIKIT_JQUERY_MIGRATE_VERSION . '/jquery-migrate.min.js', array(
-      'type' => 'external',
-      'group' => JS_THEME,
-      'every_page' => TRUE,
-      'weight' => -20,
-      'version' => self::UIKIT_JQUERY_MIGRATE_VERSION,
-    ));
-
     // Add the UIkit script.
     drupal_add_js('//cdnjs.cloudflare.com/ajax/libs/uikit/' . self::UIKIT_LIBRARY_VERSION . '/js/uikit.min.js', array(
       'type' => 'external',
@@ -180,5 +161,68 @@ class UIkit {
    */
   public static function getPageTitle() {
     return drupal_get_title();
+  }
+
+  /**
+   * Loads a UIkit include file.
+   *
+   * This function essentially does the same as Drupal core's
+   * module_load_include() function, except targeting theme include files. It also
+   * allows you to place the include files in a sub-directory of the theme for
+   * better organization.
+   *
+   * Examples:
+   * @code
+   *   // Load includes/uikit_subtheme.admin.inc from the node module.
+   *   UIkit::loadIncludeFile('inc', 'uikit_subtheme', 'uikit_subtheme.admin', 'includes');
+   *   // Load preprocess.inc from the uikit_subtheme theme.
+   *   UIkit::loadIncludeFile('inc', 'uikit_subtheme', 'preprocess');
+   * @endcode
+   *
+   * Do not use this function in a global context since it requires Drupal to be
+   * fully bootstrapped, use require_once DRUPAL_ROOT . '/path/file' instead.
+   *
+   * @param string $type
+   *   The include file's type (file extension).
+   * @param string $theme
+   *   The theme to which the include file belongs.
+   * @param string $name
+   *   (optional) The base file name (without the $type extension). If omitted,
+   *   $theme is used; i.e., resulting in "$theme.$type" by default.
+   * @param string $sub_directory
+   *   (optional) The sub-directory to which the include file resides.
+   *
+   * @return string
+   *   The name of the included file, if successful; FALSE otherwise.
+   */
+  public static function loadIncludeFile($type, $theme, $name = NULL, $sub_directory = '') {
+    static $files = array();
+
+    if (isset($sub_directory)) {
+      $sub_directory = '/' . $sub_directory;
+    }
+
+    if (!isset($name)) {
+      $name = $theme;
+    }
+
+    $key = $type . ':' . $theme . ':' . $name . ':' . $sub_directory;
+
+    if (isset($files[$key])) {
+      return $files[$key];
+    }
+
+    if (function_exists('drupal_get_path')) {
+      $file = DRUPAL_ROOT . '/' . drupal_get_path('theme', $theme) . "$sub_directory/$name.$type";
+      if (is_file($file)) {
+        require_once $file;
+        $files[$key] = $file;
+        return $file;
+      }
+      else {
+        $files[$key] = FALSE;
+      }
+    }
+    return FALSE;
   }
 }
