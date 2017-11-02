@@ -102,15 +102,27 @@ function bluepay_system_settings_form() {
  * Builds the checkout form for the given order.
  */
 function bluepay_payment_form($form, &$form_state, $order) {
-  if ($order) {
-    global $user;
+  global $user;
+  $account = user_load($user->uid);
+  $state_acceptance = $account->field_state_acceptance['und'][0]['value'];
+
+  // BluePay's test mode requires an odd value for the total amount, so we set
+  // the rush service to 75 in order to get an approved transaction response.
+  $host = $_SERVER['HTTP_HOST'];
+  $dev_env = $host == 'localhost.ndsbs' || $host == 'dev.ndsbs.com';
+
+  if (!$state_acceptance && $dev_env) {
+    $acceptance = '<div class="uk-card uk-card-default uk-card-body">';
+    $acceptance .= '<p>Please call <a href="tel:1-800-671-8589">1-800-671-8589</a> to verify acceptance before purchasing</p>';
+    $acceptance .= '</div>';
+
+    $form['state_acceptance'] = array(
+      '#markup' => $acceptance,
+    );
+  }
+  elseif ($order) {
     $output[0] = 'No rush service';
     $cart_items = get_cart_items();
-
-    // BluePay's test mode requires an odd value for the total amount, so we set
-    // the rush service to 75 in order to get an approved transaction response.
-    $host = $_SERVER['HTTP_HOST'];
-    $dev_env = $host == 'localhost.ndsbs' || $host == 'dev.ndsbs.com';
 
     $amount = field_get_items('node', $order, 'field_primary_service_amount');
     $amount = field_view_value('node', $order, 'field_primary_service_amount', $amount[0]);
