@@ -852,14 +852,13 @@ function ndsbs_status_messages($variables) {
       $output .= '<ul class="uk-list">';
 
       foreach ($messages as $message) {
-        $output .= '<li>' . decode_entities($message) . '</li>';
+        $output .= '<li>' . $message . '</li>';
       }
 
       $output .= '</ul>';
     }
     else {
-      $messages = reset($messages);
-      $output .= decode_entities($messages);
+      $output .= reset($messages);
     }
 
     $output .= '</div>';

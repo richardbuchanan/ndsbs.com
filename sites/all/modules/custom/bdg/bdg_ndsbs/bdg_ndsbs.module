@@ -391,6 +391,15 @@ function _check_my_state() {
 }
 
 /**
+ * Implements hook_form_alter().
+ */
+function bdg_ndsbs_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'user_register_form') {
+    $form['#submit'][] = 'bdg_ndsbs_user_register_submit';
+  }
+}
+
+/**
  * Implements hook_form_FORM_ID_alter().
  */
 function bdg_ndsbs_form_staff_profile_node_form_alter(&$form, &$form_state, $form_id) {
@@ -405,6 +414,25 @@ function bdg_ndsbs_staff_profile_node_form_submit() {
   $cache_tables = array_merge(module_invoke_all('flush_caches'), $core);
   foreach ($cache_tables as $table) {
     cache_clear_all('*', $table, TRUE);
+  }
+}
+
+function bdg_ndsbs_user_register_submit($form, &$form_state) {
+  $account = $form['#user'];
+  $assessment_state = $form_state['values']['field_assessment_state']['und'][0]['value'];
+
+  if ($assessment_state != 'IL' && $assessment_state != 'NY') {
+    $edit = array(
+      'field_state_acceptance' => array(
+        'und' => array(
+          0 => array(
+            'value' => 1,
+          ),
+        ),
+      ),
+    );
+
+    user_save($account, $edit);
   }
 }
 
