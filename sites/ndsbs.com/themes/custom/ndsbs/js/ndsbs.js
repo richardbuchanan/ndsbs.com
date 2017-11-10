@@ -251,13 +251,20 @@
 
   Drupal.behaviors.NDSBSAssessmentsSwitcher = {
     attach: function () {
-      UIkit.util.on('#switcher-modal-0', 'beforeshow', function (e) {
-        $('#switcher-modal-0').find('.uk-modal-dialog').removeAttr('style');
-      });
+      var switcherModal0 = $('#switcher-modal-0');
+      var switcherModal1 = $('#switcher-modal-1');
 
-      UIkit.util.on('#switcher-modal-1', 'beforeshow', function (e) {
-        $('#switcher-modal-1').find('.uk-modal-dialog').removeAttr('style');
-      });
+      if (switcherModal0.length) {
+        UIkit.util.on('#switcher-modal-0', 'beforeshow', function (e) {
+          switcherModal0.find('.uk-modal-dialog').removeAttr('style');
+        });
+      }
+
+      if (switcherModal1.length) {
+        UIkit.util.on('#switcher-modal-1', 'beforeshow', function (e) {
+          switcherModal1.find('.uk-modal-dialog').removeAttr('style');
+        });
+      }
     }
   }
 
