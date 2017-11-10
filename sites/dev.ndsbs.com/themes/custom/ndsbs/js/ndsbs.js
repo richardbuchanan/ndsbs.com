@@ -203,31 +203,6 @@
     }
   };
 
-  Drupal.behaviors.NDSBSSwitcher = {
-    attach: function () {
-      var switcherRightItems = $('.switcher-right li');
-      var demoThree = switcherRightItems.parents('.switcher-demo-three');
-      var closeSwitcher = $('.close-switcher');
-
-      demoThree.css('min-height', demoThree.height());
-
-      /*UIkit.util.on('.switcher-right li', 'shown', function (e) {
-        switcherRightItems.each(function () {
-          $(this).removeClass('switcher-reveal');
-        });
-
-        $(e.target).addClass('switcher-reveal');
-        demoThree.addClass('open');
-      });*/
-
-      closeSwitcher.click(function () {
-        $(this).parents('.switcher-animate').removeClass('uk-active');
-        $(this).parents('.switcher-animate').removeClass('switcher-reveal');
-        demoThree.removeClass('open');
-      });
-    }
-  };
-
   Drupal.behaviors.NDSBSDashboards = {
     attach: function () {
       var dashboard = $('.ndsbs-navigation-accordion');
@@ -270,6 +245,18 @@
               // Alert has closed....
             });
         }
+      });
+    }
+  };
+
+  Drupal.behaviors.NDSBSAssessmentsSwitcher = {
+    attach: function () {
+      UIkit.util.on('#switcher-modal-0', 'beforeshow', function (e) {
+        $('#switcher-modal-0').find('.uk-modal-dialog').removeAttr('style');
+      });
+
+      UIkit.util.on('#switcher-modal-1', 'beforeshow', function (e) {
+        $('#switcher-modal-1').find('.uk-modal-dialog').removeAttr('style');
       });
     }
   }
