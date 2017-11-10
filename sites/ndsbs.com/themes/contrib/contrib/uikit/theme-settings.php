@@ -5,9 +5,10 @@
  * Provides theme settings for UIkit themes.
  */
 
+// Include the UIkit class definition.
 include_once 'src/UIkit.php';
 
-use \Drupal\uikit\UIkit;
+use Drupal\uikit\UIkit;
 
 /**
  * Implements hook_form_system_theme_settings_alter().
@@ -129,12 +130,11 @@ function uikit_form_system_theme_settings_alter(&$form, &$form_state, $form_id =
   $uikit_version = isset($uikit_theme_info['version']) ? $uikit_theme_info['version'] : UIkit::UIKIT_PROJECT_BRANCH;
   $uikit_description = $uikit_theme_info['description'];
 
-  // Warn users about the future requirement of the X Autoload module.
-  if (!module_exists('xautoload')) {
-    $message = t('<strong>Please be advised</strong>: UIkit will soon require the <a href="@xautoload" target="_blank">X Autoload</a> module in order to work properly. This will occur before the 7.x-3.0-beta7 release (installed: @uikit_version). Please be sure to install the X Autoload module before then. <a href="@issue" target="_blank">More information</a>', array(
+  // Alert users about the removal of the X Autoload module requirement.
+  if (module_exists('xautoload')) {
+    $message = t('UIkit will no longer require the <a href="@xautoload" target="_blank">X Autoload</a> module to work properly. This change is due to <a href="@issue" target="_blank"><code>#474684: Allow themes to declare dependencies on modules</code></a> still being open and needing backported to Drupal 7. If no other modules require X Autoload, you can safely disable and uninstall the module.', array(
       '@xautoload' => 'https://www.drupal.org/project/xautoload',
-      '@uikit_version' => $uikit_version,
-      '@issue' => 'https://www.drupal.org/node/2893149',
+      '@issue' => 'https://www.drupal.org/node/474684',
     ));
     drupal_set_message($message, 'warning');
   }
