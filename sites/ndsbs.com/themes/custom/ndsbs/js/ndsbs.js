@@ -211,14 +211,14 @@
 
       demoThree.css('min-height', demoThree.height());
 
-      switcherRightItems.on('shown', function (e) {
+      /*UIkit.util.on('.switcher-right li', 'shown', function (e) {
         switcherRightItems.each(function () {
           $(this).removeClass('switcher-reveal');
         });
 
         $(e.target).addClass('switcher-reveal');
         demoThree.addClass('open');
-      });
+      });*/
 
       closeSwitcher.click(function () {
         $(this).parents('.switcher-animate').removeClass('uk-active');
@@ -252,7 +252,7 @@
       var assessmentSelect = selectForm.find('select');
       var origin = window.location.origin;
 
-      assessmentSelect.on('change', function() {
+      assessmentSelect.change(function () {
         window.location.href = origin + '/' + this.value;
       })
     }
@@ -260,7 +260,7 @@
 
   Drupal.behaviors.NDSBSAcceptanceModal = {
     attach: function () {
-      $('#edit-field-assessment-state-und').on('change', function(e) {
+      $('#edit-field-assessment-state-und').change(function (e) {
         if (this.value === 'IL' || this.value === 'NY') {
           e.preventDefault();
           $(this).blur();
