@@ -8,6 +8,12 @@
  * Allows developer to customize the site's functionality.
  */
 
+require_once dirname(__FILE__) . '/vendor/autoload.php';
+
+use Spipu\Html2Pdf\Html2Pdf;
+use Spipu\Html2Pdf\Exception\Html2PdfException;
+use Spipu\Html2Pdf\Exception\ExceptionFormatter;
+
 /**
  * Implements hook_menu().
  *
@@ -20,6 +26,20 @@ function ndsbs_questionnaire_menu() {
     'description' => 'User Questionnaire.',
     'access callback' => 'user_is_logged_in',
     'page callback' => 'get_assessment_questionnaire_form',
+    'access arguments' => array('access content'),
+  );
+  $items['user/questionnaire/%/trans/%/full'] = array(
+    'title' => 'Questionnaire',
+    'description' => 'User Questionnaire.',
+    'access callback' => 'user_is_logged_in',
+    'page callback' => 'get_assessment_questionnaire_full_form',
+    'access arguments' => array('access content'),
+  );
+  $items['user/questionnaire/%/trans/%/full/download'] = array(
+    'title' => 'Questionnaire',
+    'description' => 'User Questionnaire.',
+    'access callback' => 'user_is_logged_in',
+    'page callback' => 'get_assessment_questionnaire_pdf',
     'access arguments' => array('access content'),
   );
 
@@ -189,6 +209,17 @@ function get_assessment_questionnaire_form() {
 
   // Call the Questionnaire Form.
   return drupal_get_form('assessment_questionnaire_form');
+}
+
+/**
+ * Function get_assessment_questionnaire_form() defined.
+ */
+function get_assessment_questionnaire_full_form() {
+  // Redirect the user if he comes directly at the Questionnaire page.
+  check_user_confirm_questionnaire();
+
+  // Call the Questionnaire Form.
+  return drupal_get_form('assessment_questionnaire_full_form');
 }
 
 /**
@@ -524,6 +555,104 @@ function assessment_questionnaire_form($form, &$form_state) {
         'title' => t('Save answered questions so you can return later or continue to the next question.'),
       ),
     );
+  }
+
+  return $form;
+}
+
+/**
+ * @see http://localhost.ndsbs/user/questionnaire/259/trans/4114/full/download
+ */
+function get_assessment_questionnaire_pdf() {
+  global $g_config;
+  $form = drupal_get_form('assessment_questionnaire_full_form');
+  $css = file_get_contents(DRUPAL_ROOT . '/' . drupal_get_path('theme', 'ndsbs') . '/vendor/uikit.min.css');
+  $html = '<style type="text/css">' . $css . '</style>';
+  $html = '<page footer="form">';
+  $html .= '<div class="uk-container">';
+  $html .= drupal_render($form);
+  $html .= '</div>';
+  $html .= '</page>';
+
+  try {
+    $html2pdf = new Html2Pdf('P', 'A4', 'en');
+    $html2pdf->pdf->SetDisplayMode('fullpage');
+    $html2pdf->writeHTML('<style type="text/css">' . $css . '</style>');
+    $html2pdf->writeHTML($html);
+    $html2pdf->output('my_doc.pdf');
+  }
+  catch (Html2PdfException $e) {
+    $formatter = new ExceptionFormatter($e);
+    drupal_set_message($formatter->getHtmlMessage(), 'error');
+  }
+}
+
+/**
+ * Implements assessment_questionnaire_full_form().
+ *
+ * @see http://localhost.ndsbs/user/questionnaire/259/trans/4114/full
+ */
+function assessment_questionnaire_full_form($form, &$form_state) {
+  $assessment_node_id = arg(2);
+  $transid = arg(4);
+
+  // Get the questions from db.
+  $questions = assessment_question($assessment_node_id, $transid);
+
+  foreach ($questions as $index => $question) {
+    $title = ($index + 1) . '. ' . $question->question;
+    $answers = assessment_answer($question->qid);
+    $options = array();
+
+    foreach ($answers as $answer) {
+      $options[$answer->ansid] = $answer->answers;
+    }
+
+    switch ($question->type) {
+      case 'checkbox':
+        $form[$question->qid] = array(
+          '#type' => 'checkboxes',
+          '#title' => $title,
+          '#options' => $options,
+          '#required' => TRUE,
+        );
+        break;
+
+      case 'dropdown':
+        $form[$question->qid] = array(
+          '#type' => 'select',
+          '#title' => $title,
+          '#options' => $options,
+          '#required' => TRUE,
+        );
+        break;
+
+      case 'radiobutton':
+        $form[$question->qid] = array(
+          '#type' => 'radios',
+          '#title' => $title,
+          '#options' => $options,
+          '#required' => TRUE,
+        );
+        break;
+
+      case 'textarea':
+        $form[$question->qid] = array(
+          '#type' => 'textarea',
+          '#title' => $title,
+          '#required' => TRUE,
+          '#default_value' => ' ',
+        );
+        break;
+    }
+
+    if ($question->other) {
+      $form[$question->qid . '_other'] = array(
+        '#type' => 'textarea',
+        '#title' => ucfirst($question->other),
+        '#default_value' => ' ',
+      );
+    }
   }
 
   return $form;

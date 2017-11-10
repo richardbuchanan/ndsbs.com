@@ -66,6 +66,7 @@ function ndsbs_container($variables) {
   $prefix = '';
   $suffix = '';
   $id = isset($element['#id']) ? $element['#id'] : FALSE;
+  $onoff = isset($element['und']) && isset($element['und']['#on_value']) && isset($element['und']['#off_value']);
 
   // Special handling for form elements.
   if (isset($element['#array_parents'])) {
@@ -100,6 +101,10 @@ function ndsbs_container($variables) {
     if ($field_month || $field_dobdate || $field_year) {
       $element['#attributes']['class'][] = 'uk-float-left';
     }
+  }
+
+  if ($onoff) {
+    $element['#attributes']['class'][] = 'uk-margin';
   }
 
   return '<div' . drupal_attributes($element['#attributes']) . '>' . $prefix . $element['#children'] . $suffix . '</div>';
@@ -215,6 +220,7 @@ function ndsbs_form_element($variables) {
   $suffix = isset($element['#field_suffix']) ? $element['#field_suffix'] : '';
   $checkbox = $type && $type === 'checkbox';
   $radio = $type && $type === 'radio';
+  $boolean_element = ($checkbox || $radio) && isset($element['#on_value']) && isset($element['#off_value']);
   $form_error = form_get_error($element);
 
   // Create an attributes array for the wrapping container.
@@ -267,6 +273,13 @@ function ndsbs_form_element($variables) {
     $build = [
       '#theme_wrappers' => ['container__form_element__form_controls'],
     ];
+
+    if ($boolean_element) {
+      $build['#boolean_element'] = TRUE;
+    }
+    else {
+      $build['#boolean_element'] = FALSE;
+    }
   }
   else {
     $build = [
@@ -839,14 +852,13 @@ function ndsbs_status_messages($variables) {
       $output .= '<ul class="uk-list">';
 
       foreach ($messages as $message) {
-        $output .= '<li>' . decode_entities($message) . '</li>';
+        $output .= '<li>' . $message . '</li>';
       }
 
       $output .= '</ul>';
     }
     else {
-      $messages = reset($messages);
-      $output .= decode_entities($messages);
+      $output .= reset($messages);
     }
 
     $output .= '</div>';

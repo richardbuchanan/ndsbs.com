@@ -133,10 +133,10 @@ function node_page_default_clone() {
       '#theme' => 'pager',
       '#weight' => 5,
     );
-    drupal_set_title(t('@title', array('@title' => $title)));
+    //drupal_set_title(t('@title', array('@title' => $title)));
   }
   else {
-    drupal_set_title(t('@title', array('@title' => $title)));
+    //drupal_set_title(t('@title', array('@title' => $title)));
 
     $default_message = '<p>' . t('No front page content has been created yet.') . '</p>';
 

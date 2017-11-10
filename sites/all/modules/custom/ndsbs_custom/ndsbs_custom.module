@@ -1948,3 +1948,17 @@ function ndsbs_get_formatted_name($uid) {
   $client_name[] = $last_name;
   return implode(' ', $client_name);
 }
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function ndsbs_custom_form_metatag_config_edit_form_alter(&$form, &$form_state, $form_id) {
+  $form['#submit'][] = 'ndsbs_custom_metatag_config_edit_form_submit';
+}
+
+/**
+ * Form submit handler for metatag_config_edit_form().
+ */
+function ndsbs_custom_metatag_config_edit_form_submit($form, &$form_state) {
+  drupal_flush_all_caches();
+}

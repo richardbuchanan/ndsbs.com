@@ -791,12 +791,12 @@ function _ndsbs_frontpage_header_content() {
       break;
 
     case 'node_two':
-      drupal_set_title(t('@title', array('@title' => $homepage_title)));
+      //drupal_set_title(t('@title', array('@title' => $homepage_title)));
       $output = _node_two();
       break;
 
     case 'node_three':
-      drupal_set_title(t('@title', array('@title' => $homepage_title)));
+      //drupal_set_title(t('@title', array('@title' => $homepage_title)));
       $output = _node_three();
       break;
   }

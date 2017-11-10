@@ -48,10 +48,10 @@ function ndsbs_preprocess_html(&$variables) {
     drupal_add_html_head($meta_robots, 'ndsbs_dev_robots');
   }
 
-  $title = htmlspecialchars_decode(NDSBS::getTitle());
-  $variables['head_title_array']['title'] = $title;
-  $variables['head_title'] = implode(' | ', $variables['head_title_array']);
-  $variables['head_array']['title'] = implode(' | ', $variables['head_title_array']);
+  //$title = htmlspecialchars_decode(NDSBS::getTitle());
+  //$variables['head_title_array']['title'] = $title;
+  //$variables['head_title'] = implode(' | ', $variables['head_title_array']);
+  //$variables['head_array']['title'] = implode(' | ', $variables['head_title_array']);
 
   foreach ($variables['html_attributes_array']['class'] as $index => $value) {
     if ($value == 'uk-height-1-1') {
@@ -233,8 +233,8 @@ function ndsbs_preprocess_page(&$variables) {
   }
 
   $title = NDSBS::getTitle();
-  drupal_set_title(strip_tags($title));
-  $variables['title'] = $title;
+  //drupal_set_title(strip_tags($title));
+  //$variables['title'] = $title;
 
   $demo_logo = '/' . drupal_get_path('theme', 'ndsbs') . '/logo-extended.png';
   $variables['logo'] = $demo_logo;

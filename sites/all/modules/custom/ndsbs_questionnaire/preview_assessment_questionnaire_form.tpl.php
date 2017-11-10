@@ -1,17 +1,3 @@
-<style>
-  .form-item_custum .form-item {
-    margin-bottom: 5px;
-  }
-
-  .form-item_custum label {
-    width: auto;
-    font-weight: bold;
-  }
-
-  .form-item_custum .form-text, .form-textarea-wrapper textarea {
-    width: auto;
-  }
-</style>
 <?php
 /**
  * @file
@@ -41,7 +27,7 @@ global $base_path, $base_url, $user;
     print drupal_render_children($form);
     ?>
   </div>
-  <div class="form-item_custum left" style="margin-top:6px;">
+  <div class="questionnaire-pager">
     <?php $build['pager'] = array(
       '#theme' => 'pager'
     ); ?>
