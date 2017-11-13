@@ -175,13 +175,13 @@
       var offcanvas = $('#offcanvas');
 
       UIkit.util.on('#page-navbar', 'beforeshow', function (e) {
-        body.addClass('navbar-open');
-        body.removeClass('navbar-closed');
+        //body.addClass('navbar-open');
+        //body.removeClass('navbar-closed');
       });
 
       UIkit.util.on('#page-navbar', 'hidden', function (e) {
-        body.removeClass('navbar-open');
-        body.addClass('navbar-closed');
+        //body.removeClass('navbar-open');
+        //body.addClass('navbar-closed');
       });
 
       $('#page-navbar').find('a').hover(function (e) {
@@ -190,15 +190,15 @@
       });
 
       UIkit.util.on('#offcanvas', 'beforeshow', function (e) {
-        body.addClass('offcanvas-open');
-        body.removeClass('offcanvas-closed');
+        //body.addClass('offcanvas-open');
+        //body.removeClass('offcanvas-closed');
       });
 
       UIkit.util.on('#offcanvas', 'hidden', function (e) {
-        if (!offcanvas.hasClass('uk-open')) {
-          body.removeClass('offcanvas-open');
-          body.addClass('offcanvas-closed');
-        }
+        //if (!offcanvas.hasClass('uk-open')) {
+          //body.removeClass('offcanvas-open');
+          //body.addClass('offcanvas-closed');
+        //}
       });
     }
   };

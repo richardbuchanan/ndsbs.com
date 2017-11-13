@@ -151,8 +151,6 @@
   filter: progid:DXImageTransform.Microsoft.gradient(
     startColorstr='#b3000000',
     endColorstr='#b3000000',GradientType=0); /* IE6-8 */
-  width: 400px;
-  max-width: 100%;
 }
 .uk-offcanvas-bar::-webkit-scrollbar {
   display: none;
