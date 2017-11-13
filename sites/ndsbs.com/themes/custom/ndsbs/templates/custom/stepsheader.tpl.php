@@ -261,7 +261,7 @@ $step_four_button_classes =  implode(' ', $step_four_button_attributes['class'])
       <div class="steps-header-footer">
         <div><strong>Verified On</strong>: <?php print $verify_date; ?></div>
         <?php if (empty($verified_date)): ?>
-          <p class="uk-margin-remove-bottom">Submit documents requested by your counselor</p>
+          <p class="uk-margin-remove-bottom">Use this step only if your evaluator requests specific documents during your interview.</p>
         <?php endif; ?>
       </div>
     </div>
