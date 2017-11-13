@@ -163,7 +163,7 @@ function ndsbs_preprocess_list_all_client(&$variables) {
       'query' => array(
         'assessment_status' => 'All Status',
         'search_by' => '',
-        'search_text' => $client->mail,
+        'search_text' => $user_info->mail,
       ),
     );
 
