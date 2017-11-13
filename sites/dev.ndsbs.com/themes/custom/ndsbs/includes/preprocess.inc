@@ -357,6 +357,7 @@ function ndsbs_preprocess_button(&$variables) {
     case 'Execute':
     case 'Log in':
     case 'Make Payment':
+    case 'Purchase Now':
     case 'Save':
     case 'Save My Answer and Continue Questionnaire':
     case 'Save My Answer and Review Questionnaire':
