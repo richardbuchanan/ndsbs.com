@@ -240,6 +240,21 @@ function ndsbs_custom_menu() {
 }
 
 /**
+ * Implements hook_menu_alter().
+ */
+function ndsbs_custom_menu_alter(&$items) {
+  $items['node/add']['weight'] = 0;
+  $items['admin/content/comment']['weight'] = 0;
+  $items['admin/content/homepage_switcher']['weight'] = 0;
+  $items['admin/content/assessments']['weight'] = 0;
+  $items['admin/content/blogs']['weight'] = 0;
+  $items['admin/content/faq-videos']['weight'] = 0;
+  $items['admin/content/professional-reviews']['weight'] = 0;
+  $items['admin/content/unpublished']['weight'] = 0;
+  $items['admin/content/welcome-page']['weight'] = 0;
+}
+
+/**
  * Implements hook_menu_local_tasks_alter().
  */
 function ndsbs_custom_menu_local_tasks_alter(&$data, $router_item, $root_path) {
