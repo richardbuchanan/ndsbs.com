@@ -492,6 +492,10 @@ function ndsbs_preprocess_node(&$variables) {
     $variables['theme_hook_suggestions'][] = 'node__' . $type . '__teaser';
   }
 
+  if ($variables['nid'] == '3965') {
+    $variables['theme_hook_suggestions'][] = 'node__assessment__misc_services';
+  }
+
   if ($node->type == 'blog') {
     $author = user_load($variables['uid']);
     $name = isset($author->field_first_name['und'][0]['value']) ? $author->field_first_name['und'][0]['value'] : '';
