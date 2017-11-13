@@ -51,7 +51,14 @@ print search_assessment_client();
         }
       }
 
-      if (!$has_refund):
+      $get_therapist = 0;
+      if (isset($data_info->therapist)) {
+        $get_therapist = get_assigned_therapist($data_info->therapist);
+      }
+      $therapist = trim($get_therapist);
+      $has_refund_unassigned = $has_refund && $therapist == 'No therapist has been assigned';
+
+      if (!$has_refund_unassigned):
         if (!in_array($data_info->transaction_id, $transactions)):
           $tran = get_transaction_info_orderid($data_info->order_id);
           $node_info = node_load($data_info->nid);
@@ -160,11 +167,6 @@ print search_assessment_client();
               </td>
               <td>
                 <?php
-                $get_therapist = 0;
-                if (isset($data_info->therapist)) {
-                  $get_therapist = get_assigned_therapist($data_info->therapist);
-                }
-                $therapist = trim($get_therapist);
                 if (empty($therapist)) {
                   if ($user->roles[3] == 'super admin' || $user->roles[5] == 'staff admin') {
                     $options = array(
@@ -203,13 +205,13 @@ print search_assessment_client();
             </tr>
           <?php endif; ?>
         <?php endif; ?>
+        <?php $i++; ?>
       <?php endif; ?>
-      <?php $i++; ?>
       <?php $transactions[] = $data_info->transaction_id; ?>
     <?php endforeach; ?>
-    <?php if($total_count <= 0): ?>
+    <?php if($i <= 0): ?>
     <tr>
-      <td colspan="6" class="txt_ac">Record not found.</td>
+      <td colspan="6">Record not found.</td>
     </tr>
     <?php endif; ?>
   </tbody>

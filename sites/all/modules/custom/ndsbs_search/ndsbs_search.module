@@ -232,8 +232,10 @@ function search_assessment_client_form($form, &$form_state) {
     '#options' => $custom_dropdown,
   );
 
+  $default_search_text = isset($_REQUEST['search_text']) ? $_REQUEST['search_text'] : '';
   $form['search_text'] = array(
     '#type' => 'textfield',
+    '#default_value' => $default_search_text,
     '#attributes' => array(
       'placeholder' => t('Search'),
     ),
@@ -252,6 +254,13 @@ function search_assessment_client_form($form, &$form_state) {
     ),
   );
 
+  if (isset($_REQUEST['search_text']) && !empty($_REQUEST['search_text'])) {
+    $form['actions']['reset'] = array(
+      '#type' => 'submit',
+      '#value' => t('Reset'),
+    );
+  }
+
   return $form;
 }
 
@@ -265,24 +274,29 @@ function search_assessment_client_form_submit(&$form, &$form_state) {
   $search_by = '';
   $search_text = '';
 
-  if (isset($form_state['values']['asmnt_status'])) {
-    $asmnt_status = $form_state['values']['asmnt_status'];
+  if ($form_state['clicked_button']['#id'] == 'edit-reset') {
+    drupal_goto($base_url . '/all/assessment/users');
   }
-  if (isset($form_state['values']['search_by'])) {
-    $search_by = $form_state['values']['search_by'];
-  }
-  if (isset($form_state['values']['search_text'])) {
-    $search_text = $form_state['values']['search_text'];
-  }
+  else {
+    if (isset($form_state['values']['asmnt_status'])) {
+      $asmnt_status = $form_state['values']['asmnt_status'];
+    }
+    if (isset($form_state['values']['search_by'])) {
+      $search_by = $form_state['values']['search_by'];
+    }
+    if (isset($form_state['values']['search_text'])) {
+      $search_text = $form_state['values']['search_text'];
+    }
 
-  $options = array(
-    'query' => array(
-      'assessment_status' => $asmnt_status,
-      'search_by' => $search_by,
-      'search_text' => $search_text
-    )
-  );
-  drupal_goto($base_url . '/all/assessment/users', $options);
+    $options = [
+      'query' => [
+        'assessment_status' => $asmnt_status,
+        'search_by' => $search_by,
+        'search_text' => $search_text
+      ]
+    ];
+    drupal_goto($base_url . '/all/assessment/users', $options);
+  }
 }
 
 /**
