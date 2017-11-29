@@ -105,6 +105,16 @@ function ndsbs_payment_menu() {
     'access callback' => TRUE
   );
 
+  $items['transaction/%transaction_id/delete'] = array(
+    'title' => 'Delete',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array(
+      'ndsbs_payment_transaction_delete_confirm',
+      1,
+    ),
+    'access callback' => TRUE,
+  );
+
   return $items;
 }
 
@@ -238,10 +248,6 @@ function save_transaction_data($nid, $term_num, $uid, $amount, $rush_amount, $tx
   return $order_id;
 }
 
-function delete_transaction_data($uid, $txn_id, $transaction_data, $payment_status) {
-
-}
-
 /**
  * Function implemented to save record in to transaction table
  *
@@ -274,6 +280,47 @@ function save_transaction_terms($oid, $main_report_id, $term_tid_cost, $uid, $pa
     }
   }
   return;
+}
+
+function transaction_id_load($transaction_id) {
+  $users_transaction['users_transactions'] = db_query("SELECT * FROM {users_transactions} WHERE transaction_id = :transaction_id", array(
+    ':transaction_id' => $transaction_id,
+  ))->fetchObject();
+
+  $users_transaction['users_transactions_data'] = db_query("SELECT * FROM {users_transactions_data} WHERE oid = :oid", array(
+    ':oid' => $users_transaction['users_transactions']->order_id,
+  ))->fetchObject();
+
+  return $users_transaction;
+}
+
+function ndsbs_payment_transaction_delete_confirm($form, &$form_state, $transaction) {
+  $form['#transaction'] = $transaction;
+
+  return confirm_form(
+    $form,
+    t('Are you sure you want to delete the transaction?'),
+    'all/transactions/list/1',
+    t('This action cannot be undone.'),
+    t('Delete'),
+    t('Cancel')
+  );
+}
+
+function ndsbs_payment_transaction_delete_confirm_submit($form, &$form_state) {
+  if ($form_state['values']['confirm']) {
+    db_delete('users_transactions')->condition('transaction_id', $form['#transaction']['users_transactions']->transaction_id)->execute();
+    db_delete('users_transactions_data')->condition('oid', $form['#transaction']['users_transactions_data']->oid)->execute();
+    drupal_set_message(t('Transaction has been deleted.'));
+  }
+
+  $form_state['redirect'] = 'all/transactions/list/1';
+}
+
+function delete_transaction_data($transaction_id) {
+}
+
+function delete_transaction_terms($order_id) {
 }
 
 /**

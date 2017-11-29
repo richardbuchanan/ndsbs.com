@@ -713,6 +713,8 @@ function search_transactions() {
  *  Parameter no
  */
 function search_transactions_form($form, &$form_state) {
+  $search_text = isset($_REQUEST['search_text']) && $_REQUEST['search_text'];
+
   $custom_dropdown = array(
     '' => 'All Fields',
     'field_data_field_first_name.field_first_name_value' => 'First Name',
@@ -743,6 +745,7 @@ function search_transactions_form($form, &$form_state) {
     '#attributes' => array(
       'placeholder' => t('Search'),
     ),
+    '#default_value' => $search_text ? $_REQUEST['search_text'] : '',
   );
 
   $form['asmnt_status'] = array(
@@ -750,10 +753,22 @@ function search_transactions_form($form, &$form_state) {
     '#options' => $asmnt_status,
   );
 
-  $form['submit'] = array(
+  $form['actions'] = array(
+    '#type' => 'actions',
+  );
+
+  $form['actions']['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Submit')
   );
+
+  if ($search_text) {
+    $form['actions']['reset'] = array(
+      '#type' => 'submit',
+      '#value'=> t('Reset'),
+    );
+  }
+
   return $form;
 }
 
@@ -766,6 +781,7 @@ function search_transactions_form_submit(&$form, &$form_state) {
   $asmnt_status = $form_state['values']['asmnt_status'];
   $search_by = $form_state['values']['search_by'];
   $search_text = $form_state['values']['search_text'];
+  $clicked_button = $form_state['clicked_button']['#id'];
 
   $options = array(
     'query' => array(
@@ -776,7 +792,13 @@ function search_transactions_form_submit(&$form, &$form_state) {
   );
 
   $arg_val = arg(3);
-  drupal_goto($base_url . '/all/transactions/list/' . $arg_val, $options);
+
+  if ($clicked_button == 'edit-submit') {
+    drupal_goto($base_url . '/all/transactions/list/' . $arg_val, $options);
+  }
+  else {
+    drupal_goto($base_url . '/all/transactions/list/' . $arg_val);
+  }
 }
 
 /**

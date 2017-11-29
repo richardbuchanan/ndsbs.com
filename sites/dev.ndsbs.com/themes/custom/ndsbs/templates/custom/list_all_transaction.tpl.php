@@ -95,8 +95,20 @@ drupal_set_title($title);
           </td>
           <td>
             <?php
-            $options = array('attributes' => array('class' => 'details_icon'));
-            print l(t('Detail'), 'transactions/detail/' . $data->order_id . '/' . arg(3), $options);
+            print l(t('Detail'), 'transactions/detail/' . $data->order_id . '/' . arg(3));
+            ?>
+            <?php
+            $destination = url(current_path(), array(
+              'query' => drupal_get_query_parameters(),
+            ));
+
+            $options = array(
+              'query' => array(
+                'destination' => $destination,
+              ),
+            );
+
+            print l(t('Delete'), 'transaction/' . $data->transaction_id . '/delete', $options);
             ?>
           </td>
         </tr>
