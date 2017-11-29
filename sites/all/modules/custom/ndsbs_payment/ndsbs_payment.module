@@ -282,6 +282,15 @@ function save_transaction_terms($oid, $main_report_id, $term_tid_cost, $uid, $pa
   return;
 }
 
+/**
+ * Loads a transaction object from the database.
+ *
+ * @param $transaction_id
+ *   The transaction ID.
+ *
+ * @return
+ *   A fully-populated transaction object, or FALSE if the transaction is not found.
+ */
 function transaction_id_load($transaction_id) {
   $users_transaction['users_transactions'] = db_query("SELECT * FROM {users_transactions} WHERE transaction_id = :transaction_id", array(
     ':transaction_id' => $transaction_id,
@@ -291,9 +300,14 @@ function transaction_id_load($transaction_id) {
     ':oid' => $users_transaction['users_transactions']->order_id,
   ))->fetchObject();
 
-  return $users_transaction;
+  return $users_transaction['users_transactions'] && $users_transaction['users_transactions'] ? $users_transaction : FALSE;
 }
 
+/**
+ * Form constructor for the transaction deletion confirmation form.
+ *
+ * @see ndsbs_payment_transaction_delete_confirm_submit()
+ */
 function ndsbs_payment_transaction_delete_confirm($form, &$form_state, $transaction) {
   $form['#transaction'] = $transaction;
 
@@ -307,6 +321,11 @@ function ndsbs_payment_transaction_delete_confirm($form, &$form_state, $transact
   );
 }
 
+/**
+ * Executes transaction deletion.
+ *
+ * @see ndsbs_payment_transaction_delete_confirm()
+ */
 function ndsbs_payment_transaction_delete_confirm_submit($form, &$form_state) {
   if ($form_state['values']['confirm']) {
     db_delete('users_transactions')->condition('transaction_id', $form['#transaction']['users_transactions']->transaction_id)->execute();
@@ -315,12 +334,6 @@ function ndsbs_payment_transaction_delete_confirm_submit($form, &$form_state) {
   }
 
   $form_state['redirect'] = 'all/transactions/list/1';
-}
-
-function delete_transaction_data($transaction_id) {
-}
-
-function delete_transaction_terms($order_id) {
 }
 
 /**
