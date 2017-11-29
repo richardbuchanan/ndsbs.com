@@ -19,7 +19,7 @@ class UIkit {
    *
    * @var string
    */
-  const UIKIT_LIBRARY_VERSION = '3.0.0-beta.31';
+  const UIKIT_LIBRARY_VERSION = '3.0.0-beta.34';
 
   /**
    * The Drupal project page for the UIkit base theme.
@@ -45,12 +45,20 @@ class UIkit {
   /**
    * The jQuery library version UIkit supports.
    *
+   * @deprecated in UIkit 7.x-3.0-rc3, will be removed before UIkit
+   *   7.x-3.0. jQuery is no longer required by UIkit, so no replacement is
+   *   needed.
+   *
    * @var string
    */
   const UIKIT_JQUERY_VERSION = '2.1.4';
 
   /**
    * The jQuery Migrate library version UIkit supports.
+   *
+   * @deprecated in UIkit 7.x-3.0-rc3, will be removed before UIkit
+   *   7.x-3.0. jQuery is no longer required by UIkit, so no replacement is
+   *   needed.
    *
    * @var string
    */
