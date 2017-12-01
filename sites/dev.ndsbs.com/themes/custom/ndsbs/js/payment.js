@@ -63,7 +63,6 @@ jQuery(document).ready(function ($) {
   });
 
   $('#edit-submit').click(function (e) {
-    e.preventDefault();
     var element = $('#submit-payment-modal');
 
     UIkit.modal(element).show();
