@@ -62,6 +62,12 @@ jQuery(document).ready(function ($) {
     }
   });
 
+  $('#edit-submit').click(function (e) {
+    var element = $('#submit-payment-modal');
+
+    UIkit.modal(element).show();
+  });
+
   /* <![CDATA[ */
   /*goog_snippet_vars = function() {
     var w = window;
@@ -86,14 +92,4 @@ jQuery(document).ready(function ($) {
     }
   }*/
   /* ]]> */
-});
-
-jQuery(document).ajaxComplete(function(){
-  /*var message = '<div class="uk-alert uk-alert-primary">' +
-    '<p>Rush services updated!</p>' +
-    '</div>';
-  UIkit.notification({
-    message: message,
-    timeout: 2500
-  });*/
 });
