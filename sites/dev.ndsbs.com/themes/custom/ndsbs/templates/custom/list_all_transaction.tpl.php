@@ -95,7 +95,7 @@ drupal_set_title($title);
           </td>
           <td>
             <?php
-            print l(t('Detail'), 'transactions/detail/' . $data->order_id . '/' . arg(3));
+            print l(t('Details'), 'transactions/detail/' . $data->order_id . '/' . arg(3));
             ?>
             <?php
             $destination = url(current_path(), array(

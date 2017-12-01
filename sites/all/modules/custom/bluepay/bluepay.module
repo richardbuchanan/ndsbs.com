@@ -167,10 +167,6 @@ function bluepay_payment_form($form, &$form_state, $order) {
       $output[$explode[0]] = $option;
     }
 
-    // Attach the payment script to the form.
-    $form['#attached']['js'][] = drupal_get_path('theme', 'bootstrap_ndsbs') . '/js/payment.js';
-    $form['#attached']['js'][] = drupal_get_path('theme', 'bootstrap_ndsbs') . '/js/creditcard.js';
-
     // Create form state values for the user account and assessment.
     $form_state['account'] = clone($user);
     $form_state['order'] = $order;
@@ -372,10 +368,19 @@ function bluepay_payment_form($form, &$form_state, $order) {
         ],
       ],
     ];
+
+    $markup = '<div id="submit-payment-modal" class="uk-flex-top" uk-modal="esc-close: false; bg-close: false;">';
+    $markup .= '<div class="uk-modal-dialog uk-margin-auto-vertical uk-modal-body uk-text-center">';
+    $markup .= '<p><span uk-spinner></span></p>';
+    $markup .= '<p>Please wait while we process your payment.</p>';
+    $markup .= '</div>';
+    $markup .= '</div>';
+
     $form['form_wrapper']['actions']['submit'] = [
       '#type' => 'submit',
       '#value' => t('Submit payment'),
       '#submit' => ['bluepay_payment_form_submit'],
+      '#suffix' => $markup,
     ];
     $form['form_wrapper']['actions']['empty'] = [
       '#markup' => $empty_cart,

@@ -55,9 +55,8 @@ $payment['misc_service'] = $misc_service;
   </tbody>
 </table>
 
-<?php if (!$payment['misc_service']): ?>
-  <a href="/questionnaire/start/trans" class="uk-button uk-button-primary">Begin My Assessment</a>
-<?php endif; ?>
+<?php $text = !$payment['misc_service'] ? t('Begin my assessment') : t('Return to dashboard'); ?>
+<a href="/questionnaire/start/trans" class="uk-button uk-button-primary"><?php print $text; ?></a>
 
 <!-- Google Code for NDSBS Conversion Page -->
 <script type="text/javascript">

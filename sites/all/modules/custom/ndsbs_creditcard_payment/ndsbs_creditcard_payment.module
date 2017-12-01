@@ -104,6 +104,11 @@ function ndsbs_creditcard_payment_empty_cart() {
   if (isset($_SESSION['ndsbs_payment']['rush_amount'])) {
     unset($_SESSION['ndsbs_payment']['rush_amount']);
   }
+
+  if (isset($_SESSION['misc_service_price'])) {
+    unset($_SESSION['misc_service_price']);
+  }
+
   delete_cart_items();
   drupal_set_message('Your cart has been emptied.');
   drupal_goto('user/payment');
