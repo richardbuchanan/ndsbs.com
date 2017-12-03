@@ -195,6 +195,8 @@ function _request_assessment_invoice() {
 /**
  * Function save_transaction_data() Implemented
  * To save the orders into db
+ *
+ * @return mixed
  */
 function save_transaction_data($nid, $term_num, $uid, $amount, $rush_amount, $txn_id, $transaction_data, $payment_status, $shipping_info, $payment_method, $express_mail) {
   $queryinsert = db_insert('users_transactions')
