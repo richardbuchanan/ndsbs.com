@@ -236,12 +236,10 @@ function save_transaction_data($nid, $term_num, $uid, $amount, $rush_amount, $tx
   $result->execute();
 
   // Send order confirmation to client's email.
-  if ($_SERVER['HTTP_HOST'] != 'localhost.ndsbs') {
-    ndsbs_payment_order_confirmation_mail($order_id, $nid, $uid, $amount, $payment_status, $payment_method, $shipping_info, $rush_amount);
-  }
+  ndsbs_payment_order_confirmation_mail($order_id, $nid, $uid, $amount, $payment_status, $payment_method, $shipping_info, $rush_amount);
 
   // If this is a rush order, send rush notification to staff.
-  if ($rush_amount && $_SERVER['HTTP_HOST'] != 'localhost.ndsbs' && $_SERVER['HTTP_HOST'] != 'dev.ndsbs.com') {
+  if ($rush_amount) {
     ndsbs_rush_order_notification_mail($order_id, $nid, $uid, $amount, $payment_status, $payment_method, $shipping_info, $rush_amount);
   }
 
@@ -365,7 +363,7 @@ function ndsbs_rush_order_notification_mail($order_id, $nid, $uid, $amount, $pay
   $themecss = $theme . 'ndsbs.theme.css';
   $uikit_components = $theme . 'ndsbs.uikit.components.css';
 
-  $stylesheets = '<link type="text/css" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.27/css/uikit.min.css" media="all">';
+  $stylesheets = '<link type="text/css" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.35/css/uikit.min.css" media="all">';
   $stylesheets .= '<link type="text/css" rel="stylesheet" href="' . $base . '" media="all">';
   $stylesheets .= '<link type="text/css" rel="stylesheet" href="' . $component . '" media="all">';
   $stylesheets .= '<link type="text/css" rel="stylesheet" href="' . $layout . '" media="all">';
@@ -387,11 +385,6 @@ function ndsbs_rush_order_notification_mail($order_id, $nid, $uid, $amount, $pay
   }
 
   $message_text = $stylesheets;
-  $message_text .= '<div class="uk-margin uk-text-center">';
-  $message_text .= '<a href="https://www.ndsbs.com" class="uk-logo uk-display-inline-block" title="New Directions Substance and Behavioral Services">';
-  $message_text .= '<img src="https://www.ndsbs.com/sites/ndsbs.com/themes/custom/ndsbs/logo-blue.png" alt="NDSBS" height="80" width="129">';
-  $message_text .= '</a>';
-  $message_text .= '</div>';
 
   $message_text .= '<h3 class="uk-margin-remove-top uk-text-center uk-text-danger">Rush Order Received</h3>';
   $message_text .= '<h3 class="uk-margin-remove-top uk-text-center">ORDER NUMBER: ' . $order_id . '</h3>';
@@ -500,11 +493,6 @@ function ndsbs_payment_order_confirmation_mail($order_id, $nid, $uid, $amount, $
   }
 
   $message_text = $stylesheets;
-  $message_text .= '<div class="uk-margin uk-text-center">';
-  $message_text .= '<a href="https://www.ndsbs.com" class="uk-logo uk-display-inline-block" title="New Directions Substance and Behavioral Services">';
-  $message_text .= '<img src="https://www.ndsbs.com/sites/ndsbs.com/themes/custom/ndsbs/logo-blue.png" alt="NDSBS" height="80" width="129">';
-  $message_text .= '</a>';
-  $message_text .= '</div>';
 
   $message_text .= '<h3 class="uk-margin-remove-top uk-text-center">ORDER NUMBER: ' . $order_id . '</h3>';
 
