@@ -22,7 +22,7 @@ print search_assessment_client();
 ?>
 <table class="uk-table uk-table-striped sticky-enabled">
   <thead>
-    <tr class="bkg_b">
+    <tr>
       <th>Client</th>
       <th>Service & Status</th>
       <th>Questionnaire</th>
@@ -83,7 +83,7 @@ print search_assessment_client();
               $rush_title = 'Next business day';
               break;
 
-            case '250.00':
+            case '225.00':
               $rush_title = 'Same day';
               break;
           }
