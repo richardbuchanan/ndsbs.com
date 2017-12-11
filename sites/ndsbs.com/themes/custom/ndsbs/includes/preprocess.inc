@@ -18,6 +18,8 @@ use Drupal\ndsbs\NdsbsBlock;
  * Implements hook_preprocess_HOOK() for html.tpl.php.
  */
 function ndsbs_preprocess_html(&$variables) {
+  global $user;
+
   drupal_add_css(path_to_theme() . '/css/ndsbs.ie-fix.css', array(
     'weight' => CSS_THEME,
     'browsers' => array(
@@ -48,15 +50,70 @@ function ndsbs_preprocess_html(&$variables) {
     drupal_add_html_head($meta_robots, 'ndsbs_dev_robots');
   }
 
-  //$title = htmlspecialchars_decode(NDSBS::getTitle());
-  //$variables['head_title_array']['title'] = $title;
-  //$variables['head_title'] = implode(' | ', $variables['head_title_array']);
-  //$variables['head_array']['title'] = implode(' | ', $variables['head_title_array']);
-
   foreach ($variables['html_attributes_array']['class'] as $index => $value) {
     if ($value == 'uk-height-1-1') {
       $variables['html_attributes_array']['class'][$index] = 'uk-height-viewport';
     }
+  }
+
+  $uid = $user->uid;
+  $user = user_load($user->uid);
+  $username = $user->name;
+
+  $first_name = isset($user->field_first_name['und']) ? $user->field_first_name['und'][0]['value'] : FALSE;
+  $last_name = isset($user->field_first_name['und']) ? $user->field_last_name['und'][0]['value'] : FALSE;
+  if ($first_name && $last_name) {
+    $username = "$first_name $last_name";
+  }
+
+  $title = drupal_get_title();
+  $change_title = TRUE;
+
+  switch (current_path()) {
+    case "user/$uid":
+    case "user/$uid/edit":
+    case "user/$uid/devel":
+    case "user/$uid/devel/token":
+    case "user/$uid/devel/load-by-uuid":
+    case "user/$uid/devel/render":
+    case "user/$uid/track":
+    case "user/$uid/track/navigation":
+      $title = t('@username', array('@username' => $username));
+      break;
+
+    case "user/$uid/contact":
+      $title = t('Contact @username', array('@username' => $username));
+      break;
+
+    case 'user':
+      if (user_is_anonymous()) {
+        $title = t('Log in');
+      }
+      else {
+        $title = t('@username', array('@username' => $username));
+      }
+      break;
+
+    case 'user/login':
+      $title = t('Log in');
+      break;
+
+    case 'user/password':
+      $title = t('Request new password');
+      break;
+
+    case 'user/register':
+      $title = t('Create new account');
+      break;
+
+    default:
+      $change_title = FALSE;
+  }
+
+  if ($change_title) {
+    $variables['head_title_array']['title'] = $title;
+    $variables['head_title'] = implode(' | ', $variables['head_title_array']);
+    $variables['head_array']['title'] = implode(' | ', $variables['head_title_array']);
   }
 }
 
@@ -233,8 +290,7 @@ function ndsbs_preprocess_page(&$variables) {
   }
 
   $title = NDSBS::getTitle();
-  //drupal_set_title(strip_tags($title));
-  //$variables['title'] = $title;
+  $variables['title'] = $title;
 
   $demo_logo = '/' . drupal_get_path('theme', 'ndsbs') . '/logo-extended.png';
   $variables['logo'] = $demo_logo;

@@ -220,6 +220,10 @@ body.front #header-below {
 #region-highlighted-wrapper .block blockquote footer {
   color: #e5e5e5;
 }
+#header-below #page-title em {
+  color: #1e87f0;
+  margin-right: 5px;
+}
 #region-highlighted-wrapper .block blockquote footer {
   font-size: 1rem;
 }

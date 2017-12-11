@@ -52,24 +52,33 @@ class Ndsbs {
         break;
 
       case 'user':
+        if (user_is_anonymous()) {
+          $title = t('Log in');
+          drupal_set_title($title);
+        }
+        else {
+          $title = t('@username', array('@username' => $username));
+          drupal_set_title($title);
+        }
+        break;
+
       case 'user/login':
         $title = t('Log in');
+        drupal_set_title($title);
         break;
 
       case 'user/password':
         $title = t('Request new password');
+        drupal_set_title($title);
         break;
 
       case 'user/register':
         $title = t('Create new account');
+        drupal_set_title($title);
         break;
 
       default:
         $title = t('@title', array('@title' => $title));
-    }
-
-    if (current_path() == 'user' && user_is_logged_in()) {
-      $title = t('@username', array('@username' => $username));
     }
 
     return html_entity_decode($title);
