@@ -1,9 +1,12 @@
 <?php
 
-function ndsbs_payment_enable() {
-  // mailsystem_set(array('ndsbs_payment' =>'NDSBS_PaymentMailSystem'));
-}
-
-function ndsbs_payment_disable() {
-  // mailsystem_clear(array('ndsbs_payment' => 'NDSBS_PaymentMailSystem'));
+/**
+ * Add payment confirmation column to {users_transactions} table.
+ */
+function ndsbs_payment_update_7100() {
+  db_add_field('users_transactions', 'payment_confirmation', array(
+    'type' => 'int',
+    'not null' => TRUE,
+    'default' => 0,
+  ));
 }

@@ -32,9 +32,9 @@ settings[display_breadcrumbs] = 1
 settings[breakcrumbs_home_link] = 1
 settings[breakcrumbs_current_page] = 0
 
-; Information added by Drupal.org packaging script on 2017-11-27
-version = "7.x-3.0-rc4"
+; Information added by Drupal.org packaging script on 2017-12-01
+version = "7.x-3.0"
 core = "7.x"
 project = "uikit"
-datestamp = "1511809089"
+datestamp = "1512158587"
 

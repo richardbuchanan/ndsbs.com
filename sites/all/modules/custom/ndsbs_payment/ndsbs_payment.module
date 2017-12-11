@@ -1042,3 +1042,24 @@ function ndsbs_ajax_rush_service(&$form, $form_state) {
 
   return $return;
 }
+
+/**
+ * Retrieves user payment confirmation status.
+ *
+ * @param $uid
+ *   The user id to look for.
+ * @param $tid
+ *   The transaction id to look for.
+ *
+ * @return mixed
+ */
+function ndsbs_payment_get_payment_confirmation_status($uid, $tid) {
+  $query = db_select('users_transactions', 'ut')
+    ->fields('ut', array('payment_confirmation'))
+    ->condition('uid', $uid)
+    ->condition('transaction_id', $tid)
+    ->execute()
+    ->fetchAssoc();
+
+  return $query['payment_confirmation'];
+}
