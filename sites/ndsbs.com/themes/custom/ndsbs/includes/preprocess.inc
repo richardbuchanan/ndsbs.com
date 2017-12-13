@@ -115,6 +115,20 @@ function ndsbs_preprocess_html(&$variables) {
     $variables['head_title'] = implode(' | ', $variables['head_title_array']);
     $variables['head_array']['title'] = implode(' | ', $variables['head_title_array']);
   }
+
+  $adwords_payment_conversion = FALSE;
+  $variables['transaction_id'] = 0;
+  $transactions = get_user_transactions(1);
+  $payment_confirmation_status = ndsbs_payment_get_payment_confirmation_status($user->uid, $transactions[0]->transaction_id);
+  $payment_confirmation_page = current_path() == 'user/payment/confirmation';
+  $add_conversion_code = !$payment_confirmation_status && $payment_confirmation_page && _is_production_site();
+
+  if ($add_conversion_code) {
+    $adwords_payment_conversion = TRUE;
+    $variables['transaction_id'] = $transactions[0]->transaction_id;
+  }
+
+  $variables['adwords_payment_conversion'] = $adwords_payment_conversion;
 }
 
 /**
@@ -554,6 +568,16 @@ function ndsbs_preprocess_node(&$variables) {
   }
 
   if ($node->type == 'blog') {
+    if (!drupal_is_front_page() && $teaser) {
+      $variables['theme_hook_suggestions'][] = 'node__blog__teaser_list';
+
+      $variables['title_attributes_array'] = array(
+        'class' => array('uk-h2'),
+      );
+
+      $variables['content']['links']['#theme'] = 'links__blog';
+    }
+
     $author = user_load($variables['uid']);
     $name = isset($author->field_first_name['und'][0]['value']) ? $author->field_first_name['und'][0]['value'] : '';
     $name .= isset($author->field_middle_name['und'][0]['value']) ? ' ' . $author->field_middle_name['und'][0]['value'] : '';
@@ -562,7 +586,7 @@ function ndsbs_preprocess_node(&$variables) {
 
     $created = $variables['created'];
     $date = format_date($created, 'blog_date');
-    $variables['submitted'] = t('<span uk-icon="icon: calendar" style="cursor:default"></span> !datetime by !username', array('!username' => $name, '!datetime' => $date));
+    $variables['submitted'] = t('<span uk-icon="icon: calendar" style="cursor:default"></span><span> !datetime by <span class="uk-text-primary">!username</span></span>', array('!username' => $name, '!datetime' => $date));
 
     unset($variables['content']['links']['blog']);
   }

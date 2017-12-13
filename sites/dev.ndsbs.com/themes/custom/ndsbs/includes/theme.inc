@@ -401,6 +401,88 @@ function ndsbs_link($variables) {
 }
 
 /**
+ * Implements theme_links() for blog links.
+ */
+function ndsbs_links__blog($variables) {
+  $links = $variables['links'];
+  $heading = $variables['heading'];
+  $output = '';
+
+  if (count($links) > 0) {
+    // Treat the heading first if it is present to prepend it to the list of
+    // links.
+    if (!empty($heading)) {
+      if (is_string($heading)) {
+        // Prepare the array that will be used when the passed heading is a
+        // string.
+        $heading = array(
+          'text' => $heading,
+          // Set the default level of the heading.
+          'level' => 'h2',
+        );
+      }
+      $output .= '<' . $heading['level'];
+      if (!empty($heading['class'])) {
+        $output .= drupal_attributes(array('class' => $heading['class']));
+      }
+      $output .= '>' . check_plain($heading['text']) . '</' . $heading['level'] . '>';
+    }
+
+    $output .= '<div class="uk-grid-small uk-child-width-auto" uk-grid>';
+
+    $num_links = count($links);
+    $i = 1;
+
+    foreach ($links as $key => $link) {
+      $link['attributes']['class'] = array(str_replace('_', '-', $key));
+
+      // Add first and last classes to the list of links to help out themers.
+      if ($i == 1) {
+        $link['attributes']['class'][] = 'first';
+      }
+
+      if ($i == $num_links) {
+        $link['attributes']['class'][] = 'last';
+      }
+
+      $link['attributes']['class'][] = 'uk-button';
+      $link['attributes']['class'][] = 'uk-button-text';
+      $link['attributes']['class'][] = 'uk-text-primary';
+
+      $output .= '<div>';
+
+      if (isset($link['href'])) {
+        // Pass in $link as $options, they share the same keys.
+        $output .= l($link['title'], $link['href'], $link);
+      }
+      elseif (!empty($link['title'])) {
+        // Some links are actually not links, but we wrap these in <span> for
+        // adding title and class attributes.
+        if (empty($link['html'])) {
+          $link['title'] = check_plain($link['title']);
+        }
+
+        $span_attributes = '';
+
+        if (isset($link['attributes'])) {
+          $span_attributes = drupal_attributes($link['attributes']);
+        }
+
+        $output .= '<span' . $span_attributes . '>' . $link['title'] . '</span>';
+      }
+
+      $output .= '</div>';
+      $i++;
+    }
+
+    $output .= '</div>';
+
+  }
+
+  return $output;
+}
+
+/**
  * Implements theme_menu_link().
  */
 function ndsbs_menu_link(array $variables) {

@@ -175,7 +175,7 @@ function bluepay_payment_form($form, &$form_state, $order) {
       'attributes' => [
         'class' => [
           'uk-button',
-          'uk-button-default',
+          'uk-button-primary',
           'uk-margin-small-left',
         ],
       ]

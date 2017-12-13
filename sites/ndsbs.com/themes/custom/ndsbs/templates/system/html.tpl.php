@@ -51,6 +51,24 @@
   <?php print $head; ?>
   <title><?php print $head_title; ?></title>
   <?php print $styles; ?>
+  <!-- Global site tag (gtag.js) - Google AdWords: 123456789 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-838747312"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments)}
+gtag('js', new Date());
+
+gtag('config', 'AW-838747312');
+</script>
+<?php if ($adwords_payment_conversion): ?>
+<!-- Event snippet for NDSBS Purchase conversion page -->
+<script>
+gtag('event', 'conversion', {
+  'send_to': 'AW-838747312/FdXdCP70gnUQsIn5jwM',
+  'transaction_id': '<?php print $transaction_id; ?>'
+});
+</script>
+<?php endif; ?>
 </head>
 <body class="<?php print $classes; ?>" <?php print $attributes;?>>
   <div id="skip-link">
