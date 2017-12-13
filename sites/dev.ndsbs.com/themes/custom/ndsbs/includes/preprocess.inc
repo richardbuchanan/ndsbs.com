@@ -579,10 +579,22 @@ function ndsbs_preprocess_node(&$variables) {
     }
 
     $author = user_load($variables['uid']);
+    $username  = $author->name;
+
+    if ($username == 'Brian') {
+      $username  = 'briantdavis';
+    }
+
     $name = isset($author->field_first_name['und'][0]['value']) ? $author->field_first_name['und'][0]['value'] : '';
     $name .= isset($author->field_middle_name['und'][0]['value']) ? ' ' . $author->field_middle_name['und'][0]['value'] : '';
     $name .= isset($author->field_last_name['und'][0]['value']) ? ' ' . $author->field_last_name['und'][0]['value'] : '';
     $name .= isset($author->field_therapist_degree['und'][0]['value']) ? ' ' . $author->field_therapist_degree['und'][0]['value'] : '';
+    $name = l($name, 'staff', array(
+      'attributes' => array(
+        'class' => array('uk-text-primary'),
+      ),
+      'fragment' => $username,
+    ));
 
     $created = $variables['created'];
     $date = format_date($created, 'blog_date');
