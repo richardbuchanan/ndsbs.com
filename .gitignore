@@ -1,60 +1,6 @@
-# Ignore Drupal core files.
-/.editorconfig
-/.htaccess
-/CHANGELOG.txt
-/COPYRIGHT.txt
-/INSTALL.mysql.txt
-/INSTALL.pgsql.txt
-/INSTALL.sqlite.txt
-/INSTALL.txt
-/MAINTAINERS.txt
-/MODERNIZATION_CHANGES.txt
-/README.txt
-/UPGRADE.txt
-/authorize.php
-/cron.php
-/includes
-/index.php
-/install.php
-/misc
-/modules
-/profiles
-/robots.txt
-/scripts
-/themes
-/update.php
-/web.config
-/xmlrpc.php
-
 # Ignore configuration files that may contain sensitive information.
-/.idea
-sites/dev.ndsbs.com/settings*.php
-sites/ndsbs.com/settings*.php
-sites/ohioduieval.com/settings*.php
+sites/*/settings*.php
 
 # Ignore paths that contain user-generated content.
-sites/*/files/*
+sites/*/files
 sites/*/private
-sites/*/.sass-cache
-sites/*/logs
-sites/*/mysqldump
-
-# Ignore developer-only directories.
-sites/localhost*
-sites/*/settings.permissions.inc
-sites/all/modules/contrib/devel
-sites/all/modules/contrib/devel_themer
-sites/all/modules/contrib/permissions_variable
-sites/all/modules/contrib/simplehtmldom
-
-# Do NOT ignore these paths.
-!sites/*/files/block_image
-!sites/*/files/default_images
-!sites/*/files/front-page-images
-!sites/*/files/page_images
-!sites/*/files/pictures
-!sites/*/files/profile_images
-!sites/*/files/questionnaire
-!sites/*/files/staff
-!sites/*/files/styles
-!sites/*/files/mailsystem
