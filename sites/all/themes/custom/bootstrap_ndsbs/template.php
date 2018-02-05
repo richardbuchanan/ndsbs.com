@@ -241,7 +241,6 @@ function bootstrap_ndsbs_preprocess_page(&$variables) {
   if (function_exists('faq_videos_embed_promoted')) {
     $variables['faq_videos']['#markup'] = faq_videos_embed_promoted();
   }
-  $bbb_seal = '<a href="https://www.bbb.org/centralohio/business-reviews/marriage-counselor/directions-counseling-group-in-worthington-oh-70078980/#sealclick" target="_blank" rel="nofollow" style="text-align:right;"><img alt="Directions Counseling Group BBB Business Review" src="https://seal-centralohio.bbb.org/seals/blue-seal-200-65-bbb-70078980.png" style="border: 0;" /></a>';
   $godaddy_seal = '<span id="siteseal"><script async type="text/javascript" src="https://seal.godaddy.com/getSeal?sealID=fPzyBVTYzEKessk4HA9jDt9ALuaThCsopCkEyyRc7mBTdwENhjRNDi"></script></span>';
   $mcafee_seal = '<script type="text/javascript" src="https://cdn.ywxi.net/js/1.js" async></script>';
   $variables['site_seals'] = $bbb_seal . $godaddy_seal . $mcafee_seal;
@@ -286,16 +285,12 @@ function bootstrap_ndsbs_preprocess_node(&$variables) {
     $name .= isset($author->field_therapist_degree['und'][0]['value']) ? ' ' . $author->field_therapist_degree['und'][0]['value'] : '';
 
     $created = $variables['created'];
-    $date = format_date($created, $type = 'blog_date');
-    $variables['submitted'] = t('<span class="glyphicon glyphicon-calendar" aria-hidden="true"></span> !datetime by !username', array('!username' => $variables['name'], '!datetime' => $date));
+    $date = format_date($created, 'blog_date');
+    $variables['submitted'] = t('<span uk-icon="icon: calendar" style="cursor:default"></span> !datetime by !username', array('!username' => $name, '!datetime' => $date));
 
-    $variables['content']['links']['blog']['#links']['blog_usernames_blog']['title'] = $name . '\'s blog';
-    $variables['content']['links']['blog']['#links']['blog_usernames_blog']['href'] = 'blog';
-
-    if ($variables['teaser'] && !drupal_is_front_page()) {
-      unset($variables['content']['links']['blog']);
-    }
+    unset($variables['content']['links']['blog']);
   }
+
   if ($variables['title'] == 'Rush order') {
     $variables['theme_hook_suggestions'][] = 'node__assessment__rush_order';
   }

@@ -1035,6 +1035,7 @@ function _ndsbs_site_seals_content() {
 
   if (!$dev_env) {
     $output .= '<div class="uk-flex uk-flex-center uk-flex-right@m">';
+    $output .= '<a class="bbb-img" href="https://www.bbb.org/centralohio/business-reviews/marriage-counselor/directions-counseling-group-in-worthington-oh-70078980/#sealclick" target="_blank" rel="nofollow" style="text-align:right;"><img alt="Directions Counseling Group BBB Business Review" src="https://seal-centralohio.bbb.org/seals/blue-seal-200-65-bbb-70078980.png" style="border: 0;" /></a>';
     $output .= '<span id="siteseal"><script async type="text/javascript" src="https://seal.godaddy.com/getSeal?sealID=fPzyBVTYzEKessk4HA9jDt9ALuaThCsopCkEyyRc7mBTdwENhjRNDi"></script></span>';
     $output .= '<script type="text/javascript" src="https://cdn.ywxi.net/js/1.js" async></script>';
     $output .= '</div>';
