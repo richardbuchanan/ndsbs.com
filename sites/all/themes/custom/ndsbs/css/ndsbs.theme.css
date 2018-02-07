@@ -11,6 +11,19 @@
  * @see http://colorzilla.com/gradient-editor/#000000+0,000000+100&0.7+0,0.7+100
  */
 
+#block-bdg-ndsbs-ndsbs-copyright {
+  width: 55%;
+  margin-left: 50px;
+}
+
+.bbb-img {
+  position: relative;
+  top: -10px;
+}
+
+#block-block-7 {
+    display: none;
+}
 /**
  * Page wrapper elements.
  *
@@ -1070,14 +1083,4 @@ body.role-super-therapist #user-profile-form ul.group-user-account-therapist {
 }
 [src="//cdn.ywxi.net/static/img/tm-float-bg-right-bottom.png"] {
   display: none !important;
-}
-
-#block-bdg-ndsbs-ndsbs-copyright {
-  width: 55%;
-  margin-left: 50px;
-}
-
-.bbb-img {
-  position: relative;
-  top: -10px;
 }
