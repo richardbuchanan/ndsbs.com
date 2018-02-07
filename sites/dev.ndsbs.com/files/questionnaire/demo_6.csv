@@ -1,9 +1,0 @@
-Question,Answer (Use || as a seperator),Field Type,Other (Questions having the other option text)
-Your primary occupation (include paid or unpaid occupations),,textarea,
-Hours per week (average) you are engaged in this occupation,0-5||5-10||10-20||20-30||30-40||40-50||50-60||60-80||80 +,radiobutton,
-Current prescription medication use,none||blood pressure||anti- anxiety||anti-depressant||other (Please list any other types or names of medication),radiobutton,other (Please list any other types or names of medication)
-Heart condition in the last 24 months,Yes||No,radiobutton,
-Stomach problems in last 24 months,Yes||No,radiobutton,
-Liver condition in last 24 months,Yes||No,radiobutton,
-Emergency room visits in last 24 months,Yes||No,radiobutton,
-Currently pregnant or within the last 24 months,Yes||No,radiobutton,
