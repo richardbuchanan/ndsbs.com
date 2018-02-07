@@ -1072,12 +1072,12 @@ body.role-super-therapist #user-profile-form ul.group-user-account-therapist {
   display: none !important;
 }
 
-.bbb-img {
-    position: relative;
-    top: -10px;
+#block-bdg-ndsbs-ndsbs-copyright {
+  width: 55%;
+  margin-left: 50px;
 }
 
-#block-bdg-ndsbs-ndsbs-copyright {
-    width: 55%;
-    margin-left: 50px;
+.bbb-img {
+  position: relative;
+  top: -10px;
 }
