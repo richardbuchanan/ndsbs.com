@@ -432,7 +432,27 @@ function bdg_ndsbs_staff_profile_node_form_submit() {
 function bdg_ndsbs_user_register_submit($form, &$form_state) {
   $account = $form['#user'];
   $assessment_state = $form_state['values']['field_assessment_state']['und'][0]['value'];
+  // Set hook_mail parameters.
+  $params = array(
+  'subject' => 'New Registration at NDSBS',
+  'body' => "<p>Hi Admin,</p>
+             <p>A new user has registered for NDSBS. Below are the details.</p>",
+  );
 
+  $params['body'] .= 'Name: ' . $form_state['values']['field_first_name']['und'][0]['value'] . ' ' . $form_state['values']['field_last_name']['und'][0]['value'] . ' <br />';
+  $params['body'] .= 'Username: ' . $form_state['values']['field_first_name']['und'][0]['value']. ' <br />';
+  $params['body'] .= 'Email: ' . $form_state['values']['mail']. ' <br />';
+  $params['body'] .= 'Phone: ' . $form_state['values']['field_phone']['und'][0]['value']. ' <br />'; 
+  $params['body'] .= 'State: ' . $form_state['values']['field_state']['und'][0]['value']. ' <br />';
+  $params['body'] .= 'Referred by: ' . $form_state['values']['field_referred_by']['und'][0]['value']. ' <br />';
+  $params['body'] .= 'Reason for assessment: ' . $form_state['values']['field_reason_for_assessment']['und'][0]['value']. ' <br />';
+  $params['body'] .= 'For court?: ' . $form_state['values']['field_for_courts']['und'][0]['value']. ' <br />';
+  $params['body'] .= 'For probation?: ' . $form_state['values']['field_for_probation ']['und'][0]['value']. ' <br />';
+  $params['body'] .= 'State assessment will be submitted: ' . $form_state['values']['field_assessment_state']['und'][0]['value']. ' <br />';
+  $params['body'] .= 'Questions from client: ' . $form_state['values']['field_pre_purchase_questions']['und'][0]['value']. ' <br />';
+  $params['body'] .= 'Prefers to be contacted by: ' . $form_state['values']['field_preferred_contact']['und'][0]['value']. ' <br />';
+  // Send out the e-mail.
+  drupal_mail('bdg_ndsbs', 'bdg_ndsbs_mail', "info@ndsbs.com", language_default(), $params);
   if ($assessment_state != 'IL' && $assessment_state != 'NY') {
     $edit = array(
       'field_state_acceptance' => array(
@@ -447,7 +467,26 @@ function bdg_ndsbs_user_register_submit($form, &$form_state) {
     user_save($account, $edit);
   }
 }
+/**
+ * Implementation of hook_mail().
+ */
+function bdg_ndsbs_mail($key, &$message, $params){
 
+  // Set the mail content type to html to send an html e-mail (optional).
+  $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
+
+  // Grab the subject and body from params and add it to the message.
+  $message['subject'] = $params['subject'];
+  $message['body'][] = $params['body'];
+
+
+  switch ($key) {
+    case "bdg_ndsbs_mail":
+      // Make other changes here if desired...
+      break;
+  }
+
+}
 /**
  * Form constructor for enabling and disabling developer modules.
  *
