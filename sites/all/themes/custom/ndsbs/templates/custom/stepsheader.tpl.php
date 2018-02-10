@@ -110,31 +110,6 @@ if (current_path() == 'schedule/interview') {
   drupal_set_title('Schedule My Interview');
 }
 
-/**
- * Step three attributes.
- */
-$step_three_attributes = array('class' => array('step-three'));
-$step_three_button_attributes = array(
-  'href' => $necessary_docs_url,
-  'class' => array('uk-icon-button'),
-);
-$step_three_title_attributes = array(
-  'class' => array(
-    'steps-header-title',
-    'uk-text-center@l',
-  ),
-);
-if ($documents_status) {
-  $step_three_button_attributes['class'][] = 'uk-button-success';
-  $step_three_title_attributes['class'][] = 'step-completed';
-}
-else {
-  $step_three_button_attributes['class'][] = 'uk-button-primary';
-}
-if (current_path() == 'user/paperwork/list') {
-  $step_three_attributes['class'][] = 'uk-active';
-  drupal_set_title('Upload or Fax Documents');
-}
 
 /**
  * Step four attributes.
@@ -164,10 +139,13 @@ if (current_path() == 'view/assessment/report') {
 
 $step_one_button_classes =  implode(' ', $step_one_button_attributes['class']) . ' uk-hidden@l uk-margin-right';
 $step_two_button_classes =  implode(' ', $step_two_button_attributes['class']) . ' uk-hidden@l uk-margin-right';
-$step_three_button_classes =  implode(' ', $step_three_button_attributes['class']) . ' uk-hidden@l uk-margin-right';
 $step_four_button_classes =  implode(' ', $step_four_button_attributes['class']) . ' uk-hidden@l uk-margin-right';
 ?>
-
+<style>
+.uk-child-width-1-4\@l > * {
+    width: 33%;
+}
+</style>
 <div id="steps-header-order-date" class="uk-display-inline-block uk-margin-bottom uk-width-1-1 uk-visible@l">
   <span class="uk-float-right">Order date: <?php print $order_date; ?></span>
 </div>
@@ -181,12 +159,8 @@ $step_four_button_classes =  implode(' ', $step_four_button_attributes['class'])
     <a href="<?php print $counseling_url; ?>">2. Schedule My Interview</a>
   </li>
 
-  <li<?php print drupal_attributes($step_three_attributes); ?>>
-    <a href="<?php print $necessary_docs_url; ?>">3. Upload or Fax Documents</a>
-  </li>
-
   <li<?php print drupal_attributes($step_four_attributes); ?>>
-    <a href="<?php print $report_url; ?>">4. View My Assessment Report</a>
+    <a href="<?php print $report_url; ?>">3. View My Assessment Report</a>
   </li>
 
 </ul>
@@ -199,10 +173,7 @@ $step_four_button_classes =  implode(' ', $step_four_button_attributes['class'])
     <h3><a<?php print drupal_attributes($step_two_button_attributes); ?>>2</a></h3>
   </li>
   <li class="uk-text-center">
-    <h3><a<?php print drupal_attributes($step_three_button_attributes); ?>>3</a></h3>
-  </li>
-  <li class="uk-text-center">
-    <h3><a<?php print drupal_attributes($step_four_button_attributes); ?>>4</a></h3>
+    <h3><a<?php print drupal_attributes($step_four_button_attributes); ?>>3</a></h3>
   </li>
 </ul>
 
@@ -244,29 +215,6 @@ $step_four_button_classes =  implode(' ', $step_four_button_attributes['class'])
     </div>
   </li>
 
-  <li<?php print drupal_attributes($step_three_attributes); ?>>
-    <?php $user_paperwork = arg(0) == 'user' && arg(1) == 'paperwork' && arg(2) == 'list' ? true : false; ?>
-    <?php $node_paperwork = arg(0) == 'node' && arg(2) == 'paper-work' ? true : false; ?>
-    <?php $node_edit = arg(0) == 'node' && arg(2) == 'edit' ? true : false; ?>
-
-    <div class="steps-header-content uk-height-1-1@l">
-      <h3<?php print drupal_attributes($step_three_title_attributes); ?>>
-        <a href="<?php print $necessary_docs_url; ?>">
-          <span class="<?php print $step_three_button_classes; ?>">3</span>Upload or Fax Documents
-        </a>
-      </h3>
-
-      <?php $verify_date = !empty($verified_date) ? $verified_date : 'Unverified'; ?>
-
-      <div class="steps-header-footer">
-        <div><strong>Verified On</strong>: <?php print $verify_date; ?></div>
-        <?php if (empty($verified_date)): ?>
-          <p class="uk-margin-remove-bottom">Use this step only if your evaluator requests specific documents during your interview.</p>
-        <?php endif; ?>
-      </div>
-    </div>
-  </li>
-
   <li<?php print drupal_attributes($step_four_attributes); ?>>
     <?php $user_report = arg(0) == 'view' && arg(1) == 'assessment' && arg(2) == 'report' ? true : false; ?>
     <?php $email_report = arg(0) == 'user' && arg(1) == 'email' && arg(2) == 'report' ? true : false; ?>
@@ -274,7 +222,7 @@ $step_four_button_classes =  implode(' ', $step_four_button_attributes['class'])
     <div class="steps-header-content uk-height-1-1@l">
       <h3<?php print drupal_attributes($step_four_title_attributes); ?>>
         <a href="<?php print $report_url; ?>">
-          <span class="<?php print $step_four_button_classes; ?>">4</span>View My Assessment Report
+          <span class="<?php print $step_four_button_classes; ?>">3</span>View My Assessment Report
         </a>
       </h3>
 
