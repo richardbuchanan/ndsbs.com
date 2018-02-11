@@ -1,0 +1,9 @@
+<?php
+
+function ndsbs_counseling_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'counseling_request_node_form') {
+    drupal_set_title('Complete My Interview');
+    unset($form['actions']['submit']);
+    unset($form['field_counselingrequest_comment']);
+  }
+}
