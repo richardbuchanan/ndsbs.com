@@ -107,7 +107,7 @@ else {
 }
 if (current_path() == 'schedule/interview') {
   $step_two_attributes['class'][] = 'uk-active';
-  drupal_set_title('Schedule My Interview');
+  drupal_set_title('Complete My Interview');
 }
 
 
@@ -145,6 +145,9 @@ $step_four_button_classes =  implode(' ', $step_four_button_attributes['class'])
 .uk-child-width-1-4\@l > * {
     width: 33%;
 }
+.steps-body {
+    margin-top: 10px;
+}
 </style>
 <div id="steps-header-order-date" class="uk-display-inline-block uk-margin-bottom uk-width-1-1 uk-visible@l">
   <span class="uk-float-right">Order date: <?php print $order_date; ?></span>
@@ -156,7 +159,7 @@ $step_four_button_classes =  implode(' ', $step_four_button_attributes['class'])
   </li>
 
   <li<?php print drupal_attributes($step_two_attributes); ?>>
-    <a href="<?php print $counseling_url; ?>">2. Schedule My Interview</a>
+    <a href="<?php print $counseling_url; ?>">2. Complete My Interview</a>
   </li>
 
   <li<?php print drupal_attributes($step_four_attributes); ?>>
@@ -184,34 +187,35 @@ $step_four_button_classes =  implode(' ', $step_four_button_attributes['class'])
         <a href="<?php print $questionnaire_url; ?>">
           <span class="<?php print $step_one_button_classes; ?>">1</span>Complete My Questionnaire</a>
       </h3>
-
       <?php $attempts_status = $evaluation_status == 1 ? 'Completed' : 'Pending'; ?>
-
-      <div class="steps-header-footer">
-        <div><strong>No. Of Attempts</strong>: <?php print $times; ?></div>
-        <div><strong>Status</strong>: <?php print $attempts_status; ?></div>
+     <div style="display:block;text-align:center;"><div  class="steps-header-footer">
+     <div class="status-footer" style="border:1px solid #dfdfdf;display:block;text-align:center;"><p style="margin:5px;"><strong>Status</strong>: <?php print $attempts_status; ?></div></p>
+        <div class="steps-body"><p><strong>No. Of Attempts</strong>: <?php print $times; ?></p></div></div>   
       </div>
     </div>
+
   </li>
 
   <li<?php print drupal_attributes($step_two_attributes); ?>>
     <div class="steps-header-content uk-height-1-1@l">
       <h3<?php print drupal_attributes($step_two_title_attributes); ?>>
         <a href="<?php print $counseling_url; ?>">
-          <span class="<?php print $step_two_button_classes; ?>">2</span>Schedule My Interview
+          <span class="<?php print $step_two_button_classes; ?>">2</span>Complete My Interview
         </a>
       </h3>
-
-      <?php $attended_badge = $attendance != 0 ? 'Attended' : 'Not Attended'; ?>
-
-      <div class="steps-header-footer">
-        <div><strong>Status</strong>: <?php print $attended_badge; ?></div>
-        <?php if (!$counseling_data): ?>
-          <p class="uk-margin-remove-bottom">Submit interview request <strong>OR</strong> call to schedule interview (9 a.m. – 5 p.m. EST): <a href="tel: 1-800-671-8589">1-800-671-8589</a></p>
-        <?php elseif (!$attendance): ?>
-          <p>A representative will call shortly to schedule your appointment</p>
-        <?php endif; ?>
+      <?php $attended_badge = $attendance != 0 ? 'Completed' : 'Not Completed'; ?>
+       <div class="steps-header-footer">
+       <div  class="status-footer" style="border:1px solid #dfdfdf;display:block;text-align:center;"><p style="margin:5px;"><strong>Status</strong>: <?php print $attended_badge; ?></p></div>
+     
+        <div class="steps-body" style="display:block;text-align:center;">
+          <p>We will call you to schedule a convenient time</p>
+          <strong style="display:block">OR</strong>
+          <p>Call us at <a href="tel: 1-800-671-8589">1-800-671-8589</a> M-F / 9-5 EST</p>
+          </div>
+          <div style="display:block;text-align:center;">
       </div>
+    </div>
+
     </div>
   </li>
 
@@ -227,16 +231,21 @@ $step_four_button_classes =  implode(' ', $step_four_button_attributes['class'])
       </h3>
 
       <div class="steps-header-footer">
+      
         <?php if (empty($client_reports) || !$report_info->main_report): ?>
-          <p><strong>Status</strong>: Pending</p>
-          <p class="uk-margin-remove-bottom">Must complete first three steps to receive a report.</p>
+        <div  class="status-footer" style="border:1px solid #dfdfdf;display:block;text-align:center;"><p style="margin:5px;"><strong>Status</strong>: Pending</p></div>
+          <div class="steps-body"><div style="display:block;text-align:center;"><p>Must complete first three steps to receive a report.</p></div></div>
+          
+            
         <?php else: ?>
           <?php $fname = $report_info->main_report; ?>
           <?php $file_name_path = 'public://reports/' . $fname; ?>
           <?php $file_time = date("n/j/Y @ g:i a", $report_info->updated_on); ?>
-          <div>Status: <b>Uploaded <?php print $file_time; ?></b></div>
-          <p class="uk-margin-remove-bottom">Would you like to <a href="https://www.ndsbs.com/testimonials/add?destination=<?php print bdg_ndsbs_get_steps_page_no_base_url(); ?>">add a testimonial</a>?</p>
+          <div class="status-footer" style="border:1px solid #dfdfdf;display:block;text-align:center;"><p style="margin:5px;"><strong>Status</strong>: <b>Uploaded <?php print $file_time; ?></b></div>
+          <p style="display:block;text-align:center;" class="uk-margin-remove-bottom">Would you like to <a href="https://www.ndsbs.com/testimonials/add?destination=<?php print bdg_ndsbs_get_steps_page_no_base_url(); ?>">add a testimonial</a>?</p>
         <?php endif; ?>
+        <div>
+      </div>
       </div>
     </div>
   </li>
