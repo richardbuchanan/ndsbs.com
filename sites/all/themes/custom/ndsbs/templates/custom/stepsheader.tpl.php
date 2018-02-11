@@ -241,7 +241,7 @@ $step_four_button_classes =  implode(' ', $step_four_button_attributes['class'])
           <?php $fname = $report_info->main_report; ?>
           <?php $file_name_path = 'public://reports/' . $fname; ?>
           <?php $file_time = date("n/j/Y @ g:i a", $report_info->updated_on); ?>
-          <div class="status-footer" style="border:1px solid #dfdfdf;display:block;text-align:center;"><p style="margin:5px;"><strong>Status</strong>: <b>Uploaded <?php print $file_time; ?></b></div>
+          <div class="status-footer" style="border:1px solid #dfdfdf;display:block;text-align:center;"><p style="margin:5px;"><strong>Status</strong>: Uploaded <?php print $file_time; ?></div>
           <p style="display:block;text-align:center;" class="uk-margin-remove-bottom">Would you like to <a href="https://www.ndsbs.com/testimonials/add?destination=<?php print bdg_ndsbs_get_steps_page_no_base_url(); ?>">add a testimonial</a>?</p>
         <?php endif; ?>
         <div>
