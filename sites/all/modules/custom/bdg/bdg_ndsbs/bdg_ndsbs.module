@@ -432,6 +432,9 @@ function bdg_ndsbs_staff_profile_node_form_submit() {
 function bdg_ndsbs_user_register_submit($form, &$form_state) {
   $account = $form['#user'];
   $assessment_state = $form_state['values']['field_assessment_state']['und'][0]['value'];
+  $address_state = $form_state['values']['field_state']['und'][0]['value'];
+  $assessment_reason = $form_state['values']['field_reason_for_assessment']['und'][0]['value'];
+
   // Set hook_mail parameters.
   $params = array(
   'subject' => 'New Registration at NDSBS',
@@ -440,15 +443,15 @@ function bdg_ndsbs_user_register_submit($form, &$form_state) {
   );
 
   $params['body'] .= 'Name: ' . $form_state['values']['field_first_name']['und'][0]['value'] . ' ' . $form_state['values']['field_last_name']['und'][0]['value'] . ' <br />';
-  $params['body'] .= 'Username: ' . $form_state['values']['field_first_name']['und'][0]['value']. ' <br />';
-  $params['body'] .= 'Email: ' . $form_state['values']['mail']. ' <br />';
-  $params['body'] .= 'Phone: ' . $form_state['values']['field_phone']['und'][0]['value']. ' <br />'; 
-  $params['body'] .= 'State: ' . $form_state['values']['field_state']['und'][0]['value']. ' <br />';
+  $params['body'] .= 'Username: ' . $account->name . ' <br />';
+  $params['body'] .= 'Email: ' . $form_state['values']['mail']. ' <br />'; 
+  $params['body'] .= 'Phone: ' . localize_us_number($form_state['values']['field_phone']['und'][0]['value']). ' <br />'; 
+  $params['body'] .= 'State: ' . $address_state .  ' <br />';
   $params['body'] .= 'Referred by: ' . $form_state['values']['field_referred_by']['und'][0]['value']. ' <br />';
-  $params['body'] .= 'Reason for assessment: ' . $form_state['values']['field_reason_for_assessment']['und'][0]['value']. ' <br />';
+  $params['body'] .= 'Reason for assessment: ' . $assessment_reason . ' <br />';
   $params['body'] .= 'For court?: ' . $form_state['values']['field_for_courts']['und'][0]['value']. ' <br />';
   $params['body'] .= 'For probation?: ' . $form_state['values']['field_for_probation ']['und'][0]['value']. ' <br />';
-  $params['body'] .= 'State assessment will be submitted: ' . $form_state['values']['field_assessment_state']['und'][0]['value']. ' <br />';
+  $params['body'] .= 'State assessment will be submitted: ' . $assessment_state . ' <br />';
   $params['body'] .= 'Questions from client: ' . $form_state['values']['field_pre_purchase_questions']['und'][0]['value']. ' <br />';
   $params['body'] .= 'Prefers to be contacted by: ' . $form_state['values']['field_preferred_contact']['und'][0]['value']. ' <br />';
   // Send out the e-mail.
@@ -466,6 +469,11 @@ function bdg_ndsbs_user_register_submit($form, &$form_state) {
 
     user_save($account, $edit);
   }
+}
+
+function localize_us_number($phone) {
+  $numbers_only = preg_replace("/[^\d]/", "", $phone);
+  return preg_replace("/^1?(\d{3})(\d{3})(\d{4})$/", "$1-$2-$3", $numbers_only);
 }
 /**
  * Implementation of hook_mail().
