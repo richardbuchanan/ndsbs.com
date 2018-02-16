@@ -446,18 +446,18 @@ function bdg_ndsbs_user_register_submit($form, &$form_state) {
              <p>A new user has registered for NDSBS. Below are the details.</p>",
   );
   $params['body'] .= '<ul>';
-  $params['body'] .= '<li> Name: ' . $form_state['values']['field_first_name']['und'][0]['value'] . ' ' . $form_state['values']['field_last_name']['und'][0]['value'] . ' <li/>';
-  $params['body'] .= '<li> Username: ' . $account->name . ' <li/>';
-  $params['body'] .= '<li> Email: ' . $form_state['values']['mail']. ' <li/>'; 
-  $params['body'] .= '<li> Phone: ' . $phone . ' <li/>'; 
-  $params['body'] .= '<li> ' . render($address_state) . ' <li/>';
-  $params['body'] .= '<li> Referred by: ' . $form_state['values']['field_referred_by']['und'][0]['value']. ' <li/>';
-  $params['body'] .= '<li> ' . render($assessment_reason) . ' <li/>';
-  $params['body'] .= '<li> ' . render($courts)  . ' <li/>';
-  $params['body'] .= '<li> ' . render($probation) . ' <li/>';
-  $params['body'] .= '<li> ' . render($assessment_state_mail) . ' <li/>';
-  $params['body'] .= '<li> Questions from client: ' . $form_state['values']['field_pre_purchase_questions']['und'][0]['value']. ' <li/>';
-  $params['body'] .=  render($preferred_contact) . ' <li/>';
+  $params['body'] .= '<li> Name: ' . $form_state['values']['field_first_name']['und'][0]['value'] . ' ' . $form_state['values']['field_last_name']['und'][0]['value'] . ' </li>';
+  $params['body'] .= '<li> Username: ' . $account->name . ' </li>';
+  $params['body'] .= '<li> Email: ' . $form_state['values']['mail']. ' </li>'; 
+  $params['body'] .= '<li> Phone: ' . $phone . ' </li>'; 
+  $params['body'] .= '<li> ' . render($address_state) . ' </li>';
+  $params['body'] .= '<li> Referred by: ' . $form_state['values']['field_referred_by']['und'][0]['value']. ' </li>';
+  $params['body'] .= '<li> ' . render($assessment_reason) . ' </li>';
+  $params['body'] .= '<li> ' . render($courts)  . ' </li>';
+  $params['body'] .= '<li> ' . render($probation) . ' </li>';
+  $params['body'] .= '<li> ' . render($assessment_state_mail) . ' </li>';
+  $params['body'] .= '<li> Questions from client: ' . $form_state['values']['field_pre_purchase_questions']['und'][0]['value']. ' </li>';
+  $params['body'] .= '<li> ' . render($preferred_contact) . ' </li>';
   $params['body'] .= '</ul>';
   // Send out the e-mail.
   drupal_mail('bdg_ndsbs', 'bdg_ndsbs_mail', "info@ndsbs.com", language_default(), $params);
